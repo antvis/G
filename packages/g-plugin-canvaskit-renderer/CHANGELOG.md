@@ -1,5 +1,14 @@
 # @antv/g-plugin-canvaskit-renderer
 
+## 2.1.20
+
+### Patch Changes
+
+-   802cf7d: fix: element z-index sorting rendering abnormality
+-   Updated dependencies [802cf7d]
+    -   @antv/g-lite@2.2.17
+    -   @antv/g-plugin-image-loader@2.1.20
+
 ## 2.1.19
 
 ### Patch Changes
