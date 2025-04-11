@@ -274,7 +274,10 @@ export class RenderingService {
       internalRenderSingleDisplayObject(currentObject);
 
       // recursive rendering its children
-      const objects = currentObject.sortable.sorted || currentObject.childNodes;
+      const objects =
+        currentObject.sortable?.sorted?.length > 0
+          ? currentObject.sortable.sorted
+          : currentObject.childNodes;
       for (let i = objects.length - 1; i >= 0; i--) {
         stack.push(objects[i] as unknown as DisplayObject);
       }
@@ -288,25 +291,37 @@ export class RenderingService {
     ) {
       // avoid re-sorting the whole children list
       sortable.dirtyChildren.forEach((child) => {
+        // remove from sorted list
+        const sortIndex = sortable.sorted.indexOf(child);
+        if (sortIndex > -1) {
+          sortable.sorted.splice(sortIndex, 1);
+        }
+
         const index = displayObject.childNodes.indexOf(child as IChildNode);
-        if (index === -1) {
-          // remove from sorted list
-          const index = sortable.sorted.indexOf(child);
-          if (index >= 0) {
-            sortable.sorted.splice(index, 1);
+        if (index > -1) {
+          if (sortable.sorted.length === 0) {
+            sortable.sorted.push(child);
+          } else {
+            const index = sortedIndex(
+              sortable.sorted as IElement[],
+              child as IElement,
+            );
+            sortable.sorted.splice(index, 0, child);
           }
-        } else if (sortable.sorted.length === 0) {
-          sortable.sorted.push(child);
-        } else {
-          const index = sortedIndex(
-            sortable.sorted as IElement[],
-            child as IElement,
-          );
-          sortable.sorted.splice(index, 0, child);
         }
       });
     } else {
       sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
+    }
+
+    // When the child elements are changed and sorted, if there are no more stacked elements in the child elements (i.e. zIndex != 0), clear the sort list
+    if (
+      sortable.sorted?.length > 0 &&
+      displayObject.childNodes.filter(
+        (child: IElement) => child.parsedStyle.zIndex,
+      ).length === 0
+    ) {
+      sortable.sorted = [];
     }
   }
 

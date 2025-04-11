@@ -236,7 +236,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         }
 
         const objects =
-          currentObject.sortable.sorted || currentObject.childNodes;
+          currentObject.sortable?.sorted?.length > 0
+            ? currentObject.sortable.sorted
+            : currentObject.childNodes;
         // should account for z-index
         for (let i = objects.length - 1; i >= 0; i--) {
           stack.push(objects[i] as unknown as DisplayObject);
