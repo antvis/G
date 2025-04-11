@@ -303,7 +303,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       this.renderDisplayObject(object, canvas);
     }
 
-    const sorted = object.sortable.sorted || object.childNodes;
+    const sorted =
+      object.sortable?.sorted?.length > 0
+        ? object.sortable.sorted
+        : object.childNodes;
 
     // should account for z-index
     sorted.forEach((child: DisplayObject) => {
