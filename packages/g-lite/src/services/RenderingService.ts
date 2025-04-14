@@ -286,7 +286,7 @@ export class RenderingService {
 
   private sort(displayObject: DisplayObject, sortable: Sortable) {
     if (
-      sortable.sorted &&
+      sortable?.sorted?.length > 0 &&
       sortable.dirtyReason !== SortReason.Z_INDEX_CHANGED
     ) {
       // avoid re-sorting the whole children list
