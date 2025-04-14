@@ -1,5 +1,19 @@
 # @antv/g-mobile-canvas
 
+## 1.0.39
+
+### Patch Changes
+
+-   Updated dependencies [8ced394]
+    -   @antv/g-lite@2.2.18
+    -   @antv/g-plugin-canvas-path-generator@2.1.18
+    -   @antv/g-plugin-canvas-picker@2.1.21
+    -   @antv/g-plugin-canvas-renderer@2.2.21
+    -   @antv/g-plugin-dragndrop@2.0.34
+    -   @antv/g-plugin-gesture@2.0.34
+    -   @antv/g-plugin-image-loader@2.1.21
+    -   @antv/g-plugin-mobile-interaction@1.0.34
+
 ## 1.0.38
 
 ### Patch Changes
