@@ -55,7 +55,7 @@ export async function issue_1910(context: { canvas: Canvas }) {
 
     btnDom.onclick = () => {
       canvas.removeChild(text1);
-      canvas.removeChild(text2);
+      // canvas.removeChild(text2);
       console.log('removed');
 
       canvas.render(); // 添加这行代码后不会出现锯齿，但会有图元丢失问题
@@ -63,9 +63,10 @@ export async function issue_1910(context: { canvas: Canvas }) {
       // text1.style.text = randomLetter();
       text1.style.zIndex = Math.round(Math.random());
       // text2.style.text = randomLetter();
+      // console.log(text1.style.zIndex);
 
       canvas.appendChild(text1);
-      canvas.appendChild(text2);
+      // canvas.appendChild(text2);
       console.log('appended');
 
       canvas.render();
