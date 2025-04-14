@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.18
+
+### Patch Changes
+
+-   8ced394: fix: rendering anomalies caused by element zIndex update
+
 ## 2.2.17
 
 ### Patch Changes
