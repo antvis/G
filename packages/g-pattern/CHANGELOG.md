@@ -1,5 +1,12 @@
 # @antv/g-pattern
 
+## 2.0.35
+
+### Patch Changes
+
+-   Updated dependencies [f37001d]
+    -   @antv/g-lite@2.2.19
+
 ## 2.0.34
 
 ### Patch Changes

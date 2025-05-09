@@ -1,5 +1,11 @@
 # @antv/g-math
 
+## 3.0.1
+
+### Patch Changes
+
+-   f37001d: fix: text wrapping error
+
 ## 3.0.0
 
 ### Major Changes

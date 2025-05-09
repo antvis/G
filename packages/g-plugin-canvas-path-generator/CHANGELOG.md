@@ -1,5 +1,13 @@
 # @antv/g-plugin-canvas-path-generator
 
+## 2.1.19
+
+### Patch Changes
+
+-   Updated dependencies [f37001d]
+    -   @antv/g-lite@2.2.19
+    -   @antv/g-math@3.0.1
+
 ## 2.1.18
 
 ### Patch Changes
