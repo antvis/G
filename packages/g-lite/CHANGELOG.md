@@ -1,5 +1,13 @@
 # @antv/g-lite
 
+## 2.2.19
+
+### Patch Changes
+
+-   f37001d: fix: text wrapping error
+-   Updated dependencies [f37001d]
+    -   @antv/g-math@3.0.1
+
 ## 2.2.18
 
 ### Patch Changes
