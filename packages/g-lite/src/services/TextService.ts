@@ -360,7 +360,8 @@ export class TextService {
     let lines: string[] = [];
     let currentLineIndex = 0;
     let currentLineWidth = 0;
-    let prevLineLastCharIndex = 0;
+    // @see https://github.com/antvis/G/issues/1932
+    let prevLineLastCharIndex = -1;
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (txt: string): number => {
@@ -398,9 +399,11 @@ export class TextService {
         txtLastCharIndex += 1;
         lineTxt += chars[txtLastCharIndex];
       }
+
       while (
         calcWidth(lineTxt) > widthThreshold &&
-        txtLastCharIndex > txtStartCharIndex
+        // @see https://github.com/antvis/G/issues/1932
+        txtLastCharIndex >= txtStartCharIndex
       ) {
         txtLastCharIndex -= 1;
         lineTxt = lineTxt.slice(0, -1);

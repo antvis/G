@@ -18,10 +18,9 @@ export async function textWordWrap(context: { canvas: Canvas }) {
       // bold 12px Roboto, PingFangSC, "Microsoft YaHei", Arial, sans-serif
       fontSize: 12,
       fontWeight: 'normal',
-      linkTextFill: '#326EF4',
       maxLines: 1,
       opacity: 1,
-      // text: "哈哈哈哈哈哈哈哈",
+      // text: '哈哈哈哈哈哈哈哈',
       text: '11111111',
       // textAlign: "right",
       textBaseline: 'top',
@@ -44,13 +43,12 @@ export async function textWordWrap(context: { canvas: Canvas }) {
   const text1 = new Text({
     style: {
       x: 100,
-      y: 300,
+      y: 140,
       fill: '#000000',
       fontFamily: 'Roboto, PingFangSC, Microsoft YaHei, Arial, sans-serif',
       // bold 12px Roboto, PingFangSC, "Microsoft YaHei", Arial, sans-serif
       fontSize: 20,
       fontWeight: 'normal',
-      linkTextFill: '#326EF4',
       maxLines: 1,
       opacity: 1,
       // text: '哈哈哈哈哈哈哈哈',
@@ -75,14 +73,13 @@ export async function textWordWrap(context: { canvas: Canvas }) {
   // BUG: If there is a line break, no ellipsis will appear
   const text2 = new Text({
     style: {
-      x: 200,
-      y: 200,
+      x: 100,
+      y: 180,
       fill: '#000000',
       fontFamily: 'Roboto, PingFangSC, Microsoft YaHei, Arial, sans-serif',
       // bold 12px Roboto, PingFangSC, "Microsoft YaHei", Arial, sans-serif
       fontSize: 12,
       fontWeight: 'normal',
-      linkTextFill: '#326EF4',
       maxLines: 1,
       opacity: 1,
       text: '哈哈哈哈\n哈哈哈哈\n哈哈哈哈\n',
@@ -105,8 +102,8 @@ export async function textWordWrap(context: { canvas: Canvas }) {
 
   const text3 = new Text({
     style: {
-      x: 300,
-      y: 300,
+      x: 100,
+      y: 220,
       wordWrap: true,
       wordWrapWidth: 2,
       maxLines: 5,
@@ -117,8 +114,7 @@ export async function textWordWrap(context: { canvas: Canvas }) {
       fill: '#000000',
       opacity: 1,
       textAlign: 'center',
-      textBaseline: 'middle',
-      linkTextFill: '#326EF4',
+      textBaseline: 'top',
       text: '千亿数据',
     },
   });
@@ -132,33 +128,64 @@ export async function textWordWrap(context: { canvas: Canvas }) {
     },
   });
 
+  // long text
   const text4 = new Text({
     style: {
       x: 100,
-      y: 400,
+      y: 300,
       wordWrap: true,
-      wordWrapWidth: 2210,
+      wordWrapWidth: 510,
       maxLines: 10,
       textOverflow: 'ellipsis',
       fontFamily:
         'Roboto, PingFangSC, BlinkMacSystemFont, Microsoft YaHei, Arial, sans-serif',
       fontSize: 12,
+      lineHeight: 20,
       fontWeight: 700,
       fill: '#000000',
       opacity: 1,
-      textAlign: 'center',
-      textBaseline: 'middle',
-      linkTextFill: '#326EF4',
+      // textAlign: 'center',
+      // textBaseline: 'middle',
+      textBaseline: 'top',
       text: '{"courseId":"C12345","courseName":{"chinese":"Python 数据科学入门","english":"Introduction to Python Data Science"},"instructor":{"name":"张教授","title":"数据科学教授","introduction":"张教授是知名的数据科学家，拥有多年的教学经验。He has a deep understanding of Python programming and data analysis."},"description":"本课程旨在帮助学员从零基础开始学习 Python 编程，掌握数据分析的基本技能。通过本课程，您将能够使用 Python 进行数据清洗、探索性数据分析、机器学习等。This course is designed to help learners start from scratch and learn Python programming and master the basic skills of data analysis.","curriculum":[{"module":"Python 基础","topics":["变量与数据类型","控制流","函数"]},{"module":"NumPy 和 Pandas","topics":["NumPy 数组操作","Pandas 数据框","数据清洗"]},{"module":"数据可视化","topics":["Matplotlib","Seaborn","数据可视化案例"]}],"duration":"12周","price":999,"ratings":[{"rating":4.5,"comment":"课程内容丰富，老师讲得很清楚。The course content is comprehensive and the teacher explains very clearly."},{"rating":5,"comment":"非常适合初学者入门，强烈推荐！Highly recommended for beginners!"}],"enrollment":500}',
     },
   });
-  console.log(text4);
   const rect4 = new Rect({
     style: {
       x: text4.style.x,
       y: text4.style.y,
       width: text4.style.wordWrapWidth,
-      height: +text4.style.fontSize * text4.style.maxLines,
+      height: +text4.style.lineHeight * text4.style.maxLines,
+      stroke: '#000000',
+    },
+  });
+
+  // BUG: https://github.com/antvis/G/issues/1932
+  const text5 = new Text({
+    style: {
+      x: 100,
+      y: 520,
+      wordWrap: true,
+      maxLines: 2,
+      textOverflow: 'ellipsis',
+      fontFamily: 'Roboto, PingFangSC, Microsoft YaHei, Arial, sans-serif',
+      fontSize: 50,
+      lineHeight: 50,
+      fontWeight: 'normal',
+      fill: '#000000',
+      opacity: 1,
+      textBaseline: 'top',
+      textAlign: 'left',
+      text: '杭州杭州杭州杭州杭州杭州',
+      wordWrapWidth: 80,
+    },
+  });
+  const rect5 = new Rect({
+    style: {
+      x: text5.style.x,
+      y: text5.style.y,
+      width: text5.style.wordWrapWidth,
+      height: +text5.style.lineHeight * text5.style.maxLines,
       stroke: '#000000',
     },
   });
@@ -173,6 +200,8 @@ export async function textWordWrap(context: { canvas: Canvas }) {
   canvas.appendChild(rect3);
   canvas.appendChild(text4);
   canvas.appendChild(rect4);
+  canvas.appendChild(text5);
+  canvas.appendChild(rect5);
 
   // benchmark
   // ----------
