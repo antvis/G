@@ -261,6 +261,11 @@ export class Animation implements IAnimation {
    * resolve/reject ready/finished Promise according to current state
    */
   updatePromises() {
+    if (this.effect.target?.destroyed) {
+      this.readyPromise = undefined;
+      this.finishedPromise = undefined;
+      return false;
+    }
     const { oldPlayState } = this;
     const newPlayState = this.pending ? 'pending' : this.playState;
     if (this.readyPromise && newPlayState !== oldPlayState) {
