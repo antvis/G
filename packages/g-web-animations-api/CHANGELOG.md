@@ -1,5 +1,11 @@
 # @antv/g-web-animations-api
 
+## 2.1.25
+
+### Patch Changes
+
+-   d4686e6: fix: discard animation when target is destroyed
+
 ## 2.1.24
 
 ### Patch Changes
