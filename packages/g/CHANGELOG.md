@@ -1,5 +1,12 @@
 # @antv/g
 
+## 6.1.25
+
+### Patch Changes
+
+-   Updated dependencies [d4686e6]
+    -   @antv/g-web-animations-api@2.1.25
+
 ## 6.1.24
 
 ### Patch Changes
