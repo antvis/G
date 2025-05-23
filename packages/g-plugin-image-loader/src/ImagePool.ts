@@ -13,13 +13,11 @@ import {
   parsedTransformToMat4,
   Image,
   OffscreenCanvasCreator,
-  ElementEvent,
   type CanvasContext,
   type GlobalRuntime,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
 import { mat4 } from 'gl-matrix';
-import { RefCountCache } from './RefCountCache';
 import { type SliceResult, ImageSlicer } from './ImageSlicer';
 
 export interface ImageCache extends Partial<SliceResult> {
@@ -30,19 +28,7 @@ export interface ImageCache extends Partial<SliceResult> {
   downSamplingRate?: number;
 }
 
-const IMAGE_CACHE = new RefCountCache<ImageCache, DisplayObject>();
-IMAGE_CACHE.onRefAdded = function onRefAdded(
-  this: RefCountCache<ImageCache, DisplayObject>,
-  ref,
-) {
-  ref.addEventListener(
-    ElementEvent.DESTROY,
-    () => {
-      this.releaseRef(ref);
-    },
-    { once: true },
-  );
-};
+const IMAGE_CACHE = new Map<string, ImageCache>();
 
 export type GradientParams = (LinearGradient & RadialGradient) & {
   width: number;
@@ -72,7 +58,7 @@ export class ImagePool {
     const imageSource = isString(src) ? src : src.src;
 
     if (IMAGE_CACHE.has(imageSource)) {
-      const imageCache = IMAGE_CACHE.get(imageSource, ref);
+      const imageCache = IMAGE_CACHE.get(imageSource);
 
       if (imageCache.img.complete) {
         callback?.(imageCache);
@@ -105,11 +91,11 @@ export class ImagePool {
         tileSize: calculateImageTileSize(src),
       };
 
-      IMAGE_CACHE.put(imageSource, imageCache, ref);
+      IMAGE_CACHE.set(imageSource, imageCache);
     }
 
     if (IMAGE_CACHE.has(imageSource)) {
-      const imageCache = IMAGE_CACHE.get(imageSource, ref);
+      const imageCache = IMAGE_CACHE.get(imageSource);
 
       if (imageCache.img.complete) {
         return Promise.resolve(imageCache);
@@ -142,7 +128,7 @@ export class ImagePool {
           tileSize: calculateImageTileSize(image),
         };
 
-        IMAGE_CACHE.put(imageSource, imageCache, ref);
+        IMAGE_CACHE.set(imageSource, imageCache);
 
         image.onload = () => {
           imageCache.size = [
@@ -190,7 +176,7 @@ export class ImagePool {
       downSamplingRate,
     };
 
-    IMAGE_CACHE.update(imageCache.img.src, updateCache, ref);
+    IMAGE_CACHE.set(imageCache.img.src, updateCache);
 
     if (createImageBitmapFunc) {
       try {
@@ -211,7 +197,7 @@ export class ImagePool {
       downSamplingRate,
     };
 
-    IMAGE_CACHE.update(imageCache.img.src, updateCache, ref);
+    IMAGE_CACHE.set(imageCache.img.src, updateCache);
 
     return updateCache;
   }
@@ -242,18 +228,16 @@ export class ImagePool {
       ),
     };
 
-    IMAGE_CACHE.update(imageCache.img.src, updateCache, ref);
+    IMAGE_CACHE.set(imageCache.img.src, updateCache);
 
     return updateCache;
   }
 
   releaseImage(src: Image['attributes']['src'], ref: DisplayObject) {
-    IMAGE_CACHE.release(isString(src) ? src : src.src, ref);
+    IMAGE_CACHE.delete(isString(src) ? src : src.src);
   }
 
-  releaseImageRef(ref: DisplayObject) {
-    IMAGE_CACHE.releaseRef(ref);
-  }
+  releaseImageRef(ref: DisplayObject) {}
 
   getOrCreatePatternSync(
     object: DisplayObject,
