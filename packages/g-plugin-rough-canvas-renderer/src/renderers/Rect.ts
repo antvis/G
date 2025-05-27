@@ -3,6 +3,8 @@ import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
 export class RectRenderer implements CanvasRenderer.StyleRenderer {
+  constructor(private defaultStyleRendererFactory) {}
+
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedRectStyleProps,
@@ -19,6 +21,8 @@ export class RectRenderer implements CanvasRenderer.StyleRenderer {
         height,
         generateRoughOptions(object),
       );
+    } else {
+      this.defaultStyleRendererFactory.render(context, parsedStyle, object);
     }
   }
 }

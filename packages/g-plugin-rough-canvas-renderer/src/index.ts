@@ -20,7 +20,9 @@ export class Plugin extends AbstractRendererPlugin {
     this.context.styleRendererFactory = {
       [Shape.CIRCLE]: new CircleRoughRenderer(),
       [Shape.ELLIPSE]: new EllipseRoughRenderer(),
-      [Shape.RECT]: new RectRoughRenderer(),
+      [Shape.RECT]: new RectRoughRenderer(
+        defaultStyleRendererFactory[Shape.RECT],
+      ),
       [Shape.IMAGE]: defaultStyleRendererFactory[Shape.IMAGE],
       [Shape.TEXT]: defaultStyleRendererFactory[Shape.TEXT],
       [Shape.LINE]: new LineRoughRenderer(),
