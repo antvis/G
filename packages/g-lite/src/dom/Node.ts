@@ -329,6 +329,7 @@ export abstract class Node extends EventTarget implements INode {
    */
   abstract replaceChild<T extends INode>(newChild: INode, oldChild: T): T;
 
+  destroyed = false;
   abstract destroy(): void;
 
   /**

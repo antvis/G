@@ -11,7 +11,10 @@ export async function javascript(context: { canvas: Canvas; gui: lil.GUI }) {
 
   // benchmark
   // ----------
-  const bench = new tinybench.Bench({ name: 'canvas benchmark', time: 1e2 });
+  const bench = new tinybench.Bench({
+    name: 'javascript benchmark',
+    time: 1e2,
+  });
   const array = [
     'stroke',
     'shadowType',
