@@ -832,11 +832,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     if (needUpdateGeometry) {
       object.geometry.dirty = true;
-      object.renderable.boundsDirty = true;
-      object.renderable.renderBoundsDirty = true;
+      object.dirty(true, true);
 
       if (!options.forceUpdateGeometry) {
-        this.runtime.sceneGraphService.dirtifyToRoot(object);
+        this.runtime.sceneGraphService.dirtyToRoot(object);
       }
     }
   }

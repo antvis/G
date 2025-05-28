@@ -255,7 +255,7 @@ export class DisplayObject<
     runtime.styleValueRegistry.processProperties(this, attributes, options);
 
     // redraw at next frame
-    this.renderable.dirty = true;
+    this.dirty();
   }
 
   setAttribute<Key extends keyof StyleProps>(
@@ -283,8 +283,6 @@ export class DisplayObject<
     value: StyleProps[Key],
     parseOptions: Partial<PropertyParseOptions> = {},
   ) {
-    const { renderable } = this;
-
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name as string];
 
@@ -297,7 +295,9 @@ export class DisplayObject<
     );
 
     // redraw at next frame
-    renderable.dirty = true;
+    this.dirty();
+
+    // return;
 
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {
@@ -310,8 +310,18 @@ export class DisplayObject<
       if (this.isMutationObserved) {
         this.dispatchEvent(attrModifiedEvent);
       } else {
+        const enableEventOptimization =
+          runtime.enablePerformanceOptimization === true ||
+          // @ts-ignore
+          runtime.enablePerformanceOptimization?.enableEventOptimization ===
+            true;
+
         attrModifiedEvent.target = this;
-        this.ownerDocument.defaultView.dispatchEvent(attrModifiedEvent, true);
+        this.ownerDocument.defaultView.dispatchEvent(
+          attrModifiedEvent,
+          true,
+          enableEventOptimization,
+        );
       }
     }
 
