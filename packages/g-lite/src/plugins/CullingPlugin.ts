@@ -5,6 +5,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '../services/RenderingService';
+import { runtime } from '../global-runtime';
 
 export interface CullingStrategyContribution {
   isVisible: (camera: ICamera, object: DisplayObject) => boolean;
@@ -54,8 +55,19 @@ export class CullingPlugin implements RenderingPlugin {
           if (!object.isCulled() && object.isVisible()) {
             return object;
           }
+
+          const enableEventOptimization =
+            runtime.enablePerformanceOptimization === true ||
+            // @ts-ignore
+            runtime.enablePerformanceOptimization?.enableEventOptimization ===
+              true;
+
           // if (this.renderingContext.renderListLastFrame.indexOf(object) > -1) {
-          object.dispatchEvent(new CustomEvent(ElementEvent.CULLED));
+          object.dispatchEvent(
+            new CustomEvent(ElementEvent.CULLED),
+            enableEventOptimization,
+            enableEventOptimization,
+          );
           // }
 
           return null;
