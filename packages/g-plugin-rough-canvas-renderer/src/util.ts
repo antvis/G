@@ -7,6 +7,7 @@ import type {
   Pattern,
 } from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
+import type { CanvasRenderer } from '@antv/g-canvas';
 
 function mergeOpacity(
   color: CSSRGB | CSSGradientValue[] | Pattern,
@@ -94,4 +95,28 @@ export function generateRoughOptions(object: DisplayObject) {
   });
 
   return options;
+}
+
+export interface RoughCanvasRendererPluginOptions {
+  roughRendering?: boolean | ((value: DisplayObject) => boolean);
+}
+
+export type RoughCanvasRendererOptions =
+  Partial<RoughCanvasRendererPluginOptions> & {
+    defaultStyleRendererFactory: CanvasRenderer.DefaultRenderer;
+  };
+
+export function isRoughRendering(
+  roughRendering: boolean | ((value: DisplayObject) => boolean) | undefined,
+  element: DisplayObject,
+) {
+  // default to true to avoid breaking change
+  if (roughRendering === undefined) {
+    return true;
+  }
+
+  if (typeof roughRendering === 'function') {
+    return roughRendering(element);
+  }
+  return roughRendering;
 }

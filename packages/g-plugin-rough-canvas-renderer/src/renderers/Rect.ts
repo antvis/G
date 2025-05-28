@@ -1,17 +1,21 @@
 import type { CanvasRenderer } from '@antv/g-canvas';
 import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
-import { generateRoughOptions } from '../util';
+import {
+  generateRoughOptions,
+  isRoughRendering,
+  RoughCanvasRendererOptions,
+} from '../util';
 
 export class RectRenderer implements CanvasRenderer.StyleRenderer {
-  constructor(private defaultStyleRendererFactory) {}
+  constructor(private options: RoughCanvasRendererOptions) {}
 
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedRectStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { x = 0, y = 0, width, height } = parsedStyle;
-    if (!object?.attributes?.class?.includes('no-rough')) {
+    if (isRoughRendering(this.options.roughRendering, object)) {
+      const { x = 0, y = 0, width, height } = parsedStyle;
       // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
       // @ts-ignore
       context.roughCanvas.rectangle(
@@ -22,7 +26,11 @@ export class RectRenderer implements CanvasRenderer.StyleRenderer {
         generateRoughOptions(object),
       );
     } else {
-      this.defaultStyleRendererFactory.render(context, parsedStyle, object);
+      this.options.defaultStyleRendererFactory.render(
+        context,
+        parsedStyle,
+        object,
+      );
     }
   }
 }

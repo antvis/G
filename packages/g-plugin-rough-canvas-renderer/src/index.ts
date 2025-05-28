@@ -9,26 +9,53 @@ import {
   RectRenderer as RectRoughRenderer,
 } from './renderers';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
+import { type RoughCanvasRendererPluginOptions } from './util';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'rough-canvas-renderer';
+
+  constructor(private options?: Partial<RoughCanvasRendererPluginOptions>) {
+    super();
+  }
+
   init(): void {
     // @ts-ignore
     const { defaultStyleRendererFactory } = this.context;
+    const options = this.options || {};
 
     // @ts-ignore
     this.context.styleRendererFactory = {
-      [Shape.CIRCLE]: new CircleRoughRenderer(),
-      [Shape.ELLIPSE]: new EllipseRoughRenderer(),
-      [Shape.RECT]: new RectRoughRenderer(
-        defaultStyleRendererFactory[Shape.RECT],
-      ),
+      [Shape.CIRCLE]: new CircleRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.CIRCLE],
+        ...options,
+      }),
+      [Shape.ELLIPSE]: new EllipseRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.ELLIPSE],
+        ...options,
+      }),
+      [Shape.RECT]: new RectRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.RECT],
+        ...options,
+      }),
       [Shape.IMAGE]: defaultStyleRendererFactory[Shape.IMAGE],
       [Shape.TEXT]: defaultStyleRendererFactory[Shape.TEXT],
-      [Shape.LINE]: new LineRoughRenderer(),
-      [Shape.POLYLINE]: new PolylineRoughRenderer(),
-      [Shape.POLYGON]: new PolygonRoughRenderer(),
-      [Shape.PATH]: new PathRoughRenderer(),
+      [Shape.LINE]: new LineRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.LINE],
+        ...options,
+      }),
+      [Shape.POLYLINE]: new PolylineRoughRenderer({
+        defaultStyleRendererFactory:
+          defaultStyleRendererFactory[Shape.POLYLINE],
+        ...options,
+      }),
+      [Shape.POLYGON]: new PolygonRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.POLYGON],
+        ...options,
+      }),
+      [Shape.PATH]: new PathRoughRenderer({
+        defaultStyleRendererFactory: defaultStyleRendererFactory[Shape.PATH],
+        ...options,
+      }),
       [Shape.GROUP]: undefined,
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
