@@ -21,10 +21,10 @@ renderer.registerPlugin(new PluginRoughCanvasRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer,
 });
 ```
 
@@ -32,16 +32,16 @@ const canvas = new Canvas({
 
 ### Basic shapes
 
-- [x] Group
-- [x] Circle
-- [x] Ellipse
-- [x] Rect, `radius` won't work
-- [x] Line
-- [x] Polyline
-- [x] Polygon
-- [x] Path
-- [x] Text
-- [x] Image
+-   [x] Group
+-   [x] Circle
+-   [x] Ellipse
+-   [x] Rect, `radius` won't work
+-   [x] Line
+-   [x] Polyline
+-   [x] Polygon
+-   [x] Path
+-   [x] Text
+-   [x] Image
 
 ### Opacity
 
@@ -71,6 +71,17 @@ circle.style.shadowOffsetY = 0;
 ### Other rough.js options
 
 https://github.com/rough-stuff/rough/wiki#options
+
+### Plugin Options
+
+When initializing the plugin, you can pass the following options:
+
+```js
+export interface RoughCanvasRendererPluginOptions {
+  // is element rough render
+  roughRendering?: boolean | ((value: DisplayObject) => boolean);
+}
+```
 
 ### Text & Image
 
