@@ -76,10 +76,10 @@ https://github.com/rough-stuff/rough/wiki#options
 
 When initializing the plugin, you can pass the following options:
 
-```js
+```ts
 export interface RoughCanvasRendererPluginOptions {
-  // is element rough render
-  roughRendering?: boolean | ((value: DisplayObject) => boolean);
+    // is element rough render
+    roughRendering?: boolean | ((value: DisplayObject) => boolean);
 }
 ```
 
