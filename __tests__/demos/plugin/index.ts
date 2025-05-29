@@ -3,6 +3,7 @@ export { dragndropPerf } from './dragndrop-perf';
 export { roughBarchart } from './rough-barchart';
 export { roughShapes } from './rough-shapes';
 export { roughParams } from './rough-params';
+export { roughOptions } from './rough-options';
 export { matterjs } from './matterjs';
 export { annotation } from './annotation';
 export { exporter } from './exporter';
