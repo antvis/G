@@ -30,9 +30,9 @@ export interface ImageCache extends Partial<SliceResult> {
   downSamplingRate?: number;
 }
 
-const IMAGE_CACHE = new RefCountCache<ImageCache, DisplayObject>();
+const IMAGE_CACHE = new RefCountCache<ImageCache>();
 IMAGE_CACHE.onRefAdded = function onRefAdded(
-  this: RefCountCache<ImageCache, DisplayObject>,
+  this: RefCountCache<ImageCache>,
   ref,
 ) {
   ref.addEventListener(

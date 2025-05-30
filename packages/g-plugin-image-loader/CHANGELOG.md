@@ -1,5 +1,11 @@
 # @antv/g-plugin-image-loader
 
+## 2.1.23
+
+### Patch Changes
+
+-   76644e3: perf: image cache changed from instance reference to unique id
+
 ## 2.1.22
 
 ### Patch Changes
