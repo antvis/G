@@ -1,65 +1,67 @@
-export class RefCountCache<CacheValue, CounterValue> {
+import { DisplayObject } from '@antv/g-lite';
+
+export class RefCountCache<CacheValue> {
   private cacheStore = new Map<
     string,
-    { value: CacheValue; counter: Set<CounterValue> }
+    { value: CacheValue; counter: Set<number> }
   >();
 
-  onRefAdded(ref: CounterValue) {}
+  onRefAdded(ref: DisplayObject) {}
 
   has(key: string) {
     return this.cacheStore.has(key);
   }
 
-  put(key: string, item: CacheValue, ref: CounterValue) {
+  put(key: string, item: CacheValue, ref: DisplayObject) {
     if (this.cacheStore.has(key)) {
       return false;
     }
 
     this.cacheStore.set(key, {
       value: item,
-      counter: new Set([ref]),
+      counter: new Set([ref.entity]),
     });
     this.onRefAdded(ref);
 
     return true;
   }
 
-  get(key: string, ref: CounterValue) {
+  get(key: string, ref: DisplayObject) {
     const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return null;
     }
 
-    if (!cacheItem.counter.has(ref)) {
-      cacheItem.counter.add(ref);
+    if (!cacheItem.counter.has(ref.entity)) {
+      cacheItem.counter.add(ref.entity);
       this.onRefAdded(ref);
     }
 
     return cacheItem.value;
   }
 
-  update(key: string, value: CacheValue, ref: CounterValue) {
+  update(key: string, value: CacheValue, ref: DisplayObject) {
     const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return false;
     }
 
     cacheItem.value = { ...cacheItem.value, ...value };
-    if (!cacheItem.counter.has(ref)) {
-      cacheItem.counter.add(ref);
+    if (!cacheItem.counter.has(ref.entity)) {
+      cacheItem.counter.add(ref.entity);
       this.onRefAdded(ref);
     }
 
     return true;
   }
 
-  release(key: string, ref: CounterValue) {
+  release(key: string, ref: DisplayObject) {
     const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return false;
     }
 
-    cacheItem.counter.delete(ref);
+    cacheItem.counter.delete(ref.entity);
 
     if (cacheItem.counter.size <= 0) {
       this.cacheStore.delete(key);
@@ -68,7 +70,7 @@ export class RefCountCache<CacheValue, CounterValue> {
     return true;
   }
 
-  releaseRef(ref: CounterValue) {
+  releaseRef(ref: DisplayObject) {
     Array.from(this.cacheStore.keys()).forEach((key) => {
       this.release(key, ref);
     });
