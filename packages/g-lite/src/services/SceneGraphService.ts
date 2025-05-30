@@ -1,6 +1,11 @@
 import { isNumber } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { SortReason, Transform } from '../components';
+import {
+  SortReason,
+  type Transform,
+  updateLocalTransform,
+  updateWorldTransform,
+} from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element, IChildNode, IElement, INode, IParentNode } from '../dom';
 import { CustomEvent } from '../dom/CustomEvent';
@@ -11,14 +16,6 @@ import { AABB, Rectangle } from '../shapes';
 import { Shape } from '../types';
 import { findClosestClipPathTarget, isInFragment } from '../utils';
 import type { SceneGraphService } from './interfaces';
-
-function markRenderableDirty(e: Element) {
-  const { renderable } = e;
-  if (renderable) {
-    renderable.renderBoundsDirty = true;
-    renderable.boundsDirty = true;
-  }
-}
 
 const reparentEvent = new MutationEvent(
   ElementEvent.REPARENT,
@@ -143,16 +140,26 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     if (isAttachToFragment) return;
 
-    if (isChildFragment) this.dirtifyFragment(child);
-    else {
+    if (isChildFragment) {
+      this.dirtifyFragment(child);
+    } else {
       const transform = (child as unknown as Element).transformable;
       if (transform) {
-        this.dirtifyWorld(child, transform);
+        this.dirtyWorldTransform(child, transform);
       }
     }
 
     if (detached) {
-      child.dispatchEvent(reparentEvent);
+      const enableEventOptimization =
+        runtime.enablePerformanceOptimization === true ||
+        // @ts-ignore
+        runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+
+      child.dispatchEvent(
+        reparentEvent,
+        enableEventOptimization,
+        enableEventOptimization,
+      );
     }
   }
 
@@ -192,146 +199,53 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     if (transform) {
-      this.dirtifyWorld(child, transform);
+      this.dirtyWorldTransform(child, transform);
     }
     child.parentNode = null;
   }
 
-  getOrigin(element: INode) {
-    (element as Element).getGeometryBounds();
-    return (element as Element).transformable.origin;
+  // #region local-transform ----------------------------------------------------------------
+
+  getLocalPosition(element: INode) {
+    return (element as Element).transformable.localPosition;
+  }
+
+  getLocalRotation(element: INode) {
+    return (element as Element).transformable.localRotation;
+  }
+
+  getLocalScale(element: INode) {
+    return (element as Element).transformable.localScale;
+  }
+
+  getLocalSkew(element: INode) {
+    return (element as Element).transformable.localSkew;
+  }
+
+  getLocalTransform(element: INode) {
+    const transform = (element as Element).transformable;
+    updateLocalTransform(transform);
+
+    return transform.localTransform;
   }
 
   /**
-   * same as pivot in Pixi.js
-   *
-   * @see https://stackoverflow.com/questions/40748452/how-to-change-css-transform-origin-but-preserve-transformation
+   * move to position in local space
    */
-  setOrigin(element: INode, origin: vec3 | number, y = 0, z = 0) {
-    if (typeof origin === 'number') {
-      origin = [origin, y, z];
-    }
+  setLocalPosition(element: INode, position: vec3 | vec2, dirtify = true) {
     const transform = (element as Element).transformable;
-    if (
-      origin[0] === transform.origin[0] &&
-      origin[1] === transform.origin[1] &&
-      origin[2] === transform.origin[2]
-    ) {
+
+    $setLocalPosition[0] = position[0];
+    $setLocalPosition[1] = position[1];
+    $setLocalPosition[2] = position[2] ?? 0;
+
+    if (vec3.equals(transform.localPosition, $setLocalPosition)) {
       return;
     }
 
-    const originVec = transform.origin;
-
-    // const delta = vec3.subtract(vec3.create(), origin, originVec);
-    // vec3.add(transform.localPosition, transform.localPosition, delta);
-
-    // update origin
-    originVec[0] = origin[0];
-    originVec[1] = origin[1];
-    originVec[2] = origin[2] || 0;
-    this.dirtifyLocal(element, transform);
-  }
-
-  /**
-   * rotate in world space
-   */
-  rotate(element: INode, degrees: vec3 | number, y = 0, z = 0) {
-    if (typeof degrees === 'number') {
-      degrees = vec3.fromValues(degrees, y, z);
-    }
-
-    const transform = (element as Element).transformable;
-
-    if (
-      element.parentNode === null ||
-      !(element.parentNode as Element).transformable
-    ) {
-      this.rotateLocal(element, degrees);
-    } else {
-      const rotation = $quat;
-      quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
-      const rot = this.getRotation(element);
-      const parentRot = this.getRotation(element.parentNode);
-
-      quat.copy($rotate_ParentInvertRotation, parentRot);
-      quat.invert($rotate_ParentInvertRotation, $rotate_ParentInvertRotation);
-      quat.multiply(rotation, $rotate_ParentInvertRotation, rotation);
-      quat.multiply(transform.localRotation, rotation, rot);
-      quat.normalize(transform.localRotation, transform.localRotation);
-
-      this.dirtifyLocal(element, transform);
-    }
-  }
-
-  /**
-   * rotate in local space
-   * @see @see https://docs.microsoft.com/en-us/windows/win32/api/directxmath/nf-directxmath-xmquaternionrotationrollpitchyaw
-   */
-  rotateLocal(element: INode, degrees: vec3 | number, y = 0, z = 0) {
-    if (typeof degrees === 'number') {
-      degrees = vec3.fromValues(degrees, y, z);
-    }
-    const transform = (element as Element).transformable;
-    quat.fromEuler($rotateLocal, degrees[0], degrees[1], degrees[2]);
-    quat.mul(transform.localRotation, transform.localRotation, $rotateLocal);
-
-    this.dirtifyLocal(element, transform);
-  }
-
-  /**
-   * set euler angles(degrees) in world space
-   */
-  setEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
-    if (typeof degrees === 'number') {
-      degrees = vec3.fromValues(degrees, y, z);
-    }
-
-    const transform = (element as Element).transformable;
-
-    if (
-      element.parentNode === null ||
-      !(element.parentNode as Element).transformable
-    ) {
-      this.setLocalEulerAngles(element, degrees);
-    } else {
-      quat.fromEuler(
-        transform.localRotation,
-        degrees[0],
-        degrees[1],
-        degrees[2],
-      );
-      const parentRotation = this.getRotation(element.parentNode);
-      quat.copy(
-        $setEulerAngles_InvParentRot,
-        quat.invert($quat, parentRotation),
-      );
-      quat.mul(
-        transform.localRotation,
-        transform.localRotation,
-        $setEulerAngles_InvParentRot,
-      );
-
-      this.dirtifyLocal(element, transform);
-    }
-  }
-
-  /**
-   * set euler angles(degrees) in local space
-   */
-  setLocalEulerAngles(
-    element: INode,
-    degrees: vec3 | number,
-    y = 0,
-    z = 0,
-    dirtify = true,
-  ) {
-    if (typeof degrees === 'number') {
-      degrees = vec3.fromValues(degrees, y, z);
-    }
-    const transform = (element as Element).transformable;
-    quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
+    vec3.copy(transform.localPosition, $setLocalPosition);
     if (dirtify) {
-      this.dirtifyLocal(element, transform);
+      this.dirtyLocalTransform(element, transform);
     }
   }
 
@@ -354,7 +268,178 @@ export class DefaultSceneGraphService implements SceneGraphService {
     vec3.transformQuat(translation, translation, transform.localRotation);
     vec3.add(transform.localPosition, transform.localPosition, translation);
 
-    this.dirtifyLocal(element, transform);
+    this.dirtyLocalTransform(element, transform);
+  }
+
+  setLocalRotation(
+    element: INode,
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+    dirtify = true,
+  ) {
+    if (typeof rotation === 'number') {
+      rotation = quat.set($quat, rotation, y, z, w);
+    }
+    const transform = (element as Element).transformable;
+    quat.copy(transform.localRotation, rotation);
+    if (dirtify) {
+      this.dirtyLocalTransform(element, transform);
+    }
+  }
+
+  /**
+   * rotate in local space
+   * @see @see https://docs.microsoft.com/en-us/windows/win32/api/directxmath/nf-directxmath-xmquaternionrotationrollpitchyaw
+   */
+  rotateLocal(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
+    const transform = (element as Element).transformable;
+    quat.fromEuler($rotateLocal, degrees[0], degrees[1], degrees[2]);
+    quat.mul(transform.localRotation, transform.localRotation, $rotateLocal);
+
+    this.dirtyLocalTransform(element, transform);
+  }
+
+  setLocalScale(element: INode, scaling: vec3 | vec2, dirtify = true) {
+    const transform = (element as Element).transformable;
+
+    vec3.set(
+      $vec3,
+      scaling[0],
+      scaling[1],
+      scaling[2] ?? transform.localScale[2],
+    );
+
+    if (vec3.equals($vec3, transform.localScale)) {
+      return;
+    }
+
+    vec3.copy(transform.localScale, $vec3);
+    if (dirtify) {
+      this.dirtyLocalTransform(element, transform);
+    }
+  }
+
+  /**
+   * scale in local space
+   */
+  scaleLocal(element: INode, scaling: vec3 | vec2) {
+    const transform = (element as Element).transformable;
+    vec3.multiply(
+      transform.localScale,
+      transform.localScale,
+      vec3.set($vec3, scaling[0], scaling[1], scaling[2] ?? 1),
+    );
+    this.dirtyLocalTransform(element, transform);
+  }
+
+  setLocalSkew(
+    element: INode,
+    skew: vec2 | number,
+    y?: number,
+    dirtify = true,
+  ) {
+    if (typeof skew === 'number') {
+      skew = vec2.set($vec2, skew, y);
+    }
+    const transform = (element as Element).transformable;
+    vec2.copy(transform.localSkew, skew);
+    if (dirtify) {
+      this.dirtyLocalTransform(element, transform);
+    }
+  }
+
+  /**
+   * set euler angles(degrees) in local space
+   */
+  setLocalEulerAngles(
+    element: INode,
+    degrees: vec3 | number,
+    y = 0,
+    z = 0,
+    dirtify = true,
+  ) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
+    const transform = (element as Element).transformable;
+    quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
+    if (dirtify) {
+      this.dirtyLocalTransform(element, transform);
+    }
+  }
+
+  setLocalTransform(element: INode, transform: mat4) {
+    const t = mat4.getTranslation($setLocalTransform_1, transform);
+    const r = mat4.getRotation($setLocalTransform_2, transform);
+    const s = mat4.getScaling($setLocalTransform_3, transform);
+    this.setLocalScale(element, s, false);
+    this.setLocalPosition(element, t, false);
+    this.setLocalRotation(element, r, undefined, undefined, undefined, false);
+
+    this.dirtyLocalTransform(element, (element as Element).transformable);
+  }
+
+  resetLocalTransform(element: INode) {
+    this.setLocalScale(element, $vec3One, false);
+    this.setLocalPosition(element, $vec3Zero, false);
+    this.setLocalEulerAngles(element, $vec3Zero, undefined, undefined, false);
+    this.setLocalSkew(element, $vec2Zero, undefined, false);
+
+    this.dirtyLocalTransform(element, (element as Element).transformable);
+  }
+
+  // #endregion local-transform
+  // #region transform ----------------------------------------------------------------
+
+  getPosition(element: INode) {
+    const transform = (element as Element).transformable;
+    return mat4.getTranslation(
+      transform.position,
+      this.getWorldTransform(element, transform),
+    );
+  }
+
+  getRotation(element: INode) {
+    const transform = (element as Element).transformable;
+    return mat4.getRotation(
+      transform.rotation,
+      this.getWorldTransform(element, transform),
+    );
+  }
+
+  getScale(element: INode) {
+    const transform = (element as Element).transformable;
+    return mat4.getScaling(
+      transform.scaling,
+      this.getWorldTransform(element, transform),
+    );
+  }
+
+  getOrigin(element: INode) {
+    (element as Element).getGeometryBounds();
+    return (element as Element).transformable.origin;
+  }
+
+  getWorldTransform(
+    element: INode,
+    transform: Transform = (element as Element).transformable,
+  ) {
+    if (!transform.localDirtyFlag && !transform.dirtyFlag) {
+      return transform.worldTransform;
+    }
+
+    if (element.parentNode && (element.parentNode as Element).transformable) {
+      this.getWorldTransform(element.parentNode);
+    }
+
+    this.internalUpdateTransform(element as Element);
+
+    return transform.worldTransform;
   }
 
   /**
@@ -398,60 +483,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       );
     }
 
-    this.dirtifyLocal(element, transform);
-  }
-
-  /**
-   * move to position in local space
-   */
-  setLocalPosition(element: INode, position: vec3 | vec2, dirtify = true) {
-    const transform = (element as Element).transformable;
-
-    $setLocalPosition[0] = position[0];
-    $setLocalPosition[1] = position[1];
-    $setLocalPosition[2] = position[2] ?? 0;
-
-    if (vec3.equals(transform.localPosition, $setLocalPosition)) {
-      return;
-    }
-
-    vec3.copy(transform.localPosition, $setLocalPosition);
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
-  }
-
-  /**
-   * scale in local space
-   */
-  scaleLocal(element: INode, scaling: vec3 | vec2) {
-    const transform = (element as Element).transformable;
-    vec3.multiply(
-      transform.localScale,
-      transform.localScale,
-      vec3.set($vec3, scaling[0], scaling[1], scaling[2] ?? 1),
-    );
-    this.dirtifyLocal(element, transform);
-  }
-
-  setLocalScale(element: INode, scaling: vec3 | vec2, dirtify = true) {
-    const transform = (element as Element).transformable;
-
-    vec3.set(
-      $vec3,
-      scaling[0],
-      scaling[1],
-      scaling[2] ?? transform.localScale[2],
-    );
-
-    if (vec3.equals($vec3, transform.localScale)) {
-      return;
-    }
-
-    vec3.copy(transform.localScale, $vec3);
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
+    this.dirtyLocalTransform(element, transform);
   }
 
   /**
@@ -502,391 +534,110 @@ export class DefaultSceneGraphService implements SceneGraphService {
       quat.multiply(transform.localRotation, $quat, rotation);
       quat.normalize(transform.localRotation, transform.localRotation);
 
-      this.dirtifyLocal(element, transform);
+      this.dirtyLocalTransform(element, transform);
     }
   }
 
-  setLocalRotation(
-    element: INode,
-    rotation: quat | number,
-    y?: number,
-    z?: number,
-    w?: number,
-    dirtify = true,
-  ) {
-    if (typeof rotation === 'number') {
-      rotation = quat.set($quat, rotation, y, z, w);
+  /**
+   * rotate in world space
+   */
+  rotate(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
+
+    const transform = (element as Element).transformable;
+
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      this.rotateLocal(element, degrees);
+    } else {
+      const rotation = $quat;
+      quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
+      const rot = this.getRotation(element);
+      const parentRot = this.getRotation(element.parentNode);
+
+      quat.copy($rotate_ParentInvertRotation, parentRot);
+      quat.invert($rotate_ParentInvertRotation, $rotate_ParentInvertRotation);
+      quat.multiply(rotation, $rotate_ParentInvertRotation, rotation);
+      quat.multiply(transform.localRotation, rotation, rot);
+      quat.normalize(transform.localRotation, transform.localRotation);
+
+      this.dirtyLocalTransform(element, transform);
+    }
+  }
+
+  /**
+   * same as pivot in Pixi.js
+   *
+   * @see https://stackoverflow.com/questions/40748452/how-to-change-css-transform-origin-but-preserve-transformation
+   */
+  setOrigin(element: INode, origin: vec3 | number, y = 0, z = 0) {
+    if (typeof origin === 'number') {
+      origin = [origin, y, z];
     }
     const transform = (element as Element).transformable;
-    quat.copy(transform.localRotation, rotation);
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
-  }
-
-  setLocalSkew(
-    element: INode,
-    skew: vec2 | number,
-    y?: number,
-    dirtify = true,
-  ) {
-    if (typeof skew === 'number') {
-      skew = vec2.set($vec2, skew, y);
-    }
-    const transform = (element as Element).transformable;
-    vec2.copy(transform.localSkew, skew);
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
-  }
-
-  dirtifyLocal(element: INode, transform: Transform) {
-    if (isInFragment(element)) return;
-
-    if (!transform.localDirtyFlag) {
-      transform.localDirtyFlag = true;
-      if (!transform.dirtyFlag) {
-        this.dirtifyWorld(element, transform);
-      }
-    }
-  }
-
-  dirtifyWorld(element: INode, transform: Transform) {
-    if (!transform.dirtyFlag) {
-      this.unfreezeParentToRoot(element);
-    }
-
-    this.dirtifyWorldInternal(element, transform);
-    this.dirtifyToRoot(element, true);
-  }
-
-  dirtifyFragment(element: INode) {
-    const transform = (element as Element).transformable;
-    if (transform) {
-      transform.frozen = false;
-      transform.dirtyFlag = true;
-      transform.localDirtyFlag = true;
-    }
-    const renderable = (element as Element).renderable;
-    if (renderable) {
-      renderable.renderBoundsDirty = true;
-      renderable.boundsDirty = true;
-      renderable.dirty = true;
-    }
-
-    const length = element.childNodes.length;
-    for (let i = 0; i < length; i++) {
-      this.dirtifyFragment(element.childNodes[i]);
-    }
-
-    if (element.nodeName === Shape.FRAGMENT) {
-      this.pendingEvents.set(element as DisplayObject, false);
-    }
-  }
-
-  triggerPendingEvents() {
-    const triggered = new Set<DisplayObject>();
-
-    const trigger = (element: DisplayObject, detail) => {
-      if (
-        !element.isConnected ||
-        triggered.has(element) ||
-        (element.nodeName as Shape) === Shape.FRAGMENT
-      ) {
-        return;
-      }
-
-      this.boundsChangedEvent.detail = detail;
-      this.boundsChangedEvent.target = element;
-      if (element.isMutationObserved) {
-        element.dispatchEvent(this.boundsChangedEvent);
-      } else {
-        element.ownerDocument.defaultView.dispatchEvent(
-          this.boundsChangedEvent,
-          true,
-        );
-      }
-
-      triggered.add(element);
-    };
-
-    this.pendingEvents.forEach((affectChildren, element) => {
-      if ((element.nodeName as Shape) === Shape.FRAGMENT) {
-        return;
-      }
-
-      $triggerPendingEvents_detail.affectChildren = affectChildren;
-      if (affectChildren) {
-        element.forEach((e: DisplayObject) => {
-          trigger(e, $triggerPendingEvents_detail);
-        });
-      } else trigger(element, $triggerPendingEvents_detail);
-    });
-
-    triggered.clear();
-    this.clearPendingEvents();
-  }
-
-  clearPendingEvents() {
-    this.pendingEvents.clear();
-  }
-
-  dirtifyToRoot(element: INode, affectChildren = false) {
-    let p = element;
-
-    // only need to re-render itself
-    if ((p as Element).renderable) {
-      (p as Element).renderable.dirty = true;
-    }
-
-    while (p) {
-      markRenderableDirty(p as Element);
-      p = p.parentNode;
-    }
-
-    if (affectChildren) {
-      element.forEach((e: Element) => {
-        markRenderableDirty(e);
-      });
-    }
-
-    this.informDependentDisplayObjects(element as DisplayObject);
-
-    this.pendingEvents.set(element as DisplayObject, affectChildren);
-  }
-
-  private displayObjectDependencyMap: WeakMap<
-    DisplayObject,
-    Record<string, DisplayObject[]>
-  > = new WeakMap();
-  updateDisplayObjectDependency(
-    name: string,
-    oldPath: DisplayObject,
-    newPath: DisplayObject,
-    object: DisplayObject,
-  ) {
-    // clear ref to old clip path
-    if (oldPath && oldPath !== newPath) {
-      const oldDependencyMap = this.displayObjectDependencyMap.get(oldPath);
-      if (oldDependencyMap && oldDependencyMap[name]) {
-        const index = oldDependencyMap[name].indexOf(object);
-        oldDependencyMap[name].splice(index, 1);
-      }
-    }
-
-    if (newPath) {
-      let newDependencyMap = this.displayObjectDependencyMap.get(newPath);
-      if (!newDependencyMap) {
-        this.displayObjectDependencyMap.set(newPath, {});
-        newDependencyMap = this.displayObjectDependencyMap.get(newPath);
-      }
-      if (!newDependencyMap[name]) {
-        newDependencyMap[name] = [];
-      }
-      newDependencyMap[name].push(object);
-    }
-  }
-
-  informDependentDisplayObjects(object: DisplayObject) {
-    const dependencyMap = this.displayObjectDependencyMap.get(object);
-    if (!dependencyMap) {
+    if (
+      origin[0] === transform.origin[0] &&
+      origin[1] === transform.origin[1] &&
+      origin[2] === transform.origin[2]
+    ) {
       return;
     }
 
-    Object.keys(dependencyMap).forEach((name) => {
-      dependencyMap[name].forEach((target) => {
-        this.dirtifyToRoot(target, true);
+    const originVec = transform.origin;
 
-        target.dispatchEvent(
-          new MutationEvent(
-            ElementEvent.ATTR_MODIFIED,
-            target as IElement,
-            this,
-            this,
-            name,
-            MutationEvent.MODIFICATION,
-            this,
-            this,
-          ),
-        );
+    // const delta = vec3.subtract(vec3.create(), origin, originVec);
+    // vec3.add(transform.localPosition, transform.localPosition, delta);
 
-        if (target.isCustomElement && target.isConnected) {
-          if ((target as CustomElement<any>).attributeChangedCallback) {
-            (target as CustomElement<any>).attributeChangedCallback(
-              name,
-              this,
-              this,
-            );
-          }
-        }
-      });
-    });
+    // update origin
+    originVec[0] = origin[0];
+    originVec[1] = origin[1];
+    originVec[2] = origin[2] || 0;
+    this.dirtyLocalTransform(element, transform);
   }
 
-  getPosition(element: INode) {
-    const transform = (element as Element).transformable;
-    return mat4.getTranslation(
-      transform.position,
-      this.getWorldTransform(element, transform),
-    );
-  }
-
-  getRotation(element: INode) {
-    const transform = (element as Element).transformable;
-    return mat4.getRotation(
-      transform.rotation,
-      this.getWorldTransform(element, transform),
-    );
-  }
-
-  getScale(element: INode) {
-    const transform = (element as Element).transformable;
-    return mat4.getScaling(
-      transform.scaling,
-      this.getWorldTransform(element, transform),
-    );
-  }
-
-  getWorldTransform(
-    element: INode,
-    transform: Transform = (element as Element).transformable,
-  ) {
-    if (!transform.localDirtyFlag && !transform.dirtyFlag) {
-      return transform.worldTransform;
+  /**
+   * set euler angles(degrees) in world space
+   */
+  setEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
     }
 
-    if (element.parentNode && (element.parentNode as Element).transformable) {
-      this.getWorldTransform(element.parentNode);
-    }
+    const transform = (element as Element).transformable;
 
-    this.sync(element, transform);
-
-    return transform.worldTransform;
-  }
-
-  getLocalPosition(element: INode) {
-    return (element as Element).transformable.localPosition;
-  }
-
-  getLocalRotation(element: INode) {
-    return (element as Element).transformable.localRotation;
-  }
-
-  getLocalScale(element: INode) {
-    return (element as Element).transformable.localScale;
-  }
-
-  getLocalSkew(element: INode) {
-    return (element as Element).transformable.localSkew;
-  }
-
-  private calcLocalTransform(transform: Transform) {
-    const hasSkew =
-      transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
-
-    if (hasSkew) {
-      mat4.fromRotationTranslationScaleOrigin(
-        transform.localTransform,
-        transform.localRotation,
-        transform.localPosition,
-        vec3.fromValues(1, 1, 1),
-        transform.origin,
-      );
-
-      // apply skew2D
-      if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
-        mat4.identity($mat4);
-        $mat4[4] = Math.tan(transform.localSkew[0]);
-        $mat4[1] = Math.tan(transform.localSkew[1]);
-        mat4.multiply(
-          transform.localTransform,
-          transform.localTransform,
-          $mat4,
-        );
-      }
-
-      const scaling = mat4.fromRotationTranslationScaleOrigin(
-        $mat4,
-        quat.set($quat, 0, 0, 0, 1),
-        vec3.set($vec3, 1, 1, 1),
-        transform.localScale,
-        transform.origin,
-      );
-      mat4.multiply(
-        transform.localTransform,
-        transform.localTransform,
-        scaling,
-      );
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      this.setLocalEulerAngles(element, degrees);
     } else {
-      const {
-        localTransform,
-        localPosition,
-        localRotation,
-        localScale,
-        origin,
-      } = transform;
+      quat.fromEuler(
+        transform.localRotation,
+        degrees[0],
+        degrees[1],
+        degrees[2],
+      );
+      const parentRotation = this.getRotation(element.parentNode);
+      quat.copy(
+        $setEulerAngles_InvParentRot,
+        quat.invert($quat, parentRotation),
+      );
+      quat.mul(
+        transform.localRotation,
+        transform.localRotation,
+        $setEulerAngles_InvParentRot,
+      );
 
-      const hasPosition =
-        localPosition[0] !== 0 ||
-        localPosition[1] !== 0 ||
-        localPosition[2] !== 0;
-
-      const hasRotation =
-        localRotation[3] !== 1 ||
-        localRotation[0] !== 0 ||
-        localRotation[1] !== 0 ||
-        localRotation[2] !== 0;
-
-      const hasScale =
-        localScale[0] !== 1 || localScale[1] !== 1 || localScale[2] !== 1;
-
-      const hasOrigin = origin[0] !== 0 || origin[1] !== 0 || origin[2] !== 0;
-
-      if (!hasRotation && !hasScale && !hasOrigin) {
-        if (hasPosition) {
-          mat4.fromTranslation(localTransform, localPosition);
-        } else {
-          mat4.identity(localTransform);
-        }
-      } else {
-        // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
-        mat4.fromRotationTranslationScaleOrigin(
-          localTransform,
-          localRotation,
-          localPosition,
-          localScale,
-          origin,
-        );
-      }
+      this.dirtyLocalTransform(element, transform);
     }
   }
 
-  getLocalTransform(element: INode) {
-    const transform = (element as Element).transformable;
-    if (transform.localDirtyFlag) {
-      this.calcLocalTransform(transform);
-      transform.localDirtyFlag = false;
-    }
-    return transform.localTransform;
-  }
-
-  setLocalTransform(element: INode, transform: mat4) {
-    const t = mat4.getTranslation($setLocalTransform_1, transform);
-    const r = mat4.getRotation($setLocalTransform_2, transform);
-    const s = mat4.getScaling($setLocalTransform_3, transform);
-    this.setLocalScale(element, s, false);
-    this.setLocalPosition(element, t, false);
-    this.setLocalRotation(element, r, undefined, undefined, undefined, false);
-    this.dirtifyLocal(element, (element as Element).transformable);
-  }
-
-  resetLocalTransform(element: INode) {
-    this.setLocalScale(element, $vec3One, false);
-    this.setLocalPosition(element, $vec3Zero, false);
-    this.setLocalEulerAngles(element, $vec3Zero, undefined, undefined, false);
-    this.setLocalSkew(element, $vec2Zero, undefined, false);
-    this.dirtifyLocal(element, (element as Element).transformable);
-  }
+  // #endregion transform
+  // #region bbox ----------------------------------------------------------------
 
   private getTransformedGeometryBounds(
     element: INode,
@@ -1041,76 +792,338 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return new Rectangle(bbox?.left || 0, bbox?.top || 0, 0, 0);
   }
 
-  private dirtifyWorldInternal(element: INode, transform: Transform) {
-    if (!transform.dirtyFlag) {
-      transform.dirtyFlag = true;
-      transform.frozen = false;
-      element.childNodes.forEach((child) => {
-        const childTransform = (child as Element).transformable;
-        if (!childTransform.dirtyFlag) {
-          this.dirtifyWorldInternal(child as IElement, childTransform);
-        }
-      });
+  // #endregion bbox
+  // #region other ----------------------------------------------------------------
 
-      const { renderable } = element as Element;
-      if (renderable) {
-        renderable.renderBoundsDirty = true;
-        renderable.boundsDirty = true;
-        renderable.dirty = true;
+  private internalUpdateTransform(element: Element) {
+    const parentTransform = (element.parentNode as Element)?.transformable;
+
+    updateLocalTransform(element.transformable);
+    updateWorldTransform(element.transformable, parentTransform);
+  }
+
+  private internalUpdateElement(
+    element: Element,
+    ancestors: {
+      node: INode;
+      transformDirty: boolean;
+      shapeUpdated: boolean;
+    }[],
+  ): boolean {
+    const enableAttributeUpdateOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // prettier-ignore
+      runtime.enablePerformanceOptimization
+      // @ts-ignore
+            ?.enableAttributeUpdateOptimization === true;
+    const parent = ancestors[ancestors.length - 1];
+    // parent nodes affect child nodes
+    const transformDirty =
+      parent?.transformDirty || element.transformable?.localDirtyFlag;
+    if (element.transformable) {
+      element.transformable.dirtyFlag ||= transformDirty;
+    }
+
+    this.internalUpdateTransform(element);
+
+    if (transformDirty) {
+      element.dirty?.(true, true);
+    }
+    const shapeUpdated =
+      element.renderable?.boundsDirty || element.renderable?.renderBoundsDirty;
+
+    // The transformation matrix of the child node changes,
+    // which will cause the bounding box data of the ancestor node to become outdated.
+    if (
+      (transformDirty || shapeUpdated) &&
+      parent?.shapeUpdated === false &&
+      enableAttributeUpdateOptimization
+    ) {
+      let tempElIndex = ancestors.length - 1;
+      while (tempElIndex >= 0) {
+        const tempEl = ancestors[tempElIndex];
+        if (tempEl.shapeUpdated) {
+          break;
+        }
+
+        (tempEl.node as Element).dirty?.(true, true);
+        tempEl.shapeUpdated = true;
+
+        tempElIndex -= 1;
+      }
+    }
+
+    return transformDirty;
+  }
+
+  syncHierarchy(rootNode: INode) {
+    // console.log('syncHierarchy');
+    const stack: INode[] = [rootNode];
+    const ancestors: {
+      node: INode;
+      transformDirty: boolean;
+      shapeUpdated: boolean;
+    }[] = rootNode.parentNode
+      ? [
+          {
+            node: rootNode.parentNode,
+            transformDirty:
+              (rootNode.parentNode as Element).transformable?.localDirtyFlag ||
+              (rootNode.parentNode as Element).transformable?.dirtyFlag,
+            shapeUpdated: false,
+          },
+        ]
+      : [];
+
+    while (stack.length > 0) {
+      const node = stack.pop();
+      let parent = ancestors[ancestors.length - 1];
+      while (ancestors.length > 0 && node.parentNode !== parent.node) {
+        parent = ancestors.pop();
+      }
+
+      const transformDirty = this.internalUpdateElement(
+        node as Element,
+        ancestors,
+      );
+
+      if (node.childNodes.length > 0) {
+        for (let i = node.childNodes.length - 1; i >= 0; i--) {
+          stack.push(node.childNodes[i]);
+        }
+
+        ancestors.push({
+          node,
+          transformDirty,
+          shapeUpdated: false,
+        });
       }
     }
   }
 
-  syncHierarchy(element: INode) {
-    const transform = (element as Element).transformable;
-    if (transform.frozen) {
-      return;
-    }
-    transform.frozen = true;
+  dirtyLocalTransform(element: INode, transform: Transform) {
+    if (isInFragment(element)) return;
 
-    if (transform.localDirtyFlag || transform.dirtyFlag) {
-      this.sync(element, transform);
-    }
-
-    const children = element.childNodes;
-    for (let i = 0; i < children.length; i++) {
-      this.syncHierarchy(children[i]);
+    if (!transform.localDirtyFlag) {
+      transform.localDirtyFlag = true;
+      if (!transform.dirtyFlag) {
+        this.dirtyWorldTransform(element, transform);
+      }
     }
   }
 
-  private sync(element: INode, transform: Transform) {
-    if (transform.localDirtyFlag) {
-      this.calcLocalTransform(transform);
-      transform.localDirtyFlag = false;
+  dirtyWorldTransform(element: INode, transform: Transform) {
+    this.dirtifyWorldInternal(element, transform);
+    this.dirtyToRoot(element, true);
+  }
+
+  private dirtifyWorldInternal(element: INode, transform: Transform) {
+    const enableAttributeUpdateOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // prettier-ignore
+      runtime.enablePerformanceOptimization
+      // @ts-ignore
+            ?.enableAttributeUpdateOptimization === true;
+
+    if (!transform.dirtyFlag) {
+      transform.dirtyFlag = true;
+      (element as Element).dirty(true, true);
+
+      if (!enableAttributeUpdateOptimization) {
+        element.childNodes.forEach((child) => {
+          const childTransform = (child as Element).transformable;
+
+          this.dirtifyWorldInternal(child as IElement, childTransform);
+        });
+      }
+    }
+  }
+
+  dirtyToRoot(element: INode, affectChildren = false) {
+    let p = element;
+    const enableAttributeUpdateOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // prettier-ignore
+      runtime.enablePerformanceOptimization
+      // @ts-ignore
+        ?.enableAttributeUpdateOptimization === true;
+
+    while (p) {
+      (p as Element).dirty?.(true, true);
+
+      if (enableAttributeUpdateOptimization) {
+        break;
+      } else {
+        p = p.parentNode;
+      }
     }
 
-    if (transform.dirtyFlag) {
-      const parent = element.parentNode;
-      const parentTransform = parent && (parent as Element).transformable;
-      if (parent === null || !parentTransform) {
-        mat4.copy(transform.worldTransform, transform.localTransform);
+    if (affectChildren) {
+      element.forEach((e: Element) => {
+        e.dirty?.(true, true);
+      });
+    }
+
+    this.informDependentDisplayObjects(element as DisplayObject);
+
+    this.pendingEvents.set(element as DisplayObject, affectChildren);
+  }
+
+  dirtifyFragment(element: INode) {
+    const transform = (element as Element).transformable;
+    if (transform) {
+      transform.dirtyFlag = true;
+      transform.localDirtyFlag = true;
+    }
+    (element as Element).dirty?.(true, true);
+
+    const length = element.childNodes.length;
+    for (let i = 0; i < length; i++) {
+      this.dirtifyFragment(element.childNodes[i]);
+    }
+
+    if (element.nodeName === Shape.FRAGMENT) {
+      this.pendingEvents.set(element as DisplayObject, false);
+    }
+  }
+
+  triggerPendingEvents() {
+    const triggered = new Set<DisplayObject>();
+    const enableEventOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // @ts-ignore
+      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableAttributeUpdateOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // prettier-ignore
+      runtime.enablePerformanceOptimization
+      // @ts-ignore
+        ?.enableAttributeUpdateOptimization === true;
+
+    const trigger = (element: DisplayObject, detail) => {
+      if (
+        !element.isConnected ||
+        triggered.has(element) ||
+        (element.nodeName as Shape) === Shape.FRAGMENT
+      ) {
+        return;
+      }
+
+      this.boundsChangedEvent.detail = detail;
+      this.boundsChangedEvent.target = element;
+      if (element.isMutationObserved) {
+        element.dispatchEvent(this.boundsChangedEvent);
       } else {
-        // TODO: should we support scale compensation?
-        // @see https://github.com/playcanvas/engine/issues/1077#issuecomment-359765557
-        mat4.multiply(
-          transform.worldTransform,
-          parentTransform.worldTransform,
-          transform.localTransform,
+        element.ownerDocument.defaultView.dispatchEvent(
+          this.boundsChangedEvent,
+          true,
+          enableEventOptimization,
         );
       }
 
-      transform.dirtyFlag = false;
+      triggered.add(element);
+    };
+
+    this.pendingEvents.forEach((affectChildren, element) => {
+      if ((element.nodeName as Shape) === Shape.FRAGMENT) {
+        return;
+      }
+
+      $triggerPendingEvents_detail.affectChildren = affectChildren;
+      if (enableAttributeUpdateOptimization) {
+        trigger(element, $triggerPendingEvents_detail);
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (affectChildren) {
+          element.forEach((e: DisplayObject) => {
+            trigger(e, $triggerPendingEvents_detail);
+          });
+        } else {
+          trigger(element, $triggerPendingEvents_detail);
+        }
+      }
+    });
+
+    triggered.clear();
+    this.clearPendingEvents();
+  }
+
+  clearPendingEvents() {
+    this.pendingEvents.clear();
+  }
+
+  private displayObjectDependencyMap: WeakMap<
+    DisplayObject,
+    Record<string, DisplayObject[]>
+  > = new WeakMap();
+  updateDisplayObjectDependency(
+    name: string,
+    oldPath: DisplayObject,
+    newPath: DisplayObject,
+    object: DisplayObject,
+  ) {
+    // clear ref to old clip path
+    if (oldPath && oldPath !== newPath) {
+      const oldDependencyMap = this.displayObjectDependencyMap.get(oldPath);
+      if (oldDependencyMap && oldDependencyMap[name]) {
+        const index = oldDependencyMap[name].indexOf(object);
+        oldDependencyMap[name].splice(index, 1);
+      }
+    }
+
+    if (newPath) {
+      let newDependencyMap = this.displayObjectDependencyMap.get(newPath);
+      if (!newDependencyMap) {
+        this.displayObjectDependencyMap.set(newPath, {});
+        newDependencyMap = this.displayObjectDependencyMap.get(newPath);
+      }
+      if (!newDependencyMap[name]) {
+        newDependencyMap[name] = [];
+      }
+      newDependencyMap[name].push(object);
     }
   }
 
-  private unfreezeParentToRoot(child: INode) {
-    let p = child.parentNode;
-    while (p) {
-      const transform = (p as Element).transformable;
-      if (transform) {
-        transform.frozen = false;
-      }
-      p = p.parentNode;
+  informDependentDisplayObjects(object: DisplayObject) {
+    const dependencyMap = this.displayObjectDependencyMap.get(object);
+    if (!dependencyMap) {
+      return;
     }
+
+    const enableEventOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // @ts-ignore
+      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+
+    Object.keys(dependencyMap).forEach((name) => {
+      dependencyMap[name].forEach((target) => {
+        this.dirtyToRoot(target, true);
+
+        target.dispatchEvent(
+          new MutationEvent(
+            ElementEvent.ATTR_MODIFIED,
+            target as IElement,
+            this,
+            this,
+            name,
+            MutationEvent.MODIFICATION,
+            this,
+            this,
+          ),
+          enableEventOptimization,
+          enableEventOptimization,
+        );
+
+        if (target.isCustomElement && target.isConnected) {
+          if ((target as CustomElement<any>).attributeChangedCallback) {
+            (target as CustomElement<any>).attributeChangedCallback(
+              name,
+              this,
+              this,
+            );
+          }
+        }
+      });
+    });
   }
 }

@@ -3,3 +3,7 @@ export { rects } from './rect';
 export { image } from './image';
 export { attrUpdate } from './attr-update';
 export { massiveAttrs } from './massive-attrs';
+export { canvasApi } from './canvas-api';
+export { javascript } from './javascript';
+export { event } from './event';
+export { destroyEvent } from './destroy-event';

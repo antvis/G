@@ -75,26 +75,9 @@ export class Element<
    */
   entity = entityCounter++;
 
-  renderable: Renderable = {
-    bounds: undefined,
-    boundsDirty: true,
-    renderBounds: undefined,
-    renderBoundsDirty: true,
-    dirtyRenderBounds: undefined,
-    dirty: false,
-  };
-
-  cullable: Cullable = {
-    strategy: Strategy.Standard,
-    visibilityPlaneMask: -1,
-    visible: true,
-    enable: true,
-  };
-
   transformable: Transform = {
     dirtyFlag: false,
     localDirtyFlag: false,
-    frozen: false,
     localPosition: [0, 0, 0],
     localRotation: [0, 0, 0, 1],
     localScale: [1, 1, 1],
@@ -107,18 +90,46 @@ export class Element<
     origin: [0, 0, 0],
   };
 
+  renderable: Renderable = {
+    bounds: undefined,
+    boundsDirty: true,
+    renderBounds: undefined,
+    renderBoundsDirty: true,
+    dirtyRenderBounds: undefined,
+    dirty: false,
+  };
+
+  /**
+   * @param flag - default `true`, whether the object needs to be updated
+   * @param updateShape - default `false`, whether the bounding box of the object is updated
+   */
+  dirty(flag = true, updateShape = false) {
+    this.renderable.dirty = flag;
+    if (updateShape) {
+      this.renderable.boundsDirty = flag;
+      this.renderable.renderBoundsDirty = flag;
+    }
+  }
+
+  geometry: Geometry = {
+    contentBounds: undefined,
+    renderBounds: undefined,
+    dirty: true,
+  };
+
+  cullable: Cullable = {
+    strategy: Strategy.Standard,
+    visibilityPlaneMask: -1,
+    visible: true,
+    enable: true,
+  };
+
   sortable: Sortable = {
     dirty: false,
     sorted: undefined,
     renderOrder: 0,
     dirtyChildren: [],
     dirtyReason: undefined,
-  };
-
-  geometry: Geometry = {
-    contentBounds: undefined,
-    renderBounds: undefined,
-    dirty: true,
   };
 
   rBushNode: RBushNode = {
@@ -266,9 +277,18 @@ export class Element<
   }
 
   removeChild<T extends INode>(child: T): T {
+    const enableEventOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // @ts-ignore
+      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+
     // should emit on itself before detach
     removedEvent.relatedNode = this as IElement;
-    child.dispatchEvent(removedEvent);
+    child.dispatchEvent(
+      removedEvent,
+      enableEventOptimization,
+      enableEventOptimization,
+    );
 
     if (child.ownerDocument?.defaultView) {
       child.ownerDocument.defaultView.unmountChildren(child);
@@ -452,16 +472,21 @@ export class Element<
     return this;
   }
 
-  /**
-   * is destroyed or not
-   */
-  destroyed = false;
   destroy() {
+    const enableEventOptimization =
+      runtime.enablePerformanceOptimization === true ||
+      // @ts-ignore
+      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+
     // fix https://github.com/antvis/G/issues/1813
     this.destroyChildren();
 
     // destroy itself before remove
-    this.dispatchEvent(destroyEvent);
+    this.dispatchEvent(
+      destroyEvent,
+      enableEventOptimization,
+      enableEventOptimization,
+    );
 
     // remove from scenegraph first
     this.remove();

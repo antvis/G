@@ -14,8 +14,8 @@ export interface SceneGraphService {
     object: DisplayObject,
   ) => void;
   informDependentDisplayObjects: (object: DisplayObject) => void;
-  dirtifyToRoot: (element: INode, affectChildren?: boolean) => void;
-  dirtifyLocal: (element: INode, transform: Transform) => void;
+  dirtyToRoot: (element: INode, affectChildren?: boolean) => void;
+  dirtyLocalTransform: (element: INode, transform: Transform) => void;
   matches: <T extends IElement>(query: string, root: T) => boolean;
   querySelector: <R extends IElement, T extends IElement>(
     query: string,

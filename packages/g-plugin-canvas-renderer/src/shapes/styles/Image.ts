@@ -54,8 +54,7 @@ export class ImageRenderer extends DefaultRenderer {
           }
 
           // rerender
-          // object.dirty();
-          object.renderable.dirty = true;
+          object.dirty();
           object.ownerDocument.defaultView.context.renderingService.dirtify();
         })
         .catch((reason) => {
@@ -103,8 +102,7 @@ export class ImageRenderer extends DefaultRenderer {
             }
 
             // rerender
-            // object.dirty();
-            object.renderable.dirty = true;
+            object.dirty();
             object.ownerDocument.defaultView.context.renderingService.dirtify();
           },
           object,

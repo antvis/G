@@ -21,7 +21,7 @@ export class CSSPropertyZIndex
       const parentRenderable = parentEntity.renderable;
       const parentSortable = parentEntity.sortable;
       if (parentRenderable) {
-        parentRenderable.dirty = true;
+        parentEntity.dirty();
       }
       // need re-sort on parent
       if (parentSortable) {

@@ -26,8 +26,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     this.rBush = rBushRoot;
 
     const handleAttributeChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      object.renderable.dirty = true;
       renderingService.dirtify();
     };
 
@@ -51,13 +49,14 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { rBushNode } = object;
-      if (rBushNode.aabb) {
+
+      if (rBushNode?.aabb) {
         this.rBush.remove(rBushNode.aabb);
       }
 
       this.syncTasks.delete(object);
 
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      runtime.sceneGraphService.dirtyToRoot(object);
       renderingService.dirtify();
     };
 

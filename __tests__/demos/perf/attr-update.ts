@@ -1,6 +1,14 @@
 import * as lil from 'lil-gui';
-import { Rect, Group, CanvasEvent } from '@antv/g';
-import type { Canvas } from '@antv/g';
+import {
+  type Canvas,
+  Rect,
+  Group,
+  CanvasEvent,
+  ElementEvent,
+  runtime,
+} from '@antv/g';
+
+runtime.enablePerformanceOptimization = false;
 
 export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   const { canvas, gui } = context;
@@ -9,9 +17,9 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   await canvas.ready;
 
   const { width, height } = canvas.getConfig();
-  const count = 2e4;
   const root = new Group();
-  const rects = [];
+  let count = 1e4;
+  let rects = [];
 
   const perfStore: { [k: string]: { count: number; time: number } } = {
     update: { count: 0, time: 0 },
@@ -28,6 +36,7 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   }
 
   function update() {
+    // console.log('update');
     // const startTime = performance.now();
     // console.time('update');
 
@@ -53,6 +62,9 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   }
 
   function render() {
+    root.destroyChildren();
+    rects = [];
+
     for (let i = 0; i < count; i++) {
       const x = Math.random() * width;
       const y = Math.random() * height;
@@ -66,16 +78,27 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
           width: size,
           height: size,
           fill: 'white',
-          stroke: 'black',
+          stroke: '#000',
+          lineWidth: 1,
         },
       });
       root.appendChild(rect);
       rects[i] = { x, y, size, speed, el: rect };
+
+      // rect.isMutationObserved = true;
+      rect.addEventListener(ElementEvent.ATTR_MODIFIED, () => {
+        console.log(ElementEvent.ATTR_MODIFIED);
+      });
     }
   }
 
   render();
   canvas.addEventListener(CanvasEvent.BEFORE_RENDER, () => update());
+
+  // root.isMutationObserved = true;
+  // canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, () => {
+  //   console.log('first');
+  // });
 
   canvas.appendChild(root);
 
@@ -88,18 +111,23 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   );
 
   // GUI
+  // canvas.getConfig().renderer.getConfig().enableCulling = true;
   canvas.getConfig().renderer.getConfig().enableRenderingOptimization = true;
+  const observeConfig = {
+    objectCount: count,
+    enableRenderingOptimization: canvas.getConfig().renderer.getConfig()
+      .enableRenderingOptimization,
+    enablePerformanceOptimization: runtime.enablePerformanceOptimization,
+  };
 
-  gui
-    .add(
-      {
-        enableRenderingOptimization: canvas.getConfig().renderer.getConfig()
-          .enableRenderingOptimization,
-      },
-      'enableRenderingOptimization',
-    )
-    .onChange((result) => {
-      canvas.getConfig().renderer.getConfig().enableRenderingOptimization =
-        result;
-    });
+  gui.add(observeConfig, 'objectCount').onChange((value) => {
+    count = value;
+    render();
+  });
+  gui.add(observeConfig, 'enablePerformanceOptimization').onChange((value) => {
+    runtime.enablePerformanceOptimization = value;
+  });
+  gui.add(observeConfig, 'enableRenderingOptimization').onChange((value) => {
+    canvas.getConfig().renderer.getConfig().enableRenderingOptimization = value;
+  });
 }

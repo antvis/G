@@ -10,8 +10,6 @@ import type {
   INode,
 } from './interfaces';
 
-const CANVAS_CACHE = new WeakMap<IEventTarget, ICanvas>();
-
 /**
  * Objects that can receive events and may have listeners for them.
  * eg. Element, Canvas, DisplayObject
@@ -106,24 +104,32 @@ export class EventTarget implements IEventTarget {
   emit(eventName: string, object: object) {
     this.dispatchEvent(new CustomEvent(eventName, object));
   }
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
-   */
+
+  dispatchEventToSelf<T extends FederatedEvent>(e: T) {
+    e.target ||= this;
+    e.currentTarget = this;
+    this.emitter.emit(e.type, e);
+  }
+
   dispatchEvent<T extends FederatedEvent>(
     e: T,
     skipPropagate = false,
+    dispatchToSelf?: boolean,
   ): boolean {
-    let canvas: ICanvas = CANVAS_CACHE.get(this);
+    if (dispatchToSelf) {
+      this.dispatchEventToSelf(e);
 
-    if (!canvas) {
-      // @ts-expect-error document may be defined in inherited class
-      if (this.document) canvas = this as unknown as ICanvas;
-      // @ts-expect-error defaultView may be defined in inherited class
-      else if (this.defaultView)
-        canvas = (this as unknown as IDocument).defaultView;
-      else canvas = (this as unknown as INode).ownerDocument?.defaultView;
+      return true;
+    }
 
-      if (canvas) CANVAS_CACHE.set(this, canvas);
+    let canvas: ICanvas;
+
+    if ((this as unknown as ICanvas).document) {
+      canvas = this as unknown as ICanvas;
+    } else if ((this as unknown as IDocument).defaultView) {
+      canvas = (this as unknown as IDocument).defaultView;
+    } else {
+      canvas = (this as unknown as INode).ownerDocument?.defaultView;
     }
 
     if (canvas) {
@@ -131,16 +137,21 @@ export class EventTarget implements IEventTarget {
       if (!e.manager) return false;
 
       e.defaultPrevented = false;
-      if (e.path) e.path.length = 0;
-      // @ts-ignore
-      else e.page = [];
+      if (e.path) {
+        e.path.length = 0;
+      } else {
+        // @ts-ignore
+        e.page = [];
+      }
 
-      if (!skipPropagate) e.target = this;
+      if (!skipPropagate) {
+        e.target = this;
+      }
       e.manager.dispatchEvent(e, e.type, skipPropagate);
     } else {
       // HACK Fixed the issue that after an element leaves the DOM tree, there is no associated canvas,
       // which causes the removed and destroy events to not be triggered
-      this.emitter.emit(e.type, e);
+      this.dispatchEventToSelf(e);
     }
 
     return !e.defaultPrevented;

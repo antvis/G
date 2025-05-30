@@ -32,7 +32,7 @@ export class CSSPropertyClipPath
       // should affect children
       object.forEach((leaf) => {
         if (leaf.childNodes.length === 0) {
-          runtime.sceneGraphService.dirtifyToRoot(leaf);
+          runtime.sceneGraphService.dirtyToRoot(leaf);
         }
       });
     }

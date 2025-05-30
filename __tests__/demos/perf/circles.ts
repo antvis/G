@@ -2,13 +2,14 @@ import { Circle } from '@antv/g';
 
 export async function circles(context) {
   const { canvas, container } = context;
+
   await canvas.ready;
 
-  canvas.addEventListener('rerender', () => {
-    console.log('rerender');
-  });
+  canvas.getConfig().renderer.getConfig().enableRenderingOptimization = true;
 
-  for (let i = 0; i < 10000; i++) {
+  console.time('render');
+
+  for (let i = 0; i < 5e4; i++) {
     const circle = new Circle({
       style: {
         cx: Math.random() * 640,
@@ -21,6 +22,14 @@ export async function circles(context) {
     });
     canvas.appendChild(circle);
   }
+
+  canvas.addEventListener(
+    'rerender',
+    () => {
+      console.timeEnd('render');
+    },
+    { once: true },
+  );
 
   // canvas.appendChild(
   //   new Circle({

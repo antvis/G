@@ -113,7 +113,7 @@ const optimizer: {
       [d[0].value, d[1].value, 0],
       false,
     );
-    runtime.sceneGraphService.dirtifyLocal(object, object.transformable);
+    runtime.sceneGraphService.dirtyLocalTransform(object, object.transformable);
   },
 };
 

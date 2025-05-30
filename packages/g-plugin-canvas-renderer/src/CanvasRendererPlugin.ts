@@ -8,8 +8,8 @@ import type {
   ContextService,
   CanvasContext,
   GlobalRuntime,
-  CSSRGB,
   ParsedBaseStyleProps,
+  CSSRGB,
 } from '@antv/g-lite';
 import {
   AABB,
@@ -115,7 +115,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       const { rBushNode } = object;
 
-      if (rBushNode.aabb) {
+      if (rBushNode?.aabb) {
         // save removed aabbs for dirty-rectangle rendering later
         this.removedRBushNodeAABBs.push(rBushNode.aabb);
       }
@@ -162,7 +162,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       };
     });
 
-    renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
+    const beforeDraw = () => {
       const context = contextService.getContext();
       const dpr = contextService.getDPR();
       const { width, height } = config;
@@ -181,25 +181,27 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         (rendered > dirtyObjectNumThreshold &&
           ratio > dirtyObjectRatioThreshold);
 
-      if (context) {
-        if (typeof context.resetTransform === 'function') {
-          context.resetTransform();
-        } else {
-          context.setTransform(1, 0, 0, 1, 0, 0);
-        }
-
-        if (this.clearFullScreen) {
-          this.clearRect(
-            context,
-            0,
-            0,
-            width * dpr,
-            height * dpr,
-            config.background,
-          );
-        }
+      if (!context) {
+        return;
       }
-    });
+
+      if (typeof context.resetTransform === 'function') {
+        context.resetTransform();
+      } else {
+        context.setTransform(1, 0, 0, 1, 0, 0);
+      }
+
+      if (this.clearFullScreen) {
+        this.clearRect(
+          context,
+          0,
+          0,
+          width * dpr,
+          height * dpr,
+          config.background,
+        );
+      }
+    };
 
     /**
      * render objects by z-index
@@ -248,6 +250,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+      beforeDraw();
+
       // Skip rendering.
       if (renderingContext.root.childNodes.length === 0) {
         this.clearFullScreenLastFrame = true;
@@ -545,7 +549,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     // finish rendering, clear dirty flag
-    object.renderable.dirty = false;
+    object.dirty(false);
   }
 
   renderDisplayObject(
@@ -635,10 +639,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     // finish rendering, clear dirty flag
-    object.renderable.dirty = false;
+    object.dirty(false);
   }
 
-  applyAttributesToContext(
+  private applyAttributesToContext(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
   ) {
