@@ -1,5 +1,12 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 2.0.44
+
+### Patch Changes
+
+-   2921620: feat: provide custom rough rendering capabilities
+    -   @antv/g-canvas@2.0.44
+
 ## 2.0.43
 
 ### Patch Changes
