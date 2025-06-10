@@ -16,17 +16,16 @@ redirect_from:
 G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU / CanvasKit）。特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
 
 <p>
-  <a href="/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
-
+  <a href="/zh/examples/ecosystem/d3#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/ecosystem/d3#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/rough#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/yoga#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/physics-engine#box2d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/rough#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/canvaskit#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins/canvaskit#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/3d/geometry#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/3d/3d-basic#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
 </p>
 
 ## 特性
@@ -35,39 +34,39 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 **适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU / CanvasKit 以及运行时切换，并支持服务端渲染。
 
-**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](/zh/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
+**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
 
 可扩展的插件机制以及丰富的插件集：
 
 -   渲染相关
-    -   [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    -   [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
-    -   [g-plugin-svg-renderer](/zh/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    -   [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
-    -   [g-plugin-html-renderer](/zh/plugins/html-renderer) 渲染 DOM 元素
-    -   [g-plugin-3d](/zh/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-    -   [g-plugin-rough-canvas-renderer](/zh/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
-    -   [g-plugin-rough-svg-renderer](/zh/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
+    -   [g-plugin-canvas-renderer](/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    -   [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+    -   [g-plugin-svg-renderer](/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    -   [g-plugin-device-renderer](/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+    -   [g-plugin-html-renderer](/plugins/html-renderer) 渲染 DOM 元素
+    -   [g-plugin-3d](/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
+    -   [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
+    -   [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
 -   拾取
-    -   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于 Canvas2D
-    -   [g-plugin-svg-picker](/zh/plugins/svg-picker) 基于 SVG
+    -   [g-plugin-canvas-picker](/plugins/canvas-picker) 基于 Canvas2D
+    -   [g-plugin-svg-picker](/plugins/svg-picker) 基于 SVG
 -   无障碍
-    -   [g-plugin-a11y](/zh/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
+    -   [g-plugin-a11y](/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
 -   交互
-    -   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
-    -   [g-plugin-control](/zh/plugins/control) 为 3D 场景提供相机交互
-    -   [g-plugin-dragndrop](/zh/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
-    -   [g-plugin-annotation](/zh/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 Fabric.js 和 Konva.js
+    -   [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+    -   [g-plugin-control](/plugins/control) 为 3D 场景提供相机交互
+    -   [g-plugin-dragndrop](/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
+    -   [g-plugin-annotation](/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 Fabric.js 和 Konva.js
 -   物理引擎
-    -   [g-plugin-box2d](/zh/plugins/box2d) 基于 Box2D
-    -   [g-plugin-matterjs](/zh/plugins/matterjs) 基于 matter.js
-    -   [g-plugin-physx](/zh/plugins/physx) 基于 PhysX
+    -   [g-plugin-box2d](/plugins/box2d) 基于 Box2D
+    -   [g-plugin-matterjs](/plugins/matterjs) 基于 matter.js
+    -   [g-plugin-physx](/plugins/physx) 基于 PhysX
 -   布局引擎
-    -   [g-plugin-yoga](/zh/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+    -   [g-plugin-yoga](/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
 -   GPGPU
-    -   [g-plugin-gpgpu](/zh/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+    -   [g-plugin-gpgpu](/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
 -   CSS 选择器
-    -   [g-plugin-css-select](/zh/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+    -   [g-plugin-css-select](/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 完整 [API Spec](/api.html)。
 
@@ -94,7 +93,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
-然后就可以在 `window.G` 的命名空间下使用 [Canvas](/zh/api/canvas)、[Circle](/zh/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/zh/api/renderer) 这样的渲染器：
+然后就可以在 `window.G` 的命名空间下使用 [Canvas](/zh/api/canvas)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/api/renderer/canvas) 这样的渲染器：
 
 ```js
 // 从核心包中引入画布、Circle 等对象
@@ -147,7 +146,7 @@ $ npm install @antv/g-svg --save
 $ npm install @antv/g-webgl --save
 ```
 
-然后就可以在核心包中使用 [Canvas](/zh/api/canvas)、[Circle](/zh/api/basic/circle) 这样的核心基础对象以及 [Renderer](/zh/api/renderer) 这样的渲染器：
+然后就可以在核心包中使用 [Canvas](/zh/api/canvas)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Renderer](/api/renderer/canvas) 这样的渲染器：
 
 ```js
 import { Canvas, CanvasEvent, Circle } from '@antv/g';
