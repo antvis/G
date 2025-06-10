@@ -85,8 +85,16 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.syncTasks.clear();
     });
 
-    const ric =
-      runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
+    // 首次渲染，使用 requestIdleCallback 或 raf 来避免 syncRtree 任务 阻塞渲染。
+    let ric: (cb: () => void) => void;
+    if (runtime.globalThis.requestIdleCallback) {
+      ric = (cb) => {
+        runtime.globalThis.requestIdleCallback(cb, { timeout: 300 });
+      };
+    } else {
+      ric = raf.bind(runtime.globalThis);
+    }
+
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       if (this.isFirstTimeRendering) {
         this.isFirstTimeRendering = false;
