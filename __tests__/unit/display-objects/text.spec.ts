@@ -251,4 +251,22 @@ describe('Text', () => {
     text.style.wordWrap = false;
     expect(text.isOverflowing()).toBe(false);
   });
+
+  it('should terminate when line width is too small to display any character', async () => {
+    await canvas.ready;
+
+    const text = new Text({
+      style: {
+        text: '测试文本',
+        fontSize: 16,
+        wordWrap: true,
+        wordWrapWidth: 0,
+        maxLines: 3,
+      },
+    });
+    const lineRects = text.getLineBoundingRects();
+
+    expect(lineRects.length).toBe(1);
+    expect(text.isOverflowing()).toBe(true);
+  });
 });
