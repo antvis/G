@@ -1,8 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
     <title>Show 2D shapes with Canvas2D/SVG/WebGL</title>
     <style>
       * {
@@ -25,12 +28,18 @@
 
   <body>
     <div id="container"></div>
-    <script src="../packages/g-lite/dist/index.umd.min.js" type="application/javascript"></script>
+    <script
+      src="../packages/g-lite/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
     <script
       src="../packages/g-web-animations-api/dist/index.umd.min.js"
       type="application/javascript"
     ></script>
-    <script src="../packages/g-canvas/dist/index.umd.min.js" type="application/javascript"></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
     <!-- <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
     <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
     <script
@@ -38,8 +47,18 @@
       type="application/javascript"
     ></script>
     <script>
-      const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } =
-        window.G;
+      const {
+        Circle,
+        Rect,
+        Ellipse,
+        Image,
+        Line,
+        Polyline,
+        Path,
+        Polygon,
+        Text,
+        Canvas,
+      } = window.G;
       // const CanvasRenderer = window.G.Canvas2D.Renderer;
       // const SVGRenderer = window.G.SVG.Renderer;
       // const WebGLRenderer = window.G.WebGL.Renderer;
@@ -95,7 +114,7 @@
         style: {
           width: 100,
           height: 100,
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
           cursor: 'pointer',
         },
       });
@@ -153,10 +172,16 @@
           points: [
             [200, 100],
             [400, 100],
-            [400 + 200 * Math.sin(Math.PI / 6), 100 + 200 * Math.cos(Math.PI / 6)],
+            [
+              400 + 200 * Math.sin(Math.PI / 6),
+              100 + 200 * Math.cos(Math.PI / 6),
+            ],
             [400, 100 + 200 * Math.cos(Math.PI / 6) * 2],
             [200, 100 + 200 * Math.cos(Math.PI / 6) * 2],
-            [200 - 200 * Math.sin(Math.PI / 6), 100 + 200 * Math.cos(Math.PI / 6)],
+            [
+              200 - 200 * Math.sin(Math.PI / 6),
+              100 + 200 * Math.cos(Math.PI / 6),
+            ],
           ],
           stroke: '#1890FF',
           fill: '#1890FF',
@@ -284,10 +309,13 @@
       });
 
       canvas.addEventListener('ready', () => {
-        polyline.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], {
-          duration: 1500,
-          iterations: Infinity,
-        });
+        polyline.animate(
+          [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+          {
+            duration: 1500,
+            iterations: Infinity,
+          },
+        );
       });
     </script>
   </body>

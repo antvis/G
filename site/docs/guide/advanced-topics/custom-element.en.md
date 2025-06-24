@@ -21,7 +21,7 @@ order: 3
 -   使用自定义图形
 -   处理属性更新
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
+![animation](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
 过程中会涉及[场景图](/zh/guide/diving-deeper/scenegraph)、[动画系统](/zh/api/animation/waapi)、[事件系统](/zh/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
 
@@ -313,7 +313,7 @@ const image = new Image({
         width: 50,
         height: 50,
         anchor: [0.5, 0.5],
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 image.rotateLocal(90);
