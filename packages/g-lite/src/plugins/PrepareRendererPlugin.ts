@@ -13,7 +13,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private rBush: RBush<RBushNodeAABB>;
 
   private syncTasks = new Map<DisplayObject, boolean>();
-
+  private ricSyncRTreeId: number;
   private isFirstTimeRendering = true;
   private syncing = false;
 
@@ -94,6 +94,17 @@ export class PrepareRendererPlugin implements RenderingPlugin {
           this.syncRTree(true);
           this.isFirstTimeRenderingFinished = true;
         });
+      } else if (
+        (runtime.enablePerformanceOptimization ||
+          (typeof runtime.enablePerformanceOptimization === 'object' &&
+            runtime.enablePerformanceOptimization?.enableRICSyncRTree)) &&
+        runtime.globalThis.requestIdleCallback &&
+        runtime.globalThis.cancelIdleCallback
+      ) {
+        runtime.globalThis.cancelIdleCallback(this.ricSyncRTreeId);
+        this.ricSyncRTreeId = runtime.globalThis.requestIdleCallback(() =>
+          this.syncRTree(),
+        );
       } else {
         this.syncRTree();
       }
