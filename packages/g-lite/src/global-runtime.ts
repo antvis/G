@@ -35,6 +35,7 @@ import {
   DefaultSceneGraphService,
   EllipseUpdater,
   GroupUpdater,
+  HTMLUpdater,
   LineUpdater,
   OffscreenCanvasCreator,
   PathUpdater,
@@ -42,7 +43,6 @@ import {
   RectUpdater,
   TextService,
   TextUpdater,
-  HTMLUpdater,
 } from './services';
 import { CanvasLike, Shape } from './types';
 
@@ -94,6 +94,10 @@ export interface GlobalRuntime {
          * When enabled, elements are no longer updated in real time, but are updated uniformly before being submitted to the canvas. This is to improve performance and avoid redundant loop logic.
          */
         enableAttributeUpdateOptimization?: boolean;
+        /**
+         * use RIC to avoid frequent calls syncRTree
+         */
+        enableRICSyncRTree?: boolean;
       };
 
   // #endregion performance
