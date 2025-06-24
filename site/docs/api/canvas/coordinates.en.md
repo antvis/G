@@ -25,8 +25,8 @@ These coordinate systems all have the upper left corner as the origin:
 
 We provide methods to convert between them, and in this [example](/en/examples/canvas/canvas-basic/#coordinates), move the mouse to see the value of the mouse location in each coordinate system:
 
--   Client <-> Viewport
--   Canvas <-> Viewport
+- Client <-> Viewport
+- Canvas <-> Viewport
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ" width="300" alt="coordinates conversion">
 
@@ -34,7 +34,7 @@ We provide methods to convert between them, and in this [example](/en/examples/c
 
 Front-end developers should be most familiar with the Client browser coordinate system, which takes the upper-left corner of the browser as the origin, and G does not modify this coordinate value for native event objects, [example](https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX).
 
-https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX
+<https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX>
 
 If the document is not scrolled, which is equivalent to the Page coordinate, the following figure shows the difference with Screen:
 
@@ -44,7 +44,7 @@ If the document is not scrolled, which is equivalent to the Page coordinate, the
 
 The screen coordinate system is also the common browser coordinate system, with the top left corner of the screen as the origin, and is affected by page scrolling. we won't modify this coordinate value of the native event object.
 
-https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX
+<https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX>
 
 It is worth mentioning that negative numbers may appear in dual screens, for example in the left screen, [example](https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX).
 
@@ -54,7 +54,7 @@ It is worth mentioning that negative numbers may appear in dual screens, for exa
 
 With the top left corner of the document as the origin and considering the document scrolling, G does not modify this coordinate value of the native event object.
 
-https://developer.mozilla.org/en-US/Web/API/MouseEvent/pageX
+<https://developer.mozilla.org/en-US/Web/API/MouseEvent/pageX>
 
 ## Canvas
 
@@ -83,10 +83,10 @@ import type { Point } from '@antv/g';
 
 We provide a method for converting from the browser's Client coordinate system to the canvas Viewport coordinate system, [example](/en/examples/canvas/canvas-basic/#coordinates):
 
--   client2Viewport(client: Point): Point
--   viewport2Client(canvas: Point): Point
+- client2Viewport(client: Point): Point
+- viewport2Client(canvas: Point): Point
 
-In the internal implementation, we use the following calculation logic, for example, from Client to Viewport, we first get the bounding box of the canvas DOM element under the Client coordinate system, using [getBoundingClientRect](https://developer.mozilla.org/en-US/ Web/API/Element/getBoundingClientRect), and then subtract the coordinates of the upper-left corner of the bounding box from clientX/Y to get the coordinates of the upper-left corner of the DOM element relative to the canvas, i.e., the Viewport coordinates:
+In the internal implementation, we use the following calculation logic, for example, from Client to Viewport, we first get the bounding box of the canvas DOM element under the Client coordinate system, using [getBoundingClientRect](<https://developer.mozilla.org/en-US/> Web/API/Element/getBoundingClientRect), and then subtract the coordinates of the upper-left corner of the bounding box from clientX/Y to get the coordinates of the upper-left corner of the DOM element relative to the canvas, i.e., the Viewport coordinates:
 
 ```js
 // 获取画布 DOM 元素在 Client 坐标系下的包围盒
@@ -106,8 +106,8 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 For compatibility with older versions of the G API, we also provide:
 
--   getPointByClient(clientX: number, clientY: number): Point
--   getClientByPoint(viewportX: number, viewportY: number): Point
+- getPointByClient(clientX: number, clientY: number): Point
+- getClientByPoint(viewportX: number, viewportY: number): Point
 
 ### Canvas <-> Viewport
 
@@ -119,8 +119,8 @@ In [example](/en/examples/canvas/canvas-basic/#coordinates), we moved the camera
 
 We offer the following conversion methods:
 
--   viewport2Canvas(viewport: Point): Point
--   canvas2Viewport(canvas: Point): Point
+- viewport2Canvas(viewport: Point): Point
+- canvas2Viewport(canvas: Point): Point
 
 In the internal implementation, we use the following computational logic to transform, for example, from Canvas to Viewport, from the world coordinate system to the crop coordinate system, to NDC, and finally to the viewport coordinate system:
 

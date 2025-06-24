@@ -39,10 +39,10 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 参数如下：
 
--   `data` Lottie JSON
--   `options` 配置项
-    -   `loop` 类型为 `boolean | number`。是否开启循环播放，默认值为 `true` 即无限循环。当传入 `number` 时代表循环次数。
-    -   `autoplay` 类型为 `boolean`。加载完成后立刻开始自动播放，默认值为 `false`
+- `data` Lottie JSON
+- `options` 配置项
+  - `loop` 类型为 `boolean | number`。是否开启循环播放，默认值为 `true` 即无限循环。当传入 `number` 时代表循环次数。
+  - `autoplay` 类型为 `boolean`。加载完成后立刻开始自动播放，默认值为 `false`
 
 例如创建一个无限循环、立即播放的动画：
 
@@ -72,8 +72,8 @@ wrapper.translate(100, 100);
 
 支持传入以下两种参数：
 
--   画布。此时会添加到画布根节点下
--   任意已添加到画布中的元素
+- 画布。此时会添加到画布根节点下
+- 任意已添加到画布中的元素
 
 值得注意的是，和动画一样需要在[画布初始化完成后](/zh/api/canvas#ready)进行。
 
@@ -115,8 +115,8 @@ animation.stop();
 
 参数如下：
 
--   `value` 指定秒时刻或者帧数
--   `isFrame` 表示 `value` 是否传入的是帧数，默认值为 `false`
+- `value` 指定秒时刻或者帧数
+- `isFrame` 表示 `value` 是否传入的是帧数，默认值为 `false`
 
 ```js
 // 跳转到时间轴的 2s 时刻
@@ -132,7 +132,7 @@ animation.goTo(10, true);
 
 参数如下：
 
--   `segments` `[number, number]` 指定起始和终止帧范围
+- `segments` `[number, number]` 指定起始和终止帧范围
 
 ```js
 animation.playSegments([firstFrame, lastFrame]);
@@ -152,7 +152,7 @@ animation.fps(); // 25
 
 参数如下：
 
--   `inFrames` 是否以帧为单位，默认为 `false`
+- `inFrames` 是否以帧为单位，默认为 `false`
 
 ```js
 animation.getDuration(); // 2
@@ -216,27 +216,27 @@ animation.version();
 
 支持 [Shape Layer](https://lottiefiles.github.io/lottie-docs/layers/#shape-layer) 中定义的以下[元素](https://lottiefiles.github.io/lottie-docs/shapes/#shape-element)：
 
--   [x] Rectangle 会转换成 [Rect](/zh/api/basic/rect) 进行渲染。https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
--   [x] Ellipse 会转换成 [Ellipse](/zh/api/basic/ellipse) 进行渲染。https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
--   [x] Path 会转换成 [Path](/zh/api/basic/path) 进行渲染。https://lottiefiles.github.io/lottie-docs/shapes/#path
--   [x] Group 会转换成 [Group](/zh/api/basic/group) 进行渲染。https://lottiefiles.github.io/lottie-docs/shapes/#group
--   [ ] PolyStar https://lottiefiles.github.io/lottie-docs/shapes/#polystar
+- [x] Rectangle 会转换成 [Rect](/zh/api/basic/rect) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
+- [x] Ellipse 会转换成 [Ellipse](/zh/api/basic/ellipse) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
+- [x] Path 会转换成 [Path](/zh/api/basic/path) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#path>
+- [x] Group 会转换成 [Group](/zh/api/basic/group) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#group>
+- [ ] PolyStar <https://lottiefiles.github.io/lottie-docs/shapes/#polystar>
 
 ### Transform
 
-https://lottiefiles.github.io/lottie-docs/concepts/#transform
+<https://lottiefiles.github.io/lottie-docs/concepts/#transform>
 
 支持以下特性：
 
--   [anchor](/zh/api/basic/display-object#anchor) 对应 `a` 字段
--   [translation]() 对应 `p` 字段
--   [scaling]() 对应 `s` 字段
--   [rotation]() 对应 `r` 字段
+- [anchor](/zh/api/basic/display-object#anchor) 对应 `a` 字段
+- [translation]() 对应 `p` 字段
+- [scaling]() 对应 `s` 字段
+- [rotation]() 对应 `r` 字段
 
 暂不支持以下特性：
 
--   [skew]() 对应 `sk` 字段
--   [skewAxis]() 对应 `sa` 字段
+- [skew]() 对应 `sk` 字段
+- [skewAxis]() 对应 `sa` 字段
 
 在该[示例](/zh/examples/ecosystem#lottie-player-transform)中，深蓝色为基准矩形，我们以红色圆点为 [transformOrigin]()，旋转一定角度得到淡蓝色矩形。
 
@@ -244,48 +244,48 @@ https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
 ### [WIP] Offset Path
 
-https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
+<https://lottiefiles.github.io/lottie-docs/concepts/#animated-position>
 
 ### Style
 
 支持以下样式属性：
 
--   [x] Fill
--   [x] Stroke
--   [x] Gradients
+- [x] Fill
+- [x] Stroke
+- [x] Gradients
 
 #### Fill
 
-https://lottiefiles.github.io/lottie-docs/shapes/#fill
+<https://lottiefiles.github.io/lottie-docs/shapes/#fill>
 
 填充色，同时支持以下特性：
 
--   [fillOpacity](/zh/api/basic/display-object#fillopacity) 对应 `o` 字段
--   [fillRule](/zh/api/basic/display-object#fillrule) 对应 `r` 字段
+- [fillOpacity](/zh/api/basic/display-object#fillopacity) 对应 `o` 字段
+- [fillRule](/zh/api/basic/display-object#fillrule) 对应 `r` 字段
 
 #### Stroke
 
-https://lottiefiles.github.io/lottie-docs/shapes/#stroke
+<https://lottiefiles.github.io/lottie-docs/shapes/#stroke>
 
 描边色，同时支持以下特性：
 
--   [strokeOpacity](/zh/api/basic/display-object#strokeopacity) 对应 `o` 字段
--   [strokeWidth](/zh/api/basic/display-object#strokewidth) 对应 `w` 字段
--   [lineCap](/zh/api/basic/display-object#linecap) 对应 `lc` 字段
--   [lineJoin](/zh/api/basic/display-object#linejoin) 对应 `lj` 字段
--   [miterLimit](/zh/api/basic/display-object#miterlimit) 对应 `ml` 字段
--   [lineDash](/zh/api/basic/display-object#linedash) 对应 `d` 字段
+- [strokeOpacity](/zh/api/basic/display-object#strokeopacity) 对应 `o` 字段
+- [strokeWidth](/zh/api/basic/display-object#strokewidth) 对应 `w` 字段
+- [lineCap](/zh/api/basic/display-object#linecap) 对应 `lc` 字段
+- [lineJoin](/zh/api/basic/display-object#linejoin) 对应 `lj` 字段
+- [miterLimit](/zh/api/basic/display-object#miterlimit) 对应 `ml` 字段
+- [lineDash](/zh/api/basic/display-object#linedash) 对应 `d` 字段
 
 #### Gradients
 
-https://lottiefiles.github.io/lottie-docs/shapes/#gradients
+<https://lottiefiles.github.io/lottie-docs/shapes/#gradients>
 
 支持[线性](/zh/api/css/css-properties-values-api#linear-gradient)和[放射](/zh/api/css/css-properties-values-api#radial-gradient)渐变。
 
 暂不支持以下特性：
 
--   对渐变应用动画
--   Highlight length & angle (`h` 和 `a` 字段)
+- 对渐变应用动画
+- Highlight length & angle (`h` 和 `a` 字段)
 
 ### Modifiers
 
@@ -295,27 +295,27 @@ https://lottiefiles.github.io/lottie-docs/shapes/#gradients
 
 ## Layers
 
-https://lottiefiles.github.io/lottie-docs/layers/#layers
+<https://lottiefiles.github.io/lottie-docs/layers/#layers>
 
 ### Solid Color
 
-https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
+<https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer>
 
 ### Image
 
-https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefiles.github.io/lottie-docs/assets/#image
+<https://lottiefiles.github.io/lottie-docs/layers/#image-layer> <https://lottiefiles.github.io/lottie-docs/assets/#image>
 
 ### [WIP] Text
 
-https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
+<https://lottiefiles.github.io/lottie-docs/layers/#text-layer> <https://lottiefiles.github.io/lottie-docs/text/>
 
 ### Precomposition
 
-https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
+<https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer> <https://lottiefiles.github.io/lottie-docs/assets/#precomposition>
 
 ### [WIP] Merge Paths
 
-https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property
+<https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property>
 
 ### Clipping Mask
 
@@ -323,19 +323,19 @@ https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-pat
 
 注意事项：
 
--   受限于 SVG 的实现。目前仅支持单一 Clipping Mask，声明多个也只有第一个会生效
--   [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) 仅支持 `Add` 运算符
+- 受限于 SVG 的实现。目前仅支持单一 Clipping Mask，声明多个也只有第一个会生效
+- [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) 仅支持 `Add` 运算符
 
-https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
+<https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks>
 
 ## Layer Effects
 
 针对 Layer 的后处理效果暂不支持。
 
-https://lottiefiles.github.io/lottie-docs/effects/#layer-effects
+<https://lottiefiles.github.io/lottie-docs/effects/#layer-effects>
 
 ## Expressions
 
 暂不支持表达式。
 
-https://lottiefiles.github.io/lottie-docs/expressions/
+<https://lottiefiles.github.io/lottie-docs/expressions/>

@@ -5,7 +5,7 @@ order: 1
 
 我们提供了以下方法获取或者修改相机位置、视点等常用的相机参数。
 
-下图来自：http://voxelent.com/tutorial-camera-landmarks/ 展示了相机位置 `position` 和视点 `focalPoint`：
+下图来自：<http://voxelent.com/tutorial-camera-landmarks/> 展示了相机位置 `position` 和视点 `focalPoint`：
 
 <img src="http://voxelent.com/wp-content/uploads/2014/03/camera_position_focalpoint.png" alt="position and focal position" width="300">
 
@@ -171,8 +171,8 @@ camera.setZoomByViewportPoint(zoom, [x, y]);
 
 方法签名如下：
 
--   `zoom` 大于 1 代表放大，反之代表缩小。
--   `viewportPoint` 为[视口坐标系](/zh/api/canvas/coordinates#viewport)下的点坐标。
+- `zoom` 大于 1 代表放大，反之代表缩小。
+- `viewportPoint` 为[视口坐标系](/zh/api/canvas/coordinates#viewport)下的点坐标。
 
 ```
 setZoomByViewportPoint(zoom: number, viewportPoint: vec2)

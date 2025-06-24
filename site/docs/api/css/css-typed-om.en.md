@@ -5,7 +5,7 @@ order: 1
 
 In the browser, CSS parsing used to be a black box for front-end developers for a long time. We could only interact with the style system via unstructured strings like `el.style.width = '50%'`.
 
-The [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) allows parsed property values to be manipulated using JS, and it is also [CSS Houdini](https://drafts. css-houdini.org/). In the case of `width: '50%'` above, the attribute value in string form is parsed to `CSS.percent(50)` for the next step in the calculation.
+The [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) allows parsed property values to be manipulated using JS, and it is also [CSS Houdini](<https://drafts>. css-houdini.org/). In the case of `width: '50%'` above, the attribute value in string form is parsed to `CSS.percent(50)` for the next step in the calculation.
 
 # CSS
 
@@ -89,39 +89,39 @@ expect(result.toSum('px', 'percent').toString()).toBe('calc(10px + 10%)');
 expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue>
 
 ## type()
 
 Reflects what type the property value represents (CSSNumericType), e.g. `<length>`, `<angle>`, etc.
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type>
 
 ```js
 // <number>
 const number = new CSSUnitValue(10);
 expect(number.type()).to.eqls({
-  length: 0,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 0,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 
 // <length>
 const length = new CSSUnitValue(10, 'px');
 expect(length.type()).to.eqls({
-  length: 1,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 1,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 ```
 
@@ -133,7 +133,7 @@ Provides conversion between different units. The method signature is as follows.
 to(unit: UnitType | string): CSSUnitValue;
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/to
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/to>
 
 For example, to convert between different angular units.
 
@@ -155,7 +155,7 @@ Calculations between different units are completed whenever possible. The method
 toSum(...unit_strings: string[]): CSSMathSum {}
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/toSum
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/toSum>
 
 For example, we want to simplify the result of the expression by using 'px' and '%'.
 
@@ -181,11 +181,11 @@ expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 
 Both type and value are required to be identical, e.g. both type is `<length>` and both unit is 'px'.
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/equals
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/equals>
 
 ## add()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/add
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/add>
 
 ```js
 let mathSum = CSS.px('23').add(CSS.percent('4'));
@@ -195,7 +195,7 @@ console.log(mathSum.toString());
 
 ## sub()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/sub
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/sub>
 
 ```js
 let mathSum = CSS.px('23').sub(CSS.percent('4'));
@@ -205,11 +205,11 @@ console.log(mathSum.toString());
 
 ## mul()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/mul
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/mul>
 
 ## div()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/div
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/div>
 
 ## min()
 
@@ -280,7 +280,7 @@ Return to the value.
 
 Stands for keywords, such as `unset` `initial` `inherit` etc.
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSKeywordValue
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSKeywordValue>
 
 ## value
 

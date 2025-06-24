@@ -1,16 +1,18 @@
 # G Devtool
+
 > A devtool for @antv/g in chrome, it's still WIP, you can load it in unpack way;
 
 ## Quick Start
 
 ### Import unpacked plugin
+
 ![image](https://user-images.githubusercontent.com/15213473/150081309-61f9c451-c35e-4dab-a23c-ed5e425e7ec5.png)
 
 1. Open the Extension Management page by navigating to chrome://extensions.
 2. Enable Developer Mode by clicking the toggle switch next to Developer mode.
 3. Click the Load unpacked button and select the 'devtool' directory.
 
-### Connect with G Canvas;
+### Connect with G Canvas
 
 #### In Native G Usage
 
@@ -18,10 +20,9 @@
 // init window hook
 window.__g_instances__ = [];
 
-var canvas = new Canvas({...blablabla});
+var canvas = new Canvas({ ...blablabla });
 
 window.__g_instances__.push(canvas);
-
 ```
 
 #### In G6
@@ -30,12 +31,10 @@ window.__g_instances__.push(canvas);
 // init window hook
 window.__g_instances__ = [];
 
-var canvas = graph.get("canvas");
+var canvas = graph.get('canvas');
 
 window.__g_instances__.push(canvas);
-
 ```
-
 
 #### In G2
 
@@ -46,7 +45,6 @@ window.__g_instances__ = [];
 var canvas = chart.canvas;
 
 window.__g_instances__.push(canvas);
-
 ```
 
 #### In S2
@@ -54,19 +52,18 @@ window.__g_instances__.push(canvas);
 ```javascript
 window.__g_instances__ = [];
 
-// in native 
+// in native
 var canvas = spreadSheet.container;
 
 window.__g_instances__.push(canvas);
 
-
 // in S2 react
 <SpreadSheet
-  {...blablabla}
-  getSpreadSheet={(sp) => {
-            window.__g_instances__ = [sp.container]
-          }}
-          />
+    {...blablabla}
+    getSpreadSheet={(sp) => {
+        window.__g_instances__ = [sp.container];
+    }}
+/>;
 ```
 
 ### Using devtool
@@ -74,7 +71,6 @@ window.__g_instances__.push(canvas);
 After these steps, the tab 'AntV G' should show in devtools' tab, select it and choose a canvas
 
 ![image](https://user-images.githubusercontent.com/15213473/150081267-fb22d227-3946-4f08-88e8-55086d047da0.png)
-
 
 ## Features
 
@@ -89,6 +85,3 @@ After these steps, the tab 'AntV G' should show in devtools' tab, select it and 
 ### Using select element directly in canvas
 
 ![image](https://user-images.githubusercontent.com/15213473/150082485-46b5c750-de64-42f7-882b-a3ff4db95826.png)
-
-
-

@@ -66,8 +66,8 @@ Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-o
 
 The following two writing methods are supported.
 
--   `[number, number][]` an array of points
--   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
+- `[number, number][]` an array of points
+- `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
 Thus the following two ways of writing are equivalent.
 
@@ -193,8 +193,8 @@ Get the coordinates of the point on the line in the local or world coordinate sy
 
 The parameters are as follows.
 
--   `ratio` mandatory, the length ratio
--   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+- `ratio` mandatory, the length ratio
+- `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
 
 where `Point` has the format :
 
@@ -211,8 +211,8 @@ Returns the point along the path at a given distance, controlled by a second opt
 
 The parameters are as follows.
 
--   `distance` mandatory, the distance value
--   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
+- `distance` mandatory, the distance value
+- `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

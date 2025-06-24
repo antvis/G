@@ -5,10 +5,10 @@ order: 0
 
 When finding nodes in the scene graph, we can use some [advanced query methods](/en/api/basic/display-object#advanced-query) similar to the DOM API.
 
--   **getElementById** Find a single element by id in the subtree of the current node
--   **getElementsByName** Find a list of elements by name in the subtree of the current node
--   **getElementsByClassName** Find a list of elements by className under the subtree of the current node
--   **getElementsByTagName** Find a list of elements by tagName under the subtree of the current node
+- **getElementById** Find a single element by id in the subtree of the current node
+- **getElementsByName** Find a list of elements by name in the subtree of the current node
+- **getElementsByClassName** Find a list of elements by className under the subtree of the current node
+- **getElementsByTagName** Find a list of elements by tagName under the subtree of the current node
 
 Suppose we construct the following scenegraph.
 
@@ -39,8 +39,8 @@ solarSystem.getElementsByTagName(Shape.CIRCLE);
 
 When we want to use more complex query criteria like CSS selectors, we have the option to install the plugin.
 
--   **querySelector**
--   **querySelectorAll**
+- **querySelector**
+- **querySelectorAll**
 
 Once the installation is complete the attribute selector can be used.
 

@@ -69,7 +69,7 @@ The height of the `<canvas>` of type `number` for debugging.
 
 The direction of gravity vector, the default value is `[0, 1]`.
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_gravity
+<https://brm.io/matter-js/docs/classes/Engine.html#property_gravity>
 
 For example, if set to `[1, 1]`, the object will naturally move to the lower right corner.
 
@@ -83,7 +83,7 @@ new PluginMatterjs({
 
 Type is `number`, the gravity scaling factor.
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
+<https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale>
 
 ### timeStep
 
@@ -93,13 +93,13 @@ Simulation time interval, default value is `1/60`
 
 Calculate the number of acceleration iterations, the default value is `4`, the higher the calculation overhead
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
+<https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations>
 
 ### positionIterations
 
 Calculate the number of position iterations, the default value is `6`, the higher the computation overhead
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
+<https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations>
 
 ## Graphical Physical Properties
 
@@ -113,8 +113,8 @@ circle.style.density = 100;
 
 Rigid body type.
 
--   `'static'` Static objects, such as the ground
--   `'dynamic'` Dynamic objects, calculation of forces
+- `'static'` Static objects, such as the ground
+- `'dynamic'` Dynamic objects, calculation of forces
 
 <!-- - kinematic -->
 
@@ -122,37 +122,37 @@ Rigid body type.
 
 Density, kg/m2. Static objects are 0.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_density
+<https://brm.io/matter-js/docs/classes/Body.html#property_density>
 
 ### velocity
 
 Line speed, the default value is `[0, 0]`.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_velocity
+<https://brm.io/matter-js/docs/classes/Body.html#property_velocity>
 
 ### angularVelocity
 
 Angular velocity, the default value is `0`.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity
+<https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity>
 
 ### friction
 
 Friction, the range is `[0 - 1]`, and the default value is `0.1`. `0` means the object will slide indefinitely, `1` means the object will stop immediately after the force is applied.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_friction
+<https://brm.io/matter-js/docs/classes/Body.html#property_friction>
 
 ### frictionAir
 
 Defines the friction force in air, `0` means no gravity, the higher the value the more significant the deceleration of the object moving in space, the default value is `0.01`.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir
+<https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir>
 
 ### frictionStatic
 
 The default value is `0.5`.
 
-https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic
+<https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic>
 
 ### restitution
 

@@ -5,8 +5,8 @@ order: 9
 
 Sometimes we need to add some HUDs to the canvas, e.g. Tooltip. In this case, the HTML + CSS presentation has the following advantages over using basic graphics.
 
--   Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
--   Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape/html#html).
+- Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
+- Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape/html#html).
 
 ![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -52,12 +52,12 @@ In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placin
 
 ## Inherited from
 
--   [DisplayObject](/en/api/basic/display-object)
+- [DisplayObject](/en/api/basic/display-object)
 
 Where [id](/en/api/basic/display-object#id), [name](/en/api/basic/display-object#name), [className](/en/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
 
--   Get it through a DOM API like `getElementById`
--   using [getDomElement()](/en/api/basic/html#getdomelement)
+- Get it through a DOM API like `getElementById`
+- using [getDomElement()](/en/api/basic/html#getdomelement)
 
 Other style attributes are applied via CSS.
 
@@ -128,9 +128,9 @@ The x-axis coordinate of the top-left vertex of the container in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,17 +138,17 @@ The y-axis coordinate of the top-left vertex of the container in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
 HTML content, either as a string or as an HTMLElement.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- | ------------ |
-| -                                                                    | -                   | no                                     | no         | `string                                                                | HTMLElement` |
+| --- | --- | --- | --- | --- | --- |
+| - | - | no | no | `string | HTMLElement` |
 
 ```js
 const html = new HTML({
@@ -168,15 +168,15 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 'auto'                                                               | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'auto' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 'auto'                                                               | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'auto' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Other CSS Properties
 

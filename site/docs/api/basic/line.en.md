@@ -29,9 +29,9 @@ line1.getLocalPosition(); // [200, 100]
 
 For the above line as `(200, 100)`. When we want to move this line 100 distance to the right along the X-axis, we can do three things:
 
--   Use [translate]() to translate a relative distance in the world coordinate system
--   Use [setPosition]() to set the absolute coordinates in the world coordinate system
--   Directly modify the x1/x2 property in the line definition
+- Use [translate]() to translate a relative distance in the world coordinate system
+- Use [setPosition]() to set the absolute coordinates in the world coordinate system
+- Directly modify the x1/x2 property in the line definition
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -265,8 +265,8 @@ Returns the point along the path at a given distance, controlled by a second opt
 
 The parameters are as follows.
 
--   `distance` mandatory, the distance value
--   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
+- `distance` mandatory, the distance value
+- `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 where `Point` has the format:
 
@@ -291,8 +291,8 @@ Get the coordinates of the point on the line in the local or world coordinate sy
 
 The parameters are as follows.
 
--   `ratio` mandatory, the length ratio
--   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+- `ratio` mandatory, the length ratio
+- `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
 
 For example, to get the midpoint of the line defined above.
 

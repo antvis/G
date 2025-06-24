@@ -38,7 +38,7 @@ observer.disconnect();
 
 监听场景图中一个节点的变化，可以通过配置选择监听单个节点或者全部子孙节点。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/observe
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/observe>
 
 ```js
 mutationObserver.observe(target[, options])
@@ -46,23 +46,23 @@ mutationObserver.observe(target[, options])
 
 `options` 为可选项，类型为 [MutationObserverInit](https://developer.mozilla.org/zh-CN/docs/conflicting/Web/API/MutationObserver/observe_2f2addbfa1019c23a6255648d6526387) 配置如下：
 
--   `childList` 设为 true 以监视目标节点（如果 subtree 为 true，则包含子孙节点）添加或删除新的子节点。默认值为 false。
--   `subtree` 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点。MutationObserverInit 的其他值也会作用于此子树下的所有节点，而不仅仅只作用于目标节点。默认值为 false。
--   `attributes` 设为 true 以观察受监视元素的属性值变更。默认值为 false。
--   `attributeOldValue` 当监视节点的属性改动时，将此属性设为 true 将记录任何有改动的属性的上一个值。
--   `attributeFilter` 要监视的特定属性名称的数组。如果未包含此属性，则对所有属性的更改都会触发变动通知。无默认值。
+- `childList` 设为 true 以监视目标节点（如果 subtree 为 true，则包含子孙节点）添加或删除新的子节点。默认值为 false。
+- `subtree` 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点。MutationObserverInit 的其他值也会作用于此子树下的所有节点，而不仅仅只作用于目标节点。默认值为 false。
+- `attributes` 设为 true 以观察受监视元素的属性值变更。默认值为 false。
+- `attributeOldValue` 当监视节点的属性改动时，将此属性设为 true 将记录任何有改动的属性的上一个值。
+- `attributeFilter` 要监视的特定属性名称的数组。如果未包含此属性，则对所有属性的更改都会触发变动通知。无默认值。
 
 ## disconnect
 
 断开监听。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/disconnect
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/disconnect>
 
 ## takeRecords
 
 获取变更记录。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/takeRecords
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/takeRecords>
 
 在下面的例子中，我们监听父节点的变化，当加入两个子节点后获取到两条变更记录：
 

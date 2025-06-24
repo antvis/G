@@ -29,9 +29,9 @@ line1.getLocalPosition(); // [200, 100]
 
 对于上面的直线为 `(200, 100)`。当我们想沿 X 轴向右移动该直线 100 距离时，可以有以下三种做法：
 
--   使用 translate 在世界坐标系下平移一段相对距离
--   使用 setPosition 设置世界坐标系下的绝对坐标
--   直接修改直线定义中的 x1/x2 属性
+- 使用 translate 在世界坐标系下平移一段相对距离
+- 使用 setPosition 设置世界坐标系下的绝对坐标
+- 直接修改直线定义中的 x1/x2 属性
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -265,8 +265,8 @@ line.getTotalLength(); // 200
 
 参数如下：
 
--   `distance` 必填，距离值
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `distance` 必填，距离值
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 其中 `Point` 的格式为:
 
@@ -291,8 +291,8 @@ line.getPointAtLength(100); // Point {x: 300, y: 100}
 
 参数如下：
 
--   `ratio` 必填，长度比例
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `ratio` 必填，长度比例
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 例如获取上面定义直线的中点：
 

@@ -48,8 +48,8 @@ Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-o
 
 The following two writing methods are supported.
 
--   `[number, number][]` an array of points
--   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
+- `[number, number][]` an array of points
+- `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
 Thus the following two ways of writing are equivalent.
 

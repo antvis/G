@@ -61,9 +61,9 @@ export interface Buffer {
 
 创建 Buffer 方式如下，需要指定：
 
--   viewOrSize 必填，指定初始化数据或者 Buffer 大小
--   usage 必填，内存用途，完全参考 [WebGPU Buffer Usage](https://www.w3.org/TR/webgpu/#buffer-usage)
--   hint 可选，仅 WebGL 环境下生效
+- viewOrSize 必填，指定初始化数据或者 Buffer 大小
+- usage 必填，内存用途，完全参考 [WebGPU Buffer Usage](https://www.w3.org/TR/webgpu/#buffer-usage)
+- hint 可选，仅 WebGL 环境下生效
 
 ```ts
 interface Device {
@@ -106,10 +106,10 @@ const buffer = device.createBuffer({
 
 #### setSubData
 
--   dstByteOffset 必填，目标 Buffer 中的偏移量，以 Byte 为单位
--   src 必填，类型为 ArrayBufferView
--   srcByteOffset 选填，src 中起始偏移量，以 Byte 为单位
--   byteLength 选填，src 中长度，以 Byte 为单位
+- dstByteOffset 必填，目标 Buffer 中的偏移量，以 Byte 为单位
+- src 必填，类型为 ArrayBufferView
+- srcByteOffset 选填，src 中起始偏移量，以 Byte 为单位
+- byteLength 选填，src 中长度，以 Byte 为单位
 
 例如修改 Uniform 中的某个变量，它位于原始 Buffer 中的第 20 个 bytes：
 
@@ -144,17 +144,17 @@ interface Device {
 
 异步读取 Buffer 内容。
 
--   WebGPU 中通过 [copyBufferToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer) 实现，
--   WebGL2 中通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
--   WebGL1 不支持
+- WebGPU 中通过 [copyBufferToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer) 实现，
+- WebGL2 中通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
+- WebGL1 不支持
 
 参数列表如下：
 
--   srcBuffer 必填，源 Buffer
--   srcByteOffset 选填，目标 Buffer 起始偏移量，默认为 0，即从头读取
--   dstBuffer 选填，读取内容存放至目标 ArrayBufferView，不填自动创建，最终以结果形式返回
--   dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
--   length 选填，读取长度，默认为全部
+- srcBuffer 必填，源 Buffer
+- srcByteOffset 选填，目标 Buffer 起始偏移量，默认为 0，即从头读取
+- dstBuffer 选填，读取内容存放至目标 ArrayBufferView，不填自动创建，最终以结果形式返回
+- dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
+- length 选填，读取长度，默认为全部
 
 返回值为读取结果 ArrayBufferView。
 
@@ -180,20 +180,20 @@ const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 
 读取纹理内容。
 
--   WebGL1 通过 [readPixels](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/readPixels) 实现
--   WebGL2 中和 readBuffer 一样通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
--   WebGPU 中使用 [copyTextureToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copytexturetobuffer) 后，再使用 readBuffer 一样的实现方式
+- WebGL1 通过 [readPixels](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/readPixels) 实现
+- WebGL2 中和 readBuffer 一样通过 [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) 实现
+- WebGPU 中使用 [copyTextureToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copytexturetobuffer) 后，再使用 readBuffer 一样的实现方式
 
 参数列表如下：
 
--   texture 必填，源 Texture
--   x 必填，读取区域起始 X 坐标
--   y 必填，读取区域起始 Y 坐标
--   width 必填，读取区域宽度
--   height 必填，读取区域高度
--   dstBuffer 必填，读取内容存放至目标 ArrayBufferView，最终以结果形式返回
--   dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
--   length 选填，读取长度，默认为全部
+- texture 必填，源 Texture
+- x 必填，读取区域起始 X 坐标
+- y 必填，读取区域起始 Y 坐标
+- width 必填，读取区域宽度
+- height 必填，读取区域高度
+- dstBuffer 必填，读取内容存放至目标 ArrayBufferView，最终以结果形式返回
+- dstOffset 选填，目标 ArrayBufferView 偏移量，默认为 0，即从头写入
+- length 选填，读取长度，默认为全部
 
 返回值为读取结果 ArrayBufferView。
 

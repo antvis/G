@@ -39,8 +39,8 @@ pan(tx: number, ty: number)
 
 参数：
 
--   `tx` 沿 u 轴正向平移
--   `ty` 沿 v 轴正向平移
+- `tx` 沿 u 轴正向平移
+- `ty` 沿 v 轴正向平移
 
 在该[示例](/zh/examples/camera/camera-action/#action) 中，下面的操作将导致原本处于视点处的物体展示在左上角：
 
@@ -64,7 +64,7 @@ dolly(value: number)
 
 参数：
 
--   `value` 以 `dollyingStep` 为单位，正向远离视点，负向靠近
+- `value` 以 `dollyingStep` 为单位，正向远离视点，负向靠近
 
 使用示例：
 

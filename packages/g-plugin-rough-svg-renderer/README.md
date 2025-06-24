@@ -19,10 +19,10 @@ renderer.registerPlugin(new PluginRoughSVGRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer,
 });
 ```
 
@@ -68,7 +68,7 @@ circle.style.shadowOffsetY = 0;
 
 ### Other rough.js options
 
-https://github.com/rough-stuff/rough/wiki#options
+<https://github.com/rough-stuff/rough/wiki#options>
 
 ### Text & Image
 

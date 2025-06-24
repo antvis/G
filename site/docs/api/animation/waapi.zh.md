@@ -2,7 +2,7 @@
 title: Web Animations API
 order: -4
 redirect_from:
-  - /zh/api/animation
+    - /zh/api/animation
 ---
 
 参考 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，我们为每一个 DisplayObject 添加了动画能力。
@@ -25,19 +25,19 @@ redirect_from:
 
 ```js
 const scaleInCenter = circle.animate(
-  [
+    [
+        {
+            transform: 'scale(0)', // 起始关键帧
+        },
+        {
+            transform: 'scale(1)', // 结束关键帧
+        },
+    ],
     {
-      transform: 'scale(0)', // 起始关键帧
+        duration: 500, // 持续时间
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', // 缓动函数
+        fill: 'both', // 动画处于非运行状态时，该图形的展示效果
     },
-    {
-      transform: 'scale(1)', // 结束关键帧
-    },
-  ],
-  {
-    duration: 500, // 持续时间
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)', // 缓动函数
-    fill: 'both', // 动画处于非运行状态时，该图形的展示效果
-  },
 );
 ```
 
@@ -45,15 +45,15 @@ const scaleInCenter = circle.animate(
 
 ```css
 .scale-in-center {
-  animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 @keyframes scale-in-center {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 ```
 
@@ -61,7 +61,7 @@ const scaleInCenter = circle.animate(
 
 一个动画对象通常由两部分组成：target 目标图形和 KeyframeEffect 动画效果。前者在通过 `object.animate()` 创建时已经指定，后者又由两部分组成：一组 Keyframe 和 EffectTiming。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation>
 
 ### 创建
 
@@ -91,19 +91,19 @@ const animation = circle.animate(keyframes, options);
 
 ```js
 circle.animate(
-  [
-    {
-      // from
-      opacity: 0,
-      fill: '#fff',
-    },
-    {
-      // to
-      opacity: 1,
-      fill: '#000',
-    },
-  ],
-  2000,
+    [
+        {
+            // from
+            opacity: 0,
+            fill: '#fff',
+        },
+        {
+            // to
+            opacity: 1,
+            fill: '#000',
+        },
+    ],
+    2000,
 );
 ```
 
@@ -120,7 +120,7 @@ keyframes 数组中的元素为 [Keyframe](/zh/api/animation/waapi#keyframe)。
 
 ```js
 circle.animate(keyframes, {
-  duration: 100,
+    duration: 100,
 });
 circle.animate(keyframes, 100);
 ```
@@ -129,7 +129,7 @@ circle.animate(keyframes, 100);
 
 #### effect
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect>
 
 返回 [KeyframeEffect](/zh/api/animation/waapi#keyframeeffect) 对象。后续可以在运行时调整动画效果，例如修改缓动函数等：
 
@@ -143,13 +143,13 @@ effect.getTiming().ease = 'linear';
 
 获取动画开始时间。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime>
 
 #### currentTime
 
 获取或设置动画相对于时间线的当前时间。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime>
 
 ```js
 // 获取
@@ -165,7 +165,7 @@ animation.currentTime = newTime;
 
 返回动画的运行状态。当一些手动控制方法（例如 `pause()`）被调用后，状态发生改变。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState>
 
 - idle 动画处于未准备好的状态
 - running 动画处于运行状态
@@ -176,18 +176,18 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState
 
 动画正在等待一些异步任务完成，例如正在暂停一个运行中的动画。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/pending
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/pending>
 
 #### ready
 
 返回一个动画准备开始时 resolve 的 Promise。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/ready
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/ready>
 
 ```js
 animation.ready.then(() => {
-  animation.playState; // running
-  canvas.timeline.currentTime;
+    animation.playState; // running
+    canvas.timeline.currentTime;
 });
 ```
 
@@ -195,15 +195,15 @@ animation.ready.then(() => {
 
 返回一个动画结束时 resolve 的 Promise。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished>
 
 例如我们想让图形在所有动画结束之后移除自身：
 
 ```js
 Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
-  () => {
-    return circle.remove();
-  },
+    () => {
+        return circle.remove();
+    },
 );
 ```
 
@@ -240,12 +240,12 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
 
 设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/zh/examples/animation#lifecycle)
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish>
 
 ```js
 animation.onfinish = function (e) {
-  e.target; // animation
-  e.target.playState; // 'finished'
+    e.target; // animation
+    e.target.playState; // 'finished'
 };
 ```
 
@@ -261,8 +261,8 @@ animation.onfinish = function (e) {
 
 ```js
 animation.onframe = function (e) {
-  e.target; // animation
-  e.target.playState; // 'running'
+    e.target; // animation
+    e.target.playState; // 'running'
 };
 ```
 
@@ -270,7 +270,7 @@ animation.onframe = function (e) {
 
 动画播放的速率，默认值为 1
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/playbackRate
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/playbackRate>
 
 例如我们想手动控制动画的运行方向，或者降低播放速率：
 
@@ -302,7 +302,7 @@ animation.playState; // 'running'
 
 暂停动画
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/pause
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/pause>
 
 ```js
 animation.pause();
@@ -313,7 +313,7 @@ animation.playState; // 'paused'
 
 将动画的运行时间调整到最后（和运行方向有关）。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish>
 
 ```js
 animation.finish();
@@ -324,13 +324,13 @@ animation.playState; // 'finished'
 
 清除该动画效果，将 `startTime` 和 `currentTime` 设置为 `null`
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel>
 
 #### reverse()
 
 翻转动画运行方向，效果等同于设置 playbackRate 为 -1。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/reverse
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/reverse>
 
 #### updatePlaybackRate()
 
@@ -342,23 +342,23 @@ animation.updatePlaybackRate(0.5); // 减速
 animation.updatePlaybackRate(-1); // 反向
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate>
 
 ## KeyframeEffect
 
 动画效果，可以通过 `getTiming()` 获取该效果对应的时间配置对象。由两部分组成：一组 Keyframe 和 [EffectTiming](/zh/api/animation/waapi#effecttiming)。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
+<https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect>
 
 ### target
 
 返回当前处于动画中的图形
 
-https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target
+<https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target>
 
 ```js
 const animation = circle.animate({
-  // ...
+    // ...
 });
 
 animation.effect.target; // circle
@@ -368,7 +368,7 @@ animation.effect.target; // circle
 
 返回 [EffectTiming](/zh/api/animation/waapi#effecttiming) 对象
 
-https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getTiming
+<https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getTiming>
 
 ```js
 const timing = animation.effect.getTiming();
@@ -382,7 +382,7 @@ timing.ease = 'linear';
 - duration 为 'auto' 时返回 0
 - fill 为 'auto' 时返回 'none'
 
-https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming
+<https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming>
 
 ### updateTiming()
 
@@ -395,7 +395,7 @@ timing.ease = 'linear';
 animation.updateTiming({ ease: 'linear' });
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
+<https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming>
 
 ## Keyframe
 
@@ -416,23 +416,23 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 
 目前支持对以下属性进行变换 [示例](/zh/examples/animation#multiple-attributes)：
 
-| 名称           | 类型               | 取值范围                   | 备注                                                                                    |
-| -------------- | ------------------ | -------------------------- | --------------------------------------------------------------------------------------- |
-| transform      | `string`           | `scale(1, 2)` `scaleY(1)`  | 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致 |
-| opacity        | `number`           | `[0-1]`                    | 透明度                                                                                  |
-| strokeOpacity  | `number`           | `[0-1]`                    | 描边透明度                                                                              |
-| fill           | `string`           | 例如 `red` `#fff`          | 填充色                                                                                  |
-| stroke         | `string`           | 例如 `red` `#fff`          | 描边色                                                                                  |
-| lineWidth      | `number`           | 例如 `1` `10`              | 线宽                                                                                    |
-| r              | `number`           | 例如 `10` `20`             | Circle 的半径                                                                           |
-| rx/ry          | `number`           | 例如 `10` `20`             | Ellipse 的半径                                                                          |
-| width          | `number`           | 例如 `10` `20`             | Rect/Image 的宽度                                                                       |
-| height         | `number`           | 例如 `10` `20`             | Rect/Image 的高度                                                                       |
-| x1/y1/x2/y2    | `number`           | 例如 `10` `20`             | Line 的端点坐标                                                                         |
-| offsetDistance | `number`           | `[0-1]`                    | 路径偏移，在[路径动画](/zh/api/animation/waapi#路径动画)中使用                          |
-| lineDash       | `[number, number]` | 例如 `[0, 100]`            | 实线和间隔的长度，在[笔迹动画](/zh/api/animation/waapi#笔迹动画)中使用                  |
-| lineDashOffset | `number`           | 例如 `-20` `0` `20`        | 设置虚线的偏移量，在[蚂蚁线效果](/zh/api/animation/waapi#蚂蚁线)中使用                  |
-| path           | `string`           | 例如 `M 100,100 L 200,200` | Path 的定义，在[形变动画](/zh/api/animation/waapi#形变动画)中使用                       |
+| 名称 | 类型 | 取值范围 | 备注 |
+| --- | --- | --- | --- |
+| transform | `string` | `scale(1, 2)` `scaleY(1)` | 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致 |
+| opacity | `number` | `[0-1]` | 透明度 |
+| strokeOpacity | `number` | `[0-1]` | 描边透明度 |
+| fill | `string` | 例如 `red` `#fff` | 填充色 |
+| stroke | `string` | 例如 `red` `#fff` | 描边色 |
+| lineWidth | `number` | 例如 `1` `10` | 线宽 |
+| r | `number` | 例如 `10` `20` | Circle 的半径 |
+| rx/ry | `number` | 例如 `10` `20` | Ellipse 的半径 |
+| width | `number` | 例如 `10` `20` | Rect/Image 的宽度 |
+| height | `number` | 例如 `10` `20` | Rect/Image 的高度 |
+| x1/y1/x2/y2 | `number` | 例如 `10` `20` | Line 的端点坐标 |
+| offsetDistance | `number` | `[0-1]` | 路径偏移，在[路径动画](/zh/api/animation/waapi#路径动画)中使用 |
+| lineDash | `[number, number]` | 例如 `[0, 100]` | 实线和间隔的长度，在[笔迹动画](/zh/api/animation/waapi#笔迹动画)中使用 |
+| lineDashOffset | `number` | 例如 `-20` `0` `20` | 设置虚线的偏移量，在[蚂蚁线效果](/zh/api/animation/waapi#蚂蚁线)中使用 |
+| path | `string` | 例如 `M 100,100 L 200,200` | Path 的定义，在[形变动画](/zh/api/animation/waapi#形变动画)中使用 |
 
 对于自定义属性，可以[在样式系统中注册](/zh/api/css/css-properties-values-api#自定义属性)。在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
 
@@ -490,12 +490,12 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 
 ```js
 circle.animate(
-  [
-    { opacity: 1, easing: 'ease-out' },
-    { opacity: 0.1, easing: 'ease-in' },
-    { opacity: 0 },
-  ],
-  2000,
+    [
+        { opacity: 1, easing: 'ease-out' },
+        { opacity: 0.1, easing: 'ease-in' },
+        { opacity: 0 },
+    ],
+    2000,
 );
 ```
 
@@ -503,12 +503,12 @@ circle.animate(
 
 ### 常见的动画效果
 
-一些常见的动画效果，例如 fadeIn 等等，可以参考 https://github.com/wellyshen/use-web-animations/tree/master/src/animations
+一些常见的动画效果，例如 fadeIn 等等，可以参考 <https://github.com/wellyshen/use-web-animations/tree/master/src/animations>
 
 ```js
 export default {
-  keyframes: [{ opacity: 0 }, { opacity: 1 }],
-  animationOptions: { duration: 1000, fill: 'both' },
+    keyframes: [{ opacity: 0 }, { opacity: 1 }],
+    animationOptions: { duration: 1000, fill: 'both' },
 };
 ```
 
@@ -518,7 +518,7 @@ export default {
 
 ## EffectTiming
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming>
 
 ```js
 const timing = animation.effect.getTiming();
@@ -528,7 +528,7 @@ const timing = animation.effect.getTiming();
 
 开始动画前的延迟，以毫秒为单位，默认值为 0，因此动画会立即开始。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay>
 
 **类型**： `number`
 
@@ -540,7 +540,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
 
 动画在时间线上的运行方向，也会影响到每次迭代结束后的行为。通过该属性我们可以实现往复运动的效果。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction>
 
 **类型**： `string`
 
@@ -559,7 +559,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction
 
 动画运行时长，以毫秒为单位，默认为 `auto`，和 0 效果相同。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/duration
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/duration>
 
 **类型**： `number | string`
 
@@ -575,7 +575,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/duration
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9y3_TIoOUPMAAAAAAAAAAAAAARQnAQ)
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing>
 
 **类型**： `string`
 
@@ -583,22 +583,22 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
 
 **是否必须**：`false`
 
-支持以下内置缓动函数，来自：https://easings.net/
+支持以下内置缓动函数，来自：<https://easings.net/>
 
-| constant   | accelerate         | decelerate     | accelerate-decelerate | decelerate-accelerate |
-| :--------- | :----------------- | :------------- | :-------------------- | :-------------------- |
-| linear     | ease-in / in       | ease-out / out | ease-in-out / in-out  | ease-out-in / out-in  |
-| ease       | in-sine            | out-sine       | in-out-sine           | out-in-sine           |
-| steps      | in-quad            | out-quad       | in-out-quad           | out-in-quad           |
-| step-start | in-cubic           | out-cubic      | in-out-cubic          | out-in-cubic          |
-| step-end   | in-quart           | out-quart      | in-out-quart          | out-in-quart          |
-|            | in-quint           | out-quint      | in-out-quint          | out-in-quint          |
-|            | in-expo            | out-expo       | in-out-expo           | out-in-expo           |
-|            | in-circ            | out-circ       | in-out-circ           | out-in-circ           |
-|            | in-back            | out-back       | in-out-back           | out-in-back           |
-|            | in-bounce          | out-bounce     | in-out-bounce         | out-in-bounce         |
-|            | in-elastic         | out-elastic    | in-out-elastic        | out-in-elastic        |
-|            | spring / spring-in | spring-out     | spring-in-out         | spring-out-in         |
+| constant | accelerate | decelerate | accelerate-decelerate | decelerate-accelerate |
+| :-- | :-- | :-- | :-- | :-- |
+| linear | ease-in / in | ease-out / out | ease-in-out / in-out | ease-out-in / out-in |
+| ease | in-sine | out-sine | in-out-sine | out-in-sine |
+| steps | in-quad | out-quad | in-out-quad | out-in-quad |
+| step-start | in-cubic | out-cubic | in-out-cubic | out-in-cubic |
+| step-end | in-quart | out-quart | in-out-quart | out-in-quart |
+|  | in-quint | out-quint | in-out-quint | out-in-quint |
+|  | in-expo | out-expo | in-out-expo | out-in-expo |
+|  | in-circ | out-circ | in-out-circ | out-in-circ |
+|  | in-back | out-back | in-out-back | out-in-back |
+|  | in-bounce | out-bounce | in-out-bounce | out-in-bounce |
+|  | in-elastic | out-elastic | in-out-elastic | out-in-elastic |
+|  | spring / spring-in | spring-out | spring-in-out | spring-out-in |
 
 除此之外，还可以通过 `cubic-bezier(<number>, <number>, <number>, <number>)` 自定义形如三次贝塞尔曲线的函数。以上部分内置函数也是通过它定义完成的，例如 `ease-in-sine = cubic-bezier(0.47, 0, 0.745, 0.715)`
 
@@ -610,8 +610,8 @@ import { EasingFunctions } from '@antv/g';
 EasingFunctions['my-easing'] = (t: number) => t;
 
 circle.animate([{ opacity: 0 }, { opacity: 1 }], {
-  duration: 500,
-  easing: 'my-easing', // 使用
+    duration: 500,
+    easing: 'my-easing', // 使用
 });
 ```
 
@@ -619,7 +619,7 @@ circle.animate([{ opacity: 0 }, { opacity: 1 }], {
 
 动画结束前的延迟，以毫秒为单位，默认值为 0，因此动画运行完毕会立即结束。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay>
 
 **类型**： `number`
 
@@ -631,12 +631,12 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay
 
 ```js
 const animation = circle.animate(
-  [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
-  {
-    duration: 2000,
-    endDelay: -1000, // 动画执行到一半会立刻结束
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  },
+    [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
+    {
+        duration: 2000,
+        endDelay: -1000, // 动画执行到一半会立刻结束
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    },
 );
 ```
 
@@ -649,26 +649,26 @@ const animation = circle.animate(
 - backwards 动画开始前应用第一帧效果
 - both 为 forwards 和 backwards 的组合效果
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill>
 
 例如我们想让图形在缩放动画完成后，停在结束状态：
 
 ```js
 const animation = circle.animate(
-  [
+    [
+        {
+            transform: 'scale(1)',
+            fill: '#1890FF',
+            stroke: '#F04864',
+            opacity: 1,
+        },
+        { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
+    ],
     {
-      transform: 'scale(1)',
-      fill: '#1890FF',
-      stroke: '#F04864',
-      opacity: 1,
+        duration: 1500,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        fill: 'both',
     },
-    { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
-  ],
-  {
-    duration: 1500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    fill: 'both',
-  },
 );
 ```
 
@@ -676,7 +676,7 @@ const animation = circle.animate(
 
 循环次数，默认值为 1，也可以取大于 0 的小数。当我们想让动画一直运行下去时，可以取 `Infinity`。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations>
 
 **类型**： `number`
 
@@ -688,7 +688,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
 从何处开始执行动画，例如动画总是从 0 开始运行，设置为 0.5 代表动画会从当中开始运行。
 
-https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
+<https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart>
 
 **类型**： `number`
 
@@ -708,13 +708,13 @@ const computedTiming = animation.effect.getComputedTiming();
 
 动画的预计结束时间，需要考虑前后延迟。计算方式为：[delay](/zh/api/animation/waapi#delay) + [activeDuration](/zh/api/animation/waapi#activeduration) + [endDelay](/zh/api/animation/waapi#enddelay)
 
-https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
+<https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value>
 
 ### activeDuration
 
 动画效果运行的预计时长，单位毫秒。计算方式为 [duration](/zh/api/animation/waapi#duration) \* [iterations](/zh/api/animation/waapi#iterations)
 
-https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
+<https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value>
 
 ### localTime
 
@@ -728,7 +728,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTimi
 
 ```js
 animation.onframe = (e) => {
-  console.log(e.target.effect.getComputedTiming().progress);
+    console.log(e.target.effect.getComputedTiming().progress);
 };
 ```
 
@@ -746,22 +746,22 @@ animation.onframe = (e) => {
 <motion.div animate={{ rotate: 180 }} transition={{ type: 'spring' }} />
 ```
 
-也有像 https://react-spring.io/ 这样的库：
+也有像 <https://react-spring.io/> 这样的库：
 
 ![](https://i.imgur.com/tg1mN1F.gif)
 
-Spring 背后的原理：https://blog.maximeheckel.com/posts/the-physics-behind-spring-animations
+Spring 背后的原理：<https://blog.maximeheckel.com/posts/the-physics-behind-spring-animations>
 
-那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？关于这个问题在 W3C 中早已有过讨论：https://github.com/w3c/csswg-drafts/issues/229。 目前我们内置了 spring 系列的变换效果，但暂不提供弹簧参数的配置 [示例](/zh/examples/animation#easing)：
+那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？关于这个问题在 W3C 中早已有过讨论：<https://github.com/w3c/csswg-drafts/issues/229。> 目前我们内置了 spring 系列的变换效果，但暂不提供弹簧参数的配置 [示例](/zh/examples/animation#easing)：
 
 ```js
 const animation = image.animate(
-  [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
-  {
-    duration: 1500,
-    iterations: Infinity,
-    easing: 'spring',
-  },
+    [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+    {
+        duration: 1500,
+        iterations: Infinity,
+        easing: 'spring',
+    },
 );
 ```
 
@@ -771,16 +771,16 @@ const animation = image.animate(
 
 ```css
 #motion-demo {
-  animation: move 3000ms infinite alternate ease-in-out;
-  offset-path: path('M20,20 C20,100 200,0 200,100');
+    animation: move 3000ms infinite alternate ease-in-out;
+    offset-path: path('M20,20 C20,100 200,0 200,100');
 }
 @keyframes move {
-  0% {
-    offset-distance: 0%;
-  }
-  100% {
-    offset-distance: 100%;
-  }
+    0% {
+        offset-distance: 0%;
+    }
+    100% {
+        offset-distance: 100%;
+    }
 }
 ```
 
@@ -788,31 +788,31 @@ const animation = image.animate(
 
 ```js
 const circle = new Circle({
-  style: {
-    offsetPath: new Line({
-      // 创建运动轨迹
-      style: {
-        // 不需要设置其他与轨迹无关的绘图属性
-        x1: 100,
-        y1: 100,
-        x2: 300,
-        y2: 100,
-      },
-    }),
-    r: 10,
-  },
+    style: {
+        offsetPath: new Line({
+            // 创建运动轨迹
+            style: {
+                // 不需要设置其他与轨迹无关的绘图属性
+                x1: 100,
+                y1: 100,
+                x2: 300,
+                y2: 100,
+            },
+        }),
+        r: 10,
+    },
 });
 
 circle.animate(
-  [
-    { offsetDistance: 0 }, // 变换
-    { offsetDistance: 1 },
-  ],
-  {
-    duration: 3000,
-    easing: 'ease-in-out',
-    iterations: Infinity,
-  },
+    [
+        { offsetDistance: 0 }, // 变换
+        { offsetDistance: 1 },
+    ],
+    {
+        duration: 3000,
+        easing: 'ease-in-out',
+        iterations: Infinity,
+    },
 );
 ```
 
@@ -826,14 +826,14 @@ circle.animate(
 
 ```js
 const circle = new Circle({
-  style: {
-    // 省略其他绘图属性
-    lineDash: [10, 10],
-  },
+    style: {
+        // 省略其他绘图属性
+        lineDash: [10, 10],
+    },
 });
 circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
-  duration: 500,
-  iterations: Infinity,
+    duration: 500,
+    iterations: Infinity,
 });
 ```
 
@@ -846,10 +846,10 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 ```js
 const length = path.getTotalLength();
 path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
-  duration: 3500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  iterations: Infinity,
-  direction: 'alternate',
+    duration: 3500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+    direction: 'alternate',
 });
 ```
 
@@ -872,15 +872,15 @@ G 参考了 Kute.js 中的 [CubicMorph](https://thednp.github.io/kute.js/svgCubi
 // 定义 Path
 const path1 = 'M 0,40 ...';
 const path2 = [
-  ['M', 100, 100],
-  ['L', 200, 200],
+    ['M', 100, 100],
+    ['L', 200, 200],
 ];
 
 path.animate([{ path: path1 }, { path: path2 }], {
-  duration: 2500,
-  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-  iterations: Infinity,
-  direction: 'alternate',
+    duration: 2500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+    direction: 'alternate',
 });
 ```
 
@@ -894,16 +894,16 @@ path.animate([{ path: path1 }, { path: path2 }], {
 import { Circle, convertToPath } from '@antv/g';
 
 const circle = new Circle({
-  style: {
-    cx: 50,
-    cy: 50,
-    r: 50,
-  },
+    style: {
+        cx: 50,
+        cy: 50,
+        r: 50,
+    },
 });
 const circlePath = convertToPath(circle); // 转换得到 Path 字符串
 
 path.animate([{ path: originalPath }, { path: circlePath }], {
-  duration: 2500,
+    duration: 2500,
 });
 ```
 
@@ -913,9 +913,9 @@ path.animate([{ path: originalPath }, { path: circlePath }], {
 
 ```js
 const starPath = new Path({
-  style: {
-    path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
-  },
+    style: {
+        path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+    },
 });
 starPath.scale(0.2); // 先缩放
 const pathString = convertToPath(starPath); // 再转换成 path 字符串
@@ -927,15 +927,15 @@ const pathString = convertToPath(starPath); // 再转换成 path 字符串
 
 ```js
 path.animate(
-  [
-    // 使用了三组 keyframes
-    { path: path1 },
-    { path: path2 },
-    { path: path3 },
-  ],
-  {
-    duration: 2500,
-  },
+    [
+        // 使用了三组 keyframes
+        { path: path1 },
+        { path: path2 },
+        { path: path3 },
+    ],
+    {
+        duration: 2500,
+    },
 );
 ```
 
@@ -943,15 +943,15 @@ path.animate(
 
 ```js
 const animation1 = path.animate([{ path: path1 }, { path: path2 }], {
-  duration: 1250,
-  fill: 'both',
+    duration: 1250,
+    fill: 'both',
 });
 
 animation1.finished.then(() => {
-  path.animate([{ path: path2 }, { path: path3 }], {
-    duration: 1250,
-    fill: 'both',
-  });
+    path.animate([{ path: path2 }, { path: path3 }], {
+        duration: 1250,
+        fill: 'both',
+    });
 });
 ```
 

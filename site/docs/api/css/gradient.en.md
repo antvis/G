@@ -25,7 +25,7 @@ Linear gradients are used to create an image that represents a linear gradient o
 
 The usage is exactly like CSS [linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient), but with the following differences.
 
--   The gradient direction defaults to bottom-to-top in CSS, while we use left-to-right to be consistent with Canvas / SVG.
+- The gradient direction defaults to bottom-to-top in CSS, while we use left-to-right to be consistent with Canvas / SVG.
 
 So a linear gradient with a left-to-right orientation and a rotation angle of 0 would look like this, [example](/en/examples/style/gradient/#gradient).
 
@@ -59,34 +59,33 @@ rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';
 
 Caution.
 
--   Shapes are only supported for `circle` but not for `ellipse`
--   Support for specifying `circle` radius
-
-    -   `'closest-side'` The gradient's ending shape meets the side of the box closest to its center.
-    -   `'farthest-corner'` The default value, the gradient's ending shape is sized so that it exactly meets the farthest corner of the box from its center.
-    -   `'closest-corner'` The gradient's ending shape is sized so that it exactly meets the closest corner of the box from its center.
-    -   `'farthest-side'` Similar to closest-side, except the ending shape is sized to meet the side of the box farthest from its center (or vertical and horizontal sides).
-    -   `<length>` e.g. `'radial-gradient(circle 80px at center, red 100%, blue 100%)'`
+- Shapes are only supported for `circle` but not for `ellipse`
+- Support for specifying `circle` radius
+  - `'closest-side'` The gradient's ending shape meets the side of the box closest to its center.
+  - `'farthest-corner'` The default value, the gradient's ending shape is sized so that it exactly meets the farthest corner of the box from its center.
+  - `'closest-corner'` The gradient's ending shape is sized so that it exactly meets the closest corner of the box from its center.
+  - `'farthest-side'` Similar to closest-side, except the ending shape is sized to meet the side of the box farthest from its center (or vertical and horizontal sides).
+  - `<length>` e.g. `'radial-gradient(circle 80px at center, red 100%, blue 100%)'`
 
 The following figures show the effect of `'closest-side'`, `'farthest-side'` and `80px` respectively.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*eXrBQYlLENwAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-closest-side" width="200">
-<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*C__VRJ24rVcAAAAAAAAAAAAAARQnAQ" 
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*C__VRJ24rVcAAAAAAAAAAAAAARQnAQ"
 alt="radial-gradient-farthest-side" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*3U91RYB3DukAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-size-80" width="200">
 
--   Support specifying the position of the center of the circle and positioning it relative to the upper left corner of the enclosing box, e.g. `radial-gradient(circle at 50px 50px, red, blue, green 100%)`.
-    -   `'top'` Top edge midpoint
-    -   `'left'` Left edge midpoint
-    -   `'bottom'` Bottom edge midpoint
-    -   `'right'` Right edge midpoint
-    -   `'center'` Horizontal and vertical centering
-    -   `'top left'` Left-top corner
-    -   `'left top'` Same as `'top left'`
-    -   `'top right'` Right-top corner
-    -   `'bottom left'` Left-bottom corner
-    -   `'bottom right'` Right-bottom corner
-    -   `<length> <length>` e.g. `'25% 25%'` and `'50px 50px'`
+- Support specifying the position of the center of the circle and positioning it relative to the upper left corner of the enclosing box, e.g. `radial-gradient(circle at 50px 50px, red, blue, green 100%)`.
+  - `'top'` Top edge midpoint
+  - `'left'` Left edge midpoint
+  - `'bottom'` Bottom edge midpoint
+  - `'right'` Right edge midpoint
+  - `'center'` Horizontal and vertical centering
+  - `'top left'` Left-top corner
+  - `'left top'` Same as `'top left'`
+  - `'top right'` Right-top corner
+  - `'bottom left'` Left-bottom corner
+  - `'bottom right'` Right-bottom corner
+  - `<length> <length>` e.g. `'25% 25%'` and `'50px 50px'`
 
 The following figures show the effect of `'50px 50px'`, `'top right'` and `'left'` respectively.
 
@@ -94,4 +93,4 @@ The following figures show the effect of `'50px 50px'`, `'top right'` and `'left
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*ekj4TZv0Yf4AAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-top-right" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*bXIjTaTpC2QAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-left" width="200">
 
--   Like linear gradients, it also supports multiple overlays.
+- Like linear gradients, it also supports multiple overlays.

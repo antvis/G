@@ -83,9 +83,9 @@ canvas.render();
 
 Destroy the canvas, executing the following destruction logic in turn.
 
--   If auto-rendering is enabled, stop the main rendering loop.
--   Remove the entire scene graph from the canvas, and destroy it if `destroyScenegraph` is set.
--   Destroying the rendering context.
+- If auto-rendering is enabled, stop the main rendering loop.
+- Remove the entire scene graph from the canvas, and destroy it if `destroyScenegraph` is set.
+- Destroying the rendering context.
 
 ```js
 // Destroy the canvas only, keep the scene graph

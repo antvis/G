@@ -105,42 +105,42 @@ moonOrbit.appendChild(moon);
 
 对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
 
-| 名称             | 参数               | 返回值             | 备注                                   |
-| ---------------- | ------------------ | ------------------ | -------------------------------------- |
-| translate        | `[number, number]` | 无                 | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal   | `[number, number]` | 无                 | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition      | `[number, number]` | 无                 | 设置 **世界坐标系** 下的位置           |
-| setLocalPosition | `[number, number]` | 无                 | 设置 **局部坐标系** 下的位置           |
-| getPosition      | 无                 | `[number, number]` | 获取 **世界坐标系** 下的位置           |
-| getLocalPosition | 无                 | `[number, number]` | 获取 **局部坐标系** 下的位置           |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| translate | `[number, number]` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
+| translateLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
+| setPosition | `[number, number]` | 无 | 设置 **世界坐标系** 下的位置 |
+| setLocalPosition | `[number, number]` | 无 | 设置 **局部坐标系** 下的位置 |
+| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
+| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
 
 ### 缩放
 
 和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| 名称          | 参数               | 返回值             | 备注                                           |
-| ------------- | ------------------ | ------------------ | ---------------------------------------------- |
-| scaleLocal    | `[number, number]` | 无                 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number]` | 无                 | 设置 **局部坐标系** 下的缩放比例               |
-| getScale      | 无                 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例               |
-| getLocalScale | 无                 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例               |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| scaleLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
+| setLocalScale | `[number, number]` | 无 | 设置 **局部坐标系** 下的缩放比例 |
+| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
+| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
 
 ### 旋转
 
 在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
 
-| 名称                | 参数     | 返回值   | 备注                                                                    |
-| ------------------- | -------- | -------- | ----------------------------------------------------------------------- |
-| rotateLocal         | `number` | 无       | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
-| rotate              | `number` | 无       | 在 **世界坐标系** 下，旋转一定的欧拉角                                  |
-| setEulerAngles      | `number` | 无       | 设置 **世界坐标系** 下的欧拉角                                          |
-| setLocalEulerAngles | `number` | 无       | 设置 **局部坐标系** 下的欧拉角                                          |
-| setLocalRotation    | `quat`   | 无       | 设置 **局部坐标系** 下的四元数                                          |
-| setRotation         | `quat`   | 无       | 设置 **世界坐标系** 下的四元数                                          |
-| getEulerAngles      | 无       | `number` | 获取 **世界坐标系** 下的欧拉角                                          |
-| getLocalEulerAngles | 无       | `number` | 获取 **局部坐标系** 下的欧拉角                                          |
-| getLocalRotation    | 无       | `quat`   | 获取 **局部坐标系** 下的四元数                                          |
-| getRotation         | 无       | `quat`   | 获取 **世界坐标系** 下的四元数                                          |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| rotateLocal | `number` | 无 | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
+| rotate | `number` | 无 | 在 **世界坐标系** 下，旋转一定的欧拉角 |
+| setEulerAngles | `number` | 无 | 设置 **世界坐标系** 下的欧拉角 |
+| setLocalEulerAngles | `number` | 无 | 设置 **局部坐标系** 下的欧拉角 |
+| setLocalRotation | `quat` | 无 | 设置 **局部坐标系** 下的四元数 |
+| setRotation | `quat` | 无 | 设置 **世界坐标系** 下的四元数 |
+| getEulerAngles | 无 | `number` | 获取 **世界坐标系** 下的欧拉角 |
+| getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
+| getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
+| getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
 
 上面的旋转方法都以自身位置为旋转中心，如果我们想让节点绕任意一个点旋转，可以给它创建一个父节点，将父节点移动到某个点后再旋转：
 
@@ -190,28 +190,28 @@ earthOrbit.rotateLocal(1);
 
 ### 简单节点查询
 
-| 名称            | 属性/方法 | 返回值         | 备注                                 |
-| --------------- | --------- | -------------- | ------------------------------------ |
-| parentNode      | 属性      | `Group / null` | 父节点（如有）                       |
-| children        | 属性      | `Group[]`      | 子节点列表                           |
-| firstChild      | 属性      | `Group / null` | 返回子节点列表中第一个节点（如有）   |
-| lastChild       | 属性      | `Group / null` | 返回子节点列表中最后一个节点（如有） |
-| nextSibling     | 属性      | `Group / null` | 返回后一个兄弟节点（如有）           |
-| previousSibling | 属性      | `Group / null` | 返回前一个兄弟节点（如有）           |
-| contains        | 方法      | `boolean`      | 子树中是否包含某个节点（入参）       |
+| 名称 | 属性/方法 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| parentNode | 属性 | `Group / null` | 父节点（如有） |
+| children | 属性 | `Group[]` | 子节点列表 |
+| firstChild | 属性 | `Group / null` | 返回子节点列表中第一个节点（如有） |
+| lastChild | 属性 | `Group / null` | 返回子节点列表中最后一个节点（如有） |
+| nextSibling | 属性 | `Group / null` | 返回后一个兄弟节点（如有） |
+| previousSibling | 属性 | `Group / null` | 返回前一个兄弟节点（如有） |
+| contains | 方法 | `boolean` | 子树中是否包含某个节点（入参） |
 
 ### 高级查询
 
 参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
 
-| 名称                   | 参数                  | 返回值          | 备注                            |
-| ---------------------- | --------------------- | --------------- | ------------------------------- |
-| getElementById         | `(id: string)`        | `Group / null`  | 通过 `id` 查询子节点            |
-| getElementsByName      | `(name: string)`      | `Group[]`       | 通过 `name` 查询子节点列表      |
-| getElementsByClassName | `(className: string)` | `Group[]`       | 通过 `className` 查询子节点列表 |
-| getElementsByTagName   | `(tagName: string)`   | `Group[]`       | 通过 `tagName` 查询子节点列表   |
-| querySelector          | `(selector: string)`  | `Group / null`  | 查询满足条件的第一个子节点      |
-| querySelectorAll       | `(selector: string)`  | `Group[]`       | 查询满足条件的所有子节点列表    |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| getElementById | `(id: string)` | `Group / null` | 通过 `id` 查询子节点 |
+| getElementsByName | `(name: string)` | `Group[]` | 通过 `name` 查询子节点列表 |
+| getElementsByClassName | `(className: string)` | `Group[]` | 通过 `className` 查询子节点列表 |
+| getElementsByTagName | `(tagName: string)` | `Group[]` | 通过 `tagName` 查询子节点列表 |
+| querySelector | `(selector: string)` | `Group / null` | 查询满足条件的第一个子节点 |
+| querySelectorAll | `(selector: string)` | `Group[]` | 查询满足条件的所有子节点列表 |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
 
@@ -232,18 +232,18 @@ solarSystem.querySelectorAll('[r=25]');
 
 ### 添加/删除节点
 
-| 名称         | 参数                                | 返回值  | 备注                                                 |
-| ------------ | ----------------------------------- | ------- | ---------------------------------------------------- |
-| appendChild  | `(group: Group)`                    | `Group` | 添加子节点，返回添加的节点                           |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| appendChild | `(group: Group)` | `Group` | 添加子节点，返回添加的节点 |
 | insertBefore | `(group: Group, reference?: Group)` | `Group` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| removeChild  | `(group: Group)`                    | `Group` | 删除子节点，返回被删除的节点                         |
+| removeChild | `(group: Group)` | `Group` | 删除子节点，返回被删除的节点 |
 
 ### 获取/设置属性值
 
-| 名称         | 参数                         | 返回值       | 备注                 |
-| ------------ | ---------------------------- | ------------ | -------------------- |
-| getAttribute | `(name: string)`             | `null / any` | 根据属性名获取属性值 |
-| setAttribute | `(name: string, value: any)` | 无           | 设置属性值           |
+| 名称 | 参数 | 返回值 | 备注 |
+| --- | --- | --- | --- |
+| getAttribute | `(name: string)` | `null / any` | 根据属性名获取属性值 |
+| setAttribute | `(name: string, value: any)` | 无 | 设置属性值 |
 
 ⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
 
@@ -298,9 +298,9 @@ group.setZIndex(100);
 
 ### 定义组件
 
--   使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
--   如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
--   提供例如 `useFrame` 这样的 hook，完成动画
+- 使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
+- 如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
+- 提供例如 `useFrame` 这样的 hook，完成动画
 
 ```jsx
 import React, { useRef, useState } from 'react';
@@ -359,37 +359,37 @@ ReactDOM.render(
 
 在实际使用中，如何将场景图中的节点与 HTML 结合是一个问题，尤其当 HTML 变得复杂时，就不仅仅是一个 HUD 问题了：
 
--   Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
--   SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
+- Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
+- SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
 
 因此我们应该让渲染引擎做它们擅长的事情：让 Canvas/WebGL 高效地绘制基础图形，让 HTML 来渲染复杂组件。两者之间的**联动**才是我们该关心的问题。
 
 参考 [drei](https://github.com/pmndrs/drei#html) 我们可以提供一个 HTML 容器节点。在渲染时该节点会被 G 跳过，但它的位置依然会通过场景图计算，只是最终通过修改 CSS 样式生效：
 
 ```jsx
-import { Group, Circle, Html } from '@antv/react-g-fiber';
+import { Group, Circle, HTML } from '@antv/react-g-fiber';
 
 const SolarSystem = () => (
     <Group>
         <Circle r={100} />
-        <Html prepend>
+        <HTML prepend>
             <h1>hello</h1>
             <p>world</p>
-        </Html>
+        </HTML>
     </Group>
 );
 ```
 
 该容器中的内容会添加在 `<canvas>` 之后。但毕竟是特殊节点，一些会功能受限，例如：
 
--   无法通过 `z-index` 让它夹在两个 `Circle` 之间
--   无法在内部嵌套其他基础图形节点
+- 无法通过 `z-index` 让它夹在两个 `Circle` 之间
+- 无法在内部嵌套其他基础图形节点
 
 ## WIP 结合 D3 生态
 
 选择兼容 DOM API 与 CSS 选择器，除了降低学习成本，还有一个很大的好处，那就是很容易与一些已有生态结合，例如 D3，因为大家的节点定义都是基于统一的接口。
 
-SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲染则替换成了自身实现的 Canvas/WebGL： https://spritejs.org/demo/#/d3/bar
+SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲染则替换成了自身实现的 Canvas/WebGL： <https://spritejs.org/demo/#/d3/bar>
 
 ## 旧版兼容
 
@@ -460,6 +460,6 @@ group.queryAllSelector('.link-point-left');
 
 ## 参考资料
 
--   [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
--   [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
--   [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
+- [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
+- [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
+- [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)

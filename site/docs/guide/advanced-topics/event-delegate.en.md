@@ -7,8 +7,8 @@ order: 4
 
 最终示例：
 
--   [官网示例](/zh/examples/event#delegate)
--   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
+- [官网示例](/zh/examples/event#delegate)
+- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
 
 ## 事件传播机制
 
@@ -31,7 +31,7 @@ li2.addEventListener('click', () => {});
 
 在引入事件委托之前，我们先来看看事件传播机制。由于我们完全兼容 DOM Event API，不妨借用 MDN 上的教程来说明。在下图中，当我们点击 `<video>` 元素时，会依次触发捕获（capturing）和冒泡（bubbling）两个阶段，前者从根节点一路进行到目标节点，触发路径上每个节点的 onclick 事件监听器（如有），后者则相反。
 
-https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/Building_blocks/Events
+<https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/Building_blocks/Events>
 
 ![](https://mdn.mozillademos.org/files/14075/bubbling-capturing.png)
 
@@ -53,15 +53,15 @@ ev.composedPath(); // [Rect(li1), Group(ul), Group(root), Document, Canvas];
 
 该结果是一个数组，依次展示了从事件触发的目标节点到根节点的路径，我们从后往前看：
 
--   [Canvas](/zh/api/canvas) 即画布对象，可以对应 `window`
--   [Document](/zh/api/builtin-objects/document) 文档，可以对应 `window.document`
--   [Group(root)](/zh/api/builtin-objects/document#documentelement) 文档根节点，可以对应 `window.document.documentElement`
+- [Canvas](/zh/api/canvas) 即画布对象，可以对应 `window`
+- [Document](/zh/api/builtin-objects/document) 文档，可以对应 `window.document`
+- [Group(root)](/zh/api/builtin-objects/document#documentelement) 文档根节点，可以对应 `window.document.documentElement`
 
 除了事件传播路径，事件对象上其他的常用属性有：
 
--   [target](/zh/api/event#target) 返回当前触发事件的图形
--   [currentTarget](/zh/api/event#currenttarget) 总是指向事件绑定的图形
--   各个坐标系下的[事件坐标](/zh/api/event#canvasxy)
+- [target](/zh/api/event#target) 返回当前触发事件的图形
+- [currentTarget](/zh/api/event#currenttarget) 总是指向事件绑定的图形
+- 各个坐标系下的[事件坐标](/zh/api/event#canvasxy)
 
 ## 添加事件监听器的高级用法
 

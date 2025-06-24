@@ -7,11 +7,11 @@ redirect_from:
 
 渲染器使用底层渲染 API 绘制各类图形，目前我们提供了以下渲染器，分别是：
 
--   基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
--   基于 Canvaskit / Skia 的 [g-canvaskit](/zh/api/renderer/canvaskit)
--   基于 SVG 的 [g-svg](/zh/api/renderer/svg)
--   基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
--   基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
+- 基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
+- 基于 Canvaskit / Skia 的 [g-canvaskit](/zh/api/renderer/canvaskit)
+- 基于 SVG 的 [g-svg](/zh/api/renderer/svg)
+- 基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
+- 基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
 
 渲染器由一个渲染上下文和一组[插件](/zh/plugins)组成，通过插件可以在运行时动态扩展渲染器的能力。
 

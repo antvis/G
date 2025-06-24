@@ -42,9 +42,9 @@ The x-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -52,9 +52,9 @@ The y-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### width
 
@@ -70,9 +70,9 @@ We circumvent this problem by using `<path>` instead of `<rect>` for drawing in 
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -82,9 +82,9 @@ The height of the rectangle. Supports taking **negative numbers** with the effec
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### radius
 
@@ -99,13 +99,13 @@ rect.style.radius = '0 4px 8px 16px';
 
 The following values are supported, set in the order of top left, top right, bottom right, bottom left.
 
--   `number` Uniform setting of four rounded corner radii
--   `number[]` Setting the four corner radii separately will make up the default fraction of.
-    -   `[ 1 ]` equals `[ 1, 1, 1, 1 ]`
-    -   `[ 1, 2 ]` equals `[ 1, 2, 1, 2 ]`
-    -   `[ 1, 2, 3 ]` equals `[ 1, 2, 3, 2 ]`
-    -   `[ 1, 2, 3, 4 ]`
--   `string` Similar to the CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) property, using spaces to separate
+- `number` Uniform setting of four rounded corner radii
+- `number[]` Setting the four corner radii separately will make up the default fraction of.
+  - `[ 1 ]` equals `[ 1, 1, 1, 1 ]`
+  - `[ 1, 2 ]` equals `[ 1, 2, 1, 2 ]`
+  - `[ 1, 2, 3 ]` equals `[ 1, 2, 3, 2 ]`
+  - `[ 1, 2, 3, 4 ]`
+- `string` Similar to the CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) property, using spaces to separate
 
 When actually drawn, the maximum value of the radius of the rounded corners is limited to half the maximum value of the width and height of the rectangle.
 
@@ -119,6 +119,6 @@ const [tlr, trr, brr, blr] = radius.map((r) =>
 );
 ```
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |

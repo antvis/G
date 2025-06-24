@@ -3,15 +3,15 @@ title: g-plugin-yoga
 order: -1
 ---
 
-[Yoga](https://yogalayout.com/) is a cross-platform layout engine provided by Facebook, based on Flex, with exactly the same properties as CSS Flex, so you can also read [MDN Basic Concepts of flex layout](https://developer.mozilla.org/zh- CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) for more conceptual knowledge.
+[Yoga](https://yogalayout.com/) is a cross-platform layout engine provided by Facebook, based on Flex, with exactly the same properties as CSS Flex, so you can also read [MDN Basic Concepts of flex layout](<https://developer.mozilla.org/zh-> CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) for more conceptual knowledge.
 
 Examples:
 
--   [Container-related configuration](/en/examples/plugins#yoga-container)
--   [Sub-element related configuration](/en/examples/plugins#yoga-child)
--   [Adaptive layout](/en/examples/plugins#yoga-available-space)
--   [Text Line Feed](/en/examples/plugins#yoga-text)
--   [Apply animations to relevant properties](/en/examples/plugins#yoga-animation)
+- [Container-related configuration](/en/examples/plugins#yoga-container)
+- [Sub-element related configuration](/en/examples/plugins#yoga-child)
+- [Adaptive layout](/en/examples/plugins#yoga-available-space)
+- [Text Line Feed](/en/examples/plugins#yoga-text)
+- [Apply animations to relevant properties](/en/examples/plugins#yoga-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -105,8 +105,8 @@ The Layout property is used to set the effect of its own layout in the container
 
 The following values are supported and can be used with top / right / botton / left, exactly as in CSS.
 
--   `relative` Default value, relative to the normal layout position
--   `absolute` Absolute positioning relative to the parent container
+- `relative` Default value, relative to the normal layout position
+- `absolute` Absolute positioning relative to the parent container
 
 Node1 uses `relative` in the image below left and `absolute` in the image below right for absolute positioning.
 
@@ -162,8 +162,8 @@ The data type is `[number | string, number | string, number | string, number | s
 
 The following values are supported and can be found in [CSS padding properties](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding).
 
--   Absolute pixel value, negative values are not supported, e.g. `10`
--   Percentage strings, negative values are not supported, e.g. `'50%'`, take the percentage relative to the width of **itself**
+- Absolute pixel value, negative values are not supported, e.g. `10`
+- Percentage strings, negative values are not supported, e.g. `'50%'`, take the percentage relative to the width of **itself**
 
 For example, the following two ways of writing are equivalent.
 
@@ -204,9 +204,9 @@ The data type is `[YogaSize, YogaSize, YogaSize, YogaSize]`, which sets the top-
 
 The following values are supported and can be found in [CSS margin properties](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin).
 
--   absolute pixel values, negative values are supported, e.g. `10` `-50`
--   Percentage strings, negative values are supported, e.g. `'50%'` `'-20%'`, relative to the width of the **parent element** when taking the percentage
--   `'auto'`, let the layout engine choose the right margin, can achieve the centering of the element
+- absolute pixel values, negative values are supported, e.g. `10` `-50`
+- Percentage strings, negative values are supported, e.g. `'50%'` `'-20%'`, relative to the width of the **parent element** when taking the percentage
+- `'auto'`, let the layout engine choose the right margin, can achieve the centering of the element
 
 For example, in the following figure, Node1 has set `marginRight: 10` and `marginLeft: -50` respectively.
 
@@ -247,10 +247,10 @@ From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Fl
 
 The following values are supported.
 
--   `'row'` default value
--   `'row-reverse'`
--   `'column'`
--   `'column-reverse'`
+- `'row'` default value
+- `'row-reverse'`
+- `'column'`
+- `'column-reverse'`
 
 The left image below shows the default effect, and the right image below shows the `'column''.
 
@@ -266,9 +266,9 @@ From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Fl
 
 The following values are supported.
 
--   `'wrap'`
--   `'no-wrap'` default value
--   `'wrap-reverse'`
+- `'wrap'`
+- `'no-wrap'` default value
+- `'wrap-reverse'`
 
 In this [example](/en/examples/plugins#yoga-container), you can add child elements to the container by clicking the `appendChild` button. The image on the left below shows the effect of the container's default `no-wrap` (note that the child element is compressed in width because line breaks are not allowed), and the image on the right below is set to `wrap` with automatic line breaks.
 
@@ -338,12 +338,12 @@ This property is used to align elements in the major axis direction.
 
 The following enumeration values are supported.
 
--   `'flex-start'` the default value
--   `'flex-end'`
--   `'center'`
--   `'space-between'`
--   `'space-around'`
--   `'space-evenly'`
+- `'flex-start'` the default value
+- `'flex-end'`
+- `'center'`
+- `'space-between'`
+- `'space-around'`
+- `'space-evenly'`
 
 In this [example](/en/examples/plugins#yoga-container), the effect of `center` / `space-between` / `space-around` is shown.
 
@@ -359,14 +359,14 @@ This property allows elements to be aligned in the cross-axis direction.
 
 The following enumeration values are supported.
 
--   `'stretch'` the default value
--   `'auto'`
--   `'baseline'`
--   `'center'`
--   `'flex-start'`
--   `'flex-end'`
--   `'space-between'`
--   `'space-around'`
+- `'stretch'` the default value
+- `'auto'`
+- `'baseline'`
+- `'center'`
+- `'flex-start'`
+- `'flex-end'`
+- `'space-between'`
+- `'space-around'`
 
 The following figure shows the `center` effect.
 
@@ -386,12 +386,12 @@ How the container allocates space around child elements only takes effect if [fl
 
 The following enumeration values are supported.
 
--   `'stretch'`
--   `'center'`
--   `'flex-start'` the default value
--   `'flex-end'`
--   `'space-between'`
--   `'space-around'`
+- `'stretch'`
+- `'center'`
+- `'flex-start'` the default value
+- `'flex-end'`
+- `'space-between'`
+- `'space-around'`
 
 In this [example](/en/examples/plugins#yoga-container), the `center` / `space-between` / `space-around` effects are shown in order.
 

@@ -43,10 +43,10 @@ interface CanvasOptions {
 
 各配置项含义如下：
 
--   clippingRegion 画布裁剪区域，用矩形表示
--   beforeDrawImage 在绘制画布内容前调用，适合绘制背景颜色
--   afterDrawImage 在绘制画布内容后调用，适合绘制水印
--   ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
+- clippingRegion 画布裁剪区域，用矩形表示
+- beforeDrawImage 在绘制画布内容前调用，适合绘制背景颜色
+- afterDrawImage 在绘制画布内容后调用，适合绘制水印
+- ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
 
 在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
 
@@ -155,7 +155,7 @@ const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 1
 
 # 导出 PDF
 
-如果我们还想在前端根据图片生成 PDF，可以参考：https://github.com/parallax/jsPDF
+如果我们还想在前端根据图片生成 PDF，可以参考：<https://github.com/parallax/jsPDF>
 
 # 注意事项
 
@@ -167,8 +167,8 @@ const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 1
 
 可以，如果画布中包含 [HTML](/zh/docs/api/basic/html)，目前不同的渲染器实现如下：
 
--   导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
--   导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
+- 导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+- 导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
 
 在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，左上角 Tooltip 就是一个 HTML。
 
@@ -186,4 +186,4 @@ HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-C
 
 ## toDataURL polyfill
 
-HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 有可能在某些古早浏览器上不支持，此时可以使用 polyfill： https://stackoverflow.com/a/47148969
+HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 有可能在某些古早浏览器上不支持，此时可以使用 polyfill： <https://stackoverflow.com/a/47148969>

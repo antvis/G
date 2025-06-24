@@ -141,8 +141,8 @@ export enum CompareMode {
 
 ### stencilFront & stencilBack
 
--   compare 默认使用 `CompareMode.Never`，枚举值同 `depthCompare`。
--   passOp 默认使用 `StencilOp.Keep`，支持以下枚举值：
+- compare 默认使用 `CompareMode.Never`，枚举值同 `depthCompare`。
+- passOp 默认使用 `StencilOp.Keep`，支持以下枚举值：
 
 ```js
 export enum StencilOp {
@@ -210,7 +210,7 @@ export enum BlendFactor {
 
 参数列表：
 
--   uniforms: `Record<string, number | number[] | Texture>`
+- uniforms: `Record<string, number | number[] | Texture>`
 
 例如 MeshPhongMaterial 在初始化时会添加如下：
 
@@ -419,9 +419,9 @@ for (let i = 0; i < 1000; i++) {
 
 我们尝试解决以下问题：
 
--   一套 Shader 适应不同渲染 API，例如 WebGL 1/2、WebGPU
--   Shader 开发体验，例如编辑器的高亮、智能提示
--   模块化，即 Shader chunks 的复用
+- 一套 Shader 适应不同渲染 API，例如 WebGL 1/2、WebGPU
+- Shader 开发体验，例如编辑器的高亮、智能提示
+- 模块化，即 Shader chunks 的复用
 
 ### Shader 语言选择
 
@@ -471,8 +471,8 @@ import frag from './xxx.frag';
 
 可以使用构建工具的插件/ loader 实现，例如：
 
--   babel-inline-import
--   webpack raw-loader
+- babel-inline-import
+- webpack raw-loader
 
 我们希望使用同一个构建工具打 esm / cjs / umd，另外考虑到 wasm，最终选择 rollup-plugin-glslify，并且这个插件还有另一个好处。
 
@@ -495,9 +495,9 @@ void main(void) {
 
 在构建时完成替换可以省掉 compiler 代码，现成的方案是 glslify，但需要配合构建工具，例如：
 
--   webpack <https://github.com/glslify/glslify-loader>
--   babel <https://github.com/onnovisser/babel-plugin-glsl>
--   rollup rollup-plugin-glslify 我们选择它
+- webpack <https://github.com/glslify/glslify-loader>
+- babel <https://github.com/onnovisser/babel-plugin-glsl>
+- rollup rollup-plugin-glslify 我们选择它
 
 ```glsl
 // main.frag

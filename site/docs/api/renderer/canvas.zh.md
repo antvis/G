@@ -60,10 +60,10 @@ const renderer = new Renderer({
 
 下图展示了这个思路：
 
--   当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
--   找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
--   使用 [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
--   按照 z-index 依次绘制一个矩形和圆形
+- 当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
+- 找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
+- 使用 [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
+- 按照 z-index 依次绘制一个矩形和圆形
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 该渲染器内置了以下插件：
 
--   [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
--   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
--   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
+- [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 

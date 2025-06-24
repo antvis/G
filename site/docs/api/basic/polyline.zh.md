@@ -66,8 +66,8 @@ polyline.getLocalPosition(); // [50, 50]
 
 支持以下两种写法：
 
--   `[number, number][]` 点数组
--   `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
+- `[number, number][]` 点数组
+- `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
 
 因此以下两种写法等价：
 
@@ -193,8 +193,8 @@ polyline.style.markerMid = circleMarker;
 
 参数如下：
 
--   `ratio` 必填，长度比例
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `ratio` 必填，长度比例
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 其中 `Point` 的格式为:
 
@@ -211,8 +211,8 @@ export type Point = {
 
 参数如下：
 
--   `distance` 必填，从起点出发的距离值
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `distance` 必填，从起点出发的距离值
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

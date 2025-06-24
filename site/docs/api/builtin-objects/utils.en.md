@@ -53,7 +53,7 @@ In the vast majority of cases, we can use the graphics' own transformation capab
 
 Decompose the 3x3 transformation matrix to obtain translation, scaling and rotation angles.
 
-https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
+<https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix>
 
 ```js
 const [tx, ty, scalingX, scalingY, angle] = decompose(mat3);
@@ -67,7 +67,7 @@ Get the Euler angles from `quat` or `mat4`. The method signature is as follows.
 getEuler(out: vec3, quat: quat | mat4): vec3
 ```
 
-来自：https://github.com/toji/gl-matrix/issues/329
+来自：<https://github.com/toji/gl-matrix/issues/329>
 
 ### createVec3
 
@@ -98,13 +98,13 @@ convertToPath(
 
 This method supports the following base graphics, not [Group](/en/api/basic/group) or other custom graphics.
 
--   [Circle](/en/api/basic/circle)
--   [Ellipse](/en/api/basic/ellipse)
--   [Rect](/en/api/basic/rect)
--   [Line](/en/api/basic/line)
--   [Polyline](/en/api/basic/polyline)
--   [Polygon](/en/api/basic/polygon)
--   [Path](/en/api/basic/path)
+- [Circle](/en/api/basic/circle)
+- [Ellipse](/en/api/basic/ellipse)
+- [Rect](/en/api/basic/rect)
+- [Line](/en/api/basic/line)
+- [Polyline](/en/api/basic/polyline)
+- [Polygon](/en/api/basic/polygon)
+- [Path](/en/api/basic/path)
 
 The result of the transformation is a third-order Bezier curve in the form of a string, which is easy to split, and the paths before and after the transformation are normalized to the same number of segments, and finally the control points in each segment are interpolated to achieve the animation effect.
 

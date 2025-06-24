@@ -7,8 +7,8 @@ order: 9
 
 You may have seen some applications of the rendering engine:
 
--   Babylon.js https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas
--   Three.js https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html
+- Babylon.js <https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas>
+- Three.js <https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html>
 
 We will use OffscreenCanvas in the following two scenarios, mainly using the Worker to relieve the main thread:
 
@@ -42,33 +42,33 @@ It's worth noting that OffscreenCanvas doesn't have event listening capabilities
 
 We can achieve this by:
 
-1.  Listen for interaction events on `<canvas>` and pass them to the worker via `postMessage` when triggered. Note that you can't pass a native event object like [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/ PointerEvent), it will report the following error when serializing. The correct approach is to extract the key properties of the native event object (e.g. `clientX/Y`) and pass them.
+1. Listen for interaction events on `<canvas>` and pass them to the worker via `postMessage` when triggered. Note that you can't pass a native event object like [PointerEvent](<https://developer.mozilla.org/zh-CN/docs/Web/API/> PointerEvent), it will report the following error when serializing. The correct approach is to extract the key properties of the native event object (e.g. `clientX/Y`) and pass them.
 
-```
-Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
-```
+    ```
+    Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
+    ```
 
-```js
-// 在主线程中监听 `<canvas>` 事件
-$canvas.addEventListener(
-    'pointerdown',
-    (e) => {
-        // 向 WebWorker 传递可序列化的事件对象
-        worker.triggerEvent('pointerdown', clonePointerEvent(e));
-    },
-    true,
-);
-```
+    ```js
+    // 在主线程中监听 `<canvas>` 事件
+    $canvas.addEventListener(
+        'pointerdown',
+        (e) => {
+            // 向 WebWorker 传递可序列化的事件对象
+            worker.triggerEvent('pointerdown', clonePointerEvent(e));
+        },
+        true,
+    );
+    ```
 
 2. Trigger the interaction event hook provided by the G rendering service in the worker, e.g. call the `pointerDown` hook when receiving the `pointerdown` signal from the main thread.
 
-```js
-export function triggerEvent(event, ev) {
-    if (event === 'pointerdown') {
-        canvas.getRenderingService().hooks.pointerDown.call(ev);
+    ```js
+    export function triggerEvent(event, ev) {
+        if (event === 'pointerdown') {
+            canvas.getRenderingService().hooks.pointerDown.call(ev);
+        }
     }
-}
-```
+    ```
 
 3. [cursor](/en/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
 
@@ -76,8 +76,8 @@ export function triggerEvent(event, ev) {
 
 Depending on the renderer, we offer the following server-side rendering options:
 
--   [g-canvas + node-canvas](/en/api/renderer/canvas#服务端渲染)
--   [g-svg + JSDOM](/en/api/renderer/svg#服务端渲染)
--   [g-webgl + headless-gl]()
+- [g-canvas + node-canvas](/en/api/renderer/canvas#服务端渲染)
+- [g-svg + JSDOM](/en/api/renderer/svg#服务端渲染)
+- [g-webgl + headless-gl]()
 
 We currently use them in [integration tests](https://github.com/antvis/g/tree/next/integration/__node__tests__/).

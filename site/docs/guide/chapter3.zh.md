@@ -7,9 +7,9 @@ order: 3
 
 在本节中，我们将学习如何让图形响应事件 [本节示例](/zh/examples/guide/basic/#chapter3)。其中会涉及以下 API：
 
--   使用 [addEventListener](/zh/api/event/intro#addeventlistener) 为图形添加事件监听器：
--   使用 [style](/zh/api/basic/display-object#绘图属性) 修改图形样式属性
--   使用 [translateLocal](/zh/api/basic/display-object#平移) 改变节点位置
+- 使用 [addEventListener](/zh/api/event/intro#addeventlistener) 为图形添加事件监听器：
+- 使用 [style](/zh/api/basic/display-object#绘图属性) 修改图形样式属性
+- 使用 [translateLocal](/zh/api/basic/display-object#平移) 改变节点位置
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 

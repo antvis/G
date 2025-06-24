@@ -70,9 +70,9 @@ const renderer = new Renderer({
 
 该渲染器内置了以下插件：
 
--   [g-plugin-svg-renderer](/zh/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
--   [g-plugin-svg-picker](/zh/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API 拾取图形
--   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-svg-renderer](/zh/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
+- [g-plugin-svg-picker](/zh/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API 拾取图形
+- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -100,7 +100,7 @@ const renderer = new Renderer({
 4. 正常使用 [g-svg](/zh/api/renderer/svg) 渲染器，通过 G 的 API 创建场景
 5. 使用 [xmlserializer](https://www.npmjs.com/package/xmlserializer) 将 JSDOM 序列化成字符串，保存成 SVG 图片
 
-https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js
+<https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js>
 
 ```js
 const fs = require('fs');

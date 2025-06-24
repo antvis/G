@@ -38,35 +38,35 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 可扩展的插件机制以及丰富的插件集：
 
--   渲染相关
-    -   [g-plugin-canvas-renderer](/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    -   [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
-    -   [g-plugin-svg-renderer](/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    -   [g-plugin-device-renderer](/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
-    -   [g-plugin-html-renderer](/plugins/html-renderer) 渲染 DOM 元素
-    -   [g-plugin-3d](/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-    -   [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
-    -   [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
--   拾取
-    -   [g-plugin-canvas-picker](/plugins/canvas-picker) 基于 Canvas2D
-    -   [g-plugin-svg-picker](/plugins/svg-picker) 基于 SVG
--   无障碍
-    -   [g-plugin-a11y](/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
--   交互
-    -   [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
-    -   [g-plugin-control](/plugins/control) 为 3D 场景提供相机交互
-    -   [g-plugin-dragndrop](/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
-    -   [g-plugin-annotation](/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 Fabric.js 和 Konva.js
--   物理引擎
-    -   [g-plugin-box2d](/plugins/box2d) 基于 Box2D
-    -   [g-plugin-matterjs](/plugins/matterjs) 基于 matter.js
-    -   [g-plugin-physx](/plugins/physx) 基于 PhysX
--   布局引擎
-    -   [g-plugin-yoga](/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
--   GPGPU
-    -   [g-plugin-gpgpu](/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
--   CSS 选择器
-    -   [g-plugin-css-select](/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+- 渲染相关
+  - [g-plugin-canvas-renderer](/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+  - [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+  - [g-plugin-svg-renderer](/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+  - [g-plugin-device-renderer](/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+  - [g-plugin-html-renderer](/plugins/html-renderer) 渲染 DOM 元素
+  - [g-plugin-3d](/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
+  - [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
+  - [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
+- 拾取
+  - [g-plugin-canvas-picker](/plugins/canvas-picker) 基于 Canvas2D
+  - [g-plugin-svg-picker](/plugins/svg-picker) 基于 SVG
+- 无障碍
+  - [g-plugin-a11y](/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
+- 交互
+  - [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+  - [g-plugin-control](/plugins/control) 为 3D 场景提供相机交互
+  - [g-plugin-dragndrop](/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
+  - [g-plugin-annotation](/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 Fabric.js 和 Konva.js
+- 物理引擎
+  - [g-plugin-box2d](/plugins/box2d) 基于 Box2D
+  - [g-plugin-matterjs](/plugins/matterjs) 基于 matter.js
+  - [g-plugin-physx](/plugins/physx) 基于 PhysX
+- 布局引擎
+  - [g-plugin-yoga](/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+- GPGPU
+  - [g-plugin-gpgpu](/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+- CSS 选择器
+  - [g-plugin-css-select](/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 完整 [API Spec](/api.html)。
 
@@ -176,4 +176,4 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/yi-npm-module-xing-shi-shi-yong-g-wjfux?file=/index.js)
 
-[完整 Stackblitz 例子](https://stackblitz.com/edit/vitejs-vite-nnas74?file=src/main.ts)
+[完整 StackBlitz 例子](https://stackblitz.com/edit/vitejs-vite-nnas74?file=src/main.ts)

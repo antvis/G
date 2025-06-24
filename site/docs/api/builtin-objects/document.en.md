@@ -5,14 +5,14 @@ order: 4
 
 The following inheritance relationships exist in G.
 
--   Document -> Node -> EventTarget
+- Document -> Node -> EventTarget
 
 We can analogize `Document` to `window.document` in the browser environment, e.g. in a browser.
 
--   It has a reference to `window` [defaultView](/en/api/builtin-objects/document#defaultview)
--   Access `<html>` elements via [documentElement](/en/api/builtin-objects/document#documentelement)
--   Nodes can be queried by a series of methods, such as [getElementById](/en/api/builtin-objects/document#getelementbyid)
--   Create an element by [createElement](/en/api/builtin-objects/document#createelement)
+- It has a reference to `window` [defaultView](/en/api/builtin-objects/document#defaultview)
+- Access `<html>` elements via [documentElement](/en/api/builtin-objects/document#documentelement)
+- Nodes can be queried by a series of methods, such as [getElementById](/en/api/builtin-objects/document#getelementbyid)
+- Create an element by [createElement](/en/api/builtin-objects/document#createelement)
 
 We have implemented the above browser-provided API as much as possible.
 
@@ -155,7 +155,6 @@ There are three points to note.
 1. Unlike the synchronous API provided by the browser, this method is **asynchronous** because some renderer implementations (e.g. `g-webgl`) need to be picked up via the GPU.
 2. when only the topmost graph of the point hit is needed, `elementFromPoint` should be used instead of `elementsFromPoint`, as the former is faster than the latter in most scenarios
 3. The pickup decision follows the following rules.
-
     1. Out of canvas viewport range (considering camera, not necessarily equal to canvas range) returns null.
     2. The [interactive](/en/api/basic/display-object#interactive) attribute**of the graph affects**pickup. Non-interactive graphics cannot be picked up. 3.
     3. The [visibility](/en/api/basic/display-object#visibility) attribute**of a drawing affects**pickup. Invisible shapes cannot be picked up. 4.
@@ -188,8 +187,8 @@ Caveats.
 
 Area queries, especially boundingbox-based detection, are particularly useful in scenarios such as
 
--   Dirty rectangle rendering for determining the affected area
--   Rectangle swiping for batch selection of graphics
+- Dirty rectangle rendering for determining the affected area
+- Rectangle swiping for batch selection of graphics
 
 This type of wraparound box-based detection does not need to be too precise, and is fast with spatial indexing like internal RBush.
 

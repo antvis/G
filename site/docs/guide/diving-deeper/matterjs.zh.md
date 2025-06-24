@@ -71,8 +71,8 @@ canvas.appendChild(ground);
 
 接下来我们创建一个受重力影响的“弹力球”，其中：
 
--   [density](/zh/plugins/matterjs#density) 表示物体密度，单位为千克/立方米
--   [restitution](/zh/plugins/matterjs#restitution) 表示弹力系数
+- [density](/zh/plugins/matterjs#density) 表示物体密度，单位为千克/立方米
+- [restitution](/zh/plugins/matterjs#restitution) 表示弹力系数
 
 ```js
 const circle = new Circle({

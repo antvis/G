@@ -7,7 +7,7 @@ In terms of naming convention, all plugin names start with `g-plugin-`. Let's ta
 
 ## Basic Structure
 
-https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
+<https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer>
 
 ### package.json
 
@@ -23,8 +23,8 @@ As you can see from the `peerDependencies` of `package.json`, the most core depe
 
 Opening the plugin's entry file, we can find that a plugin that inherits from `AbstractRendererPlugin` needs to implement two methods.
 
--   `init` Loading modules in containers
--   `destroy` Unloading modules in containers
+- `init` Loading modules in containers
+- `destroy` Unloading modules in containers
 
 ```js
 import { AbstractRendererPlugin, Module } from '@antv/g';

@@ -46,12 +46,12 @@ interface CanvasOptions {
 
 The meaning of each configuration item is as follows.
 
--   `clippingRegion` The clipping region of the canvas, represented by a rectangle
--   `beforeDrawImage` Called before drawing the content of the canvas, suitable for drawing the background color
--   `afterDrawImage` is called after drawing the content of the canvas, suitable for drawing watermarks
--   `ignoreElements` How to determine whether an HTMLElement in the container is ignored when exporting HTML content
+- `clippingRegion` The clipping region of the canvas, represented by a rectangle
+- `beforeDrawImage` Called before drawing the content of the canvas, suitable for drawing the background color
+- `afterDrawImage` is called after drawing the content of the canvas, suitable for drawing watermarks
+- `ignoreElements` How to determine whether an HTMLElement in the container is ignored when exporting HTML content
 
-In this [example](/en/examples/ecosystem/image-exporter/#image-exporter), we add a background color and watermark that can be drawn by passing in [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/ docs/Web/API/CanvasRenderingContext2D) can call the Canvas2D API to draw.
+In this [example](/en/examples/ecosystem/image-exporter/#image-exporter), we add a background color and watermark that can be drawn by passing in [CanvasRenderingContext2D](<https://developer.mozilla.org/en-US/> docs/Web/API/CanvasRenderingContext2D) can call the Canvas2D API to draw.
 
 ```js
 import { Rectangle } from '@antv/g';
@@ -138,14 +138,14 @@ The download behavior is achieved by creating an HTMLAnchorElement using `docume
 
 ## Export dataURL
 
-With [toCanvas](/en/plugins/image-exporter#tocanvas) we get the HTMLCanvasElement containing the canvas content, using its native method [toDataURL](https://developer.mozilla. org/en-cn/docs/Web/API/HTMLCanvasElement/toDataURL) to get the dataURL.
+With [toCanvas](/en/plugins/image-exporter#tocanvas) we get the HTMLCanvasElement containing the canvas content, using its native method [toDataURL](<https://developer.mozilla>. org/en-cn/docs/Web/API/HTMLCanvasElement/toDataURL) to get the dataURL.
 
 ```js
 const canvas = await exporter.toCanvas();
 const dataURL = canvas.toDataURL(); // data:...
 ```
 
-The [toDataURL](https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL) method allows you to specify the image format, which defaults to `image/png`, and the image quality, as described in [parameters] (https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL#%E5%8F%82%E6%95%B0).
+The [toDataURL](https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL) method allows you to specify the image format, which defaults to `image/png`, and the image quality, as described in [parameters] (<https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL#%E5%8F%82%E6%95%B0>).
 
 ## Export ImageData
 
@@ -158,7 +158,7 @@ const imageData = canvas.getContext('2d').getImageData(50, 50, 100, 100); // Ima
 
 ## Export PDF
 
-If we also want to generate PDF based on the image in the front-end, you can refer to. https://github.com/parallax/jsPDF
+If we also want to generate PDF based on the image in the front-end, you can refer to. <https://github.com/parallax/jsPDF>
 
 ## Cautions
 
@@ -170,8 +170,8 @@ The physical size of the exported image already includes resolution, i.e. for a 
 
 Yes, if the canvas contains [HTML](/en/api/basic/html), the different renderers currently implement the following.
 
--   Export SVG, which naturally contains [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
--   export other image formats, which are implemented internally using [html2canvas](https://html2canvas.hertzen.com/)
+- Export SVG, which naturally contains [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+- export other image formats, which are implemented internally using [html2canvas](https://html2canvas.hertzen.com/)
 
 In this [example](/en/examples/ecosystem/image-exporter/#image-exporter), the Tooltip in the top left corner is an HTML.
 
@@ -189,7 +189,7 @@ The export methods we provide are only for the canvas viewport range, even cropp
 
 ### toDataURL polyfill
 
-The HTMLCanvasElement's native method [toDataURL](https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL) may not be supported on some ancient browsers, in which case you can use polyfill: https://stackoverflow.com/a/47148969
+The HTMLCanvasElement's native method [toDataURL](https://developer.mozilla.org/en-CN/docs/Web/API/HTMLCanvasElement/toDataURL) may not be supported on some ancient browsers, in which case you can use polyfill: <https://stackoverflow.com/a/47148969>
 
 ### Export an animated SVG
 
@@ -202,12 +202,11 @@ In this [example](/en/examples/ecosystem/image-exporter/#animated-svg), the expo
 @keyframes u0{1.32%{transform:scale(0,1)}
 ```
 
-But it should be noted that not all properties that support animation can be converted into CSS Animations representation, such as the path property used in [Deformation animation](/en/api/animation/waapi#Deformation animation).
-In addition, in [EffectTiming](/en/api/animation/waapi#effecttiming), some configuration items are not supported by CSS Animations, so they cannot be reflected in the exported file:
+But it should be noted that not all properties that support animation can be converted into CSS Animations representation, such as the path property used in [Deformation animation](/en/api/animation/waapi#Deformation animation). In addition, in [EffectTiming](/en/api/animation/waapi#effecttiming), some configuration items are not supported by CSS Animations, so they cannot be reflected in the exported file:
 
--   [easing function](/en/api/animation/waapi#easingfunction)
--   [endDelay](/en/api/animation/waapi#enddelay)
--   [iterationStart](/en/api/animation/waapi#iterationstart)
+- [easing function](/en/api/animation/waapi#easingfunction)
+- [endDelay](/en/api/animation/waapi#enddelay)
+- [iterationStart](/en/api/animation/waapi#iterationstart)
 
 Finally, when using this feature, you need to ensure that all animation effects are paused before exporting. Only in this way can we ensure that the graphics are in the initial state at the moment of export, otherwise the state at the intermediate moment will be saved in SVG:
 

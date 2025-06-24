@@ -11,15 +11,15 @@ order: 2
 
 其中会涉及以下 API：
 
--   使用 [getCamera()](/zh/api/canvas#getcamera-camera) 获取画布相机
--   使用 [setZoom()](/zh/api/camera#setzoomzoom-number) 设置相机缩放参数
--   使用 [pan()](/zh/api/camera#pantx-number-ty-number) 平移相机
--   使用 [createLandmark()](/zh/api/camera#相机动画) 创建相机动画
+- 使用 [getCamera()](/zh/api/canvas#getcamera-camera) 获取画布相机
+- 使用 [setZoom()](/zh/api/camera#setzoomzoom-number) 设置相机缩放参数
+- 使用 [pan()](/api/camera/action#pan) 平移相机
+- 使用 [createLandmark()](/zh/api/camera#相机动画) 创建相机动画
 
 最终示例：
 
--   [官网示例](/zh/examples/perf#nodes-8k)
--   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-yong-xiang-ji-041xm?file=/index.js)
+- [官网示例](/zh/examples/perf#nodes-8k)
+- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-yong-xiang-ji-041xm?file=/index.js)
 
 ## 使用 g-webgl 渲染器
 
@@ -136,7 +136,7 @@ hammer.on('pan', (ev) => {
 });
 ```
 
-接下来让我们根据偏移量使用 [pan()](/zh/api/camera#pantx-number-ty-number) 来平移相机，需要注意的是，当我们向右拖拽鼠标想让场景向右平移时，需要让相机向左移动，这也和我们的生活常识相符：
+接下来让我们根据偏移量使用 [pan()](/api/camera/action#pan) 来平移相机，需要注意的是，当我们向右拖拽鼠标想让场景向右平移时，需要让相机向左移动，这也和我们的生活常识相符：
 
 ```js
 // 沿水平/垂直方向移动相机
@@ -173,8 +173,8 @@ mat4 MVPMatrix = ProjectionViewMatrix * ModelMatrix;
 
 除了使用 pan 平移相机，我们还可以进行以下[相机动作](/zh/api/camera#相机动作)：
 
--   [dolly()](/zh/api/camera#dollydistance-number) 沿 n 轴移动相机。正交投影下没有“近大远小”，因此不会对画面产生影响。
--   [rotate()](/zh/api/camera#rotateazimuth-number-elevation-number-roll-number) 按相机方位角旋转，逆时针方向为正。
+- [dolly()](/zh/api/camera#dollydistance-number) 沿 n 轴移动相机。正交投影下没有“近大远小”，因此不会对画面产生影响。
+- [rotate()](/zh/api/camera#rotateazimuth-number-elevation-number-roll-number) 按相机方位角旋转，逆时针方向为正。
 
 另外在 3D 场景中，我们还可以使用[透视投影](/zh/api/camera#setperspectivenear-number-far-number-fov-number-aspect-number)代替默认的正交投影。
 

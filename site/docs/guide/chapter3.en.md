@@ -7,9 +7,9 @@ In this tutorial series, we will step-by-step implement a simple visualization s
 
 In this section, we will learn how to make graphics respond to events, [example of this section](/en/examples/guide/basic/#chapter3). The following APIs will be involved：
 
--   Using [addEventListener](/en/api/event/intro#addeventlistener)
--   Using [style](/en/api/basic/display-object#drawing-properties)
--   Using [translateLocal](/en/api/basic/display-object#translation)
+- Using [addEventListener](/en/api/event/intro#addeventlistener)
+- Using [style](/en/api/basic/display-object#drawing-properties)
+- Using [translateLocal](/en/api/basic/display-object#translation)
 
 [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 

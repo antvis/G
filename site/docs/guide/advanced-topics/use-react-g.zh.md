@@ -17,8 +17,8 @@ npm i @antv/react-g
 
 react-g 提供以下内置组件，可以直接引入使用，属性和原生的 g 对象是一致的:
 
--   Container: `Canvas` and `Group`.
--   Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
+- Container: `Canvas` and `Group`.
+- Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
 
 ### 基本用法
 
@@ -86,8 +86,8 @@ export default App;
 
 ### 使用 `render` 函数可以将 react-g 的组件渲染到已有的 g 对象实例中
 
--   将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
--   意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
+- 将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
+- 意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
 
 ```tsx
 import { Canvas as GCanvas } from '@antv/g';

@@ -70,9 +70,9 @@ The renderer adds the `id` attribute when generating the SVGElement, which is us
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-svg-renderer](/en/plugins/svg-renderer) Draw shapes using SVG elements, such as `<circle>`, `<rect>`, etc.
--   [g-plugin-svg-picker](/en/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API
--   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-svg-renderer](/en/plugins/svg-renderer) Draw shapes using SVG elements, such as `<circle>`, `<rect>`, etc.
+- [g-plugin-svg-picker](/en/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 
@@ -100,7 +100,7 @@ In our [integration test](https://github.com/antvis/g/tree/next/integration/__no
 4. Normal use of [g-svg](/en/api/renderer/svg) renderer to create scenes via G's API.
 5. Use [xmlserializer](https://www.npmjs.com/package/xmlserializer) to serialize JSDOM to a string and save it as an SVG image.
 
-https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js
+<https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js>
 
 ```js
 const fs = require('fs');

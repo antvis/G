@@ -111,8 +111,8 @@ const plugin = new Plugin({
 
 用以判断拖拽中的图形是否进入 `dropzone`，支持以下两个取值：
 
--   `'pointer'` 默认值。鼠标位置进入 `dropzone` 区域则通过判定
--   `'center'` 拖拽中图形包围盒中心进入 `dropzone` 区域则通过判定
+- `'pointer'` 默认值。鼠标位置进入 `dropzone` 区域则通过判定
+- `'center'` 拖拽中图形包围盒中心进入 `dropzone` 区域则通过判定
 
 ### 修改配置项
 
@@ -148,9 +148,9 @@ const ball = new Image({
 
 此时就可以监听该图形的 drag 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是被拖拽的图形：
 
--   dragstart 在开始拖拽时触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
--   drag 在拖拽中频繁触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
--   dragend 在拖拽结束后触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
+- dragstart 在开始拖拽时触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
+- drag 在拖拽中频繁触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
+- dragend 在拖拽结束后触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
 
 drag 相关事件都是 [PointerEvents](/zh/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
 
@@ -206,10 +206,10 @@ const gate = new Image({
 
 此时就可以监听放置区域的 drag/drop 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是放置区域的图形：
 
--   dragenter 有图形被拖入该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
--   dragleave 有图形被拖离该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
--   dragover 有图形正在划过该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
--   drop 有图形放置在该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
+- dragenter 有图形被拖入该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
+- dragleave 有图形被拖离该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
+- dragover 有图形正在划过该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
+- drop 有图形放置在该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
 
 例如我们让球门监听相关事件：
 
@@ -238,17 +238,17 @@ gate.addEventListener('drop', function (e) {
 
 `drag` 系列事件与其它交互事件存在先后触发的顺序问题，以 `pointer` 系列事件为例，在一个典型的拖拽过程中，会依次触发以下事件：
 
--   `pointerdown` 按下
--   `pointermove * n` 拖动一定距离后判定通过，进入拖拽流程
--   `dragstart` 开始拖拽
--   `drag` 拖拽中
--   `pointermove`
--   `drag` 拖拽中
--   `pointermove`
--   `drag` 拖拽中
--   `pointermove`
--   `dragend` 拖拽结束
--   `pointerup` 抬起
+- `pointerdown` 按下
+- `pointermove * n` 拖动一定距离后判定通过，进入拖拽流程
+- `dragstart` 开始拖拽
+- `drag` 拖拽中
+- `pointermove`
+- `drag` 拖拽中
+- `pointermove`
+- `drag` 拖拽中
+- `pointermove`
+- `dragend` 拖拽结束
+- `pointerup` 抬起
 
 ### 与 Click 事件的关系
 

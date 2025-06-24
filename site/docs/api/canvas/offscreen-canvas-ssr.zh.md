@@ -7,8 +7,8 @@ order: 9
 
 你可能看到过一些渲染引擎的应用：
 
--   Babylon.js https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas
--   Three.js https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html
+- Babylon.js <https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas>
+- Three.js <https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html>
 
 我们在以下两个场景会使用到 OffscreenCanvas，主要利用 Worker 解放主线程压力：
 
@@ -44,31 +44,31 @@ const canvas = new Canvas({
 
 1. 监听 `<canvas>` 上的交互事件，触发后将事件通过 `postMessage` 传递给 Worker。注意这里并不能直接传递类似 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 这样的原生事件对象，在序列化时会报如下错误。正确的做法是提取原生事件对象上的关键属性（例如 `clientX/Y`）进行传递：
 
-```
-Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
-```
+    ```
+    Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
+    ```
 
-```js
-// 在主线程中监听 `<canvas>` 事件
-$canvas.addEventListener(
-    'pointerdown',
-    (e) => {
-        // 向 WebWorker 传递可序列化的事件对象
-        worker.triggerEvent('pointerdown', clonePointerEvent(e));
-    },
-    true,
-);
-```
+    ```js
+    // 在主线程中监听 `<canvas>` 事件
+    $canvas.addEventListener(
+        'pointerdown',
+        (e) => {
+            // 向 WebWorker 传递可序列化的事件对象
+            worker.triggerEvent('pointerdown', clonePointerEvent(e));
+        },
+        true,
+    );
+    ```
 
 2. 在 Worker 中触发 G 渲染服务提供的交互事件 hook，例如接收到主线程传来的 `pointerdown` 信号时调用 `pointerDown` hook：
 
-```js
-export function triggerEvent(event, ev) {
-    if (event === 'pointerdown') {
-        canvas.getRenderingService().hooks.pointerDown.call(ev);
+    ```js
+    export function triggerEvent(event, ev) {
+        if (event === 'pointerdown') {
+            canvas.getRenderingService().hooks.pointerDown.call(ev);
+        }
     }
-}
-```
+    ```
 
 3. [cursor](/zh/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。
 
@@ -76,8 +76,8 @@ export function triggerEvent(event, ev) {
 
 依据不同的渲染器，我们提供了以下服务端渲染方案：
 
--   [g-canvas + node-canvas](/zh/api/renderer/canvas#服务端渲染)
--   [g-svg + JSDOM](/zh/api/renderer/svg#服务端渲染)
--   [g-webgl + headless-gl]()
+- [g-canvas + node-canvas](/zh/api/renderer/canvas#服务端渲染)
+- [g-svg + JSDOM](/zh/api/renderer/svg#服务端渲染)
+- [g-webgl + headless-gl]()
 
 目前我们在[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/)中使用它们。
