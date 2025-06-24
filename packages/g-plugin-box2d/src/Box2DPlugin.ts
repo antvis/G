@@ -22,7 +22,7 @@ import type { Box2DBody, Box2DPluginOptions } from './interfaces';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
 
 // v2.4
-const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd/';
+const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd';
 
 // v2.3
 // enum Box2DUrl {
