@@ -73,34 +73,6 @@ export interface GlobalRuntime {
   enableStyleSyntax: boolean;
 
   enableSizeAttenuation: boolean;
-
-  // #region performance
-
-  /**
-   * Enable performance optimization for the rendering engine.
-   *
-   * ! This is an experimental feature and may not be fully stable.
-   */
-  enablePerformanceOptimization?:
-    | boolean
-    | {
-        /**
-         * Only implement bubbling propagation for necessary events.
-         * At the same time, some events will skip the process of building event objects and
-         * directly trigger events themselves.
-         */
-        enableEventOptimization?: boolean;
-        /**
-         * When enabled, elements are no longer updated in real time, but are updated uniformly before being submitted to the canvas. This is to improve performance and avoid redundant loop logic.
-         */
-        enableAttributeUpdateOptimization?: boolean;
-        /**
-         * use RIC to avoid frequent calls syncRTree
-         */
-        enableRICSyncRTree?: boolean;
-      };
-
-  // #endregion performance
 }
 
 /**

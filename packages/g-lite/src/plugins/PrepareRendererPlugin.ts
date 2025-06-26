@@ -20,7 +20,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   isFirstTimeRenderingFinished = false;
 
   apply(context: RenderingPluginContext) {
-    const { renderingService, renderingContext, rBushRoot } = context;
+    const { config, renderingService, renderingContext, rBushRoot } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     this.rBush = rBushRoot;
@@ -86,6 +86,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const ric =
       runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
+    const enableRICSyncRTree = config.future?.experimentalRICSyncRTree === true;
+
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       if (this.isFirstTimeRendering) {
         this.isFirstTimeRendering = false;
@@ -95,9 +97,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
           this.isFirstTimeRenderingFinished = true;
         });
       } else if (
-        (runtime.enablePerformanceOptimization ||
-          (typeof runtime.enablePerformanceOptimization === 'object' &&
-            runtime.enablePerformanceOptimization?.enableRICSyncRTree)) &&
+        enableRICSyncRTree &&
         runtime.globalThis.requestIdleCallback &&
         runtime.globalThis.cancelIdleCallback
       ) {

@@ -150,15 +150,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     if (detached) {
-      const enableEventOptimization =
-        runtime.enablePerformanceOptimization === true ||
-        // @ts-ignore
-        runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+      const enableCancelEventPropagation =
+        parent.ownerDocument?.defaultView?.getConfig()?.future
+          ?.experimentalCancelEventPropagation === true;
 
       child.dispatchEvent(
         reparentEvent,
-        enableEventOptimization,
-        enableEventOptimization,
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
       );
     }
   }
@@ -811,11 +810,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }[],
   ): boolean {
     const enableAttributeUpdateOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // prettier-ignore
-      runtime.enablePerformanceOptimization
-      // @ts-ignore
-            ?.enableAttributeUpdateOptimization === true;
+      element.ownerDocument?.defaultView?.getConfig()?.future
+        ?.experimentalAttributeUpdateOptimization === true;
     const parent = ancestors[ancestors.length - 1];
     // parent nodes affect child nodes
     const transformDirty =
@@ -919,11 +915,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   private dirtifyWorldInternal(element: INode, transform: Transform) {
     const enableAttributeUpdateOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // prettier-ignore
-      runtime.enablePerformanceOptimization
-      // @ts-ignore
-            ?.enableAttributeUpdateOptimization === true;
+      element.ownerDocument?.defaultView?.getConfig()?.future
+        ?.experimentalAttributeUpdateOptimization === true;
 
     if (!transform.dirtyFlag) {
       transform.dirtyFlag = true;
@@ -942,11 +935,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
   dirtyToRoot(element: INode, affectChildren = false) {
     let p = element;
     const enableAttributeUpdateOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // prettier-ignore
-      runtime.enablePerformanceOptimization
-      // @ts-ignore
-        ?.enableAttributeUpdateOptimization === true;
+      element.ownerDocument?.defaultView?.getConfig()?.future
+        ?.experimentalAttributeUpdateOptimization === true;
 
     while (p) {
       (p as Element).dirty?.(true, true);
@@ -989,16 +979,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   triggerPendingEvents() {
     const triggered = new Set<DisplayObject>();
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
-    const enableAttributeUpdateOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // prettier-ignore
-      runtime.enablePerformanceOptimization
-      // @ts-ignore
-        ?.enableAttributeUpdateOptimization === true;
+    let enableCancelEventPropagation: boolean;
+    let enableAttributeUpdateOptimization: boolean;
 
     const trigger = (element: DisplayObject, detail) => {
       if (
@@ -1014,10 +996,16 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (element.isMutationObserved) {
         element.dispatchEvent(this.boundsChangedEvent);
       } else {
+        if (enableCancelEventPropagation === undefined) {
+          enableCancelEventPropagation =
+            element.ownerDocument.defaultView?.getConfig()?.future
+              ?.experimentalCancelEventPropagation === true;
+        }
+
         element.ownerDocument.defaultView.dispatchEvent(
           this.boundsChangedEvent,
           true,
-          enableEventOptimization,
+          enableCancelEventPropagation,
         );
       }
 
@@ -1027,6 +1015,12 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.pendingEvents.forEach((affectChildren, element) => {
       if ((element.nodeName as Shape) === Shape.FRAGMENT) {
         return;
+      }
+
+      if (enableAttributeUpdateOptimization === undefined) {
+        enableAttributeUpdateOptimization =
+          element.ownerDocument?.defaultView?.getConfig()?.future
+            ?.experimentalAttributeUpdateOptimization === true;
       }
 
       $triggerPendingEvents_detail.affectChildren = affectChildren;
@@ -1090,10 +1084,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       return;
     }
 
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      object.ownerDocument?.defaultView?.getConfig()?.future
+        ?.experimentalCancelEventPropagation;
 
     Object.keys(dependencyMap).forEach((name) => {
       dependencyMap[name].forEach((target) => {
@@ -1110,8 +1103,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
             this,
             this,
           ),
-          enableEventOptimization,
-          enableEventOptimization,
+          enableCancelEventPropagation,
+          enableCancelEventPropagation,
         );
 
         if (target.isCustomElement && target.isConnected) {

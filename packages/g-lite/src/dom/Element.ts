@@ -277,17 +277,16 @@ export class Element<
   }
 
   removeChild<T extends INode>(child: T): T {
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      this.ownerDocument?.defaultView?.getConfig().future
+        ?.experimentalCancelEventPropagation === true;
 
     // should emit on itself before detach
     removedEvent.relatedNode = this as IElement;
     child.dispatchEvent(
       removedEvent,
-      enableEventOptimization,
-      enableEventOptimization,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
     );
 
     if (child.ownerDocument?.defaultView) {
@@ -473,10 +472,9 @@ export class Element<
   }
 
   destroy() {
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      this.ownerDocument?.defaultView?.getConfig().future
+        ?.experimentalCancelEventPropagation === true;
 
     // fix https://github.com/antvis/G/issues/1813
     this.destroyChildren();
@@ -484,8 +482,8 @@ export class Element<
     // destroy itself before remove
     this.dispatchEvent(
       destroyEvent,
-      enableEventOptimization,
-      enableEventOptimization,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
     );
 
     // remove from scenegraph first

@@ -1,17 +1,10 @@
 import * as lil from 'lil-gui';
-import {
-  type Canvas,
-  Rect,
-  Group,
-  CanvasEvent,
-  ElementEvent,
-  runtime,
-} from '@antv/g';
-
-runtime.enablePerformanceOptimization = false;
+import { type Canvas, Rect, Group, CanvasEvent, ElementEvent } from '@antv/g';
 
 export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
   const { canvas, gui } = context;
+  const futureFlags =
+    canvas.getConfig().future || (canvas.getConfig().future = {});
   console.log(canvas);
 
   await canvas.ready;
@@ -117,16 +110,19 @@ export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
     objectCount: count,
     enableRenderingOptimization: canvas.getConfig().renderer.getConfig()
       .enableRenderingOptimization,
-    enablePerformanceOptimization: runtime.enablePerformanceOptimization,
+    enableAttributeUpdateOptimization:
+      futureFlags.experimentalAttributeUpdateOptimization || false,
   };
 
   gui.add(observeConfig, 'objectCount').onChange((value) => {
     count = value;
     render();
   });
-  gui.add(observeConfig, 'enablePerformanceOptimization').onChange((value) => {
-    runtime.enablePerformanceOptimization = value;
-  });
+  gui
+    .add(observeConfig, 'enableAttributeUpdateOptimization')
+    .onChange((value) => {
+      futureFlags.experimentalAttributeUpdateOptimization = value;
+    });
   gui.add(observeConfig, 'enableRenderingOptimization').onChange((value) => {
     canvas.getConfig().renderer.getConfig().enableRenderingOptimization = value;
   });

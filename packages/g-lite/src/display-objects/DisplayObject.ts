@@ -310,17 +310,15 @@ export class DisplayObject<
       if (this.isMutationObserved) {
         this.dispatchEvent(attrModifiedEvent);
       } else {
-        const enableEventOptimization =
-          runtime.enablePerformanceOptimization === true ||
-          // @ts-ignore
-          runtime.enablePerformanceOptimization?.enableEventOptimization ===
-            true;
+        const enableCancelEventPropagation =
+          this.ownerDocument.defaultView.getConfig().future
+            ?.experimentalCancelEventPropagation === true;
 
         attrModifiedEvent.target = this;
         this.ownerDocument.defaultView.dispatchEvent(
           attrModifiedEvent,
           true,
-          enableEventOptimization,
+          enableCancelEventPropagation,
         );
       }
     }

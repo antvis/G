@@ -1,25 +1,21 @@
-import {
-  Canvas,
-  ElementEvent,
-  Rect,
-  Group,
-  EventTarget,
-  runtime,
-} from '@antv/g';
+import { Canvas, Rect, Group } from '@antv/g';
 import * as tinybench from 'tinybench';
+import * as lil from 'lil-gui';
 
 /**
  * 元素高频销毁与实例化性能测试
  */
-export async function destroyEvent(context: { canvas: Canvas }) {
-  const { canvas } = context;
-  console.log(canvas);
+export async function destroyEvent(context: { canvas: Canvas; gui: lil.GUI }) {
+  const { canvas, gui } = context;
+  const futureFlags =
+    canvas.getConfig().future || (canvas.getConfig().future = {});
+  console.log(canvas, futureFlags);
 
   await canvas.ready;
 
   const { width, height } = canvas.getConfig();
   const root = new Group();
-  let count = 2e2;
+  let count = 1e3;
   let rects = [];
 
   function render() {
@@ -53,14 +49,19 @@ export async function destroyEvent(context: { canvas: Canvas }) {
 
   // benchmark
   // ----------
-  const bench = new tinybench.Bench({ name: 'event benchmark', time: 1e2 });
+  const bench = new tinybench.Bench({
+    name: 'experimentalCancelEventPropagation benchmark',
+    time: 1e3,
+  });
 
-  bench.add('0', async () => {
-    runtime.enablePerformanceOptimization = false;
+  bench.add('default', async () => {
+    futureFlags.experimentalCancelEventPropagation = false;
+    futureFlags.experimentalRICSyncRTree = false;
     render();
   });
-  bench.add('1', async () => {
-    runtime.enablePerformanceOptimization = true;
+  bench.add('enable', async () => {
+    futureFlags.experimentalCancelEventPropagation = true;
+    futureFlags.experimentalRICSyncRTree = true;
     render();
   });
 
@@ -72,4 +73,37 @@ export async function destroyEvent(context: { canvas: Canvas }) {
   console.log(bench.tasks);
 
   // ----------
+
+  // GUI
+  const observeConfig = {
+    objectCount: count,
+    enableTick: false,
+    experimentalCancelEventPropagation:
+      futureFlags.experimentalCancelEventPropagation || false,
+    experimentalRICSyncRTree: futureFlags.experimentalRICSyncRTree || false,
+  };
+
+  gui.add(observeConfig, 'objectCount').onChange((value) => {
+    count = value;
+    render();
+  });
+  gui.add(observeConfig, 'enableTick').onChange((value) => {
+    observeConfig.enableTick = value;
+  });
+  gui
+    .add(observeConfig, 'experimentalCancelEventPropagation')
+    .onChange((value) => {
+      futureFlags.experimentalCancelEventPropagation = value;
+    });
+  gui.add(observeConfig, 'experimentalRICSyncRTree').onChange((value) => {
+    futureFlags.experimentalRICSyncRTree = value;
+  });
+
+  function tick() {
+    if (observeConfig.enableTick) {
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
 }

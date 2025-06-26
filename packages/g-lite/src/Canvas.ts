@@ -357,16 +357,14 @@ export class Canvas extends EventTarget implements ICanvas {
   destroy(cleanUp = true, skipTriggerEvent?: boolean) {
     memoize.clearCache();
 
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      this.getConfig().future?.experimentalCancelEventPropagation === true;
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(
         new CustomEvent(CanvasEvent.BEFORE_DESTROY),
-        enableEventOptimization,
-        enableEventOptimization,
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
       );
     }
     if (this.frameId) {
@@ -396,8 +394,8 @@ export class Canvas extends EventTarget implements ICanvas {
     if (!skipTriggerEvent) {
       this.dispatchEvent(
         new CustomEvent(CanvasEvent.AFTER_DESTROY),
-        enableEventOptimization,
-        enableEventOptimization,
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
       );
     }
 
@@ -455,15 +453,13 @@ export class Canvas extends EventTarget implements ICanvas {
       camera.setAspect(width / height);
     }
 
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      canvasConfig.future?.experimentalCancelEventPropagation === true;
 
     this.dispatchEvent(
       new CustomEvent(CanvasEvent.RESIZE, { width, height }),
-      enableEventOptimization,
-      enableEventOptimization,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
     );
   }
 
@@ -503,15 +499,13 @@ export class Canvas extends EventTarget implements ICanvas {
       afterRenderEvent.detail = frame;
     }
 
-    const enableEventOptimization =
-      runtime.enablePerformanceOptimization === true ||
-      // @ts-ignore
-      runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+    const enableCancelEventPropagation =
+      this.getConfig().future?.experimentalCancelEventPropagation === true;
 
     this.dispatchEvent(
       beforeRenderEvent,
-      enableEventOptimization,
-      enableEventOptimization,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
     );
 
     const renderingService = this.getRenderingService();
@@ -520,15 +514,15 @@ export class Canvas extends EventTarget implements ICanvas {
       // @see https://github.com/antvis/G/issues/1268
       this.dispatchEvent(
         rerenderEvent,
-        enableEventOptimization,
-        enableEventOptimization,
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
       );
     });
 
     this.dispatchEvent(
       afterRenderEvent,
-      enableEventOptimization,
-      enableEventOptimization,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
     );
   }
 
@@ -600,32 +594,30 @@ export class Canvas extends EventTarget implements ICanvas {
     this.context.renderingService.init(() => {
       this.inited = true;
 
-      const enableEventOptimization =
-        runtime.enablePerformanceOptimization === true ||
-        // @ts-ignore
-        runtime.enablePerformanceOptimization?.enableEventOptimization === true;
+      const enableCancelEventPropagation =
+        this.getConfig().future?.experimentalCancelEventPropagation === true;
 
       if (firstContentfullPaint) {
         if (async) {
           this.requestAnimationFrame(() => {
             this.dispatchEvent(
               new CustomEvent(CanvasEvent.READY),
-              enableEventOptimization,
-              enableEventOptimization,
+              enableCancelEventPropagation,
+              enableCancelEventPropagation,
             );
           });
         } else {
           this.dispatchEvent(
             new CustomEvent(CanvasEvent.READY),
-            enableEventOptimization,
-            enableEventOptimization,
+            enableCancelEventPropagation,
+            enableCancelEventPropagation,
           );
         }
       } else {
         this.dispatchEvent(
           new CustomEvent(CanvasEvent.RENDERER_CHANGED),
-          enableEventOptimization,
-          enableEventOptimization,
+          enableCancelEventPropagation,
+          enableCancelEventPropagation,
         );
       }
 
@@ -694,14 +686,11 @@ export class Canvas extends EventTarget implements ICanvas {
       if (parent.isMutationObserved) {
         parent.dispatchEvent(unmountedEvent);
       } else {
-        const enableEventOptimization =
-          runtime.enablePerformanceOptimization === true ||
-          // @ts-ignore
-          runtime.enablePerformanceOptimization?.enableEventOptimization ===
-            true;
+        const enableCancelEventPropagation =
+          this.getConfig().future?.experimentalCancelEventPropagation === true;
 
         unmountedEvent.target = parent;
-        this.dispatchEvent(unmountedEvent, true, enableEventOptimization);
+        this.dispatchEvent(unmountedEvent, true, enableCancelEventPropagation);
       }
 
       // skip document.documentElement
@@ -732,14 +721,16 @@ export class Canvas extends EventTarget implements ICanvas {
           if (child.isMutationObserved) {
             child.dispatchEvent(mountedEvent);
           } else {
-            const enableEventOptimization =
-              runtime.enablePerformanceOptimization === true ||
-              // @ts-ignore
-              runtime.enablePerformanceOptimization?.enableEventOptimization ===
-                true;
+            const enableCancelEventPropagation =
+              this.getConfig().future?.experimentalCancelEventPropagation ===
+              true;
 
             mountedEvent.target = child;
-            this.dispatchEvent(mountedEvent, true, enableEventOptimization);
+            this.dispatchEvent(
+              mountedEvent,
+              true,
+              enableCancelEventPropagation,
+            );
           }
         }
       }
