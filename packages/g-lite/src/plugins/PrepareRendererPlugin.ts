@@ -13,21 +13,19 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private rBush: RBush<RBushNodeAABB>;
 
   private syncTasks = new Map<DisplayObject, boolean>();
-
+  private ricSyncRTreeId: number;
   private isFirstTimeRendering = true;
   private syncing = false;
 
   isFirstTimeRenderingFinished = false;
 
   apply(context: RenderingPluginContext) {
-    const { renderingService, renderingContext, rBushRoot } = context;
+    const { config, renderingService, renderingContext, rBushRoot } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     this.rBush = rBushRoot;
 
     const handleAttributeChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      object.renderable.dirty = true;
       renderingService.dirtify();
     };
 
@@ -51,13 +49,14 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { rBushNode } = object;
-      if (rBushNode.aabb) {
+
+      if (rBushNode?.aabb) {
         this.rBush.remove(rBushNode.aabb);
       }
 
       this.syncTasks.delete(object);
 
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      runtime.sceneGraphService.dirtyToRoot(object);
       renderingService.dirtify();
     };
 
@@ -87,6 +86,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const ric =
       runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
+    const enableRICSyncRTree = config.future?.experimentalRICSyncRTree === true;
+
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       if (this.isFirstTimeRendering) {
         this.isFirstTimeRendering = false;
@@ -95,6 +96,15 @@ export class PrepareRendererPlugin implements RenderingPlugin {
           this.syncRTree(true);
           this.isFirstTimeRenderingFinished = true;
         });
+      } else if (
+        enableRICSyncRTree &&
+        runtime.globalThis.requestIdleCallback &&
+        runtime.globalThis.cancelIdleCallback
+      ) {
+        runtime.globalThis.cancelIdleCallback(this.ricSyncRTreeId);
+        this.ricSyncRTreeId = runtime.globalThis.requestIdleCallback(() =>
+          this.syncRTree(),
+        );
       } else {
         this.syncRTree();
       }

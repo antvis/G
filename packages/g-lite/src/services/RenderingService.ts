@@ -97,6 +97,9 @@ export class RenderingService {
      * called after every dirty object get rendered
      */
     afterRender: new SyncHook<[DisplayObject]>(),
+    /**
+     * commit - draw the result on the canvas
+     */
     endFrame: new SyncHook<[XRFrame]>(),
     destroy: new SyncHook<[]>(),
     /**
@@ -187,8 +190,9 @@ export class RenderingService {
         renderingContext.renderReasons.size === 1 &&
         renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
       const shouldTriggerRenderHooks =
-        !canvasConfig.disableRenderHooks ||
-        !(canvasConfig.disableRenderHooks && onlyCameraChanged);
+        !canvasConfig.disableRenderHooks || !onlyCameraChanged;
+
+      this.hooks.beginFrame.call(frame);
 
       if (shouldTriggerRenderHooks) {
         this.renderDisplayObject(
@@ -198,18 +202,8 @@ export class RenderingService {
         );
       }
 
-      this.hooks.beginFrame.call(frame);
-
-      if (shouldTriggerRenderHooks) {
-        renderingContext.renderListCurrentFrame.forEach((object) => {
-          this.hooks.beforeRender.call(object);
-          this.hooks.render.call(object);
-          this.hooks.afterRender.call(object);
-        });
-      }
-
       this.hooks.endFrame.call(frame);
-      renderingContext.renderListCurrentFrame = [];
+
       renderingContext.renderReasons.clear();
 
       rerenderCallback();
@@ -239,19 +233,19 @@ export class RenderingService {
           ? object
           : null
         : object;
+      let objectToRender = null as typeof objectChanged;
 
       if (objectChanged) {
-        const objectToRender = enableCulling
+        objectToRender = enableCulling
           ? self.hooks.cull.call(objectChanged, self.context.camera)
           : objectChanged;
 
         if (objectToRender) {
           self.stats.rendered += 1;
-          renderingContext.renderListCurrentFrame.push(objectToRender);
         }
       }
 
-      renderable.dirty = false;
+      object.dirty(false);
       sortable.renderOrder = self.zIndexCounter;
 
       self.zIndexCounter += 1;
@@ -263,6 +257,13 @@ export class RenderingService {
         sortable.dirty = false;
         sortable.dirtyChildren = [];
         sortable.dirtyReason = undefined;
+      }
+
+      // trigger render hooks
+      if (objectToRender) {
+        self.hooks.beforeRender.call(objectToRender);
+        self.hooks.render.call(objectToRender);
+        self.hooks.afterRender.call(objectToRender);
       }
     }
 

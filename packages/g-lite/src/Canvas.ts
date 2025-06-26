@@ -92,6 +92,7 @@ export class Canvas extends EventTarget implements ICanvas {
   devicePixelRatio: ICanvas['devicePixelRatio'];
   requestAnimationFrame: ICanvas['requestAnimationFrame'];
   cancelAnimationFrame: ICanvas['cancelAnimationFrame'];
+  createImage: ICanvas['createImage'];
   supportsTouchEvents: ICanvas['supportsTouchEvents'];
   supportsPointerEvents: ICanvas['supportsPointerEvents'];
   isTouchEvent: ICanvas['isTouchEvent'];
@@ -164,6 +165,7 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame ?? (raf.bind(runtime.globalThis) as typeof raf);
     this.cancelAnimationFrame =
       cancelAnimationFrame ?? (caf.bind(runtime.globalThis) as typeof caf);
+    this.createImage = createImage ?? (() => new window.Image());
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
     this.supportsTouchEvents =
@@ -206,12 +208,12 @@ export class Canvas extends EventTarget implements ICanvas {
       devicePixelRatio: dpr,
       requestAnimationFrame: this.requestAnimationFrame,
       cancelAnimationFrame: this.cancelAnimationFrame,
+      createImage: this.createImage,
       supportsTouchEvents: this.supportsTouchEvents,
       supportsPointerEvents: this.supportsPointerEvents,
       isTouchEvent: this.isTouchEvent,
       isMouseEvent: this.isMouseEvent,
       dblClickSpeed: dblClickSpeed ?? 200,
-      createImage: createImage ?? (() => new window.Image()),
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
@@ -228,7 +230,7 @@ export class Canvas extends EventTarget implements ICanvas {
        * the root node in scene graph
        */
       root: this.document.documentElement,
-      renderListCurrentFrame: [],
+
       unculledEntities: [],
 
       renderReasons: new Set(),
@@ -355,8 +357,15 @@ export class Canvas extends EventTarget implements ICanvas {
   destroy(cleanUp = true, skipTriggerEvent?: boolean) {
     memoize.clearCache();
 
+    const enableCancelEventPropagation =
+      this.getConfig().future?.experimentalCancelEventPropagation === true;
+
     if (!skipTriggerEvent) {
-      this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
+      this.dispatchEvent(
+        new CustomEvent(CanvasEvent.BEFORE_DESTROY),
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
+      );
     }
     if (this.frameId) {
       this.cancelAnimationFrame(this.frameId);
@@ -383,7 +392,11 @@ export class Canvas extends EventTarget implements ICanvas {
     }
 
     if (!skipTriggerEvent) {
-      this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
+      this.dispatchEvent(
+        new CustomEvent(CanvasEvent.AFTER_DESTROY),
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
+      );
     }
 
     const clearEventRetain = (event: CustomEvent | MutationEvent) => {
@@ -440,7 +453,14 @@ export class Canvas extends EventTarget implements ICanvas {
       camera.setAspect(width / height);
     }
 
-    this.dispatchEvent(new CustomEvent(CanvasEvent.RESIZE, { width, height }));
+    const enableCancelEventPropagation =
+      canvasConfig.future?.experimentalCancelEventPropagation === true;
+
+    this.dispatchEvent(
+      new CustomEvent(CanvasEvent.RESIZE, { width, height }),
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
+    );
   }
 
   // proxy to document.documentElement
@@ -479,16 +499,31 @@ export class Canvas extends EventTarget implements ICanvas {
       afterRenderEvent.detail = frame;
     }
 
-    this.dispatchEvent(beforeRenderEvent);
+    const enableCancelEventPropagation =
+      this.getConfig().future?.experimentalCancelEventPropagation === true;
+
+    this.dispatchEvent(
+      beforeRenderEvent,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
+    );
 
     const renderingService = this.getRenderingService();
     renderingService.render(this.getConfig(), frame, () => {
       // trigger actual rerender event
       // @see https://github.com/antvis/G/issues/1268
-      this.dispatchEvent(rerenderEvent);
+      this.dispatchEvent(
+        rerenderEvent,
+        enableCancelEventPropagation,
+        enableCancelEventPropagation,
+      );
     });
 
-    this.dispatchEvent(afterRenderEvent);
+    this.dispatchEvent(
+      afterRenderEvent,
+      enableCancelEventPropagation,
+      enableCancelEventPropagation,
+    );
   }
 
   private run() {
@@ -559,16 +594,31 @@ export class Canvas extends EventTarget implements ICanvas {
     this.context.renderingService.init(() => {
       this.inited = true;
 
+      const enableCancelEventPropagation =
+        this.getConfig().future?.experimentalCancelEventPropagation === true;
+
       if (firstContentfullPaint) {
         if (async) {
           this.requestAnimationFrame(() => {
-            this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+            this.dispatchEvent(
+              new CustomEvent(CanvasEvent.READY),
+              enableCancelEventPropagation,
+              enableCancelEventPropagation,
+            );
           });
         } else {
-          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+          this.dispatchEvent(
+            new CustomEvent(CanvasEvent.READY),
+            enableCancelEventPropagation,
+            enableCancelEventPropagation,
+          );
         }
       } else {
-        this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+        this.dispatchEvent(
+          new CustomEvent(CanvasEvent.RENDERER_CHANGED),
+          enableCancelEventPropagation,
+          enableCancelEventPropagation,
+        );
       }
 
       if (this.readyPromise) {
@@ -577,12 +627,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
       if (!firstContentfullPaint) {
         this.getRoot().forEach((node) => {
-          const { renderable } = node as Element;
-          if (renderable) {
-            renderable.renderBoundsDirty = true;
-            renderable.boundsDirty = true;
-            renderable.dirty = true;
-          }
+          (node as Element).dirty?.(true, true);
         });
       }
 
@@ -641,8 +686,11 @@ export class Canvas extends EventTarget implements ICanvas {
       if (parent.isMutationObserved) {
         parent.dispatchEvent(unmountedEvent);
       } else {
+        const enableCancelEventPropagation =
+          this.getConfig().future?.experimentalCancelEventPropagation === true;
+
         unmountedEvent.target = parent;
-        this.dispatchEvent(unmountedEvent, true);
+        this.dispatchEvent(unmountedEvent, true, enableCancelEventPropagation);
       }
 
       // skip document.documentElement
@@ -673,8 +721,16 @@ export class Canvas extends EventTarget implements ICanvas {
           if (child.isMutationObserved) {
             child.dispatchEvent(mountedEvent);
           } else {
+            const enableCancelEventPropagation =
+              this.getConfig().future?.experimentalCancelEventPropagation ===
+              true;
+
             mountedEvent.target = child;
-            this.dispatchEvent(mountedEvent, true);
+            this.dispatchEvent(
+              mountedEvent,
+              true,
+              enableCancelEventPropagation,
+            );
           }
         }
       }

@@ -37,9 +37,7 @@ import { mergeTransforms, parseTransformUnmemoize } from '../parser/transform';
  */
 export class CSSPropertyTransform
   implements
-    Partial<
-      CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>
-    >
+    Partial<CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>>
 {
   parser = parseTransformUnmemoize;
 
