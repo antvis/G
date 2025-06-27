@@ -29,9 +29,9 @@ line1.getLocalPosition(); // [200, 100]
 
 For the above line as `(200, 100)`. When we want to move this line 100 distance to the right along the X-axis, we can do three things:
 
--   Use [translate]() to translate a relative distance in the world coordinate system
--   Use [setPosition]() to set the absolute coordinates in the world coordinate system
--   Directly modify the x1/x2 property in the line definition
+- Use [translate]() to translate a relative distance in the world coordinate system
+- Use [setPosition]() to set the absolute coordinates in the world coordinate system
+- Directly modify the x1/x2 property in the line definition
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -74,9 +74,9 @@ The x-axis coordinate of the first endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y1
 
@@ -84,17 +84,17 @@ The y-axis coordinate of the first endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### z1
 
 The z-axis coordinate of the first endpoint in the local coordinate system.
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### x2
 
@@ -102,9 +102,9 @@ The x-axis coordinate of the second endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y2
 
@@ -112,17 +112,17 @@ The y-axis coordinate of the second endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### z2
 
 The z-axis coordinate of the second endpoint in the local coordinate system.
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -173,7 +173,7 @@ const imageMarker = new Image({
     style: {
         width: 50,
         height: 50,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
@@ -236,16 +236,16 @@ In [example](/en/examples/shape/line#marker), the endpoints of the line coincide
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 Adjusts the position of the marker graphic at the "end point".
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Methods
 
@@ -265,8 +265,8 @@ Returns the point along the path at a given distance, controlled by a second opt
 
 The parameters are as follows.
 
--   `distance` mandatory, the distance value
--   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
+- `distance` mandatory, the distance value
+- `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 where `Point` has the format:
 
@@ -291,8 +291,8 @@ Get the coordinates of the point on the line in the local or world coordinate sy
 
 The parameters are as follows.
 
--   `ratio` mandatory, the length ratio
--   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+- `ratio` mandatory, the length ratio
+- `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
 
 For example, to get the midpoint of the line defined above.
 

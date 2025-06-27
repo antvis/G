@@ -29,9 +29,9 @@ line1.getLocalPosition(); // [200, 100]
 
 对于上面的直线为 `(200, 100)`。当我们想沿 X 轴向右移动该直线 100 距离时，可以有以下三种做法：
 
--   使用 translate 在世界坐标系下平移一段相对距离
--   使用 setPosition 设置世界坐标系下的绝对坐标
--   直接修改直线定义中的 x1/x2 属性
+- 使用 translate 在世界坐标系下平移一段相对距离
+- 使用 setPosition 设置世界坐标系下的绝对坐标
+- 直接修改直线定义中的 x1/x2 属性
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -74,9 +74,9 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y1
 
@@ -84,17 +84,17 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### z1
 
 局部坐标系下，第一个端点的 z 轴坐标。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### x2
 
@@ -102,9 +102,9 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y2
 
@@ -112,17 +112,17 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### z2
 
 局部坐标系下，第二个端点的 z 轴坐标。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -173,7 +173,7 @@ const imageMarker = new Image({
     style: {
         width: 50,
         height: 50,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
@@ -236,16 +236,16 @@ line.childNodes[0].style.stroke = 'red';
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 调整 “终止点” 处标记图形的位置，正偏移量向内，负偏移量向外。
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ## 方法
 
@@ -265,8 +265,8 @@ line.getTotalLength(); // 200
 
 参数如下：
 
--   `distance` 必填，距离值
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `distance` 必填，距离值
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 其中 `Point` 的格式为:
 
@@ -291,8 +291,8 @@ line.getPointAtLength(100); // Point {x: 300, y: 100}
 
 参数如下：
 
--   `ratio` 必填，长度比例
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `ratio` 必填，长度比例
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 例如获取上面定义直线的中点：
 

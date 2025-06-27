@@ -32,16 +32,16 @@ const canvas = new Canvas({
 
 ### Basic shapes
 
--   [x] Group
--   [x] Circle
--   [x] Ellipse
--   [x] Rect, `radius` won't work
--   [x] Line
--   [x] Polyline
--   [x] Polygon
--   [x] Path
--   [x] Text
--   [x] Image
+- [x] Group
+- [x] Circle
+- [x] Ellipse
+- [x] Rect, `radius` won't work
+- [x] Line
+- [x] Polyline
+- [x] Polygon
+- [x] Path
+- [x] Text
+- [x] Image
 
 ### Opacity
 
@@ -70,7 +70,7 @@ circle.style.shadowOffsetY = 0;
 
 ### Other rough.js options
 
-https://github.com/rough-stuff/rough/wiki#options
+<https://github.com/rough-stuff/rough/wiki#options>
 
 ### Plugin Options
 

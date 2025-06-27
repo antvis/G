@@ -48,8 +48,8 @@ const polygon = new Polygon({
 
 支持以下两种写法：
 
--   `[number, number][]` 点数组
--   `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
+- `[number, number][]` 点数组
+- `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
 
 因此以下两种写法等价：
 
@@ -107,7 +107,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -144,13 +144,13 @@ polygon.style.markerMid = circleMarker;
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4l7xQoYcXngAAAAAAAAAAAAAARQnAQ" alt="marker start offset">
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEndOffset](/zh/api/basic/polyline#markerendoffset) 属性。
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |

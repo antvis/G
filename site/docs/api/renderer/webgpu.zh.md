@@ -96,9 +96,9 @@ const webgpuRenderer = new WebGPURenderer({
 
 该渲染器内置了以下插件：
 
--   [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
--   [g-plugin-webgpu-device](/zh/plugins/webgpu-device) 基于 WebGPU 实现 GPUDevice 能力
--   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
+- [g-plugin-webgpu-device](/zh/plugins/webgpu-device) 基于 WebGPU 实现 GPUDevice 能力
+- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 

@@ -464,6 +464,17 @@ export class TextService {
         continue;
       }
 
+      // If current line is empty and char width exceeds max width, no need to continue
+      if (currentLineWidth === 0 && charWidth > maxWidth) {
+        // Only add ellipsis if it can fit in the line
+        if (ellipsis && ellipsisWidth <= maxWidth) {
+          lines[currentLineIndex] = ellipsis;
+        } else {
+          lines[currentLineIndex] = '';
+        }
+        parsedStyle.isOverflowing = true;
+        break;
+      }
       if (currentLineWidth > 0 && currentLineWidth + charWidth > maxWidth) {
         const result = findCharIndexClosestWidthThreshold(
           lines[currentLineIndex],

@@ -13,10 +13,10 @@ By manipulating the camera we can easily achieve many effects, such as panning a
 
 The camera currently supports the following features.
 
--   Two projection modes: Orthographic [Orthogonal](/en/api/camera/intro#projection-mode) and Perspective [Perspective](/en/api/camera/intro#projection-modee), the former is used by default.
--   Three camera types: [Exploring](/en/api/camera/intro#exploring), [Orbiting](/en/api/camera/intro#orbiting) and [Tracking](/en/api/camera/intro#tracking), Exploring is used by default.
--   Camera action. For example [pan](/en/api/camera/action#pan), [dolly](/en/api/camera/action#dolly), [rotate](/en/api/camera/action#rotate)
--   Customize [camera animation](/en/api/camera/animation) to create/save the current camera state as a Landmark and smoothly switch between multiple Landmarks.
+- Two projection modes: Orthographic [Orthogonal](/en/api/camera/intro#projection-mode) and Perspective [Perspective](/en/api/camera/intro#projection-modee), the former is used by default.
+- Three camera types: [Exploring](/en/api/camera/intro#exploring), [Orbiting](/en/api/camera/intro#orbiting) and [Tracking](/en/api/camera/intro#tracking), Exploring is used by default.
+- Camera action. For example [pan](/api/camera/action#pan), [dolly](/en/api/camera/action#dolly), [rotate](/en/api/camera/action#rotate)
+- Customize [camera animation](/en/api/camera/animation) to create/save the current camera state as a Landmark and smoothly switch between multiple Landmarks.
 
 ## Projection Mode
 
@@ -57,12 +57,12 @@ setOrthographic(left: number, right: number,
 
 The list of parameters is as follows.
 
--   `left` Maximum distance in the negative direction of x-axis
--   `right` Maximum distance in the forward direction of x-axis
--   `top` Maximum distance in the forward direction of y-axis
--   `bottom` Maximum distance in the negative direction of y-axis
--   `near` Near plane
--   `far` Far plane
+- `left` Maximum distance in the negative direction of x-axis
+- `right` Maximum distance in the forward direction of x-axis
+- `top` Maximum distance in the forward direction of y-axis
+- `bottom` Maximum distance in the negative direction of y-axis
+- `near` Near plane
+- `far` Far plane
 
 The default camera settings for G are as follows, where `width/height` is the size of [Canvas](/en/api/canvas) and [usage example](/en/examples/camera/projection-mode/#ortho).
 
@@ -85,10 +85,10 @@ setPerspective(near: number, far: number, fov: number, aspect: number)
 
 Parameters:
 
--   `near` Near plane
--   `far` Far plane
--   `fov` Viewing angle, larger means more objects in the scene can be accommodated
--   `aspect` Width-to-Height Ratio
+- `near` Near plane
+- `far` Far plane
+- `fov` Viewing angle, larger means more objects in the scene can be accommodated
+- `aspect` Width-to-Height Ratio
 
 [Example](/en/examples/camera/projection-mode/#perspective)：
 
@@ -126,7 +126,7 @@ Fixes the viewpoint `focalPoint` and changes the camera position `position`. Com
 
 Called [OrbitControls](https://threejs.org/#examples/en/controls/OrbitControls) in Three.js.
 
-In this [example](/en/examples/camera/camera-animation/#landmark), we control the camera by mouse panning to complete the [pan](/en/api/camera/action#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
+In this [example](/en/examples/camera/camera-animation/#landmark), we control the camera by mouse panning to complete the [pan](/api/camera/action#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 

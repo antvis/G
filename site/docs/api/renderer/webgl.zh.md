@@ -95,9 +95,9 @@ const webglRenderer = new WebGLRenderer({
 
 该渲染器内置了以下插件：
 
--   [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
--   [g-plugin-webgl-device](/zh/plugins/webgl-device) 基于 [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) 和 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) 实现 GPUDevice 能力
--   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
+- [g-plugin-webgl-device](/zh/plugins/webgl-device) 基于 [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) 和 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) 实现 GPUDevice 能力
+- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -113,6 +113,6 @@ const webglRenderer = new WebGLRenderer({
 
 ## 目前暂不支持的特性
 
--   filter
--   clipPath
--   lineDash 应用 lineJoin，例如开启 `lineJoin: 'round'` 后每个小线段都应该有圆角效果
+- filter
+- clipPath
+- lineDash 应用 lineJoin，例如开启 `lineJoin: 'round'` 后每个小线段都应该有圆角效果

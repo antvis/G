@@ -12,25 +12,25 @@ import { Canvas, Circle } from '@antv/g-lite';
 
 ### 画布
 
-https://g-next.antv.vision/zh/docs/api/canvas
+<https://g-next.antv.vision/zh/docs/api/canvas>
 
 ### 相机
 
-https://g-next.antv.vision/zh/docs/api/camera
+<https://g-next.antv.vision/zh/docs/api/camera>
 
 ### 基础图形
 
-https://g-next.antv.vision/zh/docs/api/basic/display-object
+<https://g-next.antv.vision/zh/docs/api/basic/display-object>
 
 ### 事件系统
 
-https://g-next.antv.vision/zh/docs/api/event
+<https://g-next.antv.vision/zh/docs/api/event>
 
 ### 动画系统
 
-https://g-next.antv.vision/zh/docs/api/animation/waapi
+<https://g-next.antv.vision/zh/docs/api/animation/waapi>
 
 ## 参考资料
 
--   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions) ns)
+- [Sprite.js](https://github.com/spritejs/spritejs)
+- [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions) ns)

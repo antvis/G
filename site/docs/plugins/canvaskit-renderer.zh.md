@@ -28,10 +28,10 @@ const canvaskitRenderer = new CanvaskitRenderer();
 
 完整方法签名如下，其中包含以下参数：
 
--   name 动画名称，必填
--   jsonStr JSON 格式的 Lottie 描述文件，必填
--   bounds 展示区域，接受的数据格式为 `[left, top, width, height]`，可选。不填写会尝试使用描述文件中定义的大小，即 `[0, 0, width, height]`
--   assets 额外的资源文件，可选。
+- name 动画名称，必填
+- jsonStr JSON 格式的 Lottie 描述文件，必填
+- bounds 展示区域，接受的数据格式为 `[left, top, width, height]`，可选。不填写会尝试使用描述文件中定义的大小，即 `[0, 0, width, height]`
+- assets 额外的资源文件，可选。
 
 返回一个 `ManagedSkottieAnimation` 对象
 
@@ -111,10 +111,10 @@ textParticles.start(Date.now() / 1000.0, true);
 
 最后我们来看关键的粒子效果定义：
 
--   MaxCount 粒子数目
--   Drawable 粒子的类型，通常使用 `'SkCircleDrawable'` 即可，可以修改大小
--   Code SkSL 代码，用以控制粒子的生命周期，例如每一帧中位置和颜色应该如何改变
--   Bindings
+- MaxCount 粒子数目
+- Drawable 粒子的类型，通常使用 `'SkCircleDrawable'` 即可，可以修改大小
+- Code SkSL 代码，用以控制粒子的生命周期，例如每一帧中位置和颜色应该如何改变
+- Bindings
 
 ```js
 const text = {

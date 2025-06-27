@@ -66,8 +66,8 @@ Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-o
 
 The following two writing methods are supported.
 
--   `[number, number][]` an array of points
--   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
+- `[number, number][]` an array of points
+- `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
 Thus the following two ways of writing are equivalent.
 
@@ -123,7 +123,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -160,8 +160,8 @@ Moves the marker graphic in the direction of the first line segment of the fold.
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
@@ -172,8 +172,8 @@ Moves the marker graphic in the direction of the last line segment of the fold. 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -193,8 +193,8 @@ Get the coordinates of the point on the line in the local or world coordinate sy
 
 The parameters are as follows.
 
--   `ratio` mandatory, the length ratio
--   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+- `ratio` mandatory, the length ratio
+- `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
 
 where `Point` has the format :
 
@@ -211,8 +211,8 @@ Returns the point along the path at a given distance, controlled by a second opt
 
 The parameters are as follows.
 
--   `distance` mandatory, the distance value
--   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
+- `distance` mandatory, the distance value
+- `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

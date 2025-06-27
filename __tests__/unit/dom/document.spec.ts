@@ -79,7 +79,7 @@ describe('Document', () => {
 
     // const image = canvas.document.createElement<Image, ImageStyleProps>(Shape.IMAGE, {
     //   style: {
-    //     img: '',
+    //     src: '',
     //     width: 50,
     //     height: 50,
     //   },

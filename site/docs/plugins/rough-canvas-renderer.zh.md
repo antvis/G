@@ -84,13 +84,13 @@ circle.style.bowing = 2;
 
 填充风格，支持以下枚举值，[示例](/zh/examples/plugins/rough/#rough-options)：
 
--   `'hachure'`
--   `'solid'`
--   `'zigzag'`
--   `'cross-hatch'`
--   `'dots'`
--   `'dashed'`
--   `'zigzag-line'`
+- `'hachure'`
+- `'solid'`
+- `'zigzag'`
+- `'cross-hatch'`
+- `'dots'`
+- `'dashed'`
+- `'zigzag-line'`
 
 <img src="https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*jY87QqogOL8AAAAAAAAAAAAADmJ7AQ" alt="hachure" width="100">
 <img src="https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*c6e2TrkVgG4AAAAAAAAAAAAADmJ7AQ" alt="solid"  width="100">

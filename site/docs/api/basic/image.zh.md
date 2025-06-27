@@ -74,8 +74,8 @@ const image = new Image({
 
 图片来源，支持以下类型：
 
--   `string` 图片链接地址
--   `HTMLImageElement` 创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象实例，在 `onload` 回调中创建 G Image 对象，示例如下：
+- `string` 图片链接地址
+- `HTMLImageElement` 创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象实例，在 `onload` 回调中创建 G Image 对象，示例如下：
 
 <br />
 

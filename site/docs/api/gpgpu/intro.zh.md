@@ -15,9 +15,9 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 早期的经典系列书籍 GPU Gems [Gem2 🔗](https://developer.nvidia.com/gpugems/gpugems2/part-iv-general-purpose-computation-gpus-primer) [Gem3 🔗](https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing) 中就收录了大量通用计算领域的实践，包括了视频解码、实时加解密、图片压缩、随机数生成、仿真等等。
 
-现代的 GPU 更是针对特定类型的计算任务设计硬件。例如 Nvidia 的 Turing 架构中就包含了专门进行张量计算的 Tensor Core 和光线追踪计算的 RT Core。
+现代的 GPU 更是针对特定类型的计算任务设计硬件。例如 NVIDIA 的 Turing 架构中就包含了专门进行张量计算的 Tensor Core 和光线追踪计算的 RT Core。
 
-<img src="https://user-images.githubusercontent.com/3608471/83622800-0b98f200-a5c3-11ea-95b4-df99f287fa53.png" alt="Nvidia turing" width="600">
+<img src="https://user-images.githubusercontent.com/3608471/83622800-0b98f200-a5c3-11ea-95b4-df99f287fa53.png" alt="NVIDIA turing" width="600">
 
 为了降低开发者面向 GPU 编程的门槛，Nvidia 提出了 CUDA（<strong>C</strong>ompute <strong>U</strong>nified <strong>D</strong>evice <strong>A</strong>rchitecture，统一计算架构），开发者可以使用 C、Java、Python 等语言编写自己的计算任务代码。
 
@@ -27,9 +27,9 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 事实上，在 Web 端已经有了很多优秀的 GPGPU 实践，例如：
 
--   [tensorflow.js](https://github.com/tensorflow/tfjs)。用户通过 API 组合调用完成计算任务。
--   [GPU.js](https://github.com/gpujs/gpu.js)。用户使用 JS 编写简单的计算任务。
--   [Stardust.js](https://stardustjs.github.io/)。用户使用 Mark 语言定义计算任务，实现 Sanddance 效果。
+- [tensorflow.js](https://github.com/tensorflow/tfjs)。用户通过 API 组合调用完成计算任务。
+- [GPU.js](https://github.com/gpujs/gpu.js)。用户使用 JS 编写简单的计算任务。
+- [Stardust.js](https://stardustjs.github.io/)。用户使用 Mark 语言定义计算任务，实现 Sanddance 效果。
 
 ### WebGL 实现
 
@@ -51,11 +51,11 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 而作为 WebGL 的继任者 WebGPU，目前得到了各大浏览器厂商的[支持](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status)，可以在以下浏览器中体验（需要开启实验特性 webgpu flag）：
 
--   Chrome Canary
--   Edge Canary
--   Safari Technology Preview
+- Chrome Canary
+- Edge Canary
+- Safari Technology Preview
 
-目前 Chrome 94 版本已经通过 Origin trial 支持：https://web.dev/gpu/
+目前 Chrome 94 版本已经通过 Origin trial 支持：<https://web.dev/gpu/>
 
 下图来自：[https://www.chromestatus.com/feature/6213121689518080](https://www.chromestatus.com/feature/6213121689518080)，作为现代化的图形 API，WebGPU 的一大特性就是支持 Compute Shader。这理所当然成为了未来我们的第一选择：
 
@@ -65,13 +65,13 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 虽然 WebGPU 还处于开发中阶段，但也有了很多优秀的实践，例如：
 
--   tensorflow.js 正在尝试 [基于 WebGPU 的 backend 实现](https://github.com/tensorflow/tfjs/tree/master/tfjs-backend-webgpu/src)。
--   Babylon.js 正在尝试实现 [基于 WebGPU 渲染引擎](https://doc.babylonjs.com/extensions/webgpu)。
+- tensorflow.js 正在尝试 [基于 WebGPU 的 backend 实现](https://github.com/tensorflow/tfjs/tree/master/tfjs-backend-webgpu/src)。
+- Babylon.js 正在尝试实现 [基于 WebGPU 渲染引擎](https://doc.babylonjs.com/extensions/webgpu)。
 
 ## 我们面对的计算场景与挑战
 
 当我们从通用计算领域聚焦到可视化场景时，会发现存在着很多适合 GPU 执行的可并行计算任务，例如：
 
--   布局计算。G6 中的 [Fruchterman 布局算法](https://github.com/antvis/G6/blob/master/src/layout/fruchterman.ts)是一个很典型的例子，在每次迭代中每个节点的位置都需要根据其他节点位置进行计算，并且需要经历很多次迭代才能达到稳定状态，因此计算量很大。
--   Instanced-based 可视化。Stardust.js 正是针对这个场景，例如 sanddance 效果。
--   data transformation。在海量数据要求高交互的图表场景下，很多可并行的算法例如 reduce & scan 都可以在 GPU 中执行。P4 & P5（IEEE TRANSACTIONS ON VISUALIZATION AND COMPUTER GRAPHICS, VOL. 26, NO. 3, MARCH 2020） 在这方面有很多实践。
+- 布局计算。G6 中的 [Fruchterman 布局算法](https://github.com/antvis/G6/blob/master/src/layout/fruchterman.ts)是一个很典型的例子，在每次迭代中每个节点的位置都需要根据其他节点位置进行计算，并且需要经历很多次迭代才能达到稳定状态，因此计算量很大。
+- Instanced-based 可视化。Stardust.js 正是针对这个场景，例如 sanddance 效果。
+- data transformation。在海量数据要求高交互的图表场景下，很多可并行的算法例如 reduce & scan 都可以在 GPU 中执行。P4 & P5（IEEE TRANSACTIONS ON VISUALIZATION AND COMPUTER GRAPHICS, VOL. 26, NO. 3, MARCH 2020） 在这方面有很多实践。

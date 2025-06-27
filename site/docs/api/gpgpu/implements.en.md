@@ -35,5 +35,5 @@ Many algorithms need to be run several times in succession, for example, the lay
 
 ## References
 
--   「GPGPU 编程技术 - 从 GLSL、CUDA 到 OpenCL」[🔗](https://book.douban.com/subject/6538230/)
--   http://www.vizitsolutions.com/portfolio/webgl/gpgpu/
+- 「GPGPU 编程技术 - 从 GLSL、CUDA 到 OpenCL」[🔗](https://book.douban.com/subject/6538230/)
+- <http://www.vizitsolutions.com/portfolio/webgl/gpgpu/>

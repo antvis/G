@@ -6,3 +6,5 @@ pkg
 # dumi2 website builder
 .dumi/tmp
 .dumi/tmp-production
+# Dead links report
+dead-links-report.log

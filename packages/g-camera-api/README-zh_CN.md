@@ -24,10 +24,10 @@ camera.pan(100, 20);
 
 在相机坐标系中相机的三轴为 uvn，相机动作实际就是沿这三轴进行移动和旋转。
 
-https://g-next.antv.vision/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E5%8A%A8%E4%BD%9C
+<https://g-next.antv.vision/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E5%8A%A8%E4%BD%9C>
 
 #### 相机动画
 
 我们可以把相机当前的位置、视点记录下来，保存成一个"地标" Landmark。随后当相机参数发生改变时，可以随时切换到之前保存的任意一个 Landmark，同时带有平滑的切换动画，类似真实片场中的摄像机摇臂，在一些应用中也称作 flyTo。
 
-https://g-next.antv.vision/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E5%8A%A8%E7%94%BB
+<https://g-next.antv.vision/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E5%8A%A8%E7%94%BB>

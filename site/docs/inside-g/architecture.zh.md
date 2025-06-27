@@ -48,37 +48,37 @@ hooks = {
 
 **MountDisplayObjectPlugin**
 
--   prepareEntities 首次挂载到画布时调用，触发渲染对象的 `mounted` 生命周期
+- prepareEntities 首次挂载到画布时调用，触发渲染对象的 `mounted` 生命周期
 
 **DirtyCheckPlugin** 实现[脏矩形渲染](/zh/guide/advanced-topics/performance-optimization#脏矩形渲染)
 
--   init 监听每个待渲染对象的包围盒变更
--   prepareEntities 过滤包含了脏标记的待渲染对象列表，合并脏矩形，通过 R-Tree 加速查询增量重绘对象列表
--   endFrame 对于当前帧完成绘制的对象列表中的每一个对象，保存它的包围盒，供下次脏检查合并使用
--   destroy 移除对于每个待渲染对象的包围盒变更的监听
+- init 监听每个待渲染对象的包围盒变更
+- prepareEntities 过滤包含了脏标记的待渲染对象列表，合并脏矩形，通过 R-Tree 加速查询增量重绘对象列表
+- endFrame 对于当前帧完成绘制的对象列表中的每一个对象，保存它的包围盒，供下次脏检查合并使用
+- destroy 移除对于每个待渲染对象的包围盒变更的监听
 
 **CullingPlugin** 负责剔除，得到需要重绘的最小对象集合
 
--   prepareEntities 通过 `visiblity` 和视口包围盒剔除
+- prepareEntities 通过 `visiblity` 和视口包围盒剔除
 
 **SortPlugin** 负责对象排序
 
--   prepareEntities 通过 `z-index` 排序
+- prepareEntities 通过 `z-index` 排序
 
 ## g-renderer-canvas
 
 **DirtyRectanglePlugin**
 
--   beginFrame
-    -   `context.save()`
-    -   擦除脏矩形，创建 clip
--   renderFrame
-    -   应用变换矩阵
-    -   在 Canvas 2D 上下文中应用属性
-    -   绘制路径
-    -   填充和描边
--   endFrame
-    -   `context.restore()`
+- beginFrame
+  - `context.save()`
+  - 擦除脏矩形，创建 clip
+- renderFrame
+  - 应用变换矩阵
+  - 在 Canvas 2D 上下文中应用属性
+  - 绘制路径
+  - 填充和描边
+- endFrame
+  - `context.restore()`
 
 ## g-renderer-svg
 

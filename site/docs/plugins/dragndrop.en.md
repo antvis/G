@@ -111,8 +111,8 @@ const plugin = new Plugin({
 
 Used to determine if the graph in the drag is in the `dropzone`, supports the following two values.
 
--   `'pointer'` Default value. The mouse position enters the `dropzone` area by determining
--   `'center'` The center of the dropzone is determined if the center of the dropzone is in the dropzone.
+- `'pointer'` Default value. The mouse position enters the `dropzone` area by determining
+- `'center'` The center of the dropzone is determined if the center of the dropzone is in the dropzone.
 
 ### Modify configuration items
 
@@ -148,9 +148,9 @@ const ball = new Image({
 
 At this point, you can listen to drag-related events for the graph, including the following three types of events, the [target](/en/api/event#target) of the event object are the graph being dragged.
 
--   dragstart triggered at the start of dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
--   drag Triggered frequently during dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
--   dragend Triggered at the end of the drag <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
+- dragstart triggered at the start of dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
+- drag Triggered frequently during dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
+- dragend Triggered at the end of the drag <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
 
 drag The related events are all [PointerEvents](/en/api/event#interaction events), so you can access the properties on the event object in the event listener.
 
@@ -206,10 +206,10 @@ const gate = new Image({
 
 At this point you can listen to drag/drop related events in the placement area, including the following three types of events, the [target](/en/api/event#target) of the event object are the graphics of the placement area.
 
--   dragenter has the graphic being dragged into the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
--   dragleave has graphics being dragged out of the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
--   dragover has the graphic being drawn over the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
--   drop has the graphic placed in the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
+- dragenter has the graphic being dragged into the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
+- dragleave has graphics being dragged out of the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
+- dragover has the graphic being drawn over the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
+- drop has the graphic placed in the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
 
 For example, let's have the goal listen for events related to.
 
@@ -238,17 +238,17 @@ gate.addEventListener('drop', function (e) {
 
 The `drag` series of events has a sequential triggering order with other interaction events. Take the `pointer` series of events as an example, in a typical drag and drop process, the following events are triggered in sequence.
 
--   `pointerdown` press
--   `pointermove * n` dragging a certain distance, and then the dragging process will be decided
--   `dragstart` Start dragging
--   `drag` Dragging in progress
--   `pointermove`
--   `drag` dragging
--   `pointermove`
--   `drag` dragging
--   `pointermove`
--   `dragend` end of drag
--   `pointerup` lifting
+- `pointerdown` press
+- `pointermove * n` dragging a certain distance, and then the dragging process will be decided
+- `dragstart` Start dragging
+- `drag` Dragging in progress
+- `pointermove`
+- `drag` dragging
+- `pointermove`
+- `drag` dragging
+- `pointermove`
+- `dragend` end of drag
+- `pointerup` lifting
 
 ### Relationship to Click events
 

@@ -2,8 +2,8 @@
 
 Inspired by:
 
--   https://www.highcharts.com/blog/posts/a11y/
--   https://github.com/pixijs/pixijs/tree/dev/packages/accessibility
+- <https://www.highcharts.com/blog/posts/a11y/>
+- <https://github.com/pixijs/pixijs/tree/dev/packages/accessibility>
 
 # Getting Started
 
@@ -51,5 +51,5 @@ We create a DOM layer called `g-a11y-text-extractor-mask` which contains text co
 
 There are the following considerations:
 
--   SVG natively supports this feature, so we won't append the mask.
--   Since the minimum fontsize in Chrome is `12px`, this may cause inconsistencies.
+- SVG natively supports this feature, so we won't append the mask.
+- Since the minimum fontsize in Chrome is `12px`, this may cause inconsistencies.

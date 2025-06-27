@@ -522,7 +522,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
           $el.style['border-style'] = 'dashed';
         } else if (name === 'innerHTML') {
           this.createOrUpdateInnerHTML(document, $el, usedValue);
-        } else if (name === 'width' || name === 'height' || name === 'class') {
+        } else if (
+          name === 'width' ||
+          name === 'height' ||
+          name === 'class' ||
+          name === 'x' ||
+          name === 'y'
+        ) {
           // width & height are both required for <foreignObject> and cannot be used as style.
           $el.setAttribute(name, usedValue.toString());
         } else if (!isNil(object.style[name]) && object.style[name] !== '') {

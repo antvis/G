@@ -1,3 +1,4 @@
+// https://github.com/DavidAnson/markdownlint/blob/main/schema/.markdownlint.jsonc
 {
   "default": true,
   "no-inline-html": false,
@@ -9,9 +10,12 @@
   "link-fragments": false,
   "code-block-style": false,
   "MD003": {
-    "style": "atx"
+    "style": "atx",
   },
+  "MD040": false,
+  "MD036": false,
+  "MD045": false,
   "front-matter": {
-    "type": "yaml"
-  }
+    "type": "yaml",
+  },
 }

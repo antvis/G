@@ -24,6 +24,8 @@ module.exports = {
     '__tests__',
     'scripts',
     'types',
+    //
+    'gui.min.js',
   ],
   extends: [
     'eslint:recommended',

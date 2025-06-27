@@ -22,8 +22,8 @@ order: 6
 
 目前在生产环境使用，需要启用 Origin Trial 以支持 WebGPU 特性（Chrome 100 以上将不再需要）：
 
--   [获取 Token](https://developer.chrome.com/origintrials/#/view_trial/118219490218475521)
--   在页面中添加 `<meta>` 标签，附上上一步获取的 Token，例如通过 DOM API：
+- [获取 Token](https://developer.chrome.com/origintrials/#/view_trial/118219490218475521)
+- 在页面中添加 `<meta>` 标签，附上上一步获取的 Token，例如通过 DOM API：
 
 ```js
 const tokenElement = document.createElement('meta');
@@ -69,8 +69,8 @@ const data = {
 
 我们提供以下两种方式使用：
 
--   没有 G 的 [Canvas 画布](/zh/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
--   已有 G 的 [Canvas 画布](/zh/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
+- 没有 G 的 [Canvas 画布](/zh/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
+- 已有 G 的 [Canvas 画布](/zh/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
 
 ### 方法一
 
@@ -90,10 +90,10 @@ const graph = new WebGPUGraph();
 
 如果已经在使用 G 的 Canvas 画布进行渲染，可以复用它，并执行以下操作：
 
--   注册 [g-plugin-gpgpu](/zh/plugins/gpgpu) 插件
--   等待画布初始化
--   获取 GPU [Device](/zh/plugins/device-renderer#device)
--   调用算法，此时算法的第一个参数为上一步获取到的 Device
+- 注册 [g-plugin-gpgpu](/zh/plugins/gpgpu) 插件
+- 等待画布初始化
+- 获取 GPU [Device](/zh/plugins/device-renderer#device)
+- 调用算法，此时算法的第一个参数为上一步获取到的 Device
 
 ```js
 import { Canvas } from '@antv/g';
@@ -134,12 +134,12 @@ const canvas = new Canvas({
 
 参数列表如下：
 
-| 名称         | 类型      | 是否必选 | 描述                                                                                                        |
-| ------------ | --------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| graphData    | GraphData | true     | 图数据                                                                                                      |
-| epsilon      | number    | false    | 判断 PageRank 得分是否稳定的精度值，默认值为 `1e-05`                                                        |
-| alpha        | number    | false    | 阻尼系数（dumping factor），指任意时刻，用户访问到某节点后继续访问该节点指向的节点的概率，默认值为 `0.85`。 |
-| maxIteration | number    | false    | 迭代次数，默认值为 `1000`                                                                                   |
+| 名称 | 类型 | 是否必选 | 描述 |
+| --- | --- | --- | --- |
+| graphData | GraphData | true | 图数据 |
+| epsilon | number | false | 判断 PageRank 得分是否稳定的精度值，默认值为 `1e-05` |
+| alpha | number | false | 阻尼系数（dumping factor），指任意时刻，用户访问到某节点后继续访问该节点指向的节点的概率，默认值为 `0.85`。 |
+| maxIteration | number | false | 迭代次数，默认值为 `1000` |
 
 返回值为一个结果数组，包含 `id` 和 `score` 属性，形如 `[{ id: 'A', score: 0.38 }, { id: 'B', score: 0.32 }...]`。
 
@@ -147,8 +147,8 @@ const canvas = new Canvas({
 
 参考以下 CUDA 版本实现：
 
--   https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu
--   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html
+- <https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu>
+- <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html>
 
 使用方式如下，[示例](/zh/examples/gpgpu#webgpu-graph-pagerank)：
 
@@ -173,24 +173,24 @@ const result = await graph.pageRank(data);
 
 参数列表如下：
 
-| 名称               | 类型      | 是否必选 | 描述                                               |
-| ------------------ | --------- | -------- | -------------------------------------------------- |
-| graphData          | GraphData | true     | 图数据                                             |
-| source             | string    | true     | 源节点 id                                          |
-| weightPropertyName | string    | false    | 边的权重属性字段名，若不指定，则认为所有边权重相同 |
-| maxDistance        | number    | false    | 最大距离，默认为 `1000000`                         |
+| 名称 | 类型 | 是否必选 | 描述 |
+| --- | --- | --- | --- |
+| graphData | GraphData | true | 图数据 |
+| source | string | true | 源节点 id |
+| weightPropertyName | string | false | 边的权重属性字段名，若不指定，则认为所有边权重相同 |
+| maxDistance | number | false | 最大距离，默认为 `1000000` |
 
 返回值为一个结果数组，形如 `[{ target: 'A', distance: 10, predecessor: 'B' }, ...]`。其中数组中每一个元素包含以下属性：
 
--   `target` 路径终点 id
--   `distance` 从源节点到终点的距离
--   `predecessor` 到达 target 的上一个节点 id
+- `target` 路径终点 id
+- `distance` 从源节点到终点的距离
+- `predecessor` 到达 target 的上一个节点 id
 
 参考以下 CUDA 版本实现：
 
--   https://www.lewuathe.com/illustration-of-distributed-bellman-ford-algorithm.html
--   https://github.com/sengorajkumar/gpu_graph_algorithms
--   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.traversal.sssp.sssp.html
+- <https://www.lewuathe.com/illustration-of-distributed-bellman-ford-algorithm.html>
+- <https://github.com/sengorajkumar/gpu_graph_algorithms>
+- <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.traversal.sssp.sssp.html>
 
 以下图为例，我们希望获取以 `A` 为源节点到所有节点的最短路径：
 
@@ -238,28 +238,28 @@ const result = await graph.sssp(data, 'A', 'weight');
 
 ### BFS
 
--   [Scalable GPU Graph Traversal](https://research.nvidia.com/publication/scalable-gpu-graph-traversal)
--   https://github.com/rafalk342/bfs-cuda
--   https://github.com/kaletap/bfs-cuda-gpu
+- [Scalable GPU Graph Traversal](https://research.nvidia.com/publication/scalable-gpu-graph-traversal)
+- <https://github.com/rafalk342/bfs-cuda>
+- <https://github.com/kaletap/bfs-cuda-gpu>
 
 ### DFS
 
-https://github.com/divyanshu-talwar/Parallel-DFS
+<https://github.com/divyanshu-talwar/Parallel-DFS>
 
 ## Nodes clustering
 
 ### K-Means
 
--   [A CUDA Implementation of the K-Means Clustering Algorithm](http://alexminnaar.com/2019/03/05/cuda-kmeans.html)
--   ["Yinyang" K-means and K-nn using NVIDIA CUDA](https://github.com/src-d/kmcuda)
+- [A CUDA Implementation of the K-Means Clustering Algorithm](http://alexminnaar.com/2019/03/05/cuda-kmeans.html)
+- ["Yinyang" K-means and K-nn using NVIDIA CUDA](https://github.com/src-d/kmcuda)
 
 ## Community Detection
 
 ### Louvain
 
--   [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
--   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html
--   https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community
+- [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
+- <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html>
+- <https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community>
 
 ### K-Core
 
@@ -267,19 +267,19 @@ https://github.com/divyanshu-talwar/Parallel-DFS
 
 ### Label Propagation
 
--   [Parallel Graph Component Labelling with GPUs and CUDA](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.618.6084&rep=rep1&type=pdf)
--   [GPU-Accelerated Graph Label Propagation for Real-Time Fraud Detection](https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2720504/Master_Thesis_done.pdf?sequence=1)
+- [Parallel Graph Component Labelling with GPUs and CUDA](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.618.6084&rep=rep1&type=pdf)
+- [GPU-Accelerated Graph Label Propagation for Real-Time Fraud Detection](https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2720504/Master_Thesis_done.pdf?sequence=1)
 
 ### minimumSpanningTree
 
--   https://github.com/jiachengpan/cudaMST
--   https://github.com/Dibyadarshan/GPU-Based-Fast-Minimum-Spanning-Tree
+- <https://github.com/jiachengpan/cudaMST>
+- <https://github.com/Dibyadarshan/GPU-Based-Fast-Minimum-Spanning-Tree>
 
 ## Similarity
 
 ### Cosine Similarity
 
-https://github.com/adamantmc/CudaCosineSimilarity
+<https://github.com/adamantmc/CudaCosineSimilarity>
 
 ### Nodes Cosine Similarity
 
@@ -287,4 +287,4 @@ https://github.com/adamantmc/CudaCosineSimilarity
 
 ### Cycle Detection
 
-https://github.com/hamham240/cudaGraph/blob/main/src/algos/cudaCD.cu
+<https://github.com/hamham240/cudaGraph/blob/main/src/algos/cudaCD.cu>

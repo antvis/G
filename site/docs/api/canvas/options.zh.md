@@ -5,9 +5,9 @@ order: 1
 
 在创建一个画布时，我们可以传入以下初始化参数，这也是最简单的初始化方式：
 
--   `container` 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
--   `width / height` 画布宽度和高度
--   `renderer` 渲染器，目前支持 [g-canvas](/zh/api/renderer/canvas)、[g-svg](/zh/api/renderer/svg)、[g-webgl](/zh/api/renderer/webgl) 等
+- `container` 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
+- `width / height` 画布宽度和高度
+- `renderer` 渲染器，目前支持 [g-canvas](/zh/api/renderer/canvas)、[g-svg](/zh/api/renderer/svg)、[g-webgl](/zh/api/renderer/webgl) 等
 
 以 [g-canvas](/zh/api/renderer/canvas) 为例：
 
@@ -29,9 +29,9 @@ const canvas = new Canvas({
 
 以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
 
--   自行创建 `<canvas>`，[详见](/zh/api/canvas/faq#使用创建好的-canvas-元素)
--   在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/api/canvas/offscreen-canvas-ssr)
--   在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas/offscreen-canvas-ssr#服务端渲染)
+- 自行创建 `<canvas>`，[详见](/zh/api/canvas/faq#使用创建好的-canvas-元素)
+- 在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/api/canvas/offscreen-canvas-ssr)
+- 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas/offscreen-canvas-ssr#服务端渲染)
 
 此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
 
@@ -66,8 +66,8 @@ const canvas = new Canvas({
 
 除了浏览器环境下的 `HTMLCanvasElement`，还可以使用：
 
--   `OffscreenCanvas` 在 WebWorker 中运行，[详见](/zh/api/canvas#在-webworker-中使用-offscreencanvas)
--   `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas#服务端渲染)
+- `OffscreenCanvas` 在 WebWorker 中运行，[详见](/zh/api/canvas#在-webworker-中使用-offscreencanvas)
+- `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas#服务端渲染)
 
 需要注意的是，一旦使用了该参数，就不再支持运行时切换渲染器了。
 
@@ -75,18 +75,18 @@ const canvas = new Canvas({
 
 画布宽高。
 
--   如果设置了 [container](/zh/api/canvas/options#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
--   如果设置了 [canvas](/zh/api/canvas/options#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
+- 如果设置了 [container](/zh/api/canvas/options#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
+- 如果设置了 [canvas](/zh/api/canvas/options#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
 
 ## renderer
 
 必填，目前支持以下渲染器:
 
--   基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
--   基于 CanvasKit 的 [g-canvaskit](/zh/api/renderer/canvaskit)
--   基于 SVG 的 [g-svg](/zh/api/renderer/svg)
--   基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
--   基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
+- 基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
+- 基于 CanvasKit 的 [g-canvaskit](/zh/api/renderer/canvaskit)
+- 基于 SVG 的 [g-svg](/zh/api/renderer/svg)
+- 基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
+- 基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
 
 后续可以在运行时通过 [setRenderer()](/zh/api/canvas/options#setrenderer) 切换。
 
@@ -221,9 +221,9 @@ $wrapper.style.transform = 'scale(1.1)';
 
 可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
 
--   g 绘制并调用 `ctx.measureText` 度量文本
--   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
--   [g-plugin-device-renderer](/zh/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
+- g 绘制并调用 `ctx.measureText` 度量文本
+- [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
+- [g-plugin-device-renderer](/zh/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
 
 默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：
 

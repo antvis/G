@@ -77,8 +77,8 @@ When isBillboard is enabled, whether or not to apply size attenuation in perspec
 
 Paths, both `string` and `Array` forms are supported, see [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths).
 
--   String form: `M 100,100 L 200,200`
--   Array form: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ]]`
+- String form: `M 100,100 L 200,200`
+- Array form: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ]]`
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path>
 
@@ -90,8 +90,8 @@ Alias for the [path](/en/api/basic/path#path) attribute, consistent with the `<p
 
 Since Path can be closed by `Z` command, the definition of "start point" differs in two cases.
 
--   If it is not closed, you can refer to the [markerStart](/en/api/basic/polyline#markerstart) attribute of [Polyline](/en/api/basic/polyline).
--   If it is closed, you can refer to the [markerStart](/en/api/basic/polygon#markerstart) property of [Polygon](/en/api/basic/polygon).
+- If it is not closed, you can refer to the [markerStart](/en/api/basic/polyline#markerstart) attribute of [Polyline](/en/api/basic/polyline).
+- If it is closed, you can refer to the [markerStart](/en/api/basic/polygon#markerstart) property of [Polygon](/en/api/basic/polygon).
 
 For example, in the following figure, where markerStart and markerEnd are also specified as "arrows", the effect of an unclosed path is shown on the left, and the effect of a closed path is shown on the right.
 
@@ -120,8 +120,8 @@ See the [markerEnd](/en/api/basic/polyline#markerend) attribute of [Polyline](/e
 
 Since Path can be closed by the `Z` command, the definition of the "end point" differs in two cases.
 
--   If it is not closed, you can refer to the [markerEnd](/en/api/basic/polyline#markerend) attribute of [Polyline](/en/api/basic/polyline).
--   If closed, see the [markerEnd](/en/api/basic/polygon#markerend) property of [Polygon](/en/api/basic/polygon).
+- If it is not closed, you can refer to the [markerEnd](/en/api/basic/polyline#markerend) attribute of [Polyline](/en/api/basic/polyline).
+- If closed, see the [markerEnd](/en/api/basic/polygon#markerend) property of [Polygon](/en/api/basic/polygon).
 
 In this [example](/en/examples/shape/path#path), we have placed an image at the termination point of the polygon.
 
@@ -135,7 +135,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -176,16 +176,16 @@ See the [markerStartOffset](/en/api/basic/polyline) property of [Polyline](/en/a
 This property is therefore suitable for "fine-tuning", rather than drastically changing the path definition.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 See the [markerEndOffset](/en/api/basic/polyline) property of [Polyline](/en/api/basic/polyline#markerendoffset). marker will move along the tangent direction of the last section of the path. The marker will move in the direction of the tangent of the last section of the path, and the body path will be extended or shortened accordingly.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Methods
 
@@ -228,8 +228,8 @@ Get the coordinates of the point on the line in the local or world coordinate sy
 
 The parameters are as follows.
 
--   `ratio` mandatory, the length ratio
--   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+- `ratio` mandatory, the length ratio
+- `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
 
 where `Point` has the format :
 
@@ -268,8 +268,8 @@ Returns the point along the path at a given distance, controlled by a second opt
 
 The parameters are as follows.
 
--   `distance` mandatory, the distance value
--   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
+- `distance` mandatory, the distance value
+- `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

@@ -7,9 +7,9 @@ order: -1
 
 例如在图场景中有非常多适合并行的布局和分析算法：
 
--   [Fruchterman 布局算法](/zh/examples/gpgpu#fruchterman)
--   [Pagerank](/zh/examples/gpgpu#pagerank)
--   [SSSP 单源最短路径](/zh/examples/gpgpu#bellman-ford)
+- [Fruchterman 布局算法](/zh/examples/gpgpu#fruchterman)
+- [Pagerank](/zh/examples/gpgpu#pagerank)
+- [SSSP 单源最短路径](/zh/examples/gpgpu#bellman-ford)
 
 在图中节点/边数目达到一定规模时会带来非常可观的性能提升效果。以 pagerank 为例，在 1k 节点和 50w 条边的测试数据中，GPU 版本相较 CPU 版本有 100 倍以上的提升（300ms vs 30s）。
 

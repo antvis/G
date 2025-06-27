@@ -9,12 +9,12 @@ order: 10
 
 创建一个 Landmark，参数包括：
 
--   markName 名称
--   options 相机参数，包括：
-    -   position 世界坐标系下的相机位置，取值类型参考 [setPosition](/zh/api/camera#setposition)
-    -   focalPoint 世界坐标系下的视点，取值类型参考 [setFocalPoint](/zh/api/camera#setfocalpoint)
-    -   roll 旋转角度，取值类型参考 [setRoll](/zh/api/camera#setroll)
-    -   zoom 缩放比例，取值类型参考 [setZoom](/zh/api/camera#setzoom)
+- markName 名称
+- options 相机参数，包括：
+  - position 世界坐标系下的相机位置，取值类型参考 [setPosition](/zh/api/camera#setposition)
+  - focalPoint 世界坐标系下的视点，取值类型参考 [setFocalPoint](/zh/api/camera#setfocalpoint)
+  - roll 旋转角度，取值类型参考 [setRoll](/zh/api/camera#setroll)
+  - zoom 缩放比例，取值类型参考 [setZoom](/zh/api/camera#setzoom)
 
 ```js
 camera.createLandmark('mark1', {
@@ -47,12 +47,12 @@ camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 
 参数列表如下：
 
--   markName 名称或者已创建的 Landmark
--   options 动画参数，包括：
-    -   duration 动画持续时间，单位为 `ms`，默认值为 `100`
-    -   easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/api/animation/waapi#easing-1)
-    -   easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/api/animation/waapi#easingfunction)
-    -   onfinish 动画结束后的回调函数
+- markName 名称或者已创建的 Landmark
+- options 动画参数，包括：
+  - duration 动画持续时间，单位为 `ms`，默认值为 `100`
+  - easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/api/animation/waapi#easing-1)
+  - easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/api/animation/waapi#easingfunction)
+  - onfinish 动画结束后的回调函数
 
 和动画系统中的 [options](/zh/api/animation/waapi#options) 参数一样，传入 `number` 时等同于设置 `duration`：
 

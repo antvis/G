@@ -35,6 +35,7 @@ import {
   DefaultSceneGraphService,
   EllipseUpdater,
   GroupUpdater,
+  HTMLUpdater,
   LineUpdater,
   OffscreenCanvasCreator,
   PathUpdater,
@@ -42,7 +43,6 @@ import {
   RectUpdater,
   TextService,
   TextUpdater,
-  HTMLUpdater,
 } from './services';
 import { CanvasLike, Shape } from './types';
 

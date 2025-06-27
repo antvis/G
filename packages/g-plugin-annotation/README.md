@@ -2,8 +2,8 @@
 
 Inspired by:
 
--   http://fabricjs.com/
--   https://konvajs.org/
+- <http://fabricjs.com/>
+- <https://konvajs.org/>
 
 # Getting Started
 
@@ -20,7 +20,7 @@ canvasRenderer.registerPlugin(plugin);
 
 ## Customization
 
-Refer to: http://fabricjs.com/fabric-intro-part-4#customization
+Refer to: <http://fabricjs.com/fabric-intro-part-4#customization>
 
 ```js
 new Circle({

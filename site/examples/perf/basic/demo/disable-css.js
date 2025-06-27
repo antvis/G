@@ -68,7 +68,7 @@ const imageMarker = new Image({
     anchor: [0.5, 0.5],
     transformOrigin: 'center',
     transform: 'rotate(90deg)',
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
 });
 

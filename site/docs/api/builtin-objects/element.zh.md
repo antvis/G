@@ -19,28 +19,28 @@ order: 3
 
 ```js
 const circle = new Circle({
-  id: 'my-id',
-  style: { r: 10 },
+    id: 'my-id',
+    style: { r: 10 },
 });
 
 circle.id; // 'my-id';
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id>
 
 ### name
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/name
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/name>
 
 ### className
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className>
 
 ### classList
 
 只读属性，返回类名列表。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/classList
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/classList>
 
 ```js
 circle.className = 'c1 c2';
@@ -57,69 +57,69 @@ const circle = new Circle({ style: { r: 10 } });
 circle.attributes.r; // 10;
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/attributes
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/attributes>
 
 ### children
 
 返回子元素列表，和 Node.childNodes 等价。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/children
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/children>
 
 ### childElementCount
 
 返回子元素列表长度。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount>
 
 ### firstElementChild
 
 和 [Node.firstChild](/zh/api/builtin-objects/node#firstchild) 等价。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild>
 
 ### lastElementChild
 
 和 [Node.lastChild](/zh/api/builtin-objects/node#lastchild) 等价。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild>
 
 ### clientTop / clientLeft
 
 由于暂不支持 border，始终返回 0。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop>
 
 ## 方法
 
 ### getAttributeNames
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames>
 
 ### getAttribute
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute>
 
 ### removeAttribute
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute>
 
 ### setAttribute
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute>
 
 ### hasAttribute
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute>
 
 ### getBoundingClientRect
 
 返回浏览器坐标系下的包围盒，不考虑子元素。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect>
 
 ### getClientRects
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects>
 
 ### computedStyleMap
 
@@ -151,7 +151,7 @@ expect(fill.b).toBe(0);
 expect(fill.alpha).toBe(1);
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap>
 
 ### destroy
 
@@ -163,7 +163,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
 
 是否匹配选择器字符串
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/matches>
 
 #### getElementById
 
@@ -197,7 +197,7 @@ parent.appendChild(child2); // parent -> [child1, child2]
 parent.append(child3, child34); // parent -> [child1, child2, child3, child4]
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append>
 
 ### prepend
 
@@ -213,7 +213,7 @@ parent.appendChild(child2); // parent -> [child1, child2]
 parent.prepend(child3, child34); // parent -> [child3, child4, child1, child2]
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend>
 
 ### after
 
@@ -229,7 +229,7 @@ circle.after(sibling1, sibling2); // [circle, sibling1, sibling2]
 after(...nodes: Element[]): void
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after>
 
 ### before
 
@@ -245,7 +245,7 @@ circle.before(sibling1, sibling2); // [sibling1, sibling2, circle]
 before(...nodes: Element[]): void
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before>
 
 ### remove
 
@@ -261,7 +261,7 @@ circle.remove();
 remove(): void
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove>
 
 ### removeChildren
 
@@ -281,7 +281,7 @@ parent.appendChild(child2); // parent -> [child1, child2]
 child1.replaceWith(node1, node2); // parent -> [node1, node2, child2]
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith>
 
 ### replaceChildren
 
@@ -298,16 +298,16 @@ parent.replaceChildren(); // 清空
 replaceChildren(...nodes: Element[]): void
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren>
 
 ### getAnimations
 
 返回应用在当前元素上的动画对象列表，详见[动画系统](/zh/api/animation/waapi)
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations>
 
 ### animate
 
 应用 Keyframe 动画，详见[动画系统](/zh/api/animation/waapi)
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate imate
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate> imate

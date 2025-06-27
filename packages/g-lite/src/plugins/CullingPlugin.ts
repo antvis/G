@@ -21,7 +21,7 @@ export class CullingPlugin implements RenderingPlugin {
   constructor(private strategies: CullingStrategyContribution[]) {}
 
   apply(context: RenderingPluginContext) {
-    const { camera, renderingService, renderingContext } = context;
+    const { config, camera, renderingService, renderingContext } = context;
     const { strategies } = this;
 
     renderingService.hooks.cull.tap(
@@ -54,8 +54,16 @@ export class CullingPlugin implements RenderingPlugin {
           if (!object.isCulled() && object.isVisible()) {
             return object;
           }
+
+          const enableCancelEventPropagation =
+            config.future?.experimentalCancelEventPropagation === true;
+
           // if (this.renderingContext.renderListLastFrame.indexOf(object) > -1) {
-          object.dispatchEvent(new CustomEvent(ElementEvent.CULLED));
+          object.dispatchEvent(
+            new CustomEvent(ElementEvent.CULLED),
+            enableCancelEventPropagation,
+            enableCancelEventPropagation,
+          );
           // }
 
           return null;

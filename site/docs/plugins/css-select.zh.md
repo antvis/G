@@ -5,10 +5,10 @@ order: 0
 
 在场景图中查找节点时，我们可以使用一些类似 DOM API 的[高级查询方式](/zh/api/basic/display-object#高级查询)：
 
--   **getElementById** 在当前节点子树下按 id 查找单一元素
--   **getElementsByName** 在当前节点子树下按 name 查找元素列表
--   **getElementsByClassName** 在当前节点子树下按 className 查找元素列表
--   **getElementsByTagName** 在当前节点子树下按 tagName 查找元素列表
+- **getElementById** 在当前节点子树下按 id 查找单一元素
+- **getElementsByName** 在当前节点子树下按 name 查找元素列表
+- **getElementsByClassName** 在当前节点子树下按 className 查找元素列表
+- **getElementsByTagName** 在当前节点子树下按 tagName 查找元素列表
 
 假设我们构建了如下场景图：
 
@@ -39,8 +39,8 @@ solarSystem.getElementsByTagName(Shape.CIRCLE);
 
 当我们想使用类似 CSS 选择器这样更复杂的查询条件时，就可以选择安装该插件：
 
--   **querySelector**
--   **querySelectorAll**
+- **querySelector**
+- **querySelectorAll**
 
 安装完成后就可以使用属性选择器：
 

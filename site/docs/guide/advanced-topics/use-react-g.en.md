@@ -17,8 +17,8 @@ npm i @antv/react-g
 
 react-g provide host-component:
 
--   Container: `Canvas` and `Group`.
--   Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
+- Container: `Canvas` and `Group`.
+- Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
 
 ### Basic usage
 
@@ -88,8 +88,8 @@ export default App;
 
 ### `render` react-g component to target g element
 
--   将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
--   意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
+- 将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
+- 意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
 
 ```tsx
 import React, { useState } from 'react';

@@ -27,7 +27,7 @@ rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 
 用法完全可以参考 CSS [linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient)，但有以下区别：
 
--   渐变方向在 CSS 中默认为从下到上，而我们为了和 Canvas / SVG 保持一致，使用从左到右。
+- 渐变方向在 CSS 中默认为从下到上，而我们为了和 Canvas / SVG 保持一致，使用从左到右。
 
 因此一个从左到右方向，旋转角度为 0 的线性渐变如下，[示例](/zh/examples/style/gradient/#gradient)：
 
@@ -61,34 +61,33 @@ rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';
 
 注意事项：
 
--   形状仅支持 `circle` 不支持 `ellipse`
--   支持指定 `circle` 半径：
-
-    -   `'closest-side'` 圆心到包围盒最近边的距离
-    -   `'farthest-corner'` **默认值**。圆心到包围盒最远角的距离
-    -   `'closest-corner'` 圆心到包围盒最近角的距离
-    -   `'farthest-side'` 圆心到包围盒最远边的距离
-    -   `<length>` 指定长度，例如 `'radial-gradient(circle 80px at center, red 100%, blue 100%)'`
+- 形状仅支持 `circle` 不支持 `ellipse`
+- 支持指定 `circle` 半径：
+  - `'closest-side'` 圆心到包围盒最近边的距离
+  - `'farthest-corner'` **默认值**。圆心到包围盒最远角的距离
+  - `'closest-corner'` 圆心到包围盒最近角的距离
+  - `'farthest-side'` 圆心到包围盒最远边的距离
+  - `<length>` 指定长度，例如 `'radial-gradient(circle 80px at center, red 100%, blue 100%)'`
 
 下图分别展示了 `'closest-side'` `'farthest-side'` 和 `80px` 的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*eXrBQYlLENwAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-closest-side" width="200">
-<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*C__VRJ24rVcAAAAAAAAAAAAAARQnAQ" 
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*C__VRJ24rVcAAAAAAAAAAAAAARQnAQ"
 alt="radial-gradient-farthest-side" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*3U91RYB3DukAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-size-80" width="200">
 
--   支持指定圆心位置，相对包围盒左上角定位，例如 `radial-gradient(circle at 50px 50px, red, blue, green 100%)`：
-    -   `'top'` 上方边缘中点
-    -   `'left'` 左侧边缘中点
-    -   `'bottom'` 下方边缘中点
-    -   `'right'` 右侧边缘中点
-    -   `'center'` 水平垂直居中
-    -   `'top left'` 左上角
-    -   `'left top'` 同 `'top left'`
-    -   `'top right'` 右上角
-    -   `'bottom left'` 左下角
-    -   `'bottom right'` 右下角
-    -   `<length> <length>` 指定长度，例如 `'25% 25%'` 或者 `'50px 50px'`
+- 支持指定圆心位置，相对包围盒左上角定位，例如 `radial-gradient(circle at 50px 50px, red, blue, green 100%)`：
+  - `'top'` 上方边缘中点
+  - `'left'` 左侧边缘中点
+  - `'bottom'` 下方边缘中点
+  - `'right'` 右侧边缘中点
+  - `'center'` 水平垂直居中
+  - `'top left'` 左上角
+  - `'left top'` 同 `'top left'`
+  - `'top right'` 右上角
+  - `'bottom left'` 左下角
+  - `'bottom right'` 右下角
+  - `<length> <length>` 指定长度，例如 `'25% 25%'` 或者 `'50px 50px'`
 
 下图分别展示了 `'50px 50px'`，`'top right'` 和 `'left'` 的效果：
 
@@ -96,7 +95,7 @@ alt="radial-gradient-farthest-side" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*ekj4TZv0Yf4AAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-top-right" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*bXIjTaTpC2QAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-left" width="200">
 
--   和线性渐变一样，也支持多组叠加
+- 和线性渐变一样，也支持多组叠加
 
 ## 常见问题
 
@@ -104,7 +103,7 @@ alt="radial-gradient-farthest-side" width="200">
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
--   `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
+- `l` 表示使用线性渐变，绿色的字体为可变量，由用户自己填写。
 
 ```js
 // example
@@ -114,7 +113,7 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
--   `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
+- `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
 
 ```js
 // example

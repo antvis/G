@@ -7,8 +7,8 @@ Similar to [Node](https://developer.mozilla.org/en-US/docs/Web/API/Node) in the 
 
 The following inheritance relationships exist in G.
 
--   Document -> Node -> EventTarget
--   DisplayObject -> Element -> Node -> EventTarget
+- Document -> Node -> EventTarget
+- DisplayObject -> Element -> Node -> EventTarget
 
 ## Inherited from
 
@@ -25,7 +25,7 @@ circle.nodeName; // 'circle'
 rect.nodeName; // 'rect'
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName>
 
 G The built-in graphic names are as follows.
 
@@ -50,7 +50,7 @@ export enum Shape {
 
 Read-only, return node string, default is null.[Text](/en/api/basic/text) will return text string.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue>
 
 ```js
 const group = new Group();
@@ -70,7 +70,7 @@ canvas.appendChild(circle); // 加入到画布中
 circle.isConnected; // true
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected>
 
 ### ownerDocument
 
@@ -82,49 +82,49 @@ canvas.appendChild(circle); // 加入到画布中
 circle.ownerDocument; // canvas.document
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument>
 
 ### parentNode
 
 Read-only, returns the parent node of the current node.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode>
 
 ### parentElement
 
 Read-only, same as parentNode in the current implementation.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement>
 
 ### childNodes
 
 Read-only, returns the list of child nodes of the current node.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes>
 
 ### firstChild
 
 Read-only, returns the first child of the current node, or null if there are no children.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild>
 
 ### lastChild
 
 Read-only, returns the last child of the current node, or null if there are no children.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild>
 
 ### nextSibling
 
 Read-only, returns the next sibling of the current node, or null if none.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling>
 
 ### previousSibling
 
 Read-only, returns the previous sibling of the current node, or null if there is none.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling>
 
 ### textContent
 
@@ -160,7 +160,7 @@ group.childNodes; // [Text]
 
 Adds a node to the end of the child node list of the specified parent node. If the node is already in the scene graph, it will be removed from its original position and then added to the new position.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild>
 
 ### cloneNode
 
@@ -180,15 +180,15 @@ clonedCircle.getPosition(); // [10, 20]
 
 Caveats.
 
--   Deep copy support, i.e. itself and the whole subtree
--   Cloned new nodes do not retain the parent-child relationship of the original node, and need to be added to the canvas using `appendChild` before they will be rendered
--   Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original graph are not copied
+- Deep copy support, i.e. itself and the whole subtree
+- Cloned new nodes do not retain the parent-child relationship of the original node, and need to be added to the canvas using `appendChild` before they will be rendered
+- Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original graph are not copied
 
 In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
 
--   The style properties of the original node can be changed at any time, the copy will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
--   However, since no event listeners are copied, only the original node can be dragged and dropped
--   In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle.
+- The style properties of the original node can be changed at any time, the copy will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
+- However, since no event listeners are copied, only the original node can be dragged and dropped
+- In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
@@ -196,7 +196,7 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 Determine if the incoming node is a descendant of this node.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains>
 
 ### getRootNode
 
@@ -208,7 +208,7 @@ canvas.appendChild(circle);
 circle.getRootNode(); // canvas.document
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode>
 
 ### getAncestor
 
@@ -228,7 +228,7 @@ circle.getAncestor(100); // null
 
 If or not there are child nodes.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes>
 
 ### insertBefore
 
@@ -240,7 +240,7 @@ insertBefore(child: Node, reference?: Node): Node
 
 Inserts a child node with the specified parent node before the reference node. If the given child node is a reference to an existing node in the document, insertBefore() will move it from its current position to the new position (it is not necessary to remove the node from its parent before attaching it to another node).
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore>
 
 ### removeChild
 
@@ -252,25 +252,25 @@ removeChild(child: Node, destroy?: boolean): Node
 
 Deletes a child node, finally returns the deleted child node.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild>
 
 ### replaceChild
 
 Replaces a child node of the current node with the specified node, and returns the replaced node.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild>
 
 ### isEqualNode
 
 Determines if two nodes are equal.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode>
 
 ### compareDocumentPosition
 
 Compare the positions of the two nodes in the scene graph.
 
-https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+<https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition>
 
 For example, comparing itself will return 0.
 

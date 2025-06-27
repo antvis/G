@@ -13,10 +13,10 @@ const camera = canvas.getCamera();
 
 目前相机支持以下特性：
 
--   两种投影模式：正交投影 [Orthographic](/zh/api/camera/intro#投影模式) 和透视投影 [Perspective](/zh/api/camera/intro#投影模式)，默认使用前者。
--   三种相机类型：[Exploring](/zh/api/camera/intro#exploring)、[Orbiting](/zh/api/camera/intro#orbiting) 和 [Tracking](/zh/api/camera/intro#tracking)，默认使用 Exploring。
--   相机动作。例如 [pan](/zh/api/camera/action#pan)、[dolly](/zh/api/camera/action#dolly)、[rotate](/zh/api/camera/action#rotate)
--   自定义[相机动画](/zh/api/camera/animation)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
+- 两种投影模式：正交投影 [Orthographic](/zh/api/camera/intro#投影模式) 和透视投影 [Perspective](/zh/api/camera/intro#投影模式)，默认使用前者。
+- 三种相机类型：[Exploring](/zh/api/camera/intro#exploring)、[Orbiting](/zh/api/camera/intro#orbiting) 和 [Tracking](/zh/api/camera/intro#tracking)，默认使用 Exploring。
+- 相机动作。例如 [pan](/api/camera/action#pan)、[dolly](/zh/api/camera/action#dolly)、[rotate](/zh/api/camera/action#rotate)
+- 自定义[相机动画](/zh/api/camera/animation)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
 
 ## 投影模式
 
@@ -55,12 +55,12 @@ setOrthographic(left: number, right: number,
 
 参数列表如下：
 
--   `left` x 轴负向最大距离
--   `right` x 轴正向最大距离
--   `top` y 轴正向最大距离
--   `bottom` y 轴负向最大距离
--   `near` 近平面
--   `far` 远平面
+- `left` x 轴负向最大距离
+- `right` x 轴正向最大距离
+- `top` y 轴正向最大距离
+- `bottom` y 轴负向最大距离
+- `near` 近平面
+- `far` 远平面
 
 G 的默认相机设置如下，其中 `width/height` 为 [Canvas](/zh/api/canvas) 的尺寸，[使用示例](/zh/examples/camera/projection-mode/#ortho)：
 
@@ -83,10 +83,10 @@ setPerspective(near: number, far: number, fov: number, aspect: number)
 
 参数：
 
--   `near` 近平面
--   `far` 远平面
--   `fov` 可视角度，越大意味着能容纳场景中的更多对象
--   `aspect` 宽高比
+- `near` 近平面
+- `far` 远平面
+- `fov` 可视角度，越大意味着能容纳场景中的更多对象
+- `aspect` 宽高比
 
 [使用示例](/zh/examples/camera/projection-mode/#perspective)：
 
@@ -124,7 +124,7 @@ export enum CameraType {
 
 在 Three.js 中称作 [OrbitControls](https://threejs.org/#examples/zh/controls/OrbitControls)
 
-在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/zh/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
+在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 

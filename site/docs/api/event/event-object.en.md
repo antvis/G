@@ -15,11 +15,11 @@ Common properties on the event object include event type, graphics of the curren
 
 Event type：
 
--   pointerup
--   pointerdown
--   pointerupoutside
--   pointermove
--   pointercancel
+- pointerup
+- pointerdown
+- pointerupoutside
+- pointermove
+- pointercancel
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Event/type>
 
@@ -229,9 +229,9 @@ The value of the mouse movement in the horizontal direction between the current 
 
 Returns the device type of the event with the following return value.
 
--   `'pointer'` [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
--   `'mouse'` [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
--   `'touch'` [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
+- `'pointer'` [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
+- `'mouse'` [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
+- `'touch'` [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType>
 

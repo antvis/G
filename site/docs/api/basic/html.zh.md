@@ -5,8 +5,8 @@ order: 9
 
 有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
 
--   很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
--   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape/html#html)：
+- 很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
+- 部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape/html#html)：
 
 ![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -52,12 +52,12 @@ canvas.appendChild(html);
 
 ## 继承自
 
--   [DisplayObject](/zh/api/basic/display-object)
+- [DisplayObject](/zh/api/basic/display-object)
 
 其中的 [id](/zh/api/basic/display-object#id)，[name](/zh/api/basic/display-object#name)，[className](/zh/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
 
--   通过类似 `getElementById` 这样的 DOM API 获取
--   使用 [getDomElement()](/zh/api/basic/html#getdomelement)
+- 通过类似 `getElementById` 这样的 DOM API 获取
+- 使用 [getDomElement()](/zh/api/basic/html#getdomelement)
 
 其他样式属性通过 CSS 应用。
 
@@ -128,9 +128,9 @@ const tooltip = new HTML({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,9 +138,9 @@ const tooltip = new HTML({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
@@ -172,9 +172,9 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -182,9 +182,9 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### 其他 CSS 属性
 

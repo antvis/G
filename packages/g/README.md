@@ -12,25 +12,25 @@ It is necessary to work with [Renderer](https://g-next.antv.vision/en/docs/api/r
 
 ### Canvas
 
-https://g-next.antv.vision/en/docs/api/canvas
+<https://g-next.antv.vision/en/docs/api/canvas>
 
 ### Camera
 
-https://g-next.antv.vision/en/docs/api/camera
+<https://g-next.antv.vision/en/docs/api/camera>
 
 ### DisplayObject
 
-https://g-next.antv.vision/en/docs/api/basic/display-object
+<https://g-next.antv.vision/en/docs/api/basic/display-object>
 
 ### Events
 
-https://g-next.antv.vision/en/docs/api/event
+<https://g-next.antv.vision/en/docs/api/event>
 
 ### Animation
 
-https://g-next.antv.vision/en/docs/api/animation/waapi
+<https://g-next.antv.vision/en/docs/api/animation/waapi>
 
 ## Inspired by
 
--   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions)
+- [Sprite.js](https://github.com/spritejs/spritejs)
+- [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions)

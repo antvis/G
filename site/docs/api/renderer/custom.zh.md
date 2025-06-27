@@ -17,7 +17,7 @@ order: 4
 
 继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/zh/api/renderer/renderer#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/zh/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/zh/plugins/canvas-picker)。
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
 ```js
 import type { RendererConfig } from '@antv/g';
@@ -174,7 +174,7 @@ interface WebGLRenderingContext {
 
 不同的渲染环境实现起来难度自然也不同，例如 [g-canvas](/zh/api/renderer/canvas) 中可以使用原生 [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/HTMLCanvasElement/toDataURL) 方法
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110>
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {
@@ -185,7 +185,7 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 
 但 [g-svg](/zh/api/renderer/svg) 实现起来就要麻烦很多，需要借助 [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) 的序列化能力：
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90>
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {
@@ -209,4 +209,4 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 
 在 [g-webgl](/zh/api/renderer/webgl) 中情况就更复杂了，甚至需要使用异步方式。
 
-https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438
+<https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438>

@@ -244,7 +244,7 @@ geometry.primitiveStart = 3;
 
 参数列表：
 
--   indices `number[] | Int32Array | Uint32Array | Uint16Array` 索引数组
+- indices `number[] | Int32Array | Uint32Array | Uint16Array` 索引数组
 
 例如在内置程序化生成的几何中，最终都会设置索引数组：
 
@@ -258,20 +258,20 @@ geometry.setIndices(new Uint32Array(indices));
 
 参数列表：
 
--   descriptor `GeometryVertexBufferDescriptor` 顶点描述符
+- descriptor `GeometryVertexBufferDescriptor` 顶点描述符
 
 其中描述符结构如下：
 
--   bufferIndex 索引
--   byteStride stride 长度（以 byte 为单位）
--   stepMode 支持 vertex 和 instance 两种
--   attributes 支持 interleave，其中每个属性包括：
-    -   format 对应 Shader 中的数据类型
-    -   bufferByteOffset 在 stride 中的偏移量
-    -   byteStride 属性长度
-    -   location 与 Shader 中 location 对应
-    -   divisor 选择 instance 模式后生效
--   data 数据
+- bufferIndex 索引
+- byteStride stride 长度（以 byte 为单位）
+- stepMode 支持 vertex 和 instance 两种
+- attributes 支持 interleave，其中每个属性包括：
+  - format 对应 Shader 中的数据类型
+  - bufferByteOffset 在 stride 中的偏移量
+  - byteStride 属性长度
+  - location 与 Shader 中 location 对应
+  - divisor 选择 instance 模式后生效
+- data 数据
 
 ```js
 export interface GeometryVertexBufferDescriptor {
@@ -334,7 +334,7 @@ geometry.updateVertexBuffer(
 
 参数列表：
 
--   matrix `mat4` 变换矩阵
+- matrix `mat4` 变换矩阵
 
 ```js
 geometry.applyMat4(mat4.fromScaling(mat4.create(), vec3.fromValues(1, -1, 1)));

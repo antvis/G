@@ -14,7 +14,7 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ" width="160" alt="text emoji">
 
-[Codesandbox 例子](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
+[CodeSandbox 例子](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
 
 ## 使用方式
 
@@ -58,7 +58,7 @@ const canvasRenderer = new window.G.Canvaskit.Renderer();
 
 CanvasKit 的 WASM 文件夹路径。默认值为 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full/'`，即从 CDN 上下载。
 
-在实际使用时，我们可以将 WASM 拷贝到服务器资源目录下（例如配合 Webpack 等构建工具），代替从 CDN 加载。在我们的网站中就将该文件拷贝到了根目录（`'/'`）下，此时可以通过 `wasmDir` 配置项指定文件夹路径：
+在实际使用时，我们可以将 WASM 拷贝到服务器资源目录下（例如配合 webpack 等构建工具），代替从 CDN 加载。在我们的网站中就将该文件拷贝到了根目录（`'/'`）下，此时可以通过 `wasmDir` 配置项指定文件夹路径：
 
 ```js
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -68,9 +68,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 值得一提的是 CanvasKit 提供了多个版本的 WASM 文件：
 
--   精简版，约 7.1MB，`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
--   全量功能，约 7.9MB，包含完整的[增强功能](/zh/api/renderer/canvaskit#增强功能)，推荐使用该版本 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
--   开发版本，约 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
+- 精简版，约 7.1MB，`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
+- 全量功能，约 7.9MB，包含完整的[增强功能](/zh/api/renderer/canvaskit#增强功能)，推荐使用该版本 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
+- 开发版本，约 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
 ### fonts
 
@@ -115,17 +115,17 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 该渲染器内置了以下插件：
 
--   [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
--   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
--   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
+- [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 增强功能
 
 CanvasKit（完整版本）相较于我们熟悉的 Canvas 2D API，提供了以下增强功能：
 
--   [Skottie](https://skia.org/user/modules/skottie/) Lottie 动画播放器
--   粒子特效
--   段落排版
+- [Skottie](https://skia.org/user/modules/skottie/) Lottie 动画播放器
+- 粒子特效
+- 段落排版
 
 ### Lottie 动画播放器
 
@@ -209,10 +209,10 @@ textParticles.start(Date.now() / 1000.0, true);
 
 最后我们来看关键的粒子效果定义：
 
--   MaxCount 粒子数目
--   Drawable 粒子的类型，通常使用 `'SkCircleDrawable'` 即可，可以修改大小
--   Code SkSL 代码，用以控制粒子的生命周期，例如每一帧中位置和颜色应该如何改变
--   Bindings
+- MaxCount 粒子数目
+- Drawable 粒子的类型，通常使用 `'SkCircleDrawable'` 即可，可以修改大小
+- Code SkSL 代码，用以控制粒子的生命周期，例如每一帧中位置和颜色应该如何改变
+- Bindings
 
 ```js
 const text = {
@@ -361,10 +361,10 @@ const decoratedText = new Text({
 
 支持以下属性：
 
--   decorationLine，对应 CSS [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) 属性。支持 `'none'` `'underline'` `'overline'` `'line-through'`
--   decorationColor，对应 CSS [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color) 属性
--   decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
--   decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
+- decorationLine，对应 CSS [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) 属性。支持 `'none'` `'underline'` `'overline'` `'line-through'`
+- decorationColor，对应 CSS [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color) 属性
+- decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
+- decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
 ### 文本截断
 
@@ -393,8 +393,8 @@ const text = new Text({
 
 原因是 Skia 会在省略号之后添加一个空白字符，而某些字体文件中缺失该字符就会展示 “tofu”，解决方案如下：
 
--   https://github.com/flutter/flutter/issues/76473
--   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
+- <https://github.com/flutter/flutter/issues/76473>
+- <https://github.com/flutter/flutter/issues/90135#issuecomment-984916656>
 
 ### 文本方向
 
@@ -414,9 +414,9 @@ const text = new Text({
 
 我们支持通过 `shadows` 属性指定一组阴影，其中每一个阴影支持如下配置：
 
--   color 阴影颜色
--   blurRadius 默认为 0。值越大，模糊半径越大，阴影也就越淡
--   offset 指定阴影相对文字的偏移量
+- color 阴影颜色
+- blurRadius 默认为 0。值越大，模糊半径越大，阴影也就越淡
+- offset 指定阴影相对文字的偏移量
 
 在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们指定了两个阴影：
 
@@ -444,17 +444,17 @@ const shadowedText = new Text({
 
 Strut（意为“支柱”）可以设置相对于 baseline 的最小行高。类似 CSS 中的 [line-height](https://developer.mozilla.org/zh-CN/Web/CSS/line-height) 属性。
 
-在 SkParagraph 中可以通过 StrutStyle 进行配置，Flutter 中也有同名文档：https://api.flutter.dev/flutter/painting/StrutStyle-class.html
+在 SkParagraph 中可以通过 StrutStyle 进行配置，Flutter 中也有同名文档：<https://api.flutter.dev/flutter/painting/StrutStyle-class.html>
 
 我们会透传以下属性：
 
--   strutEnabled 是否启用
--   fontFamilies 字体，可以与 TextStyle 保持一致
--   fontSize 字号
--   heightMultiplier 行高高度系数
--   leading 行与行之间的空隙
--   halfLeading
--   forceStrutHeight
+- strutEnabled 是否启用
+- fontFamilies 字体，可以与 TextStyle 保持一致
+- fontSize 字号
+- heightMultiplier 行高高度系数
+- leading 行与行之间的空隙
+- halfLeading
+- forceStrutHeight
 
 在该[示例](/zh/examples/plugins#canvaskit-paragraph)中我们以此控制行高和行间距：
 
@@ -501,13 +501,13 @@ const fontFeaturesText = new Text({
 
 ### Harfbuzz
 
-Skia 本身是不包含 Harfbuzz 的： https://skia.org/user/tips/
+Skia 本身是不包含 Harfbuzz 的： <https://skia.org/user/tips/>
 
 但 CanvasKit 默认会将它打包进来：
 
-https://skia.googlesource.com/skia/+/main/modules/canvaskit/CHANGELOG.md#0_4_0_2019_02_25
+<https://skia.googlesource.com/skia/+/main/modules/canvaskit/CHANGELOG.md#0_4_0_2019_02_25>
 
-https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa1
+<https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa1>
 
 > Text shaping with ShapedText object and SkCanvas.drawText. At compile time, one can choose between using Harfbuzz/ICU (default) or a primitive one (“primitive_shaper”) which just does line breaking. Using Harfbuzz/ICU substantially increases code size (4.3 MB to 6.4 MB).
 

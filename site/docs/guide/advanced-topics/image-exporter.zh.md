@@ -46,10 +46,10 @@ interface CanvasOptions {
 
 各配置项含义如下：
 
--   clippingRegion 画布裁剪区域，用矩形表示
--   beforeDrawImage 在绘制画布内容前调用，适合绘制背景颜色
--   afterDrawImage 在绘制画布内容后调用，适合绘制水印
--   ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
+- clippingRegion 画布裁剪区域，用矩形表示
+- beforeDrawImage 在绘制画布内容前调用，适合绘制背景颜色
+- afterDrawImage 在绘制画布内容后调用，适合绘制水印
+- ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
 
 在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
 
@@ -158,7 +158,7 @@ const imageData = canvas.getContext('2d').getImageData(50, 50, 100, 100); // Ima
 
 ## 导出 PDF
 
-如果我们还想在前端根据图片生成 PDF，可以参考：https://github.com/parallax/jsPDF
+如果我们还想在前端根据图片生成 PDF，可以参考：<https://github.com/parallax/jsPDF>
 
 ## 注意事项
 
@@ -170,8 +170,8 @@ const imageData = canvas.getContext('2d').getImageData(50, 50, 100, 100); // Ima
 
 可以，如果画布中包含 [HTML](/zh/api/basic/html)，目前不同的渲染器实现如下：
 
--   导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
--   导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
+- 导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+- 导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
 
 在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，左上角 Tooltip 就是一个 HTML。
 
@@ -189,7 +189,7 @@ HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-C
 
 ### toDataURL polyfill
 
-HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 有可能在某些古早浏览器上不支持，此时可以使用 polyfill： https://stackoverflow.com/a/47148969
+HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 有可能在某些古早浏览器上不支持，此时可以使用 polyfill： <https://stackoverflow.com/a/47148969>
 
 ### 导出带动画效果的 SVG
 
@@ -202,12 +202,11 @@ HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-C
 @keyframes u0{1.32%{transform:scale(0,1)}
 ```
 
-但需要注意的是，不是所有支持动画的属性都可以转换成 CSS Animations 表示，例如[形变动画](/zh/api/animation/waapi#形变动画)中使用到的 path 属性。
-另外在 [EffectTiming](/zh/api/animation/waapi#effecttiming) 中，有些配置项 CSS Animations 还不支持，因此也无法体现在导出的文件中：
+但需要注意的是，不是所有支持动画的属性都可以转换成 CSS Animations 表示，例如[形变动画](/zh/api/animation/waapi#形变动画)中使用到的 path 属性。另外在 [EffectTiming](/zh/api/animation/waapi#effecttiming) 中，有些配置项 CSS Animations 还不支持，因此也无法体现在导出的文件中：
 
--   [自定义的缓动函数](/zh/api/animation/waapi#easingfunction)
--   [endDelay](/zh/api/animation/waapi#enddelay)
--   [iterationStart](/zh/api/animation/waapi#iterationstart)
+- [自定义的缓动函数](/zh/api/animation/waapi#easingfunction)
+- [endDelay](/zh/api/animation/waapi#enddelay)
+- [iterationStart](/zh/api/animation/waapi#iterationstart)
 
 最后，在使用该功能时，需要确保导出前所有动画效果处于暂停状态。只有这样才能保证在导出的这一刻，图形都处于初始状态，否则 SVG 中将保存中间时刻的状态：
 

@@ -9,7 +9,7 @@ order: -99
 
 ## 基本结构
 
-https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
+<https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer>
 
 ### package.json
 
@@ -25,8 +25,8 @@ https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 
 打开插件的入口文件，我们可以发现一个继承了 `AbstractRendererPlugin` 的插件需要实现两个方法：
 
--   `init` 在容器中加载模块
--   `destroy` 在容器中卸载模块
+- `init` 在容器中加载模块
+- `destroy` 在容器中卸载模块
 
 ```js
 import { AbstractRendererPlugin, Module } from '@antv/g';

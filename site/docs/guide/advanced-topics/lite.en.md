@@ -11,12 +11,12 @@ The following figure shows the composition of the bundle `@antv/g`.
 
 The full version `@antv/g` consists of the following parts.
 
--   `@antv/g-lite` Includes [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro) and other core functions
--   `@antv/g-camera-api` Provides full camera motion and animation capabilities
--   `@antv/g-web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)
--   `@antv/g-css-typed-om-api` Provides CSS Typed OM API
--   `@antv/g-css-layout-api` Provides CSS Layout API]
--   `@antv/g-dom-mutation-observer-api` Provides DOM Mutation Observer API
+- `@antv/g-lite` Includes [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro) and other core functions
+- `@antv/g-camera-api` Provides full camera motion and animation capabilities
+- `@antv/g-web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)
+- `@antv/g-css-typed-om-api` Provides CSS Typed OM API
+- `@antv/g-css-layout-api` Provides CSS Layout API]
+- `@antv/g-dom-mutation-observer-api` Provides DOM Mutation Observer API
 
 ## Usage
 
@@ -101,19 +101,19 @@ In G we also implement this [API](/en/api/builtin-objects/mutation-observer) to 
 
 Methods compatible with older versions are provided on the base graphics, most of which have DOM API-compatible implementations in newer versions. The use of these methods is therefore not recommended and may be removed at any time subsequently.
 
--   `getCount` Get the number of child nodes, the new version uses [childElementCount](/en/api/builtin-objects/element#childelementcount)
--   `getParent` Get the parent, the new version uses [parentElement](/en/api/builtin-objects/node#parentelement)
--   `getChildren` Get the list of child nodes, the new version uses [children](/en/api/builtin-objects/element#children)
--   `getFirst` Get the first child node, the new version uses [firstElementChild](/en/api/builtin-objects/element#firstelementchild)
--   `getLast` Get the last child node, the new version uses [lastElementChild](/en/api/builtin-objects/element#lastelementchild)
--   `getChildByIndex` the new version uses `this.children[index]`
--   `add` the new version uses [appendChild](/en/api/builtin-objects/node#appendchild)
--   `setClip` the new version uses [clipPath](/en/api/basic/display-object#clippath)
--   `getClip` ld.
--   `set` Storing key-value pairs on initialized configurations
--   `get` Read values on initialized configuration
--   `show` the new version uses [visibility](/en/api/basic/display-object#visibility)
--   `hide` ld.
--   `moveTo` the new version uses [setPosition](/en/api/basic/display-object#平移)
--   `move` ld.
--   `setZIndex` the new version uses [zIndex](/en/api/basic/display-object#zindex)
+- `getCount` Get the number of child nodes, the new version uses [childElementCount](/en/api/builtin-objects/element#childelementcount)
+- `getParent` Get the parent, the new version uses [parentElement](/en/api/builtin-objects/node#parentelement)
+- `getChildren` Get the list of child nodes, the new version uses [children](/en/api/builtin-objects/element#children)
+- `getFirst` Get the first child node, the new version uses [firstElementChild](/en/api/builtin-objects/element#firstelementchild)
+- `getLast` Get the last child node, the new version uses [lastElementChild](/en/api/builtin-objects/element#lastelementchild)
+- `getChildByIndex` the new version uses `this.children[index]`
+- `add` the new version uses [appendChild](/en/api/builtin-objects/node#appendchild)
+- `setClip` the new version uses [clipPath](/en/api/basic/display-object#clippath)
+- `getClip` ld.
+- `set` Storing key-value pairs on initialized configurations
+- `get` Read values on initialized configuration
+- `show` the new version uses [visibility](/en/api/basic/display-object#visibility)
+- `hide` ld.
+- `moveTo` the new version uses [setPosition](/en/api/basic/display-object#平移)
+- `move` ld.
+- `setZIndex` the new version uses [zIndex](/en/api/basic/display-object#zindex)

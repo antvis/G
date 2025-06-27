@@ -25,7 +25,7 @@ hammer.on('press', (e) => {
 
 ## Implementing Pinch Gestures with PointerEvents
 
-The Pinch gesture is implemented in this [example](/en/examples/event#pinch-with-pointer), see https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_ zoom_gestures
+The Pinch gesture is implemented in this [example](/en/examples/event#pinch-with-pointer), see <https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch>\_zoom_gestures
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 

@@ -20,4 +20,4 @@ group.getElementsByTagName('circle'); // [circle]
 
 ## Inherited from
 
--   [DisplayObject](/en/api/basic/display-object)
+- [DisplayObject](/en/api/basic/display-object)

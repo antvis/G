@@ -2,7 +2,7 @@
 title: DisplayObject
 order: 0
 redirect_from:
-  - /en/api/basic
+    - /en/api/basic
 ---
 
 DisplayObject is the base class of all graph like [Group](/en/api/basic/group), [Circle](/en/api/basic/circle), [Text](/en/api/basic/text) etc.
@@ -21,16 +21,16 @@ We tried to make it as compatible as possible with [DOM Element](https://develop
 
 ## id
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/id
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/id>
 
 Globally unique identifier, can be queried by [getElementById](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
-  id: 'my-circle-id',
-  style: {
-    r: 10,
-  },
+    id: 'my-circle-id',
+    style: {
+        r: 10,
+    },
 });
 circle.id; // 'my-circle-id'
 canvas.getElementById('my-circle-id'); // circle
@@ -38,16 +38,16 @@ canvas.getElementById('my-circle-id'); // circle
 
 ## name
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName>
 
 Graph name, not required to be globally unique, can be queried by [getElementsByName](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
-  name: 'my-circle-name',
-  style: {
-    r: 10,
-  },
+    name: 'my-circle-name',
+    style: {
+        r: 10,
+    },
 });
 circle.name; // 'my-circle-name'
 canvas.getElementsByName('my-circle-name'); // [circle]
@@ -55,16 +55,16 @@ canvas.getElementsByName('my-circle-name'); // [circle]
 
 ## className
 
-https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+<https://developer.mozilla.org/en-US/docs/Web/API/Element/className>
 
 The class name owned by the graphic, which can be used to get/set the class name of the graphic. It can be queried later using [getElementsByClassName](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
-  className: 'my-circle-classname',
-  style: {
-    r: 10,
-  },
+    className: 'my-circle-classname',
+    style: {
+        r: 10,
+    },
 });
 circle.className; // 'my-circle-classname'
 canvas.getElementsByClassName('my-circle-classname'); // [circle]
@@ -88,8 +88,8 @@ Finally, you can also use `class` as an alias when setting.
 
 ```js
 const group = new Group({
-  class: 'my-classname',
-  // className: 'my-classname'
+    class: 'my-classname',
+    // className: 'my-classname'
 });
 
 group.setAttribute('class', 'my-classname');
@@ -106,10 +106,10 @@ For example, we don't want the following circle to respond to the mouse `mouseen
 
 ```js
 const circle = new Circle({
-  interactive: false,
-  style: {
-    r: 100,
-  },
+    interactive: false,
+    style: {
+        r: 100,
+    },
 });
 
 // or
@@ -128,17 +128,17 @@ The drawing properties are set by `style` and usually contain **generic properti
 
 ```javascript
 const rect = new Rect({
-  style: {
-    // or using attrs
-    x: 200,
-    y: 100,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-    width: 300,
-    height: 200,
-    radius: 8,
-  },
+    style: {
+        // or using attrs
+        x: 200,
+        y: 100,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        width: 300,
+        height: 200,
+        radius: 8,
+    },
 });
 ```
 
@@ -146,8 +146,8 @@ Property names can also be hyphenated, so the following writeups are fully equiv
 
 ```js
 const rect = new Rect({
-  'line-width': 4,
-  // lineWidth: 4,
+    'line-width': 4,
+    // lineWidth: 4,
 });
 
 rect.style.lineWidth = 4;
@@ -162,11 +162,11 @@ The initial position of the drawing in the local coordinate system is described 
 
 ```js
 const circle = new Cirle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+    },
 });
 circle.getLocalPosition(); // [0, 0]
 ```
@@ -199,34 +199,34 @@ We provide shortcuts for transformations in local coordinate systems, while keep
 - none
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| `'none'`                                                             | all                 | no                                     | yes        | `<transform>`                                                          |
+| --- | --- | --- | --- | --- |
+| `'none'` | all | no | yes | `<transform>` |
 
 Since the transformation is performed in a local coordinate system, the following write-ups are visually consistent.
 
 ```js
 // Using transform
 const circle = new Circle({
-  style: {
-    transform: 'translate(100px, 100px)',
-    r: 100,
-  },
+    style: {
+        transform: 'translate(100px, 100px)',
+        r: 100,
+    },
 });
 
 // or set cx/cy directly
 const circle = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+    },
 });
 
 // or using transform functions
 const circle = new Circle({
-  style: {
-    r: 100,
-  },
+    style: {
+        r: 100,
+    },
 });
 circle.translateLocal(100, 100);
 ```
@@ -258,8 +258,8 @@ circle.style.transformOrigin = '0 100px'; // The distance to the left edge of th
 ⚠️ Writing with three values is not supported at the moment.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| -                                                                    | all                 | no                                     | no         | `<transform-origin>`                                                   |
+| --- | --- | --- | --- | --- |
+| - | all | no | no | `<transform-origin>` |
 
 ### Fill
 
@@ -273,8 +273,8 @@ circle.style.opacity = '0.5';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '1'                                                                  | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
+| --- | --- | --- | --- | --- |
+| '1' | all | no | yes | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 #### fillOpacity
 
@@ -286,8 +286,8 @@ circle.style.fillOpacity = '0.5';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------- |
-| '1'                                                                  | all                 | yes                                    | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)       |
+| --- | --- | --- | --- | --- |
+| '1' | all | yes | yes | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 #### fill
 
@@ -299,15 +299,15 @@ circle.style.fill = 'rgb(255, 0, 0)';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| 'none'                                                               | all                 | no                                     | yes        | [\<paint\>](/en/api/css/css-properties-values-api#paint)               |
+| --- | --- | --- | --- | --- |
+| 'none' | all | no | yes | [\<paint\>](/en/api/css/css-properties-values-api#paint) |
 
 #### fillRule
 
 This attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
 
-- `'nonzero'` Default https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero
-- `'evenodd'` https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd
+- `'nonzero'` Default <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero>
+- `'evenodd'` <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd>
 
 This [example](/en/examples/shape#polygon) shows the fill effects of `'nonzero'` and `'evenodd'` in order.
 
@@ -325,8 +325,8 @@ circle.style.strokeOpacity = '0.5';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '1'                                                                  | all                 | yes                                    | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
+| --- | --- | --- | --- | --- |
+| '1' | all | yes | yes | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 #### stroke
 
@@ -338,8 +338,8 @@ circle.style.stroke = 'rgb(255, 0, 0)';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| 'none'                                                               | all                 | no                                     | yes        | [\<paint\>](/en/api/css/css-properties-values-api#paint)               |
+| --- | --- | --- | --- | --- |
+| 'none' | all | no | yes | [\<paint\>](/en/api/css/css-properties-values-api#paint) |
 
 #### lineWidth
 
@@ -355,9 +355,9 @@ circle.style.lineWidth = '1';
 circle.style.lineWidth = '1px';
 ```
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '1'                                                                  | all                 | yes                                    | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '1' | all | yes | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 #### lineCap
 
@@ -367,7 +367,7 @@ Endpoint style, supporting the following values.
 - 'round' The line segment ends in a circle.
 - 'square' The line segment ends in a square, but adds a rectangular area with the same width as the line segment and half the height of the line segment's thickness.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap
+<https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap>
 
 #### lineJoin
 
@@ -377,17 +377,17 @@ Supporting the following values.
 - 'round' Draws the shape of the corner by filling an additional, circular sector with the center of the circle at the end of the connected section. The radius of the rounded corner is the width of the line segment.
 - 'bevel' An additional triangular-base area is filled in at the end of the connected sections, each with its own separate rectangular corner.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin
+<https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin>
 
 #### miterLimit
 
 The default value for SVG and Canvas2D is different, the former is 4 and the latter is 10. We set [Path](/en/api/basic/path) [Polyline](/en/api/basic/polyline) [Polygon](/en/api/basic/polygon) to 4 and the rest to 10. api/basic/polygon) These three graphs are set to 4, and the rest are set to 10.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
+<https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit>
 
 #### lineDash
 
-Use `number[]` to describe the alternate line segments and spacing. Reference can be made to: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
+Use `number[]` to describe the alternate line segments and spacing. Reference can be made to: <https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash>
 
 Currently only the form `[dash, gap]` is supported, if there is only one element in the array, i.e. `[dash]` is equivalent to `[dash, dash]`.
 
@@ -396,8 +396,8 @@ Applying animation to it can achieve [handwriting animation effect](/en/api/anim
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| -                                                                    | all                 | yes                                    | yes        |                                                                        |
+| --- | --- | --- | --- | --- |
+| - | all | yes | yes |  |
 
 #### lineDashOffset
 
@@ -405,9 +405,9 @@ Dashed line offset, type `number`, transform it to achieve [marching ants animat
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ants animation">
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | all                 | yes                                    | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | all | yes | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Shadow
 
@@ -441,40 +441,40 @@ We currently support two kinds of shadow.
 Shade color, supports `string` type, for example `'#1890FF'`. Gradient or pattern writing is not supported.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| -                                                                    | all                 | no                                     | yes        | [\<color\>](/en/api/css/css-properties-values-api#color)               |
+| --- | --- | --- | --- | --- |
+| - | all | no | yes | [\<color\>](/en/api/css/css-properties-values-api#color) |
 
 #### shadowBlur
 
 The blurring degree of the shading effect, `number` type, negative numbers are not allowed. Larger means more blurred, 0 means no blurring effect.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| -                                                                    | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
+| --- | --- | --- | --- | --- |
+| - | all | no | yes | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 #### shadowOffsetX
 
 Horizontal offset, supports `number` or `string` types, e.g. negative numbers move shadows to the left, positive numbers to the right.
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| -                                                                    | all                 | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| - | all | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 #### shadowOffsetY
 
 Vertical offset, e.g. a negative number moves the shadow up, a positive number down.
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| -                                                                    | all                 | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| - | all | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Filter
 
 Filters can perform some processing on the generated image, such as blurring, highlighting, boosting contrast, etc. The following implementations are available on the web side.
 
-- CSS Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/filter
-- Canvas Filter: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
-- SVG Filter: https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
+- CSS Filter: <https://developer.mozilla.org/en-US/docs/Web/CSS/filter>
+- Canvas Filter: <https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter>
+- SVG Filter: <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter>
 - Post Processing in WebGL.
 
 Referring to the CSS Filter syntax, we support applying one or more filter effects to a shape, [example](/en/examples/shape#filter).
@@ -626,8 +626,8 @@ Similar to CSS's `z-index` property, used to control the rendering order, it nee
 3. The default display order is the order in which the scenes are added, with those added later on top of the previously added elements.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | all                 | no                                     | no         | [\<number\>](/en/api/css/css-properties-values-api#number)             |
+| --- | --- | --- | --- | --- |
+| '0' | all | no | no | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 For example, in the scene below, li2 is displayed on top of li1 by default because li2 was added to the canvas after li1. If you want to change this display order, you can modify the zIndex of li1:
 
@@ -661,7 +661,7 @@ group.setZIndex(100);
 
 ### visibility
 
-To control the visibility of the graph, see. https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
+To control the visibility of the graph, see. <https://developer.mozilla.org/en-US/docs/Web/CSS/visibility>
 
 For compatibility with older versions, the following methods are also provided.
 
@@ -685,8 +685,8 @@ group.style.visibility = 'visible';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| 'visible'                                                            | all                 | yes                                    | no         | [\<keywords\>](/en/api/css/css-properties-values-api#keywords)         |
+| --- | --- | --- | --- | --- |
+| 'visible' | all | yes | no | [\<keywords\>](/en/api/css/css-properties-values-api#keywords) |
 
 There are two points to note about visibility.
 
@@ -701,19 +701,19 @@ For example, if we want to create a picture that is cropped into a circle, so th
 
 ```js
 const image = new Image({
-  style: {
-    x: 0,
-    y: 0,
-    width: 200,
-    height: 200,
-    clipPath: new Circle({
-      style: {
-        cx: 100,
-        cy: 100,
-        r: 50,
-      },
-    }),
-  },
+    style: {
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 200,
+        clipPath: new Circle({
+            style: {
+                cx: 100,
+                cy: 100,
+                r: 50,
+            },
+        }),
+    },
 });
 ```
 
@@ -721,27 +721,27 @@ It is also possible to set the cropping area after creating the drawing, so the 
 
 ```js
 const image = new Image({
-  style: {
-    //...
-  },
+    style: {
+        //...
+    },
 });
 
 image.style.clipPath = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 50,
-  },
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 50,
+    },
 });
 // or
 image.setClip(
-  new Circle({
-    style: {
-      cx: 100,
-      cy: 100,
-      r: 50,
-    },
-  }),
+    new Circle({
+        style: {
+            cx: 100,
+            cy: 100,
+            r: 50,
+        },
+    }),
 );
 ```
 
@@ -762,11 +762,11 @@ The crop area graphic itself is also supported to modify the property, and affec
 ```js
 // Apply animation to clipped areas
 clipPathCircle.animate(
-  [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
-  {
-    duration: 1500,
-    iterations: Infinity,
-  },
+    [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
+    {
+        duration: 1500,
+        iterations: Infinity,
+    },
 );
 ```
 
@@ -778,27 +778,27 @@ In [path-animation](/en/api/animation/waapi#path-animation), we can use `offsetP
 
 ```js
 const circle = new Circle({
-  style: {
-    offsetPath: new Line({
-      style: {
-        // There is no need to set other drawing properties that are not related to trajectories
-        x1: 100,
-        y1: 100,
-        x2: 300,
-        y2: 100,
-      },
-    }),
-    r: 10,
-  },
+    style: {
+        offsetPath: new Line({
+            style: {
+                // There is no need to set other drawing properties that are not related to trajectories
+                x1: 100,
+                y1: 100,
+                x2: 300,
+                y2: 100,
+            },
+        }),
+        r: 10,
+    },
 });
 
 const animation = circle.animate(
-  [{ offsetDistance: 0 }, { offsetDistance: 1 }],
-  {
-    duration: 3000,
-    easing: 'ease-in-out',
-    iterations: Infinity,
-  },
+    [{ offsetDistance: 0 }, { offsetDistance: 1 }],
+    {
+        duration: 3000,
+        easing: 'ease-in-out',
+        iterations: Infinity,
+    },
 );
 ```
 
@@ -811,21 +811,21 @@ Specify path trajectory, currently support [Line](/en/api/basic/line) [Path](/en
 The distance to travel from the start of the path, in the range of `[0-1]`, where 0 is the start of the path and 1 is the end.
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
+| --- | --- | --- | --- | --- |
+| '0' | all | no | yes | [\<number\>](/en/api/css/css-properties-values-api#number) |
 
 ### Cursor style
 
 We can change the style of a graphic when the mouse hovers over it, by modifying the CSS style of the container.
 
-The values supported by the `cursor` property can be found at https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor
+The values supported by the `cursor` property can be found at <https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor>
 
 ```js
 const circle = new Circle({
-  style: {
-    //...
-    cursor: 'pointer',
-  },
+    style: {
+        //...
+        cursor: 'pointer',
+    },
 });
 ```
 
@@ -835,7 +835,7 @@ We can set how the graph responds to interaction events, such as displaying the 
 
 #### pointerEvents
 
-To set how the graph responds to interaction events, see. https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
+To set how the graph responds to interaction events, see. <https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events>
 
 简而言之，[fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) 和 [visibility](/en/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
@@ -871,8 +871,8 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 ```
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| 'auto'                                                               | all                 | yes                                    | no         | [\<keywords\>](/en/api/css/css-properties-values-api#关键词)           |
+| --- | --- | --- | --- | --- |
+| 'auto' | all | yes | no | [\<keywords\>](/en/api/css/css-properties-values-api#关键词) |
 
 #### increasedLineWidthForHitTesting
 
@@ -890,9 +890,9 @@ Also like [lineWidth](/en/api/basic/display-object#linewidth), this property als
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ude1Qo6PVNYAAAAAAAAAAAAAARQnAQ">
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | all                 | no                                     | no         | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | all | no | no | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Transformation operations
 
@@ -902,14 +902,14 @@ We offer a range of transformation methods.
 
 For translation operations, we provide APIs for moving absolute/relative distances in local/world coordinate systems.
 
-| method name      | parameters                                         | return value       | remarks                                                          |
-| ---------------- | -------------------------------------------------- | ------------------ | ---------------------------------------------------------------- |
-| translate        | `[number, number]` or `number, number` or `number` | -                  | Move relative to current position in **world coordinate system** |
-| translateLocal   | `[number, number]` or `number, number` or `number` | -                  | Move relative to current position in **local coordinate system** |
-| setPosition      | `[number, number]` or `number, number` or `number` | -                  | Sets the position in the **world coordinate system**.            |
-| setLocalPosition | `[number, number]` or `number, number`or `number`  | -                  | Set the position under the **local coordinate system**           |
-| getPosition      | -                                                  | `[number, number]` | Get the position in the **world coordinate system**              |
-| getLocalPosition | -                                                  | `[number, number]` | Get the position in the **local coordinate system**              |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| translate | `[number, number]` or `number, number` or `number` | - | Move relative to current position in **world coordinate system** |
+| translateLocal | `[number, number]` or `number, number` or `number` | - | Move relative to current position in **local coordinate system** |
+| setPosition | `[number, number]` or `number, number` or `number` | - | Sets the position in the **world coordinate system**. |
+| setLocalPosition | `[number, number]` or `number, number`or `number` | - | Set the position under the **local coordinate system** |
+| getPosition | - | `[number, number]` | Get the position in the **world coordinate system** |
+| getLocalPosition | - | `[number, number]` | Get the position in the **local coordinate system** |
 
 `translate/translateLocal/setPosition/setLocalPosition` supports the following input forms, where if you want to modify only the X-axis direction, you can pass only one number.
 
@@ -923,12 +923,12 @@ circle.translate(100); // number
 
 Unlike panning, we can't provide a method like `setScale` to set scaling in the world coordinate system, so scaling in the global coordinate system is read-only, which in Unity is called [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| method name   | parameters                                         | return value       | remarks                                                                            |
-| ------------- | -------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------- |
-| scaleLocal    | `[number, number]` or `number, number` or`number`  | -                  | Continued scaling with respect to the current scale in **local coordinate system** |
-| setLocalScale | `[number, number]` or `number, number` or `number` | -                  | Set the scaling in **local coordinate system**                                     |
-| getScale      | -                                                  | `[number, number]` | Get the scaling in **world coordinate system**                                     |
-| getLocalScale | -                                                  | `[number, number]` | Get the scaling in **local coordinate system**                                     |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| scaleLocal | `[number, number]` or `number, number` or`number` | - | Continued scaling with respect to the current scale in **local coordinate system** |
+| setLocalScale | `[number, number]` or `number, number` or `number` | - | Set the scaling in **local coordinate system** |
+| getScale | - | `[number, number]` | Get the scaling in **world coordinate system** |
+| getLocalScale | - | `[number, number]` | Get the scaling in **local coordinate system** |
 
 `scaleLocal/setLocalScale` supports the following input forms, where only one number can be passed if the horizontal/vertical scaling is equal.
 
@@ -948,36 +948,36 @@ circle.setLocalScale(-1, 1);
 
 In 3D scenes, rotations can be represented by matrices, axis angles, Euler angles and quaternions, which are interconvertible with each other. Although, considering future scalability, we use quaternions in the G internal implementation.
 
-| method name         | parameters | return value | remarks                                                                                                 |
-| ------------------- | ---------- | ------------ | ------------------------------------------------------------------------------------------------------- |
-| rotateLocal         | `number`   | -            | In the **local coordinate system**, rotate by a certain Eulerian angle, clockwise positive, in `degree` |
-| rotate              | `number`   | -            | In **world coordinate system**, rotate by a certain Eulerian angle                                      |
-| setEulerAngles      | `number`   | -            | In **world coordinate system**, rotate by a certain Eulerian angle                                      |
-| setLocalEulerAngles | `number`   | -            | Set the Euler angles in the **local coordinate system**.                                                |
-| setLocalRotation    | `quat`     | -            | Sets the number of quaternions in the **local coordinate system**.                                      |
-| setRotation         | `quat`     | -            | Sets the number of quaternions in the **world coordinate system**.                                      |
-| getEulerAngles      | -          | `number`     | Get the Euler angles in **world coordinate system**                                                     |
-| getLocalEulerAngles | -          | `number`     | Get the Euler angles in **local coordinate system**                                                     |
-| getLocalRotation    | -          | `quat`       | Get the quaternion in **local coordinate system**                                                       |
-| getRotation         | -          | `quat`       | Get the quaternion in **world coordinate system**                                                       |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| rotateLocal | `number` | - | In the **local coordinate system**, rotate by a certain Eulerian angle, clockwise positive, in `degree` |
+| rotate | `number` | - | In **world coordinate system**, rotate by a certain Eulerian angle |
+| setEulerAngles | `number` | - | In **world coordinate system**, rotate by a certain Eulerian angle |
+| setLocalEulerAngles | `number` | - | Set the Euler angles in the **local coordinate system**. |
+| setLocalRotation | `quat` | - | Sets the number of quaternions in the **local coordinate system**. |
+| setRotation | `quat` | - | Sets the number of quaternions in the **world coordinate system**. |
+| getEulerAngles | - | `number` | Get the Euler angles in **world coordinate system** |
+| getLocalEulerAngles | - | `number` | Get the Euler angles in **local coordinate system** |
+| getLocalRotation | - | `quat` | Get the quaternion in **local coordinate system** |
+| getRotation | - | `quat` | Get the quaternion in **world coordinate system** |
 
 ### Skew
 
 In 2D scenes, stretching can be performed to distort each point on an element in a certain direction at a certain angle. See [CSS eponymous transform function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew).
 
-| method name  | parameters | return values | remarks                                                                                                                    |
-| ------------ | ---------- | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| setLocalSkew | `vec2`     | -             | The angle in `rad` that distorts the element along the horizontal/vertical coordinates in the **local coordinate system**. |
-| getLocalSkew | -          | `vec2`        | Gets the distortion angle in `rad` under the **local coordinate system**.                                                  |
+| method name | parameters | return values | remarks |
+| --- | --- | --- | --- |
+| setLocalSkew | `vec2` | - | The angle in `rad` that distorts the element along the horizontal/vertical coordinates in the **local coordinate system**. |
+| getLocalSkew | - | `vec2` | Gets the distortion angle in `rad` under the **local coordinate system**. |
 
 ### Set the scaling and rotation center
 
 Using the [transformOrigin](/en/api/basic/display-object#transformorigin) property, you can also use `setOrigin`.
 
-| method name | parameters                                                                                       | return value | remarks                                                             |
-| ----------- | ------------------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| setOrigin   | `[number, number]` or `[number, number, number]` or `number, number` or `number, number, number` | -            | Set the scaling and rotation center in the local coordinate system. |
-| getOrigin   | `[number, number, number]`                                                                       | -            | Get the scaling and rotation center in the local coordinate system. |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| setOrigin | `[number, number]` or `[number, number, number]` or `number, number` or `number, number, number` | - | Set the scaling and rotation center in the local coordinate system. |
+| getOrigin | `[number, number, number]` | - | Get the scaling and rotation center in the local coordinate system. |
 
 Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph#origin).
 
@@ -987,11 +987,11 @@ In the following example, we have placed a circle with a radius of 100 at `[100,
 
 ```js
 const circle = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+    },
 });
 ```
 
@@ -1015,11 +1015,11 @@ In the following [example](/en/examples/scenegraph#origin), we have created a re
 
 ```js
 const rect = new Rect({
-  id: 'rect',
-  style: {
-    width: 300,
-    height: 200,
-  },
+    id: 'rect',
+    style: {
+        width: 300,
+        height: 200,
+    },
 });
 rect.setOrigin(150, 100); // Set the rotation and scaling center to the center point of its own bounding box
 ```
@@ -1028,11 +1028,11 @@ For example, if we want to modify the transformation center of a circle to the u
 
 ```js
 const circle = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
+    style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+    },
 });
 
 circle.setOrigin(0, 0);
@@ -1056,13 +1056,13 @@ Gets the geometric bouding box of the base drawing, which is independent of othe
 
 ```js
 const circle = new Circle({
-  style: {
-    cx: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
-    cy: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
-    r: 100,
-    lineWidth: 20, // Style properties do not affect Geometry Bounds
-    shadowBlur: 10, // Style properties do not affect Geometry Bounds
-  },
+    style: {
+        cx: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
+        cy: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
+        r: 100,
+        lineWidth: 20, // Style properties do not affect Geometry Bounds
+        shadowBlur: 10, // Style properties do not affect Geometry Bounds
+    },
 });
 circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
 ```
@@ -1080,11 +1080,11 @@ This should be the most common way of calculating the Geometry Bounds of itself 
 
 ```js
 const circle = new Circle({
-  style: {
-    cx: 100, // Applying transformations in the world coordinate system
-    cy: 100,
-    r: 100,
-  },
+    style: {
+        cx: 100, // Applying transformations in the world coordinate system
+        cy: 100,
+        r: 100,
+    },
 });
 circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 ```
@@ -1095,12 +1095,12 @@ Merge the Render Bounds of itself and its children in the world coordinate syste
 
 ```js
 const circle = new Circle({
-  style: {
-    cx: 100, // Applying transformations in the world coordinate system
-    cy: 100,
-    r: 100,
-    lineWidth: 20,
-  },
+    style: {
+        cx: 100, // Applying transformations in the world coordinate system
+        cy: 100,
+        r: 100,
+        lineWidth: 20,
+    },
 });
 // r + lineWidth / 2
 circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
@@ -1135,35 +1135,35 @@ In the scene graph, we need to construct parent-child relationships, get parent-
 
 ### Simple Node Query
 
-| method/property name | method/property | return value            | remarks                                                    |
-| -------------------- | --------------- | ----------------------- | ---------------------------------------------------------- |
-| parentNode           | property        | `DisplayObject \| null` | Parent node (if any)                                       |
-| parentElement        | property        | `DisplayObject \| null` | Parent node (if any)                                       |
-| childNodes           | property        | `DisplayObject[]`       | Child Node List                                            |
-| children             | property        | `DisplayObject[]`       | Child Node List                                            |
-| firstChild           | property        | `DisplayObject \| null` | Returns the first node in the list of child nodes (if any) |
-| lastChild            | property        | `DisplayObject \| null` | Returns the last node in the list of child nodes (if any)  |
-| nextSibling          | property        | `DisplayObject \| null` | Return the next sibling node (if any)                      |
-| previousSibling      | property        | `DisplayObject \| null` | Return the previous sibling node (if any)                  |
-| contains             | method          | `boolean`               | Whether the subtree contains a node (entry)                |
-| getRootNode          | method          | `Node`                  | Returns the root node of the current node                  |
-| ownerDocument        | property        | `Document`              | Back to the canvas entrance Document                       |
-| isConnected          | property        | `boolean`               | Whether the node is added to the canvas                    |
+| method/property name | method/property | return value | remarks |
+| --- | --- | --- | --- |
+| parentNode | property | `DisplayObject \| null` | Parent node (if any) |
+| parentElement | property | `DisplayObject \| null` | Parent node (if any) |
+| childNodes | property | `DisplayObject[]` | Child Node List |
+| children | property | `DisplayObject[]` | Child Node List |
+| firstChild | property | `DisplayObject \| null` | Returns the first node in the list of child nodes (if any) |
+| lastChild | property | `DisplayObject \| null` | Returns the last node in the list of child nodes (if any) |
+| nextSibling | property | `DisplayObject \| null` | Return the next sibling node (if any) |
+| previousSibling | property | `DisplayObject \| null` | Return the previous sibling node (if any) |
+| contains | method | `boolean` | Whether the subtree contains a node (entry) |
+| getRootNode | method | `Node` | Returns the root node of the current node |
+| ownerDocument | property | `Document` | Back to the canvas entrance Document |
+| isConnected | property | `boolean` | Whether the node is added to the canvas |
 
 ### Advanced Search
 
 Referring to the CSS selector, we provide the following query that looks at the **entire subtree** of the current node, and not just the direct list of children, but all descendant nodes.
 
-| method name            | parameters            | return value             | remarks                                                      |
-| ---------------------- | --------------------- | ------------------------ | ------------------------------------------------------------ |
-| getElementById         | `(id: string)`        | `DisplayObject \| null`  | Query child nodes by `id`                                    |
-| getElementsByName      | `(name: string)`      | `DisplayObject[]`        | Query the list of child nodes by `name`                      |
-| getElementsByClassName | `(className: string)` | `DisplayObject[]`        | Query the list of child nodes by `className`                 |
-| getElementsByTagName   | `(tagName: string)`   | `DisplayObject[]`        | Query the list of child nodes by `tagName`                   |
-| querySelector          | `(selector: string)`  | `DisplayObject \｜ null` | Query the first child node that satisfies the condition      |
-| querySelectorAll       | `(selector: string)`  | `DisplayObject[]`        | Query the list of all child nodes that satisfy the condition |
-| find                   | `(filter: Function)`  | `DisplayObject \｜ null` | Query the first child node that satisfies the condition      |
-| findAll                | `(filter: Function)`  | `DisplayObject[]`        | Query the list of all child nodes that satisfy the condition |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| getElementById | `(id: string)` | `DisplayObject \| null` | Query child nodes by `id` |
+| getElementsByName | `(name: string)` | `DisplayObject[]` | Query the list of child nodes by `name` |
+| getElementsByClassName | `(className: string)` | `DisplayObject[]` | Query the list of child nodes by `className` |
+| getElementsByTagName | `(tagName: string)` | `DisplayObject[]` | Query the list of child nodes by `tagName` |
+| querySelector | `(selector: string)` | `DisplayObject \｜ null` | Query the first child node that satisfies the condition |
+| querySelectorAll | `(selector: string)` | `DisplayObject[]` | Query the list of all child nodes that satisfy the condition |
+| find | `(filter: Function)` | `DisplayObject \｜ null` | Query the first child node that satisfies the condition |
+| findAll | `(filter: Function)` | `DisplayObject[]` | Query the list of all child nodes that satisfy the condition |
 
 We demonstrate how to use these query methods using the above example of the solar system.
 
@@ -1196,20 +1196,20 @@ solarSystem.findAll((element) => element.style.r === 25);
 
 The following add/remove node capabilities come from the inherited [Element](/en/api/builtin-objects/element) base class.
 
-| method name     | parameters                                            | return value    | remarks                                                                                                 |
-| --------------- | ----------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------- |
-| appendChild     | `child: DisplayObject`                                | `DisplayObject` | Adds a child node and returns the added node                                                            |
-| insertBefore    | `child: DisplayObject` or `reference?: DisplayObject` | `DisplayObject` | Add a child node, before some child node (if any), and return the added node                            |
-| append          | `...nodes: DisplayObject[]`                           |                 | Add a group of nodes in bulk at the end of the child node list of the current node                      |
-| prepend         | `...nodes: DisplayObject[]`                           |                 | Add a group of nodes in bulk to the head of the current node's child node list                          |
-| after           | `...nodes: DisplayObject[]`                           |                 | Add some sibling nodes in bulk after the current node                                                   |
-| before          | `...nodes: DisplayObject[]`                           |                 | Add some sibling nodes in bulk before the current node                                                  |
-| removeChild     | `child: DisplayObject`                                | `DisplayObject` | Delete the child node and return the node that was deleted.                                             |
-| removeChildren  |                                                       |                 | Delete and destroy all child nodes.                                                                     |
-| remove          | `destroy = true`                                      | `DisplayObject` | Remove itself from the parent node (if any), `destroy` indicates whether to destroy                     |
-| replaceChild    | `child: DisplayObject`                                | `DisplayObject` | Replace a child node of the current node with the specified node, and return the replaced node          |
-| replaceWith     | `...nodes: DisplayObject[]`                           |                 | In the list of children of the parent node, replace the node with the list of nodes passed in           |
-| replaceChildren | `...nodes: DisplayObject[]`                           |                 | Replace all children of the node. If no parameters are passed, all children of the node will be cleared |
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| appendChild | `child: DisplayObject` | `DisplayObject` | Adds a child node and returns the added node |
+| insertBefore | `child: DisplayObject` or `reference?: DisplayObject` | `DisplayObject` | Add a child node, before some child node (if any), and return the added node |
+| append | `...nodes: DisplayObject[]` |  | Add a group of nodes in bulk at the end of the child node list of the current node |
+| prepend | `...nodes: DisplayObject[]` |  | Add a group of nodes in bulk to the head of the current node's child node list |
+| after | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk after the current node |
+| before | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk before the current node |
+| removeChild | `child: DisplayObject` | `DisplayObject` | Delete the child node and return the node that was deleted. |
+| removeChildren |  |  | Delete and destroy all child nodes. |
+| remove | `destroy = true` | `DisplayObject` | Remove itself from the parent node (if any), `destroy` indicates whether to destroy |
+| replaceChild | `child: DisplayObject` | `DisplayObject` | Replace a child node of the current node with the specified node, and return the replaced node |
+| replaceWith | `...nodes: DisplayObject[]` |  | In the list of children of the parent node, replace the node with the list of nodes passed in |
+| replaceChildren | `...nodes: DisplayObject[]` |  | Replace all children of the node. If no parameters are passed, all children of the node will be cleared |
 
 There are two ways to remove a child node from a parent node and destroy it.
 
@@ -1271,10 +1271,10 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 ### Get/Set attribute values
 
-| method name  | parameters                   | return values | remarks                                     |
-| ------------ | ---------------------------- | ------------- | ------------------------------------------- |
-| getAttribute | `(name: string)`             | `null \| any` | Get attribute value based on attribute name |
-| setAttribute | `(name: string, value: any)` | -             | Set attribute value                         |
+| method name | parameters | return values | remarks |
+| --- | --- | --- | --- |
+| getAttribute | `(name: string)` | `null \| any` | Get attribute value based on attribute name |
+| setAttribute | `(name: string, value: any)` | - | Set attribute value |
 
 ⚠️ Compatible with the old `attr(name: string, value?: any)`, get and set attribute values.
 
@@ -1288,11 +1288,11 @@ The following usage equivalents.
 
 ```js
 const circle = new Circle({
-  style: {
-    // or using attrs
-    r: 10,
-    fill: 'red',
-  },
+    style: {
+        // or using attrs
+        r: 10,
+        fill: 'red',
+    },
 });
 
 // get attribute value
@@ -1321,8 +1321,8 @@ Note that currently, when using [animation](/en/api/animation/waapi), we also co
 
 ```js
 animation.onframe = () => {
-  rect.style.width; // '100px'
-  rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
+    rect.style.width; // '100px'
+    rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 };
 ```
 
@@ -1349,7 +1349,7 @@ The following properties allow you to determine the current state of the drawing
 
 用于判断一个图形是否已经被加入到画布中。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected>
 
 ```js
 circle.isConnected; // false
@@ -1361,7 +1361,7 @@ circle.isConnected; // true
 
 Used to determine if a drawing has been added to the canvas.
 
-https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
+<https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument>
 
 ```js
 circle.ownerDocument; // null
@@ -1423,19 +1423,19 @@ Referring to the Web Animations API, you can use animate to complete the keyfram
 
 ```js
 circle.animate(
-  [
+    [
+        {
+            transform: 'scale(0)',
+        },
+        {
+            transform: 'scale(1)',
+        },
+    ],
     {
-      transform: 'scale(0)',
+        duration: 500,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+        iterations: Infinity,
     },
-    {
-      transform: 'scale(1)',
-    },
-  ],
-  {
-    duration: 500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-  },
 );
 ```
 
@@ -1443,7 +1443,7 @@ See [animation system](/en/api/animation/waapi) for more details on usage.
 
 ## Dataset API
 
-https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+<https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes>
 
 `data-*` attributes allow us to store extra information on standard.
 

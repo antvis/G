@@ -138,11 +138,11 @@ G 使用 [pnpm workspace](https://pnpm.io/workspaces) 作为 monorepo 方案。�
 1. 从 next 分支拉出发布分支 release
 2. 从 release 分支拉出各自的开发分支，开发完成后执行 changeset 并提交：
 
-```bash
-pnpm run changeset
-git add ./
-git commit -a -m "chore: commit changeset"
-```
+    ```bash
+    pnpm run changeset
+    git add ./
+    git commit -a -m "chore: commit changeset"
+    ```
 
 3. 将开发分支合入 release 分支，此时会触发 CI version 流程，自动生成 Version Package 的 PR，将此 PR 合入
 4. 最后将 release 分支合并到 next 分支上，此时会触发 CI release 流程

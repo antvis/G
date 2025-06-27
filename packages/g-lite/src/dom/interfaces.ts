@@ -221,6 +221,7 @@ export interface INode extends IEventTarget {
   removeChild: <T extends INode>(oldChild: T) => T;
   replaceChild: <T extends INode>(newChild: INode, oldChild: T) => T;
 
+  destroyed: boolean;
   /**
    * Destroy itself.
    */
@@ -581,6 +582,10 @@ export interface IWindow {
   requestAnimationFrame: typeof requestAnimationFrame;
   /** https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/cancelAnimationFrame */
   cancelAnimationFrame: typeof cancelAnimationFrame;
+  /**
+   * replace `new window.Image()`
+   */
+  createImage: () => HTMLImageElement;
   /**
    * whether the runtime supports TouchEvent?
    * if not, the event system won't trigger touch events like `touchstart`

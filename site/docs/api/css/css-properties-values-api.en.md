@@ -11,10 +11,10 @@ For example, the following shows how to customize a color property.
 
 ```js
 window.CSS.registerProperty({
-  name: '--my-color',
-  syntax: '<color>',
-  inherits: false,
-  initialValue: '#c0ffee',
+    name: '--my-color',
+    syntax: '<color>',
+    inherits: false,
+    initialValue: '#c0ffee',
 });
 ```
 
@@ -22,7 +22,7 @@ We have also implemented this API in G, defining a set of built-in property valu
 
 # Property Value Type
 
-CSS property values contain various types: https://drafts.csswg.org/css-values-4/
+CSS property values contain various types: <https://drafts.csswg.org/css-values-4/>
 
 In G we support the following types.
 
@@ -73,15 +73,15 @@ em {
 </p>
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/initial
+<https://developer.mozilla.org/en-US/docs/Web/CSS/initial>
 
 ### inherit
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
+<https://developer.mozilla.org/en-US/docs/Web/CSS/inherit>
 
 ### unset
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/unset
+<https://developer.mozilla.org/en-US/docs/Web/CSS/unset>
 
 ## \<number\>
 
@@ -104,7 +104,7 @@ styleMap.get('opacity'); // CSSUnitValue { unit:'', value: 0.5 }
 
 The length type is used to define distances, which in turn include absolute and relative types.
 
-https://drafts.csswg.org/css-values-4/#length-value
+<https://drafts.csswg.org/css-values-4/#length-value>
 
 ### px
 
@@ -129,11 +129,11 @@ Represents the calculated font-size of the element. If used on the font-size pro
 
 ## \<percentage\>
 
-https://drafts.csswg.org/css-values-4/#percentage-value
+<https://drafts.csswg.org/css-values-4/#percentage-value>
 
 ## \<angle\>
 
-https://drafts.csswg.org/css-values-4/#angle-value
+<https://drafts.csswg.org/css-values-4/#angle-value>
 
 ### deg
 
@@ -218,7 +218,7 @@ Note that it has a different meaning than `none` supported by [\<paint\>](/en/ap
 
 ### currentColor
 
-https://www.w3.org/TR/css-color-3/#currentcolor
+<https://www.w3.org/TR/css-color-3/#currentcolor>
 
 Equivalent to black in the Canvas / WebGL rendering environment, and the same name property effect in SVG.
 
@@ -249,7 +249,7 @@ For example, when a drawing is initialized without the `fill` attribute set, it 
 
 ```js
 const circle = new Circle({
-  r: 150,
+    r: 150,
 });
 
 circle.style.fill = 'none';
@@ -262,8 +262,8 @@ All CSS property metadata in Blink is defined in a JSON list, which describes ho
 The attribute metadata contains the following key information.
 
 - The name of the property. For example, fill width r
-- Value parser. Different attribute values naturally require different parsers, for example fill stroke can share a color parser. Note that we only need to implement parsing for "values", not implementations like https://github.com/csstree/csstree.
-- Whether interpolation is supported. If not, smooth transitions in the animation system are not possible. https://drafts.csswg.org/css-values-4/#combining-values
+- Value parser. Different attribute values naturally require different parsers, for example fill stroke can share a color parser. Note that we only need to implement parsing for "values", not implementations like <https://github.com/csstree/csstree>.
+- Whether interpolation is supported. If not, smooth transitions in the animation system are not possible. <https://drafts.csswg.org/css-values-4/#combining-values>
 - Whether or not inheritance is supported. For example font-size needs to be supported. There are a number of similar tricks in D3.
 - Whether it is independent or not. For example visibility is not, and ancestor nodes need to be taken into account to get the final calculated value.
 - Default value. For example, the default value for fill is black (SVG specification)
@@ -274,7 +274,7 @@ The attribute metadata contains the following key information.
 
 The defaults have a different definition of "whether the property supports inheritance".
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
+<https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value>
 
 > - For inherited properties, the initial value is used on the root element only, as long as no specified value is supplied.
 > - For non-inherited properties, the initial value is used on all elements, as long as no specified value is supplied.
@@ -301,7 +301,7 @@ The parsing of property values goes through the following stages.
 - The original value (usually a string) is converted to a CSSStyleUnit, called computed value
 - The computed value is calculated to get the used value
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value
+<https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value>
 
 In this step it is necessary to.
 
@@ -328,24 +328,24 @@ However, the computed value cannot be used directly for rendering, e.g., percent
 
 ## used value
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+<https://developer.mozilla.org/en-US/docs/Web/CSS/used_value>
 
 The computed value is further processed to get the value that will eventually be fed into the rendering pipeline.
 
-For example `CSS.percent(50)` needs to be computed to get `CSS.px(?) `.
+For example `CSS.percent(50)` needs to be computed to get `CSS.px(?)`.
 
 # Custom Properties
 
 Define the new property in CSS as follows.
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty
+<https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty>
 
 ```js
 CSS.registerProperty({
-  name: '--my-color',
-  syntax: '<color>',
-  inherits: false,
-  initialValue: '#c0ffee',
+    name: '--my-color',
+    syntax: '<color>',
+    inherits: false,
+    initialValue: '#c0ffee',
 });
 ```
 
@@ -358,23 +358,23 @@ import { CSS, PropertySyntax } from '@antv/g';
 
 // Register custom properties
 CSS.registerProperty({
-  name: 'myNumber',
-  syntax: PropertySyntax.NUMBER, // Using the built-in "number" parser
-  initialValue: '0',
-  interpolable: true, // Support interpolation during animation
+    name: 'myNumber',
+    syntax: PropertySyntax.NUMBER, // Using the built-in "number" parser
+    initialValue: '0',
+    interpolable: true, // Support interpolation during animation
 });
 
 // Apply animations to custom properties
 const animation = myCustomElement.animate(
-  [
-    {
-      myNumber: 0,
-    },
-    {
-      myNumber: 1,
-    },
-  ],
-  { duration: 2000, fill: 'both' },
+    [
+        {
+            myNumber: 0,
+        },
+        {
+            myNumber: 1,
+        },
+    ],
+    { duration: 2000, fill: 'both' },
 );
 ```
 
@@ -398,10 +398,10 @@ For example, in the following custom element, we define the custom attribute `an
 
 ```js
 CSS.registerProperty({
-  name: 'angle',
-  syntax: PropertySyntax.ANGLE,
-  initialValue: '0',
-  interpolable: true,
+    name: 'angle',
+    syntax: PropertySyntax.ANGLE,
+    initialValue: '0',
+    interpolable: true,
 });
 ```
 

@@ -5,7 +5,7 @@ order: 1
 
 在 CSS 中，当没有为属性设置值时，可继承属性将从父元素上获取计算值。
 
-https://developer.mozilla.org/zh-CN/docs/Web/CSS/inheritance
+<https://developer.mozilla.org/zh-CN/docs/Web/CSS/inheritance>
 
 例如 CSS 的 `color` 属性是可继承的，因此对于未设置该属性的 `<em>` 元素，它将使用父元素的值 `green`：
 
@@ -74,21 +74,21 @@ expect(documentElement.style.zIndex).to.equal(0);
 
 目前我们支持的可继承属性如下：
 
-| 属性名         | 初始值       | 适用元素 | 是否可继承 | 是否支持动画 | computed value          |
-| -------------- | ------------ | -------- | ---------- | ------------ | ----------------------- |
-| fillOpacity    | '1'          | 所有     | 是         | 是           | `<number>`              |
-| strokeOpacity  | '1'          | 所有     | 是         | 是           | `<number>`              |
-| lineWidth      | '1'          | 所有     | 是         | 是           | `<length> <percentage>` |
-| lineJoin       | 'miter'      | 所有     | 是         | 否           | `<keywords>`            |
-| lineCap        | 'butt'       | 所有     | 是         | 否           | `<keywords>`            |
-| lineDash       | 无           | 所有     | 是         | 是           | `<array>`               |
-| lineDashOffset | '0'          | 所有     | 是         | 是           | `<length> <percentage>` |
-| visibility     | 'visible'    | 所有     | 是         | 否           | `<keywords>`            |
-| pointerEvents  | 'auto'       | 所有     | 是         | 否           | `<keywords>`            |
-| fontSize       | '16px'       | 所有     | 是         | 是           | `<length> <percentage>` |
-| fontFamily     | 'sans-serif' | 所有     | 是         | 否           | `<keywords>`            |
-| fontStyle      | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| fontWeight     | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| fontVariant    | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| textBaseline   | 'alphabetic' | 所有     | 是         | 否           | `<keywords>`            |
-| textAlign      | 'start'      | 所有     | 是         | 否           | `<keywords>`            |
+| 属性名 | 初始值 | 适用元素 | 是否可继承 | 是否支持动画 | computed value |
+| --- | --- | --- | --- | --- | --- |
+| fillOpacity | '1' | 所有 | 是 | 是 | `<number>` |
+| strokeOpacity | '1' | 所有 | 是 | 是 | `<number>` |
+| lineWidth | '1' | 所有 | 是 | 是 | `<length> <percentage>` |
+| lineJoin | 'miter' | 所有 | 是 | 否 | `<keywords>` |
+| lineCap | 'butt' | 所有 | 是 | 否 | `<keywords>` |
+| lineDash | 无 | 所有 | 是 | 是 | `<array>` |
+| lineDashOffset | '0' | 所有 | 是 | 是 | `<length> <percentage>` |
+| visibility | 'visible' | 所有 | 是 | 否 | `<keywords>` |
+| pointerEvents | 'auto' | 所有 | 是 | 否 | `<keywords>` |
+| fontSize | '16px' | 所有 | 是 | 是 | `<length> <percentage>` |
+| fontFamily | 'sans-serif' | 所有 | 是 | 否 | `<keywords>` |
+| fontStyle | 'normal' | 所有 | 是 | 否 | `<keywords>` |
+| fontWeight | 'normal' | 所有 | 是 | 否 | `<keywords>` |
+| fontVariant | 'normal' | 所有 | 是 | 否 | `<keywords>` |
+| textBaseline | 'alphabetic' | 所有 | 是 | 否 | `<keywords>` |
+| textAlign | 'start' | 所有 | 是 | 否 | `<keywords>` |

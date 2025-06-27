@@ -20,4 +20,4 @@ group.getElementsByTagName('circle'); // [circle]
 
 ## 继承自
 
--   [DisplayObject](/zh/api/basic/display-object)
+- [DisplayObject](/zh/api/basic/display-object)

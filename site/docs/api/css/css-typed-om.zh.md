@@ -89,39 +89,39 @@ expect(result.toSum('px', 'percent').toString()).toBe('calc(10px + 10%)');
 expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue>
 
 ## type()
 
 反映该属性值代表何种类型（CSSNumericType），例如 `<length>`、`<angle>` 等等：
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type>
 
 ```js
 // <number>
 const number = new CSSUnitValue(10);
 expect(number.type()).to.eqls({
-  length: 0,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 0,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 
 // <length>
 const length = new CSSUnitValue(10, 'px');
 expect(length.type()).to.eqls({
-  length: 1,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 1,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 ```
 
@@ -133,7 +133,7 @@ expect(length.type()).to.eqls({
 to(unit: UnitType | string): CSSUnitValue;
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/to
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/to>
 
 例如在不同角度单位间转换：
 
@@ -155,7 +155,7 @@ expect(degValue.to('turn').value).to.eqls(deg2turn(360));
 toSum(...unit_strings: string[]): CSSMathSum {}
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/toSum
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/toSum>
 
 例如我们希望简化表达式的计算结果，使用 'px' 和 '%'：
 
@@ -181,13 +181,13 @@ expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 
 类型和数值都要求完全一致，例如类型都是 `<length>`，单位都是 'px'。
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/equals
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/equals>
 
 ## add()
 
 实现加法。
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/add
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/add>
 
 ```js
 let mathSum = CSS.px('23').add(CSS.percent('4'));
@@ -199,7 +199,7 @@ console.log(mathSum.toString());
 
 实现减法。
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/sub
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/sub>
 
 ```js
 let mathSum = CSS.px('23').sub(CSS.percent('4'));
@@ -209,11 +209,11 @@ console.log(mathSum.toString());
 
 ## mul()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/mul
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/mul>
 
 ## div()
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/div
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/div>
 
 ## min()
 
@@ -284,7 +284,7 @@ UnitType.kTurns = 'turn';
 
 代表关键词，例如 `unset` `initial` `inherit` 等。
 
-https://developer.mozilla.org/en-US/docs/Web/API/CSSKeywordValue
+<https://developer.mozilla.org/en-US/docs/Web/API/CSSKeywordValue>
 
 ## value
 

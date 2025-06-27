@@ -37,8 +37,8 @@ const root = canvas.document.documentElement;
 
 获取[渲染上下文](/zh/api/renderer#渲染环境上下文)，由渲染器（`g-canvas/svg/webgl`）实现。该渲染上下文上有很多常用的方法，例如：
 
--   getDomElement() 返回上下文所处的 DOM 元素，例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`
--   getDPR() 返回上下文的 devicePixelRatio
+- getDomElement() 返回上下文所处的 DOM 元素，例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`
+- getDPR() 返回上下文的 devicePixelRatio
 
 ## getCamera
 
