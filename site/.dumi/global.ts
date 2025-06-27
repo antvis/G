@@ -1,4 +1,4 @@
-if (window) {
+if (typeof window !== 'undefined' && window) {
   (window as any).react = require('react');
   (window as any).reactDom = require('react-dom');
   (window as any).reactSplitPane = require('react-split-pane');
@@ -64,7 +64,7 @@ if (window) {
   (window as any).gLottiePlayer = require('@antv/g-lottie-player');
   (window as any).gPattern = require('@antv/g-pattern');
 
-  (window as any).reactG = require('@antv/react-g');
+  // (window as any).reactG = require('@antv/react-g');
   // (window as any).mainWorker = require('./examples/canvas/demo/main.worker.js');
   (
     window as any
@@ -75,8 +75,10 @@ if (window) {
 }
 
 if (
-  location.host === 'g-next.antv.vision' ||
-  location.host === 'antv-g-next.gitee.io'
+  typeof window !== 'undefined' &&
+  typeof location !== 'undefined' &&
+  (location.host === 'g-next.antv.vision' ||
+    location.host === 'antv-g-next.gitee.io')
 ) {
   (window as any).location.href = location.href.replace(
     location.origin,

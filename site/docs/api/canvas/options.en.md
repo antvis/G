@@ -5,9 +5,9 @@ order: 1
 
 When creating a canvas, we can pass in the following initialization parameters, which is the simplest way to initialize it.
 
--   `container` The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
--   `width / height`
--   `renderer` Currently we provides [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg), [g-webgl](/en/api/renderer/webgl) etc.
+- `container` The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
+- `width / height`
+- `renderer` Currently we provides [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg), [g-webgl](/en/api/renderer/webgl) etc.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -25,9 +25,9 @@ const canvas = new Canvas({
 
 The above initialization approach only requires providing a container `container` that carries `<canvas>/<svg>`, but sometimes we have custom requirements as follows:
 
--   [Using existed `<canvas>`](/en/api/canvas/faq#using-the-created-canvas-element)
--   [Using OffscreenCanvas in WebWorker](/en/api/canvas/offscreen-canvas-ssr#using-offscreencanvas-in-webworker)
--   [Server-side rendering in Node.js](/en/api/canvas/offscreen-canvas-ssr#server-side-rendering)
+- [Using existed `<canvas>`](/en/api/canvas/faq#using-the-created-canvas-element)
+- [Using OffscreenCanvas in WebWorker](/en/api/canvas/offscreen-canvas-ssr#using-offscreencanvas-in-webworker)
+- [Server-side rendering in Node.js](/en/api/canvas/offscreen-canvas-ssr#server-side-rendering)
 
 In this case you can use `canvas` instead of `container`, and more initialization parameters are as follows.
 
@@ -60,8 +60,8 @@ const canvas = new Canvas({
 
 In addition to the `HTMLCanvasElement` in the browser environment, you can also use:
 
--   [`OffscreenCanvas` in WebWorker](/en/api/canvas#在-webworker-中使用-offscreencanvas)
--   [`NodeCanvas` in server-side rendering](/en/api/canvas#服务端渲染)
+- [`OffscreenCanvas` in WebWorker](/en/api/canvas#在-webworker-中使用-offscreencanvas)
+- [`NodeCanvas` in server-side rendering](/en/api/canvas#服务端渲染)
 
 Note that once this parameter is used, runtime switching of the renderer is no longer supported.
 
@@ -69,18 +69,18 @@ Note that once this parameter is used, runtime switching of the renderer is no l
 
 Set the width and height of canvas.
 
--   Required if [container](/en/api/canvas/options#container) passed in. The renderer will create `<canvas>` with these values.
--   Optional if [canvas](/en/api/canvas/options#canvas) passed in. If not provided, we will calculate with `canvas.width/height` and `devicePixelRatio`.
+- Required if [container](/en/api/canvas/options#container) passed in. The renderer will create `<canvas>` with these values.
+- Optional if [canvas](/en/api/canvas/options#canvas) passed in. If not provided, we will calculate with `canvas.width/height` and `devicePixelRatio`.
 
 ## renderer
 
 Required. The following renderers are currently supported:
 
--   [g-canvas](/en/api/renderer/canvas)
--   [g-svg](/en/api/renderer/svg)
--   [g-webgl](/en/api/renderer/webgl)
--   [g-webgpu](/en/api/renderer/webgpu)
--   [g-canvaskit](/en/api/renderer/canvaskit)
+- [g-canvas](/en/api/renderer/canvas)
+- [g-svg](/en/api/renderer/svg)
+- [g-webgl](/en/api/renderer/webgl)
+- [g-webgpu](/en/api/renderer/webgpu)
+- [g-canvaskit](/en/api/renderer/canvaskit)
 
 It can be switched at runtime with [setRenderer()](/en/api/canvas/options#setrenderer) after initialized.
 
@@ -216,9 +216,9 @@ Optional, default is 200ms. Numeric type, determines whether two consecutive cli
 
 Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.
 
--   The core service calls `ctx.measureText` to measure the text.
--   [g-plugin-canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
--   [g-plugin-device-renderer](/en/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
+- The core service calls `ctx.measureText` to measure the text.
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
+- [g-plugin-device-renderer](/en/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
 
 When not passed in by default, it will try to create an `OffscreenCanvas` and then use the DOM API to create an `HTMLCanvasElement` when it fails. However, in non-dom environments like applets, you need to manually pass in.
 

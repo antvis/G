@@ -5,7 +5,7 @@ order: 100
 
 ## The problem of 'this' within the event listener
 
-Refer to https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler
+Refer to <https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler>
 
 Inside the event listener `this` should point to the same as `e.currentTarget`. However, if the arrow function is used, the context will be lost:
 
@@ -22,7 +22,7 @@ circle.addEventListener('mouseleave', () => {
 
 ## mouseenter/leave won't bubble up
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event>
 
 mouseenter does not bubble, while mouseover does. Similarly mouseleave does not bubble, while mouseout does.
 
@@ -64,7 +64,7 @@ $el.addEventListener('wheel', onPointerWheel, {
 });
 ```
 
-For more information about Passive event handlers, please refer to this article from https://zhuanlan.zhihu.com/p/24555031. The short answer is that this option improves the browser's scrolling smoothness by telling the browser in advance that "I won't block your default scrolling behavior".
+For more information about Passive event handlers, please refer to this article from <https://zhuanlan.zhihu.com/p/24555031>. The short answer is that this option improves the browser's scrolling smoothness by telling the browser in advance that "I won't block your default scrolling behavior".
 
 Now back to our question, if the user does need to disable the default scrolling behavior, a non-Passive event handler can be manually added to the DOM node of the canvas, [g-plugin-control](http://g-next.antv.vision/en/plugins/control) plugin does this. How to get the DOM node of the canvas can be done using [getDomElement](/en/api/renderer#getdomelement).
 
@@ -198,9 +198,9 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {});
 
 Different rendering environments use different pickup plugins for determining the EventTarget of native events.
 
--   [g-plugin-canvas-picker](/en/plugins/canvas-picker) Use mainly mathematical operations.
--   [g-plugin-svg-picker](/en/plugins/svg-picker) Use SVG API.
--   [g-plugin-device-renderer](/en/plugins/device-renderer) Use GPU-based methods.
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Use mainly mathematical operations.
+- [g-plugin-svg-picker](/en/plugins/svg-picker) Use SVG API.
+- [g-plugin-device-renderer](/en/plugins/device-renderer) Use GPU-based methods.
 
 ### A11y Plugin
 

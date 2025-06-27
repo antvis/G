@@ -33,5 +33,5 @@ order: 6
 
 ## 参考资料
 
--   「GPGPU 编程技术 - 从 GLSL、CUDA 到 OpenCL」[🔗](https://book.douban.com/subject/6538230/)
--   http://www.vizitsolutions.com/portfolio/webgl/gpgpu/
+- 「GPGPU 编程技术 - 从 GLSL、CUDA 到 OpenCL」[🔗](https://book.douban.com/subject/6538230/)
+- <http://www.vizitsolutions.com/portfolio/webgl/gpgpu/>

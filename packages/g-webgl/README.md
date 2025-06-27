@@ -9,10 +9,10 @@ const webglRenderer = new WebGLRenderer();
 
 // create a canvas
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: webglRenderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: webglRenderer,
 });
 ```
 
@@ -24,16 +24,16 @@ We can pass in a specific target(s), which will get downgraded automatically.
 
 ```js
 new Renderer({
-  targets: ['webgl2', 'webgl1'],
+    targets: ['webgl2', 'webgl1'],
 });
 ```
 
 ### onContextLost
 
-https://www.khronos.org/webgl/wiki/HandlingContextLost
+<https://www.khronos.org/webgl/wiki/HandlingContextLost>
 
 ```js
 new Renderer({
-  onContextLost: () => {},
+    onContextLost: () => {},
 });
 ```

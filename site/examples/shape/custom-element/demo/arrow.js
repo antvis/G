@@ -103,6 +103,7 @@ const pathArrow = new Arrow({
   style: {
     body: new Path({
       style: {
+        // eslint-disable-next-line no-useless-concat
         d: 'M 100,300' + 'l 50,-25' + 'a25,25 -30 0,1 50,-80',
       },
     }),
@@ -289,7 +290,7 @@ lineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);
@@ -320,7 +321,7 @@ lineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);
@@ -388,7 +389,7 @@ polylineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);
@@ -422,7 +423,7 @@ polylineArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);
@@ -490,7 +491,7 @@ pathArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);
@@ -521,7 +522,7 @@ pathArrowFolder
           height: 50,
           anchor: [0.5, 0.5],
           transformOrigin: 'center',
-          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
         },
       });
       image.rotateLocal(90);

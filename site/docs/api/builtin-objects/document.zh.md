@@ -5,14 +5,14 @@ order: 4
 
 在 G 中有以下继承关系：
 
--   Document -> Node -> EventTarget
+- Document -> Node -> EventTarget
 
 我们可以把 `Document` 类比成浏览器环境中的 `window.document`，例如在浏览器中：
 
--   它有指向 `window` 的引用 [defaultView](/zh/api/builtin-objects/document#defaultview)
--   通过 [documentElement](/zh/api/builtin-objects/document#documentelement) 访问 `<html>` 元素
--   可以通过一系列方法查询节点，例如 [getElementById](/zh/api/builtin-objects/document#getelementbyid)
--   通过 [createElement](/zh/api/builtin-objects/document#createelement) 创建元素
+- 它有指向 `window` 的引用 [defaultView](/zh/api/builtin-objects/document#defaultview)
+- 通过 [documentElement](/zh/api/builtin-objects/document#documentelement) 访问 `<html>` 元素
+- 可以通过一系列方法查询节点，例如 [getElementById](/zh/api/builtin-objects/document#getelementbyid)
+- 通过 [createElement](/zh/api/builtin-objects/document#createelement) 创建元素
 
 我们尽可能实现了以上浏览器提供的 API。
 
@@ -155,7 +155,6 @@ await canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 1. 有别于浏览器提供的同步 API，由于部分渲染器的实现（例如 `g-webgl`）需要通过 GPU 方式完成拾取，因此该方法为**异步**
 2. 当只需要获取该点命中的最顶层的图形时，应该使用 `elementFromPoint` 而非 `elementsFromPoint`，前者在绝大部分场景下都比后者快
 3. 拾取判定遵循以下规则：
-
     1. 超出画布视口范围（考虑到相机，并不一定等于画布范围）返回 null。
     2. 图形的 [interactive](/zh/api/basic/display-object#interactive) 属性**会影响**拾取。不可交互图形无法拾取。
     3. 图形的 [visibility](/zh/api/basic/display-object#visibility) 属性**会影响**拾取。不可见图形无法拾取。
@@ -188,8 +187,8 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 
 区域查询特别是基于包围盒的检测在以下场景中特别适用：
 
--   脏矩形渲染中用于确定受影响区域
--   矩形刷选批量选中图形
+- 脏矩形渲染中用于确定受影响区域
+- 矩形刷选批量选中图形
 
 此类基于包围盒的检测不需要太精确，配合内部 RBush 这样的空间索引，因此速度很快。
 

@@ -7,11 +7,11 @@ order: -1
 
 示例：
 
--   [容器相关配置](/zh/examples/plugins#yoga-container)
--   [子元素相关配置](/zh/examples/plugins#yoga-child)
--   [自适应布局](/zh/examples/plugins#yoga-available-space)
--   [文本换行](/zh/examples/plugins#yoga-text)
--   [对相关属性应用动画](/zh/examples/plugins#yoga-animation)
+- [容器相关配置](/zh/examples/plugins#yoga-container)
+- [子元素相关配置](/zh/examples/plugins#yoga-child)
+- [自适应布局](/zh/examples/plugins#yoga-available-space)
+- [文本换行](/zh/examples/plugins#yoga-text)
+- [对相关属性应用动画](/zh/examples/plugins#yoga-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -105,8 +105,8 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 支持以下取值，可以配合 top / right / botton / left 使用，和 CSS 完全一致：
 
--   `relative` 默认值，相对于正常布局位置
--   `absolute` 相对于父容器进行绝对定位
+- `relative` 默认值，相对于正常布局位置
+- `absolute` 相对于父容器进行绝对定位
 
 下左图中 Node1 使用 `relative`，下右图使用 `absolute` 进行绝对定位：
 
@@ -162,8 +162,8 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 支持以下取值，可参考 [CSS padding 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)：
 
--   绝对像素值，不支持负值，例如 `10`
--   百分比字符串，不支持负值，例如 `'50%'`，取百分比时相对于**自身的宽度**
+- 绝对像素值，不支持负值，例如 `10`
+- 百分比字符串，不支持负值，例如 `'50%'`，取百分比时相对于**自身的宽度**
 
 例如以下两种写法等价：
 
@@ -204,9 +204,9 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下取值，可参考 [CSS margin 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)：
 
--   绝对像素值，支持负值，例如 `10` `-50`
--   百分比字符串，支持负值，例如 `'50%'` `'-20%'`，取百分比时相对于**父元素的宽度**
--   `'auto'`，让布局引擎选择合适的外边距，可实现元素居中
+- 绝对像素值，支持负值，例如 `10` `-50`
+- 百分比字符串，支持负值，例如 `'50%'` `'-20%'`，取百分比时相对于**父元素的宽度**
+- `'auto'`，让布局引擎选择合适的外边距，可实现元素居中
 
 例如下图中 Node1 分别设置了 `marginRight: 10` 和 `marginLeft: -50`：
 
@@ -247,10 +247,10 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下取值：
 
--   row 默认值
--   row-reverse
--   column
--   column-reverse
+- row 默认值
+- row-reverse
+- column
+- column-reverse
 
 下左图为默认效果，下右图为 `column`：
 
@@ -266,9 +266,9 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下取值：
 
--   wrap
--   no-wrap 默认值
--   wrap-reverse
+- wrap
+- no-wrap 默认值
+- wrap-reverse
 
 在该[示例](/zh/examples/plugins#yoga-container)中，可以点击 `appendChild` 按钮向容器中添加子元素。下左图展示了容器默认 `no-wrap` 的效果（注意由于不允许换行，子元素在宽度上被压缩了），下右图设置为 `wrap` 自动换行：
 
@@ -338,12 +338,12 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下枚举值：
 
--   flex-start 默认值
--   flex-end
--   center
--   space-between
--   space-around
--   space-evenly
+- flex-start 默认值
+- flex-end
+- center
+- space-between
+- space-around
+- space-evenly
 
 在该[示例](/zh/examples/plugins#yoga-container)中，展示了 `center` / `space-between` / `space-around` 的效果：
 
@@ -359,14 +359,14 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下枚举值：
 
--   stretch 默认值
--   auto
--   baseline
--   center
--   flex-start
--   flex-end
--   space-between
--   space-around
+- stretch 默认值
+- auto
+- baseline
+- center
+- flex-start
+- flex-end
+- space-between
+- space-around
 
 下图为 `center` 效果：
 
@@ -386,12 +386,12 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持以下枚举值：
 
--   stretch
--   center
--   flex-start 默认值
--   flex-end
--   space-between
--   space-around
+- stretch
+- center
+- flex-start 默认值
+- flex-end
+- space-between
+- space-around
 
 在该[示例](/zh/examples/plugins#yoga-container)中，依次展示了 `center` / `space-between` / `space-around` 效果：
 

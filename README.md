@@ -33,34 +33,34 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 
 Extensible plug-in mechanism and rich set of plug-ins：
 
--   Rendering Related
-    -   [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-    -   [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
-    -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-    -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
-    -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
-    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
-    -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
--   Picking
-    -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-    -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
--   Interaction
-    -   [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
-    -   [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
-    -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
--   Physics Engine
-    -   [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
-    -   [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-    -   [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
--   Layout Engine
-    -   [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
--   GPGPU
-    -   [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
--   CSS Selector
-    -   [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
--   A11y
-    -   [g-plugin-a11y](https://g-next.antv.vision/en/docs/plugins/a11y) Provides accessibility features.
+- Rendering Related
+  - [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+  - [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
+  - [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
+  - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
+  - [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
+  - [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+- Picking
+  - [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+- Interaction
+  - [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
+  - [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+- Physics Engine
+  - [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
+  - [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+  - [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+- Layout Engine
+  - [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
+- GPGPU
+  - [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+- CSS Selector
+  - [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
+- A11y
+  - [g-plugin-a11y](https://g-next.antv.vision/en/docs/plugins/a11y) Provides accessibility features.
 
 ## 📦 Install
 
@@ -161,21 +161,21 @@ pnpm dev
 
 ## Inspired by
 
--   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Pixi.js](https://pixijs.com/)
--   [PlayCanvas](https://playcanvas.com/)
--   [WebKit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+- [Sprite.js](https://github.com/spritejs/spritejs)
+- [Pixi.js](https://pixijs.com/)
+- [PlayCanvas](https://playcanvas.com/)
+- [WebKit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
 
 <!-- GITCONTRIBUTOR_START -->
 
 ## Contributors
 
-|     [<img src="https://avatars.githubusercontent.com/u/14918822?v=4" width="100px;"/><br/><sub><b>dengfuping</b></sub>](https://github.com/dengfuping)<br/>     |   [<img src="https://avatars.githubusercontent.com/u/3608471?v=4" width="100px;"/><br/><sub><b>xiaoiver</b></sub>](https://github.com/xiaoiver)<br/>    |     [<img src="https://avatars.githubusercontent.com/u/1264678?v=4" width="100px;"/><br/><sub><b>dxq613</b></sub>](https://github.com/dxq613)<br/>     | [<img src="https://avatars.githubusercontent.com/in/2141?v=4" width="100px;"/><br/><sub><b>dependabot-preview[bot]</b></sub>](https://github.com/apps/dependabot-preview)<br/> |   [<img src="https://avatars.githubusercontent.com/u/4224253?v=4" width="100px;"/><br/><sub><b>zhanba</b></sub>](https://github.com/zhanba)<br/>    |       [<img src="https://avatars.githubusercontent.com/u/507615?v=4" width="100px;"/><br/><sub><b>afc163</b></sub>](https://github.com/afc163)<br/>       |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|     [<img src="https://avatars.githubusercontent.com/u/1947344?v=4" width="100px;"/><br/><sub><b>limichange</b></sub>](https://github.com/limichange)<br/>      |   [<img src="https://avatars.githubusercontent.com/u/23075527?v=4" width="100px;"/><br/><sub><b>entronad</b></sub>](https://github.com/entronad)<br/>   |     [<img src="https://avatars.githubusercontent.com/u/7856674?v=4" width="100px;"/><br/><sub><b>hustcc</b></sub>](https://github.com/hustcc)<br/>     |          [<img src="https://avatars.githubusercontent.com/u/33517362?v=4" width="100px;"/><br/><sub><b>tangying1027</b></sub>](https://github.com/tangying1027)<br/>           |  [<img src="https://avatars.githubusercontent.com/u/1478197?v=4" width="100px;"/><br/><sub><b>zengyue</b></sub>](https://github.com/zengyue)<br/>   |       [<img src="https://avatars.githubusercontent.com/u/6628666?v=4" width="100px;"/><br/><sub><b>simaQ</b></sub>](https://github.com/simaQ)<br/>        |
-|       [<img src="https://avatars.githubusercontent.com/u/1142242?v=4" width="100px;"/><br/><sub><b>lessmost</b></sub>](https://github.com/lessmost)<br/>        |     [<img src="https://avatars.githubusercontent.com/u/15646325?v=4" width="100px;"/><br/><sub><b>visiky</b></sub>](https://github.com/visiky)<br/>     |     [<img src="https://avatars.githubusercontent.com/u/31396322?v=4" width="100px;"/><br/><sub><b>lxfu1</b></sub>](https://github.com/lxfu1)<br/>      |                   [<img src="https://avatars.githubusercontent.com/u/7451866?v=4" width="100px;"/><br/><sub><b>ICMI</b></sub>](https://github.com/ICMI)<br/>                   | [<img src="https://avatars.githubusercontent.com/u/19731097?v=4" width="100px;"/><br/><sub><b>Deturium</b></sub>](https://github.com/Deturium)<br/> | [<img src="https://avatars.githubusercontent.com/u/29593318?v=4" width="100px;"/><br/><sub><b>Yanyan-Wang</b></sub>](https://github.com/Yanyan-Wang)<br/> |
-| [<img src="https://avatars.githubusercontent.com/u/42212176?v=4" width="100px;"/><br/><sub><b>yiiiiiiqianyao</b></sub>](https://github.com/yiiiiiiqianyao)<br/> | [<img src="https://avatars.githubusercontent.com/u/37040897?v=4" width="100px;"/><br/><sub><b>moayuisuda</b></sub>](https://github.com/moayuisuda)<br/> | [<img src="https://avatars.githubusercontent.com/u/8325822?v=4" width="100px;"/><br/><sub><b>elaine1234</b></sub>](https://github.com/elaine1234)<br/> |              [<img src="https://avatars.githubusercontent.com/u/15213473?v=4" width="100px;"/><br/><sub><b>mxz96102</b></sub>](https://github.com/mxz96102)<br/>               |   [<img src="https://avatars.githubusercontent.com/u/12654153?v=4" width="100px;"/><br/><sub><b>DrugsZ</b></sub>](https://github.com/DrugsZ)<br/>   |       [<img src="https://avatars.githubusercontent.com/u/9443867?v=4" width="100px;"/><br/><sub><b>baizn</b></sub>](https://github.com/baizn)<br/>        |
-|      [<img src="https://avatars.githubusercontent.com/u/10277628?v=4" width="100px;"/><br/><sub><b>terence55</b></sub>](https://github.com/terence55)<br/>      |    [<img src="https://avatars.githubusercontent.com/u/56076317?v=4" width="100px;"/><br/><sub><b>tyr1dev</b></sub>](https://github.com/tyr1dev)<br/>    |    [<img src="https://avatars.githubusercontent.com/u/2281857?v=4" width="100px;"/><br/><sub><b>budlion</b></sub>](https://github.com/budlion)<br/>    |               [<img src="https://avatars.githubusercontent.com/u/7278711?v=4" width="100px;"/><br/><sub><b>luoxupan</b></sub>](https://github.com/luoxupan)<br/>               |    [<img src="https://avatars.githubusercontent.com/u/54543761?v=4" width="100px;"/><br/><sub><b>ikxin</b></sub>](https://github.com/ikxin)<br/>    |   [<img src="https://avatars.githubusercontent.com/u/6812138?v=4" width="100px;"/><br/><sub><b>Leannechn</b></sub>](https://github.com/Leannechn)<br/>    |
+| [<img src="https://avatars.githubusercontent.com/u/14918822?v=4" width="100px;"/><br/><sub><b>dengfuping</b></sub>](https://github.com/dengfuping)<br/> | [<img src="https://avatars.githubusercontent.com/u/3608471?v=4" width="100px;"/><br/><sub><b>xiaoiver</b></sub>](https://github.com/xiaoiver)<br/> | [<img src="https://avatars.githubusercontent.com/u/1264678?v=4" width="100px;"/><br/><sub><b>dxq613</b></sub>](https://github.com/dxq613)<br/> | [<img src="https://avatars.githubusercontent.com/in/2141?v=4" width="100px;"/><br/><sub><b>dependabot-preview[bot]</b></sub>](https://github.com/apps/dependabot-preview)<br/> | [<img src="https://avatars.githubusercontent.com/u/4224253?v=4" width="100px;"/><br/><sub><b>zhanba</b></sub>](https://github.com/zhanba)<br/> | [<img src="https://avatars.githubusercontent.com/u/507615?v=4" width="100px;"/><br/><sub><b>afc163</b></sub>](https://github.com/afc163)<br/> |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| [<img src="https://avatars.githubusercontent.com/u/1947344?v=4" width="100px;"/><br/><sub><b>limichange</b></sub>](https://github.com/limichange)<br/> | [<img src="https://avatars.githubusercontent.com/u/23075527?v=4" width="100px;"/><br/><sub><b>entronad</b></sub>](https://github.com/entronad)<br/> | [<img src="https://avatars.githubusercontent.com/u/7856674?v=4" width="100px;"/><br/><sub><b>hustcc</b></sub>](https://github.com/hustcc)<br/> | [<img src="https://avatars.githubusercontent.com/u/33517362?v=4" width="100px;"/><br/><sub><b>tangying1027</b></sub>](https://github.com/tangying1027)<br/> | [<img src="https://avatars.githubusercontent.com/u/1478197?v=4" width="100px;"/><br/><sub><b>zengyue</b></sub>](https://github.com/zengyue)<br/> | [<img src="https://avatars.githubusercontent.com/u/6628666?v=4" width="100px;"/><br/><sub><b>simaQ</b></sub>](https://github.com/simaQ)<br/> |
+| [<img src="https://avatars.githubusercontent.com/u/1142242?v=4" width="100px;"/><br/><sub><b>lessmost</b></sub>](https://github.com/lessmost)<br/> | [<img src="https://avatars.githubusercontent.com/u/15646325?v=4" width="100px;"/><br/><sub><b>visiky</b></sub>](https://github.com/visiky)<br/> | [<img src="https://avatars.githubusercontent.com/u/31396322?v=4" width="100px;"/><br/><sub><b>lxfu1</b></sub>](https://github.com/lxfu1)<br/> | [<img src="https://avatars.githubusercontent.com/u/7451866?v=4" width="100px;"/><br/><sub><b>ICMI</b></sub>](https://github.com/ICMI)<br/> | [<img src="https://avatars.githubusercontent.com/u/19731097?v=4" width="100px;"/><br/><sub><b>Deturium</b></sub>](https://github.com/Deturium)<br/> | [<img src="https://avatars.githubusercontent.com/u/29593318?v=4" width="100px;"/><br/><sub><b>Yanyan-Wang</b></sub>](https://github.com/Yanyan-Wang)<br/> |
+| [<img src="https://avatars.githubusercontent.com/u/42212176?v=4" width="100px;"/><br/><sub><b>yiiiiiiqianyao</b></sub>](https://github.com/yiiiiiiqianyao)<br/> | [<img src="https://avatars.githubusercontent.com/u/37040897?v=4" width="100px;"/><br/><sub><b>moayuisuda</b></sub>](https://github.com/moayuisuda)<br/> | [<img src="https://avatars.githubusercontent.com/u/8325822?v=4" width="100px;"/><br/><sub><b>elaine1234</b></sub>](https://github.com/elaine1234)<br/> | [<img src="https://avatars.githubusercontent.com/u/15213473?v=4" width="100px;"/><br/><sub><b>mxz96102</b></sub>](https://github.com/mxz96102)<br/> | [<img src="https://avatars.githubusercontent.com/u/12654153?v=4" width="100px;"/><br/><sub><b>DrugsZ</b></sub>](https://github.com/DrugsZ)<br/> | [<img src="https://avatars.githubusercontent.com/u/9443867?v=4" width="100px;"/><br/><sub><b>baizn</b></sub>](https://github.com/baizn)<br/> |
+| [<img src="https://avatars.githubusercontent.com/u/10277628?v=4" width="100px;"/><br/><sub><b>terence55</b></sub>](https://github.com/terence55)<br/> | [<img src="https://avatars.githubusercontent.com/u/56076317?v=4" width="100px;"/><br/><sub><b>tyr1dev</b></sub>](https://github.com/tyr1dev)<br/> | [<img src="https://avatars.githubusercontent.com/u/2281857?v=4" width="100px;"/><br/><sub><b>budlion</b></sub>](https://github.com/budlion)<br/> | [<img src="https://avatars.githubusercontent.com/u/7278711?v=4" width="100px;"/><br/><sub><b>luoxupan</b></sub>](https://github.com/luoxupan)<br/> | [<img src="https://avatars.githubusercontent.com/u/54543761?v=4" width="100px;"/><br/><sub><b>ikxin</b></sub>](https://github.com/ikxin)<br/> | [<img src="https://avatars.githubusercontent.com/u/6812138?v=4" width="100px;"/><br/><sub><b>Leannechn</b></sub>](https://github.com/Leannechn)<br/> |
 
 [<img src="https://avatars.githubusercontent.com/u/10683193?v=4" width="100px;"/><br/><sub><b>dev-itsheng</b></sub>](https://github.com/dev-itsheng)<br/>
 

@@ -230,8 +230,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           ElementEvent.BOUNDS_CHANGED,
           handleBoundsChanged,
         );
-        this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
-          false;
+        this.context.config.renderer.getConfig().enableDirtyRectangleRendering = false;
 
         const $canvas =
           this.context.contextService.getDomElement() as HTMLCanvasElement;

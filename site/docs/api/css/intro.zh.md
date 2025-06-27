@@ -36,11 +36,11 @@ const circle = new Circle({
 
 在现代浏览器中，[CSS](https://developer.mozilla.org/en-US/docs/Web/API/CSS) 提供了一系列 API 帮助前端开发者更好地与样式系统这个“黑盒”交互：
 
--   [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) 将用户传入的字符串转换成 JS 表示，并提供数学运算等工具方法
--   [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) 支持自定义样式属性
--   [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) 支持自定义布局，实现浏览器中还不支持的布局算法。
+- [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) 将用户传入的字符串转换成 JS 表示，并提供数学运算等工具方法
+- [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) 支持自定义样式属性
+- [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) 支持自定义布局，实现浏览器中还不支持的布局算法。
 
-我们参考了 Blink（目前 Webkit 还不支持 CSS Typed OM 等）的实现，设计了一套简易的样式系统（暂不支持样式规则），实现了以上 CSS API。初始化时通过 CSS Properties & Values API 注册了一系列内置属性，在自定义图形中也可以用该方式注册自定义属性。在解析属性时使用 CSS Typed OM 完成，例如 `r: 5` 会被解析成 `CSS.px(5)`。如果用户设置了布局属性 `display`，我们会在布局阶段使用 CSS Layout API 完成布局计算。
+我们参考了 Blink（目前 WebKit 还不支持 CSS Typed OM 等）的实现，设计了一套简易的样式系统（暂不支持样式规则），实现了以上 CSS API。初始化时通过 CSS Properties & Values API 注册了一系列内置属性，在自定义图形中也可以用该方式注册自定义属性。在解析属性时使用 CSS Typed OM 完成，例如 `r: 5` 会被解析成 `CSS.px(5)`。如果用户设置了布局属性 `display`，我们会在布局阶段使用 CSS Layout API 完成布局计算。
 
 我们希望通过这一套样式系统，让布局变得更简单，用户完全可以避免复杂的手动计算、使用 `setPosition()` 设置元素位置，通过布局属性轻松完成任务。想象一下在浏览器支持 `display: flex` 之前，那些让元素居中的奇技淫巧：
 

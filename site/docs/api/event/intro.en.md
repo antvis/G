@@ -5,16 +5,16 @@ order: -3
 
 The event system can provide rich interactions and we follow two principles in its design.
 
--   Keeping it as consistent as possible with the DOM API, besides reducing learning costs, is most important to be able to access existing ecologies (e.g. gesture libraries).
--   Only standard events are provided. Advanced events such as drag and drop, gestures, etc. are defined by extension.
+- Keeping it as consistent as possible with the DOM API, besides reducing learning costs, is most important to be able to access existing ecologies (e.g. gesture libraries).
+- Only standard events are provided. Advanced events such as drag and drop, gestures, etc. are defined by extension.
 
 Developers familiar with [DOM Event Stream](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) will be familiar with the following concepts.
 
--   Event objects have a reference to the EventTarget, which is naturally a DOM element in the DOM and [EventTarget](/en/api/builtin-objects/event-target) in G.
--   The event stream contains capture and bubble phases, and you can intervene in them through certain methods on the event object.
--   One or more listeners can be added to an event, and they are triggered sequentially in the order in which they are registered.
+- Event objects have a reference to the EventTarget, which is naturally a DOM element in the DOM and [EventTarget](/en/api/builtin-objects/event-target) in G.
+- The event stream contains capture and bubble phases, and you can intervene in them through certain methods on the event object.
+- One or more listeners can be added to an event, and they are triggered sequentially in the order in which they are registered.
 
-The following diagram shows the three phases of event propagation, the listener is triggered from top to bottom in the capture phase, and bubbles up after reaching the target node. In the listener, you can get the current phase by [eventPhase](/en/api/event#eventphase). The following image is from https://javascript.info/bubbling-and-capturing#capturing
+The following diagram shows the three phases of event propagation, the listener is triggered from top to bottom in the capture phase, and bubbles up after reaching the target node. In the listener, you can get the current phase by [eventPhase](/en/api/event#eventphase). The following image is from <https://javascript.info/bubbling-and-capturing#capturing>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zJBbSL2D5mkAAAAAAAAAAAAAARQnAQ" width="500" alt="event capture">
 
@@ -41,66 +41,66 @@ We currently support listening to two types of events: interaction events and sc
 
 Browser support for interaction events has gone through the following stages, as detailed in.
 
-https://javascript.info/pointer-events#the-brief-history
+<https://javascript.info/pointer-events#the-brief-history>
 
--   The earliest supported is [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent).
--   With the popularity of mobile devices, [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent) appeared and also triggered [MouseEvent](https://developer.mozilla. org/zh-cn/docs/Web/API/MouseEvent)
--   Then later new devices appeared, such as the pen, so that the various event structures were different and painful to use (e.g. hammer.js for [compatibility of processing](https://github.com/hammerjs/hammer.js/tree/master/src/input))
--   A new standard has been proposed, [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) that wants to cover all the above input devices
+- The earliest supported is [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent).
+- With the popularity of mobile devices, [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent) appeared and also triggered [MouseEvent](<https://developer.mozilla>. org/zh-cn/docs/Web/API/MouseEvent)
+- Then later new devices appeared, such as the pen, so that the various event structures were different and painful to use (e.g. hammer.js for [compatibility of processing](https://github.com/hammerjs/hammer.js/tree/master/src/input))
+- A new standard has been proposed, [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) that wants to cover all the above input devices
 
-The image below is from https://w3c.github.io/pointerevents/
+The image below is from <https://w3c.github.io/pointerevents/>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FtyaTL5gzv4AAAAAAAAAAAAAARQnAQ" width="200" alt="pointer event">
 
-So now the Level 2 PointerEvent is supported by all major browsers: https://www.w3.org/TR/pointerevents2/
+So now the Level 2 PointerEvent is supported by all major browsers: <https://www.w3.org/TR/pointerevents2/>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Doz_TbygcIIAAAAAAAAAAAAAARQnAQ" width="100%" alt="can i use pointer event">
 
 The new runtime environments also all use a uniform definition like PointerEvent and no longer have Touch / Mouse / PenEvent, e.g.
 
--   Flutter：https://api.flutter.dev/flutter/gestures/PointerEvent-class.html
--   Kraken：https://zhuanlan.zhihu.com/p/371640453
+- Flutter：<https://api.flutter.dev/flutter/gestures/PointerEvent-class.html>
+- Kraken：<https://zhuanlan.zhihu.com/p/371640453>
 
 We therefore recommend using PointerEvent directly. multi-finger touch gestures are also fully implementable, e.g.
 
--   Pinch: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+- Pinch: <https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures>
 
 The following interaction events are currently supported for listening.
 
 PointerEvents:
 
--   `pointerdown`
--   `pointerup`
--   `pointerupoutside`
--   `pointertap`
--   `pointerover`
--   `pointerenter`
--   `pointerleave`
--   `pointerout`
+- `pointerdown`
+- `pointerup`
+- `pointerupoutside`
+- `pointertap`
+- `pointerover`
+- `pointerenter`
+- `pointerleave`
+- `pointerout`
 
 MouseEvents:
 
--   `mousedown` Left mouse button pressed
--   `rightdown` Right mouse button pressed
--   `mouseup` Left mouse button lift
--   `rightup` Right mouse button lift
--   `mouseupoutside` Different graphics when the left mouse button is lifted and when it is pressed
--   `rightupoutside` Different graphics when the right mouse button is raised and pressed
--   `click` Click & double click [how to distinguish?](/en/api/event#doubleclick)
--   `mousemove` The mouse continuously moves over the graph
--   `mouseover` Mouse over the graph will bubble
--   `mouseout` The mouse is removed from the graph and will bubble up
--   `mouseenter` The mouse is moved in from the graph and will not bubble
--   `mouseleave` The mouse is removed from this graphic without bubbling
--   `wheel`
+- `mousedown` Left mouse button pressed
+- `rightdown` Right mouse button pressed
+- `mouseup` Left mouse button lift
+- `rightup` Right mouse button lift
+- `mouseupoutside` Different graphics when the left mouse button is lifted and when it is pressed
+- `rightupoutside` Different graphics when the right mouse button is raised and pressed
+- `click` Click & double click [how to distinguish?](/en/api/event#doubleclick)
+- `mousemove` The mouse continuously moves over the graph
+- `mouseover` Mouse over the graph will bubble
+- `mouseout` The mouse is removed from the graph and will bubble up
+- `mouseenter` The mouse is moved in from the graph and will not bubble
+- `mouseleave` The mouse is removed from this graphic without bubbling
+- `wheel`
 
 TouchEvents:
 
--   `touchstart`
--   `touchend`
--   `touchendoutside`
--   `touchmove`
--   `touchcancel`
+- `touchstart`
+- `touchend`
+- `touchendoutside`
+- `touchmove`
+- `touchcancel`
 
 ### SceneGraph Events
 
@@ -116,14 +116,14 @@ canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
 
 We currently support the following scenegraph related events.
 
--   `CHILD_INSERTED` Triggered when a child node is added as a parent.
--   `INSERTED` Triggered when added as a child node.
--   `CHILD_REMOVED` Triggered when a parent node is removed as a child node.
--   `REMOVED` Triggered when removed as a child node.
--   `MOUNTED` Triggered when first entering the canvas.
--   `UNMOUNTED` Triggered when removed from the canvas.
--   `ATTR_MODIFIED` Triggered when modifying properties.
--   `DESTROY` Triggered on destruction.
+- `CHILD_INSERTED` Triggered when a child node is added as a parent.
+- `INSERTED` Triggered when added as a child node.
+- `CHILD_REMOVED` Triggered when a parent node is removed as a child node.
+- `REMOVED` Triggered when removed as a child node.
+- `MOUNTED` Triggered when first entering the canvas.
+- `UNMOUNTED` Triggered when removed from the canvas.
+- `ATTR_MODIFIED` Triggered when modifying properties.
+- `DESTROY` Triggered on destruction.
 
 In the following example, the canvas listens for INSERTED REMOVED MOUNTED and UNMOUNTED events. The following events are triggered sequentially when the scene graph is added and removed.
 
@@ -149,7 +149,7 @@ canvas.removeChild(parent, false); // Remove from the scene graph, but do not de
 
 ### addEventListener
 
-Adding event listeners to graphics is fully referenced in the DOM Event API: https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+Adding event listeners to graphics is fully referenced in the DOM Event API: <https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener>
 
 Method signature.
 
@@ -160,14 +160,14 @@ target.addEventListener(type, listener, useCapture);
 
 Parameters:
 
--   type 事件名称，[内置标准事件](/en/api/event#type) 或[自定义事件名](/en/api/event#custom-events)
--   listener 事件监听器，支持以下两种写法：
-    -   处理函数 `Function`
-    -   [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
--   options `可选`
-    -   capture `boolean`，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
-    -   once `boolean`，表示 listener 在添加之后最多只调用一次。如果是 `true`， listener 会在其被调用之后自动移除。
--   useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发 listener。
+- type 事件名称，[内置标准事件](/en/api/event#type) 或[自定义事件名](/en/api/event#custom-events)
+- listener 事件监听器，支持以下两种写法：
+  - 处理函数 `Function`
+  - [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
+- options `可选`
+  - capture `boolean`，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
+  - once `boolean`，表示 listener 在添加之后最多只调用一次。如果是 `true`， listener 会在其被调用之后自动移除。
+- useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发 listener。
 
 ```js
 button.addEventListener('click', () => {});
@@ -228,7 +228,7 @@ circle.off();
 
 Manually triggered events, like interactively triggered events, go through the full event propagation process.
 
-https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+<https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent>
 
 ⚠️ Before manually firing an event on a drawing, you must ensure that the element has been added to the canvas.
 
@@ -250,9 +250,9 @@ circle.dispatchEvent(event);
 
 The parameters of the CustomEvent constructor are as follows.
 
--   `eventName` required, type is `string`
--   `eventObject` optional, contains the following attributes.
-    -   `detail` contains custom data which type is `any`
+- `eventName` required, type is `string`
+- `eventObject` optional, contains the following attributes.
+  - `detail` contains custom data which type is `any`
 
 For compatibility with older G APIs, the use of `emit` is also supported.
 

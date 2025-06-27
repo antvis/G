@@ -69,7 +69,7 @@ const plugin = new PluginMatterjs({
 
 重力方向向量，默认值为 `[0, 1]`。
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_gravity
+<https://brm.io/matter-js/docs/classes/Engine.html#property_gravity>
 
 例如设置成 `[1, 1]`，物体会自然向右下角运动：
 
@@ -83,7 +83,7 @@ new PluginMatterjs({
 
 类型为 `number`，重力缩放系数。
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
+<https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale>
 
 ### timeStep
 
@@ -93,13 +93,13 @@ https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
 
 计算加速度迭代次数，默认值为 `4`，越高计算开销越大
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
+<https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations>
 
 ### positionIterations
 
 计算位置迭代次数，默认值为 `6`，越高计算开销越大
 
-https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
+<https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations>
 
 ## 图形物理属性
 
@@ -113,8 +113,8 @@ circle.style.density = 100;
 
 刚体类型：
 
--   static 静态物体，例如地面
--   dynamic 动态物体，计算受力
+- static 静态物体，例如地面
+- dynamic 动态物体，计算受力
 
 <!-- - kinematic -->
 
@@ -122,37 +122,37 @@ circle.style.density = 100;
 
 密度，千克/平方米。静态物体为 0。
 
-https://brm.io/matter-js/docs/classes/Body.html#property_density
+<https://brm.io/matter-js/docs/classes/Body.html#property_density>
 
 ### velocity
 
 线速度，默认值为 `[0, 0]`。
 
-https://brm.io/matter-js/docs/classes/Body.html#property_velocity
+<https://brm.io/matter-js/docs/classes/Body.html#property_velocity>
 
 ### angularVelocity
 
 角速度，默认值为 `0`。
 
-https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity
+<https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity>
 
 ### friction
 
 摩擦力，取值范围为 `[0 - 1]`，默认值为 `0.1`。`0` 代表物体会无限滑动下去，`1` 表示物体受力后会立刻停止。
 
-https://brm.io/matter-js/docs/classes/Body.html#property_friction
+<https://brm.io/matter-js/docs/classes/Body.html#property_friction>
 
 ### frictionAir
 
 定义在空气中的摩擦力，`0` 表示无重力，值越高物体在空间中移动减速就越明显，默认值为 `0.01`。
 
-https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir
+<https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir>
 
 ### frictionStatic
 
 默认值为 `0.5`
 
-https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic
+<https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic>
 
 ### restitution
 

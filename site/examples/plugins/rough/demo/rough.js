@@ -268,7 +268,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       y: 130,
       width: 100,
       height: 100,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
   });
   canvas.appendChild(image);

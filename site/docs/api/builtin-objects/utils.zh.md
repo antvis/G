@@ -53,7 +53,7 @@ turn2deg(turn: number): number;
 
 分解 3x3 变换矩阵，得到平移、缩放和旋转角度。
 
-来自：https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
+来自：<https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix>
 
 ```js
 const [tx, ty, scalingX, scalingY, angle] = decompose(mat3);
@@ -67,7 +67,7 @@ const [tx, ty, scalingX, scalingY, angle] = decompose(mat3);
 getEuler(out: vec3, quat: quat | mat4): vec3
 ```
 
-来自：https://github.com/toji/gl-matrix/issues/329
+来自：<https://github.com/toji/gl-matrix/issues/329>
 
 ### createVec3
 
@@ -98,13 +98,13 @@ convertToPath(
 
 该方法支持以下基础图形，不支持 [Group](/zh/api/basic/group) 或者其他自定义图形：
 
--   [Circle](/zh/api/basic/circle)
--   [Ellipse](/zh/api/basic/ellipse)
--   [Rect](/zh/api/basic/rect)
--   [Line](/zh/api/basic/line)
--   [Polyline](/zh/api/basic/polyline)
--   [Polygon](/zh/api/basic/polygon)
--   [Path](/zh/api/basic/path)
+- [Circle](/zh/api/basic/circle)
+- [Ellipse](/zh/api/basic/ellipse)
+- [Rect](/zh/api/basic/rect)
+- [Line](/zh/api/basic/line)
+- [Polyline](/zh/api/basic/polyline)
+- [Polygon](/zh/api/basic/polygon)
+- [Path](/zh/api/basic/path)
 
 转换结果为字符串形式的三阶贝塞尔曲线，利用它易于分割的特性，将变换前后的路径规范到相同数目的分段，最后对各个分段中的控制点进行插值实现动画效果。
 

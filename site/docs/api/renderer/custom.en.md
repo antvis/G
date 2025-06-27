@@ -17,7 +17,7 @@ Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how 
 
 After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/renderer#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/en/ plugins/canvas-picker).
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
 ```js
 import type { RendererConfig } from '@antv/g';
@@ -174,7 +174,7 @@ When implementing requirements like [export-image](/en/guide/advanced-topics/ima
 
 Different rendering contexts naturally have different difficulties to implement, for example, native [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/) can be used in [g-canvas](/en/api/renderer/canvas) HTMLCanvasElement/toDataURL) method.
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110>
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {
@@ -185,7 +185,7 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 
 However, [g-svg](/en/api/renderer/svg) is much more complicated to implement and requires the [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) serialization capabilities.
 
-https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90
+<https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90>
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {
@@ -209,4 +209,4 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 
 The situation is more complicated in [g-webgl](/en/api/renderer/webgl), which even requires the use of asynchronous methods.
 
-https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438
+<https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438>

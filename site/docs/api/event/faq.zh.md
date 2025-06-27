@@ -5,7 +5,7 @@ order: 100
 
 ## 事件监听器内 this 指向问题
 
-参考 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler
+参考 <https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler>
 
 在事件监听器内部 `this` 指向应该与 `e.currentTarget` 相同。但如果使用了箭头函数，将丢失上下文：
 
@@ -22,7 +22,7 @@ circle.addEventListener('mouseleave', () => {
 
 ## mouseenter/leave 冒泡问题
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event>
 
 mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，而 mouseout 会。
 
@@ -64,7 +64,7 @@ $el.addEventListener('wheel', onPointerWheel, {
 });
 ```
 
-关于 Passive 事件处理器，可以参考知乎的这篇文章：https://zhuanlan.zhihu.com/p/24555031 。简而言之是通过这个选项可以提升浏览器的滚动流畅度，相当于提前告知浏览器“我不会阻止你的默认滚动行为”。
+关于 Passive 事件处理器，可以参考知乎的这篇文章：<https://zhuanlan.zhihu.com/p/24555031> 。简而言之是通过这个选项可以提升浏览器的滚动流畅度，相当于提前告知浏览器“我不会阻止你的默认滚动行为”。
 
 现在回到我们的问题，如果用户确实需要禁止默认滚动行为，可以在画布的 DOM 节点上手动添加一个非 Passive 的事件处理器，[g-plugin-control](http://g-next.antv.vision/zh/plugins/control) 插件就是这么做的。如何获取画布的 DOM 节点可以使用 [getDomElement](/zh/api/renderer#getdomelement)：
 
@@ -200,9 +200,9 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 
 不同渲染环境使用不同的拾取插件，用于判定原生事件的 EventTarget：
 
--   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 主要使用数学运算
--   [g-plugin-svg-picker](/zh/plugins/svg-picker) 使用现成 SVG API
--   [g-plugin-device-renderer](/zh/plugins/device-renderer) 使用 GPU 颜色编码
+- [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 主要使用数学运算
+- [g-plugin-svg-picker](/zh/plugins/svg-picker) 使用现成 SVG API
+- [g-plugin-device-renderer](/zh/plugins/device-renderer) 使用 GPU 颜色编码
 
 ### A11y 无障碍插件
 

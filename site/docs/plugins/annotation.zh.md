@@ -25,8 +25,8 @@ renderer.registerPlugin(new PluginAnnotation());
 
 该插件提供两种模式，可以通过 [setDrawingMode](/zh/plugins/annotation#setdrawingmode) 进行切换：
 
--   绘制模式。该模式下可按预设步骤绘制图形。
--   编辑模式。该模式下选中 `selectable` 图形会出现对应的编辑组件，通过组件交互完成图形平移、resize 等编辑操作。
+- 绘制模式。该模式下可按预设步骤绘制图形。
+- 编辑模式。该模式下选中 `selectable` 图形会出现对应的编辑组件，通过组件交互完成图形平移、resize 等编辑操作。
 
 ### 绘制模式
 
@@ -75,7 +75,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 支持以下键盘快捷操作：
 
--   `esc` 取消绘制
+- `esc` 取消绘制
 
 #### 绘制折线
 
@@ -85,9 +85,9 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 支持以下键盘快捷操作：
 
--   `esc` 取消绘制
--   `shift` + `Z` 撤销最新的一个线段
--   `space` 完成绘制
+- `esc` 取消绘制
+- `shift` + `Z` 撤销最新的一个线段
+- `space` 完成绘制
 
 #### 绘制多边形
 
@@ -97,9 +97,9 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 支持以下键盘快捷操作：
 
--   `esc` 取消绘制
--   `shift` + `Z` 撤销最新的一个线段
--   `space` 完成绘制
+- `esc` 取消绘制
+- `shift` + `Z` 撤销最新的一个线段
+- `space` 完成绘制
 
 ### 编辑模式
 
@@ -121,8 +121,8 @@ circle.style.selectable = true;
 
 点击图形即可完成单选，这也是最常见的方式。我们支持以下两种方式完成多选：
 
--   按住 `shift` 配合点击，在保留已选中图形的基础上追加选中
--   按住 `shift` 并拖拽出一个矩形完成区域刷选
+- 按住 `shift` 配合点击，在保留已选中图形的基础上追加选中
+- 按住 `shift` 并拖拽出一个矩形完成区域刷选
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*kf-wR5_SY4YAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="300">
 
@@ -130,8 +130,8 @@ circle.style.selectable = true;
 
 和选中图形相对，取消选中也有两种方式：
 
--   点击画布空白区域或者另一个图形。
--   通过 API 方式取消选中图形，调用 [deselectDisplayObject](/zh/plugins/annotation#deselectdisplayobject) 方法。
+- 点击画布空白区域或者另一个图形。
+- 通过 API 方式取消选中图形，调用 [deselectDisplayObject](/zh/plugins/annotation#deselectdisplayobject) 方法。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
@@ -163,8 +163,8 @@ circle.style.selectable = true;
 
 在某些场景下自动切换，默认值为 `false`。
 
--   在绘制模式下点击可交互图形，将自动切换成编辑模式。
--   在编辑模式下点击空白区域，将自动切换成绘制模式。
+- 在绘制模式下点击可交互图形，将自动切换成编辑模式。
+- 在编辑模式下点击空白区域，将自动切换成绘制模式。
 
 ### enableDeleteTargetWithShortcuts
 
@@ -416,10 +416,10 @@ plugin.setDrawingMode(false);
 
 在绘制模式下，我们提供以下图形的绘制能力：
 
--   `circle`
--   `rect`
--   `polyline`
--   `polygon`
+- `circle`
+- `rect`
+- `polyline`
+- `polygon`
 
 例如绘制矩形：
 
@@ -505,8 +505,8 @@ export enum DrawerEvent {
 
 事件对象包含如下数据，其中关键属性为：
 
--   `type` 绘制图形类型。目前支持 `rect` `polyline` `polygon`
--   `path` 绘制图形顶点列表，形如：`[{ x: 0, y: 0 }, { x: 100, y: 100 }...]`
+- `type` 绘制图形类型。目前支持 `rect` `polyline` `polygon`
+- `path` 绘制图形顶点列表，形如：`[{ x: 0, y: 0 }, { x: 100, y: 100 }...]`
 
 ```js
 plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {});

@@ -3,7 +3,7 @@ title: g-plugin-canvaskit-renderer
 order: 3
 ---
 
-Use [Skia](https://skia.org/docs/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](https://developer .mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
+Use [Skia](https://skia.org/docs/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](<https://developer> .mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
 
 Skia offers more features than the Canvas2D API, such as text paragraph layout, [Lottie animation](https://skia.org/docs/user/modules/skottie/), and more. In addition to Chrome and Android, some cross-platform solutions such as [Flutter](https://docs.flutter.dev/resources/architectural-overview), [Weex](https://github.com/alibaba/) weex) also use it as the underlying rendering engine.
 
@@ -28,10 +28,10 @@ The [Lottie](https://airbnb.design/introducing-lottie/) animation was created wi
 
 The full method signature is as follows, which contains the following parameters.
 
--   name Animation name, required
--   jsonStr Lottie description file in JSON format, required
--   bounds The display area, which accepts data in the format `[left, top, width, height]`, is optional. Not filled will try to use the size defined in the description file, i.e. `[0, 0, width, height]`
--   assets Additional resource files, optional
+- name Animation name, required
+- jsonStr Lottie description file in JSON format, required
+- bounds The display area, which accepts data in the format `[left, top, width, height]`, is optional. Not filled will try to use the size defined in the description file, i.e. `[0, 0, width, height]`
+- assets Additional resource files, optional
 
 Returns a `ManagedSkottieAnimation` object
 
@@ -107,10 +107,10 @@ textParticles.start(Date.now() / 1000.0, true);
 
 Finally, let's look at the key particle effect definitions.
 
--   MaxCount
--   Drawable The type of particle, usually `'SkCircleDrawable'`, can be modified in size
--   Code SkSL code to control the life cycle of the particles, such as how the position and color should change in each frame
--   Bindings
+- MaxCount
+- Drawable The type of particle, usually `'SkCircleDrawable'`, can be modified in size
+- Code SkSL code to control the life cycle of the particles, such as how the position and color should change in each frame
+- Bindings
 
 ```js
 const text = {

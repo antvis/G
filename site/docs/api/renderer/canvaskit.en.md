@@ -3,7 +3,7 @@ title: Canvaskit Renderer
 order: 0
 ---
 
-Use [Skia](https://skia.org/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](https://developer .mozilla.org/en-US/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
+Use [Skia](https://skia.org/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](<https://developer> .mozilla.org/en-US/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
 
 Skia offers more features than the Canvas2D API, such as text paragraph layout, [Lottie animation](https://skia.org/user/modules/skottie/), particle effects, and more. In addition to Chrome and Android, some cross-platform solutions such as [Flutter](https:/.flutter.dev/resources/architectural-overview), [Weex](https://github.com/alibaba/) weex) also use it as the underlying rendering engine.
 
@@ -14,7 +14,7 @@ Skia offers more features than the Canvas2D API, such as text paragraph layout, 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ" width="160" alt="text emoji">
 
-[DEMO in Codesandbox](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
+[DEMO in CodeSandbox](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
 
 ## Usage
 
@@ -58,7 +58,7 @@ const canvasRenderer = new window.G.Canvaskit.Renderer();
 
 The path to the WASM folder for CanvasKit. The default value is `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full/'`, which means that it is downloaded from a CDN.
 
-In practice, we can copy the WASM to the server resource directory (e.g. with a build tool like Webpack) instead of loading it from the CDN. In our case, the file is copied to the root directory (''/''), and the folder path can be specified via the `wasmDir` configuration item.
+In practice, we can copy the WASM to the server resource directory (e.g. with a build tool like webpack) instead of loading it from the CDN. In our case, the file is copied to the root directory (''/''), and the folder path can be specified via the `wasmDir` configuration item.
 
 ```js
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -68,9 +68,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 It is worth noting that CanvasKit provides several versions of the WASM file.
 
--   Lite version, about 7.1MB`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
--   Full-featured, about 7.9MB, includes full [enhancements](/en/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
--   Development version, approx. 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
+- Lite version, about 7.1MB`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
+- Full-featured, about 7.9MB, includes full [enhancements](/en/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
+- Development version, approx. 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
 ### fonts
 
@@ -115,17 +115,17 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
--   [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
--   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Enhanced Features
 
 CanvasKit (full version) provides the following enhancements compared to the familiar Canvas 2D API.
 
--   [Skottie](https://skia.org/user/modules/skottie/) Lottie Player
--   Particle effect
--   Paragraph
+- [Skottie](https://skia.org/user/modules/skottie/) Lottie Player
+- Particle effect
+- Paragraph
 
 ### Lottie Player
 
@@ -205,10 +205,10 @@ textParticles.start(Date.now() / 1000.0, true);
 
 Finally, let's look at the key particle effect definitions.
 
--   `MaxCount` Number of particles
--   `Drawable` The type of particle, usually `'SkCircleDrawable'`, can be modified in size
--   `Code` SkSL code to control the life cycle of the particles, such as how the position and color should change in each frame
--   `Bindings`
+- `MaxCount` Number of particles
+- `Drawable` The type of particle, usually `'SkCircleDrawable'`, can be modified in size
+- `Code` SkSL code to control the life cycle of the particles, such as how the position and color should change in each frame
+- `Bindings`
 
 ```js
 const text = {
@@ -357,10 +357,10 @@ const decoratedText = new Text({
 
 The following attributes are supported.
 
--   decorationLine [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) support: `'none'` `'underline'` `'overline'` `'line-through'`
--   decorationColor [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color)
--   decorationThickness [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness)
--   decorationStyle [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) support: `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
+- decorationLine [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) support: `'none'` `'underline'` `'overline'` `'line-through'`
+- decorationColor [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color)
+- decorationThickness [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness)
+- decorationStyle [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) support: `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
 ### Text Ellipsis
 
@@ -389,8 +389,8 @@ Note that using certain fonts (e.g. Noto) can have the following strange effect.
 
 The reason is that Skia will add a blank character after the ellipsis, and the missing character in some font files will show "tofu", the solution is as follows.
 
--   https://github.com/flutter/flutter/issues/76473
--   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
+- <https://github.com/flutter/flutter/issues/76473>
+- <https://github.com/flutter/flutter/issues/90135#issuecomment-984916656>
 
 ### Text Direction
 
@@ -410,9 +410,9 @@ Multiple shadows can be added to text in CSS using the [text-shadow](https://dev
 
 We support specifying a set of shadows via the `shadows` property, where each shadow supports the following configuration.
 
--   `color`
--   `blurRadius` The default is 0. The larger the value, the larger the blur radius and the lighter the shadows.
--   `offset` Specify the offset of the shadow relative to the text.
+- `color`
+- `blurRadius` The default is 0. The larger the value, the larger the blur radius and the lighter the shadows.
+- `offset` Specify the offset of the shadow relative to the text.
 
 In this [example](/en/examples/plugins#canvaskit-paragraph), we specify two shadows.
 
@@ -440,17 +440,17 @@ const shadowedText = new Text({
 
 Strut (meaning "pillar") sets the minimum line height relative to the baseline. Similar to the [line-height](https://developer.mozilla.org/zh-CN/Web/CSS/line-height) property in CSS.
 
-StrutStyle can be configured in SkParagraph, and a document with the same name is available in Flutter: https://api.flutter.dev/flutter/painting/StrutStyle-class.html
+StrutStyle can be configured in SkParagraph, and a document with the same name is available in Flutter: <https://api.flutter.dev/flutter/painting/StrutStyle-class.html>
 
 We will pass on the following attributes.
 
--   strutEnabled
--   fontFamilies which can be consistent with TextStyle
--   fontSize
--   heightMultiplier
--   leading
--   halfLeading
--   forceStrutHeight
+- strutEnabled
+- fontFamilies which can be consistent with TextStyle
+- fontSize
+- heightMultiplier
+- leading
+- halfLeading
+- forceStrutHeight
 
 In this [example](/en/examples/plugins#canvaskit-paragraph) we use this to control line height and line spacing.
 
@@ -499,13 +499,13 @@ const fontFeaturesText = new Text({
 
 Skia itself does not include Harfbuzz.
 
-https://skia.org/user/tips/
+<https://skia.org/user/tips/>
 
 But CanvasKit packages it in by default.
 
-https://skia.googlesource.com/skia/+/main/modules/canvaskit/CHANGELOG.md#0_4_0_2019_02_25
+<https://skia.googlesource.com/skia/+/main/modules/canvaskit/CHANGELOG.md#0_4_0_2019_02_25>
 
-https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa1
+<https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa1>
 
 > Text shaping with ShapedText object and SkCanvas.drawText. At compile time, one can choose between using Harfbuzz/ICU (default) or a primitive one (“primitive_shaper”) which just does line breaking. Using Harfbuzz/ICU substantially increases code size (4.3 MB to 6.4 MB).
 

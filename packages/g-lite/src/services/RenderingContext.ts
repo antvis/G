@@ -1,4 +1,4 @@
-import type { DisplayObject, Group } from '../display-objects';
+import type { Group } from '../display-objects';
 
 /**
  * why we need re-render
@@ -23,8 +23,6 @@ export interface RenderingContext {
    * reason of re-render, reset after every renderred frame
    */
   renderReasons: Set<RenderReason>;
-
-  renderListCurrentFrame: DisplayObject[];
 
   unculledEntities: number[];
 

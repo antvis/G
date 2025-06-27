@@ -25,7 +25,7 @@ hammer.on('press', (e) => {
 
 ## 使用 PointerEvents 实现 Pinch 手势
 
-在该[示例](/zh/examples/event#pinch-with-pointer)中实现了 Pinch 手势，参考 https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+在该[示例](/zh/examples/event#pinch-with-pointer)中实现了 Pinch 手势，参考 <https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 

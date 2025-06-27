@@ -11,12 +11,12 @@ order: 6
 
 完整版 `@antv/g` 由以下几部分组成：
 
--   `@antv/g-lite` 包含 [画布](/zh/api/canvas)，[基础图形](/zh/api/basic/concept)，[事件系统](/zh/api/event)，[插件系统](/zh/plugins/intro) 等核心功能
--   `@antv/g-camera-api` 提供完整相机动作和动画功能
--   `@antv/g-web-animations-api` 提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的动画系统
--   `@antv/g-css-typed-om-api` 提供 [CSS Typed OM API]()
--   `@antv/g-css-layout-api` 提供 [CSS Layout API]()
--   `@antv/g-dom-mutation-observer-api` 提供 DOM Mutation Observer API
+- `@antv/g-lite` 包含 [画布](/zh/api/canvas)，[基础图形](/zh/api/basic/concept)，[事件系统](/zh/api/event)，[插件系统](/zh/plugins/intro) 等核心功能
+- `@antv/g-camera-api` 提供完整相机动作和动画功能
+- `@antv/g-web-animations-api` 提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的动画系统
+- `@antv/g-css-typed-om-api` 提供 [CSS Typed OM API]()
+- `@antv/g-css-layout-api` 提供 [CSS Layout API]()
+- `@antv/g-dom-mutation-observer-api` 提供 DOM Mutation Observer API
 
 ## 使用方式
 
@@ -103,19 +103,19 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 在基础图形上提供兼容旧版本的方法，大部分在新版中都有兼容 DOM API 的实现。因此不推荐使用这些方法，后续随时可能移除：
 
--   getCount 获取子节点数目，新版使用 [childElementCount](/zh/api/builtin-objects/element#childelementcount)
--   getParent 获取父节点，新版使用 [parentElement](/zh/api/builtin-objects/node#parentelement)
--   getChildren 获取子节点列表，新版使用 [children](/zh/api/builtin-objects/element#children)
--   getFirst 获取第一个子节点，新版使用 [firstElementChild](/zh/api/builtin-objects/element#firstelementchild)
--   getLast 获取最后一个子节点，新版使用 [lastElementChild](/zh/api/builtin-objects/element#lastelementchild)
--   getChildByIndex 按索引获取子节点，新版使用 `this.children[index]`
--   add 添加子节点，新版使用 [appendChild](/zh/api/builtin-objects/node#appendchild)
--   setClip 设置裁剪图形，新版使用 [clipPath](/zh/api/basic/display-object#clippath)
--   getClip 获取裁剪图形，同上
--   set 在初始化配置上存储键值对
--   get 在初始化配置上读取值
--   show 展示图形，新版使用 [visibility](/zh/api/basic/display-object#visibility)
--   hide 隐藏图形，同上
--   moveTo 在世界坐标系下移动图形，新版使用 [setPosition](/zh/api/basic/display-object#平移)
--   move 同上
--   setZIndex 设置渲染次序，新版使用 [zIndex](/zh/api/basic/display-object#zindex)
+- getCount 获取子节点数目，新版使用 [childElementCount](/zh/api/builtin-objects/element#childelementcount)
+- getParent 获取父节点，新版使用 [parentElement](/zh/api/builtin-objects/node#parentelement)
+- getChildren 获取子节点列表，新版使用 [children](/zh/api/builtin-objects/element#children)
+- getFirst 获取第一个子节点，新版使用 [firstElementChild](/zh/api/builtin-objects/element#firstelementchild)
+- getLast 获取最后一个子节点，新版使用 [lastElementChild](/zh/api/builtin-objects/element#lastelementchild)
+- getChildByIndex 按索引获取子节点，新版使用 `this.children[index]`
+- add 添加子节点，新版使用 [appendChild](/zh/api/builtin-objects/node#appendchild)
+- setClip 设置裁剪图形，新版使用 [clipPath](/zh/api/basic/display-object#clippath)
+- getClip 获取裁剪图形，同上
+- set 在初始化配置上存储键值对
+- get 在初始化配置上读取值
+- show 展示图形，新版使用 [visibility](/zh/api/basic/display-object#visibility)
+- hide 隐藏图形，同上
+- moveTo 在世界坐标系下移动图形，新版使用 [setPosition](/zh/api/basic/display-object#平移)
+- move 同上
+- setZIndex 设置渲染次序，新版使用 [zIndex](/zh/api/basic/display-object#zindex)

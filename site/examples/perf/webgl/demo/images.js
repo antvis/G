@@ -26,7 +26,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
         y: Math.random() * 500,
         width: 100 + Math.random() * 100,
         height: 100 + Math.random() * 100,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
       },
     });
     canvas.appendChild(image);
@@ -38,7 +38,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
         y: Math.random() * 500,
         width: 100 + Math.random() * 100,
         height: 100 + Math.random() * 100,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       },
     });
     canvas.appendChild(image);

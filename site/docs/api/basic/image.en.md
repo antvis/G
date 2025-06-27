@@ -74,8 +74,8 @@ The y-axis coordinates of the top-left vertex of the image in the local coordina
 
 Image sources, supports the following types:
 
--   `string` Image address string, displayed after successful loading
--   `HTMLImageElement` Create your own [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) object to create a G Image in the `onload` callback, as shown in the following example.
+- `string` Image address string, displayed after successful loading
+- `HTMLImageElement` Create your own [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) object to create a G Image in the `onload` callback, as shown in the following example.
 
 <br />
 

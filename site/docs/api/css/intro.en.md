@@ -36,11 +36,11 @@ const circle = new Circle({
 
 In modern browsers, [CSS](https://developer.mozilla.org/en-US/docs/Web/API/CSS) provides a number of APIs to help front-end developers better interact with the "black box" that is the style system.
 
--   [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) converts user-input strings into JS representations and provides tools such as math operations
--   CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) supports custom style properties
--   The [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) supports custom layouts and implements layout algorithms that are not yet supported in browsers.
+- [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) converts user-input strings into JS representations and provides tools such as math operations
+- CSS Properties & Values API](<https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API>) supports custom style properties
+- The [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) supports custom layouts and implements layout algorithms that are not yet supported in browsers.
 
-We have designed a simple style system (no support for style rules yet) by referring to the implementation of Blink (currently Webkit does not support CSS Typed OM, etc.) to implement the above CSS API. The CSS Properties & Values API registers a set of built-in properties during initialization, which can also be used in custom graphics to register Custom properties. Parsing of properties is done using CSS Typed OM, for example `r: 5` will be parsed as `CSS.px(5)`. If the user sets the layout property `display`, we will use the CSS Layout API to do the layout calculations during the layout phase.
+We have designed a simple style system (no support for style rules yet) by referring to the implementation of Blink (currently WebKit does not support CSS Typed OM, etc.) to implement the above CSS API. The CSS Properties & Values API registers a set of built-in properties during initialization, which can also be used in custom graphics to register Custom properties. Parsing of properties is done using CSS Typed OM, for example `r: 5` will be parsed as `CSS.px(5)`. If the user sets the layout property `display`, we will use the CSS Layout API to do the layout calculations during the layout phase.
 
 With this style system, we hope to make layout simpler, so that users can avoid complicated manual calculations, use `setPosition()` to set the element position, and do the task easily with the layout property. Imagine all the fancy ways of centering elements before browsers supported `display: flex`.
 

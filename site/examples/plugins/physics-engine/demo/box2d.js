@@ -137,7 +137,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       y: 100,
       width: 80,
       height: 80,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       rigid: 'dynamic',
       density: 10,
     },

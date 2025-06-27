@@ -13,7 +13,7 @@ redirect_from:
 
 为啥 draw call 多了就会影响性能呢？在 CPU 和 GPU 进行异步协作的过程中，会向 [command buffer](https://www.w3.org/TR/webgpu/#command-buffers) 中提交需要 GPU 执行的命令，例如设置状态、绘制或者拷贝资源。CPU 准备这些命令的速度与 GPU 执行的速度存在不小差异，这就造成了性能瓶颈。
 
-下图来自 https://toncijukic.medium.com/draw-calls-in-a-nutshell-597330a85381，分别展示了每一帧中 CPU 和 GPU 的时间线，可以看出 GPU 总是在执行上一帧 CPU 提交的命令，与此同时 CPU 在准备下一帧的命令。当这些绘制命令数量不多时，两者协作没问题，但如果数量很多，GPU 在做完这一帧的渲染任务后就不得不等待，也就无法在 16ms 内完成了，这造成了卡顿的体感。
+下图来自 <https://toncijukic.medium.com/draw-calls-in-a-nutshell-597330a85381，分别展示了每一帧中> CPU 和 GPU 的时间线，可以看出 GPU 总是在执行上一帧 CPU 提交的命令，与此同时 CPU 在准备下一帧的命令。当这些绘制命令数量不多时，两者协作没问题，但如果数量很多，GPU 在做完这一帧的渲染任务后就不得不等待，也就无法在 16ms 内完成了，这造成了卡顿的体感。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OdI0SqKtWB0AAAAAAAAAAAAAARQnAQ)
 
@@ -37,17 +37,17 @@ redirect_from:
 
 在 3D 场景进行视锥剔除时，我们尽量使用了如下[加速检测方法](https://github.com/antvis/GWebGPUEngine/issues/3)：
 
--   基础相交测试 the basic intersection test
--   平面一致性测试 the plane-coherency test
--   八分测试 the octant test
--   标记 masking
--   平移旋转一致性测试 TR coherency test
+- 基础相交测试 the basic intersection test
+- 平面一致性测试 the plane-coherency test
+- 八分测试 the octant test
+- 标记 masking
+- 平移旋转一致性测试 TR coherency test
 
 更多可以参考：
 
--   [Optimized View Frustum Culling Algorithms for Bounding Boxes](http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/pubs/vfcullbox.pdf.gz)
--   [Efficient View Frustum Culling](http://old.cescg.org/CESCG-2002/DSykoraJJelinek/)
--   [视锥体剔除 AABB 和 OBB 包围盒的优化方法](https://zhuanlan.zhihu.com/p/55915345)
+- [Optimized View Frustum Culling Algorithms for Bounding Boxes](http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/pubs/vfcullbox.pdf.gz)
+- [Efficient View Frustum Culling](http://old.cescg.org/CESCG-2002/DSykoraJJelinek/)
+- [视锥体剔除 AABB 和 OBB 包围盒的优化方法](https://zhuanlan.zhihu.com/p/55915345)
 
 在 2D 场景中我们使用了空间索引（R-tree）进行区域查询的加速。首次为场景对象构建索引需要消耗一定时间，后续当图形发生变换时，也需要随时更新。
 
@@ -57,8 +57,8 @@ redirect_from:
 
 在 WebGL / WebGPU 这样的渲染 API 中，还提供了其他剔除手段：
 
--   背面剔除，[gl.cullFace](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/cullFace)
--   遮挡剔除，[gl.createQuery](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/createQuery)。至少需要 WebGL2，G 中暂未使用
+- 背面剔除，[gl.cullFace](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/cullFace)
+- 遮挡剔除，[gl.createQuery](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/createQuery)。至少需要 WebGL2，G 中暂未使用
 
 ## “脏矩形”渲染
 
@@ -66,10 +66,10 @@ redirect_from:
 
 下图展示了这个思路：
 
--   当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
--   找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
--   使用 [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
--   按照 z-index 依次绘制一个矩形和圆形
+- 当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
+- 找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
+- 使用 [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
+- 按照 z-index 依次绘制一个矩形和圆形
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ)
 
@@ -111,4 +111,4 @@ redirect_from:
 
 # 参考资料
 
--   https://unrealartoptimization.github.io/book/pipelines/
+- <https://unrealartoptimization.github.io/book/pipelines/>

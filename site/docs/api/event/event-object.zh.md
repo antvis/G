@@ -15,11 +15,11 @@ order: 50
 
 事件类型：
 
--   pointerup
--   pointerdown
--   pointerupoutside
--   pointermove
--   pointercancel
+- pointerup
+- pointerdown
+- pointerupoutside
+- pointermove
+- pointercancel
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Event/type>
 
@@ -229,9 +229,9 @@ e.nativeEvent.pageX;
 
 返回事件的设备类型，返回值如下：
 
--   pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
--   mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
--   touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
+- pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
+- mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
+- touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType>
 

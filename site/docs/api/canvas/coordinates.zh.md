@@ -17,15 +17,14 @@ canvas.addEventListener('click', (e) => {
 
 在这些坐标系中，Client、Screen、Page 都是浏览器原生支持的坐标系，因此我们不会对事件对象上的这些坐标值做任何修改。而 Canvas 画布类似在浏览器中实现的一个“小浏览器”，因此它的视口坐标系即 Viewport 就可以类比成浏览器的 Client 坐标系。而当相机发生移动时，我们的可视范围随之改变，类似页面发生滚动，但图形在世界中的位置并没有改变，因此 Canvas 坐标系就可以类比成浏览器的 Page 坐标系。
 
-这些坐标系都以左上角为原点：
-<img src="https://developer.mozilla.org/en-US/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png" alt="canvas coordinates origin">
+这些坐标系都以左上角为原点： <img src="https://developer.mozilla.org/en-US/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png" alt="canvas coordinates origin">
 
 ⚠️ 如果使用了 [g-plugin-3d](/zh/plugins/3d) 插件，Z 轴正向指向屏幕外。
 
 我们提供了它们之间的转换方法，在这个[示例](/zh/examples/canvas/canvas-basic/#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
 
--   Client <-> Viewport
--   Canvas <-> Viewport
+- Client <-> Viewport
+- Canvas <-> Viewport
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ" width="300" alt="coordinates conversion">
 
@@ -33,7 +32,7 @@ canvas.addEventListener('click', (e) => {
 
 前端开发者最熟悉的应该是 Client 浏览器坐标系，它以浏览器左上角为原点，G 不会修改原生事件对象的这个坐标值，[示例](https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX)。
 
-https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX
+<https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX>
 
 如果文档没有滚动，等同于 Page 坐标，下图展示了与 Screen 的差别：
 
@@ -41,7 +40,7 @@ https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX
 
 ## Screen
 
-屏幕坐标系也是浏览器常用的坐标系，以屏幕左上角为原点，会受页面滚动影响。G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX
+屏幕坐标系也是浏览器常用的坐标系，以屏幕左上角为原点，会受页面滚动影响。G 不会修改原生事件对象的这个坐标值。 <https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX>
 
 值得一提的是，在双屏下可能会出现负数，例如在左侧屏幕中，[示例](https://developer.mozilla.org/en-US/Web/API/MouseEvent/screenX)：
 
@@ -49,7 +48,7 @@ https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX
 
 ## Page
 
-以文档左上角为原点，考虑文档滚动，G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/Web/API/MouseEvent/pageX
+以文档左上角为原点，考虑文档滚动，G 不会修改原生事件对象的这个坐标值。 <https://developer.mozilla.org/en-US/Web/API/MouseEvent/pageX>
 
 ## Canvas
 
@@ -78,8 +77,8 @@ import type { Point } from '@antv/g';
 
 我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/canvas/canvas-basic/#coordinates)：
 
--   client2Viewport(client: Point): Point
--   viewport2Client(canvas: Point): Point
+- client2Viewport(client: Point): Point
+- viewport2Client(canvas: Point): Point
 
 在内部实现中，我们使用了以下计算逻辑，例如从 Client 到 Viewport，首先获取画布 DOM 元素在 Client 坐标系下的包围盒，使用到了 [getBoundingClientRect](https://developer.mozilla.org/en-US/Web/API/Element/getBoundingClientRect)，然后用 clientX/Y 减去包围盒左上角坐标，就得到了相对画布 DOM 元素左上角的坐标，即 Viewport 坐标：
 
@@ -101,8 +100,8 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 为了兼容旧版 G API，我们也提供了：
 
--   getPointByClient(clientX: number, clientY: number): Point
--   getClientByPoint(viewportX: number, viewportY: number): Point
+- getPointByClient(clientX: number, clientY: number): Point
+- getClientByPoint(viewportX: number, viewportY: number): Point
 
 ### Canvas <-> Viewport
 
@@ -114,8 +113,8 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 我们提供了以下转换方法：
 
--   viewport2Canvas(viewport: Point): Point
--   canvas2Viewport(canvas: Point): Point
+- viewport2Canvas(viewport: Point): Point
+- canvas2Viewport(canvas: Point): Point
 
 在内部实现中，我们使用了以下计算逻辑，例如从 Canvas 到 Viewport，经历从世界坐标系到裁剪坐标系，再到 NDC，最后到视口坐标系的变换：
 

@@ -9,16 +9,16 @@ order: 1
 
 其中会涉及以下 API：
 
--   使用 [appendChild](/zh/api/basic/display-object#添加删除节点) 创建场景中各个节点的父子关系
--   使用 [translate](/zh/api/basic/display-object#平移) 移动节点
--   使用 [rotate](/zh/api/basic/display-object#旋转) 让节点旋转
--   使用 [getElementsByName](/zh/api/basic/display-object#简单节点查询) 在场景图中查询节点
--   使用 [addEventListener](/zh/api/event#addeventlistener) 监听画布事件
+- 使用 [appendChild](/zh/api/basic/display-object#添加删除节点) 创建场景中各个节点的父子关系
+- 使用 [translate](/zh/api/basic/display-object#平移) 移动节点
+- 使用 [rotate](/zh/api/basic/display-object#旋转) 让节点旋转
+- 使用 [getElementsByName](/zh/api/basic/display-object#简单节点查询) 在场景图中查询节点
+- 使用 [addEventListener](/zh/api/event#addeventlistener) 监听画布事件
 
 最终示例：
 
--   [官网示例](/zh/examples/scenegraph#hierarchy)
--   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
+- [官网示例](/zh/examples/scenegraph#hierarchy)
+- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
 
 ## 创建场景图
 
@@ -117,7 +117,7 @@ moonOrbit.translate(100, 0);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XcUqQJowVKMAAAAAAAAAAAAAARQnAQ)
 
-## 旋转起来！
+## 旋转起来
 
 现在我们需要让地球和月球都旋转起来。首先使用 [addEventListener](/zh/api/event#addeventlistener) 给画布添加一个事件监听器，监听 [AFTER_RENDER](/zh/api/canvas#画布特有事件) 事件，该事件会在每一帧渲染完毕后触发。然后我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
 

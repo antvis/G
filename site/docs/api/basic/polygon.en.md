@@ -48,8 +48,8 @@ Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-o
 
 The following two writing methods are supported.
 
--   `[number, number][]` an array of points
--   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
+- `[number, number][]` an array of points
+- `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
 Thus the following two ways of writing are equivalent.
 
@@ -107,7 +107,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -144,13 +144,13 @@ Moving the marker graphic in the direction of the first line segment of the poly
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4l7xQoYcXngAAAAAAAAAAAAAARQnAQ" alt="marker start offset">
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 See the [markerEndOffset](/en/api/basic/polyline#markerendoffset) property of [Polyline](/en/api/basic/polyline).
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |

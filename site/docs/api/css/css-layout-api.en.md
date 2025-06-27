@@ -5,9 +5,9 @@ order: 5
 
 基于样式系统，我们可以提供常用的布局算法，让用户避免相同场景的重复计算，主要参考 CSS Layout API 。
 
-https://drafts.css-houdini.org/css-layout-api
+<https://drafts.css-houdini.org/css-layout-api>
 
-https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md
+<https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md>
 
 布局算法以 `@antv/g-layout-xxx` 形式命名，用户在运行时：
 

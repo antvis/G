@@ -74,7 +74,7 @@ export function getPattern(
     object.getGeometryBounds().min,
     () => {
       // set dirty rectangle flag
-      object.renderable.dirty = true;
+      object.dirty();
       canvasContext.renderingService.dirtify();
     },
   );

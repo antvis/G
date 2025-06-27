@@ -79,9 +79,9 @@ kernel.setBinding(0, firstMatrixBuffer);
 
 The following is a list of common configurations for usage and Buffer in Compute Shader.
 
--   `var<storage, read>` -> `BufferUsage.STORAGE`
--   `var<storage, read_write>` -> `BufferUsage.STORAGE | BufferUsage.COPY_SRC`
--   `var<uniform>` -> `BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC`
+- `var<storage, read>` -> `BufferUsage.STORAGE`
+- `var<storage, read_write>` -> `BufferUsage.STORAGE | BufferUsage.COPY_SRC`
+- `var<uniform>` -> `BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC`
 
 ## dispatch
 

@@ -529,6 +529,8 @@ export interface CanvasConfig extends Partial<Omit<IWindow, 'customElements'>> {
    * One container can have multiple canvases inside.
    */
   supportsMutipleCanvasesInOneContainer?: boolean;
+
+  // #region performance
   /**
    * Optimize rendering performance for high-resolution large images
    */
@@ -549,6 +551,32 @@ export interface CanvasConfig extends Partial<Omit<IWindow, 'customElements'>> {
          */
         maxDownSampledImageSize?: number;
       };
+  /**
+   * Enabling some features for the future.
+   *
+   * ! These are some experimental functional features that are currently unstable.
+   *
+   * future flag, concept referenced from:
+   * - https://remix.run/docs/en/main/guides/api-development-strategy#unstable-apis-and-future-flags,
+   * - https://remix.run/blog/future-flags
+   */
+  future?: {
+    /**
+     * Only implement bubbling propagation for necessary events.
+     * At the same time, some events will skip the process of building event objects and
+     * directly trigger events themselves.
+     */
+    experimentalCancelEventPropagation?: boolean;
+    /**
+     * When enabled, elements are no longer updated in real time, but are updated uniformly before being submitted to the canvas. This is to improve performance and avoid redundant loop logic.
+     */
+    experimentalAttributeUpdateOptimization?: boolean;
+    /**
+     * use RIC to avoid frequent calls syncRTree
+     */
+    experimentalRICSyncRTree?: boolean;
+  };
+  // #endregion performance
 
   /**
    * Listen to native click event instead of mocking with pointerup & down events.

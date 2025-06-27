@@ -5,7 +5,7 @@ order: 1
 
 In CSS, when no value is set for an attribute, the inheritable attribute will take the calculated value from the parent element.
 
-https://developer.mozilla.org/zh-CN/docs/Web/CSS/inheritance
+<https://developer.mozilla.org/zh-CN/docs/Web/CSS/inheritance>
 
 For example, the `color` property of CSS is inheritable, so for an `<em>` element that does not have this property set, it will use the value of the parent element, `green`.
 
@@ -74,21 +74,21 @@ expect(documentElement.style.zIndex).to.equal(0);
 
 We currently support the following inheritable properties.
 
-| method name    | initial value | element | inheritable | animatable | computed value          |
-| -------------- | ------------- | ------- | ----------- | ---------- | ----------------------- |
-| fillOpacity    | '1'           | all     | yes         | yes        | `<number>`              |
-| strokeOpacity  | '1'           | all     | yes         | yes        | `<number>`              |
-| lineWidth      | '1'           | all     | yes         | yes        | `<length> <percentage>` |
-| lineJoin       | 'miter'       | all     | yes         | no         | `<keywords>`            |
-| lineCap        | 'butt'        | all     | yes         | no         | `<keywords>`            |
-| lineDash       | 无            | all     | yes         | yes        | `<array>`               |
-| lineDashOffset | '0'           | all     | yes         | yes        | `<length> <percentage>` |
-| visibility     | 'visible'     | all     | yes         | no         | `<keywords>`            |
-| pointerEvents  | 'auto'        | all     | yes         | no         | `<keywords>`            |
-| fontSize       | '16px'        | all     | yes         | yes        | `<length> <percentage>` |
-| fontFamily     | 'sans-serif'  | all     | yes         | no         | `<keywords>`            |
-| fontStyle      | 'normal'      | all     | yes         | no         | `<keywords>`            |
-| fontWeight     | 'normal'      | all     | yes         | no         | `<keywords>`            |
-| fontVariant    | 'normal'      | all     | yes         | no         | `<keywords>`            |
-| textBaseline   | 'alphabetic'  | all     | yes         | no         | `<keywords>`            |
-| textAlign      | 'start'       | all     | yes         | no         | `<keywords>`            |
+| method name | initial value | element | inheritable | animatable | computed value |
+| --- | --- | --- | --- | --- | --- |
+| fillOpacity | '1' | all | yes | yes | `<number>` |
+| strokeOpacity | '1' | all | yes | yes | `<number>` |
+| lineWidth | '1' | all | yes | yes | `<length> <percentage>` |
+| lineJoin | 'miter' | all | yes | no | `<keywords>` |
+| lineCap | 'butt' | all | yes | no | `<keywords>` |
+| lineDash | 无 | all | yes | yes | `<array>` |
+| lineDashOffset | '0' | all | yes | yes | `<length> <percentage>` |
+| visibility | 'visible' | all | yes | no | `<keywords>` |
+| pointerEvents | 'auto' | all | yes | no | `<keywords>` |
+| fontSize | '16px' | all | yes | yes | `<length> <percentage>` |
+| fontFamily | 'sans-serif' | all | yes | no | `<keywords>` |
+| fontStyle | 'normal' | all | yes | no | `<keywords>` |
+| fontWeight | 'normal' | all | yes | no | `<keywords>` |
+| fontVariant | 'normal' | all | yes | no | `<keywords>` |
+| textBaseline | 'alphabetic' | all | yes | no | `<keywords>` |
+| textAlign | 'start' | all | yes | no | `<keywords>` |

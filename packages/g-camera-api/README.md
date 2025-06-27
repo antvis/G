@@ -24,10 +24,10 @@ camera.pan(100, 20);
 
 The camera's three axes in the camera coordinate system are uvn, and the camera action is actually moving and rotating along these three axes.
 
-https://g-next.antv.vision/en/docs/api/camera#camera-action
+<https://g-next.antv.vision/en/docs/api/camera#camera-action>
 
 #### Animation
 
 We can record the current position and viewpoint of the camera and save it as a Landmark, and then when the camera parameters change, we can switch to any of the previously saved Landmark at any time, with a smooth switching animation, similar to the camera pendulum on a real set, also called flyTo in some applications.
 
-https://g-next.antv.vision/en/docs/api/camera#camera-animation
+<https://g-next.antv.vision/en/docs/api/camera#camera-animation>

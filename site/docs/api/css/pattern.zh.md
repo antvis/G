@@ -33,11 +33,11 @@ interface Pattern {
 
 必填。支持以下来源：
 
--   图片 URL，例如 `'http://example.png'`
--   HTMLImageElement
--   HTMLCanvasElement
--   HTMLVideoElement
--   [Rect](/zh/api/basic/rect)
+- 图片 URL，例如 `'http://example.png'`
+- HTMLImageElement
+- HTMLCanvasElement
+- HTMLVideoElement
+- [Rect](/zh/api/basic/rect)
 
 ### 图片 URL
 
@@ -149,8 +149,8 @@ const rect3 = new Rect({
 
 上述使用原生 [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) 程序化生成 Pattern 有以下局限性：
 
--   如果想在 SVG 渲染器中使用 Canvas API 生成的 Pattern，只能通过引用 Canvas 导出图片的方式，这将导致丧失矢量图的优秀特性，例如放大后变模糊
--   学习成本高，尤其是复杂 Pattern 定义困难
+- 如果想在 SVG 渲染器中使用 Canvas API 生成的 Pattern，只能通过引用 Canvas 导出图片的方式，这将导致丧失矢量图的优秀特性，例如放大后变模糊
+- 学习成本高，尤其是复杂 Pattern 定义困难
 
 因此我们希望使用 G 的图形 API 定义 Pattern，与定义场景保持一致。一方面统一的描述能力提升易用性，让用户不必接触底层渲染 API；另一方面也让我们得以在不同渲染器中使用不同的 Pattern 实现，例如在 SVG 中使用原生 `<pattern>` 提升清晰度，下图为放大后 Canvas 和 SVG 的对比。
 
@@ -201,10 +201,10 @@ const rect = new Rect({
 
 选填。支持以下模式，可以在该[示例](/zh/examples/style/pattern/#pattern)中查看：
 
--   `'repeat'` 默认值，沿水平和垂直方向平铺
--   `'repeat-x'` 沿水平方向平铺
--   `'repeat-y'` 沿垂直方向平铺
--   `'no-repeat'` 不平铺
+- `'repeat'` 默认值，沿水平和垂直方向平铺
+- `'repeat-x'` 沿水平方向平铺
+- `'repeat-y'` 沿垂直方向平铺
+- `'no-repeat'` 不平铺
 
 ## transform
 
@@ -228,9 +228,9 @@ rect.style.fill = {
 
 参考 [nivo patterns](https://nivo.rocks/guides/patterns/) 我们提供了一些内置模式，还可以通过更加友好的参数调整外观。目前我们支持以下三种模式：
 
--   `dots` 由圆点构成的模式
--   `lines` 由直线构成的模式
--   `squares` 由正方形构成的模式
+- `dots` 由圆点构成的模式
+- `lines` 由直线构成的模式
+- `squares` 由正方形构成的模式
 
 这三种模式方法签名如下，参数为模式的样式配置：
 
@@ -259,16 +259,16 @@ rect.style.fill = {
 
 三种模式支持的样式配置公共属性如下：
 
-| 属性名            | 类型   | 介绍                                                                          |
-| ----------------- | ------ | ----------------------------------------------------------------------------- |
-| backgroundColor   | string | 贴图的背景色，默认值为 `'transparent'`                                        |
-| backgroundOpacity | number | 贴图的背景色透明度，默认值为 `1`                                              |
-| fill              | string | 贴图元素的填充色，`dots` 和 `squares` 默认值为 `'#fff'`，                     |
-| fillOpacity       | number | 贴图元素填充的透明度，默认值为 1                                              |
-| stroke            | string | 贴图元素的描边色，`dots` 和 `squares` 为 `'transparent'`，`lines` 为 `'#fff'` |
-| strokeOpacity     | number | 贴图元素的描边透明度色，默认值为 1                                            |
-| lineWidth         | number | 贴图元素的描边粗细，`dots` 和 `squares` 为 `0`，`lines` 为 `2`                |
-| opacity           | number | 贴图元素整体的透明度，默认值为 1                                              |
+| 属性名 | 类型 | 介绍 |
+| --- | --- | --- |
+| backgroundColor | string | 贴图的背景色，默认值为 `'transparent'` |
+| backgroundOpacity | number | 贴图的背景色透明度，默认值为 `1` |
+| fill | string | 贴图元素的填充色，`dots` 和 `squares` 默认值为 `'#fff'`， |
+| fillOpacity | number | 贴图元素填充的透明度，默认值为 1 |
+| stroke | string | 贴图元素的描边色，`dots` 和 `squares` 为 `'transparent'`，`lines` 为 `'#fff'` |
+| strokeOpacity | number | 贴图元素的描边透明度色，默认值为 1 |
+| lineWidth | number | 贴图元素的描边粗细，`dots` 和 `squares` 为 `0`，`lines` 为 `2` |
+| opacity | number | 贴图元素整体的透明度，默认值为 1 |
 
 ### dots
 
@@ -322,12 +322,12 @@ rect.style.fill = {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ" alt="legacy usage of pattern">
 
--   `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
--   `a`: 该模式在水平和垂直方向重复；
--   `x`: 该模式只在水平方向重复；
--   `y`: 该模式只在垂直方向重复；
--   `n`: 该模式只显示一次（不重复）。
--   纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
+- `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
+- `a`: 该模式在水平和垂直方向重复；
+- `x`: 该模式只在水平方向重复；
+- `y`: 该模式只在垂直方向重复；
+- `n`: 该模式只显示一次（不重复）。
+- 纹理的内容可以直接是图片或者 [Data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)。
 
 ```js
 // example

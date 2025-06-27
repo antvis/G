@@ -9,13 +9,13 @@ order: 3
 
 其中会涉及以下 API，如果你熟悉 CSS Animation 或者 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，使用时会相当轻松：
 
--   使用 [animate](/zh/api/animation/waapi#创建) 创建一个 Animation 对象
--   使用 [onfinish](/zh/api/animation/waapi#onfinish) 监听动画结束事件
+- 使用 [animate](/zh/api/animation/waapi#创建) 创建一个 Animation 对象
+- 使用 [onfinish](/zh/api/animation/waapi#onfinish) 监听动画结束事件
 
 最终示例：
 
--   [官网示例](/zh/examples/animation#lifecycle)
--   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-dong-hua-li-zi-sfphx?file=/index.js)
+- [官网示例](/zh/examples/animation#lifecycle)
+- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-dong-hua-li-zi-sfphx?file=/index.js)
 
 ## 使用 Keyframe 定义动画
 
@@ -23,8 +23,8 @@ order: 3
 
 我们很容易写出 Scale-In 效果对应的 CSS Animation，其中：
 
--   使用 `animation` 定义了一组动画控制参数，例如 duration(0.5s), fill(both), easing 缓动函数
--   使用 `keyframes` 定义了一组关键帧，这里对 transform 属性进行动画
+- 使用 `animation` 定义了一组动画控制参数，例如 duration(0.5s), fill(both), easing 缓动函数
+- 使用 `keyframes` 定义了一组关键帧，这里对 transform 属性进行动画
 
 ```css
 .scale-in-center {
@@ -42,8 +42,8 @@ order: 3
 
 如果理解了上述 CSS Animation 写法，那么就很容易将它转换成符合 Web Animations API 的代码：
 
--   `circle.animate()` 将创建一个 [Animation](/zh/api/animation/waapi#animation) 对象，上面有很多有用的属性和控制方法，我们很快就将看到
--   该方法拥有两个参数，第一个对应 keyframes，第二个则是动画控制参数
+- `circle.animate()` 将创建一个 [Animation](/zh/api/animation/waapi#animation) 对象，上面有很多有用的属性和控制方法，我们很快就将看到
+- 该方法拥有两个参数，第一个对应 keyframes，第二个则是动画控制参数
 
 ```js
 // 为 circle 创建一个 animation 对象
@@ -72,8 +72,8 @@ const scaleInCenter = circle.animate(
 
 例如我们想知道动画何时结束，有两种方式实现：
 
--   [onfinsh](/zh/api/animation/waapi#onfinish) 设置一个回调函数
--   [finished](/zh/api/animation/waapi#finished) 该对象是一个 Promise
+- [onfinsh](/zh/api/animation/waapi#onfinish) 设置一个回调函数
+- [finished](/zh/api/animation/waapi#finished) 该对象是一个 Promise
 
 ```js
 animation.onfinish = (e) => {
@@ -98,7 +98,7 @@ animation.pause();
 
 除了这个简单的 Scale-In 效果，我们还能实现更多复杂效果，例如：
 
--   `offsetDistance` 属性可以实现[路径动画](/zh/api/animation/waapi#路径动画)
--   `lineDashOffset` 属性可以实现[蚂蚁线动画](/zh/api/animation/waapi#蚂蚁线)
--   `lineDash` 属性可以实现[笔迹动画](/zh/api/animation/waapi#笔迹动画)
--   Path 的 `path` 属性可以实现[形变动画（Morph）](/zh/api/animation/waapi#形变动画)
+- `offsetDistance` 属性可以实现[路径动画](/zh/api/animation/waapi#路径动画)
+- `lineDashOffset` 属性可以实现[蚂蚁线动画](/zh/api/animation/waapi#蚂蚁线)
+- `lineDash` 属性可以实现[笔迹动画](/zh/api/animation/waapi#笔迹动画)
+- Path 的 `path` 属性可以实现[形变动画（Morph）](/zh/api/animation/waapi#形变动画)

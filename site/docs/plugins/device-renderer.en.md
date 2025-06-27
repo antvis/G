@@ -60,9 +60,9 @@ export interface Buffer {
 
 The Buffer is created in the following way and needs to be specified.
 
--   viewOrSize must be filled, specify the initialization data or Buffer size
--   usage Mandatory, memory usage, fully refer to [WebGPU Buffer Usage](https://www.w3.org/TR/webgpu/#buffer-usage)
--   hint Optional, only valid in WebGL environment
+- viewOrSize must be filled, specify the initialization data or Buffer size
+- usage Mandatory, memory usage, fully refer to [WebGPU Buffer Usage](https://www.w3.org/TR/webgpu/#buffer-usage)
+- hint Optional, only valid in WebGL environment
 
 ```ts
 interface Device {
@@ -105,10 +105,10 @@ const buffer = device.createBuffer({
 
 #### setSubData
 
--   dstByteOffset required, the offset in the target Buffer, in Byte units
--   src Mandatory, type is ArrayBufferView
--   srcByteOffset optional, the starting offset in src, in Byte
--   byteLength optional, the length in src, in Byte
+- dstByteOffset required, the offset in the target Buffer, in Byte units
+- src Mandatory, type is ArrayBufferView
+- srcByteOffset optional, the starting offset in src, in Byte
+- byteLength optional, the length in src, in Byte
 
 For example, to modify a variable in Uniform, which is located at the 20th bytes in the original Buffer.
 
@@ -143,17 +143,17 @@ interface Device {
 
 Reads the Buffer contents asynchronously.
 
--   Implemented in WebGPU by [copyBufferToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer), and in WebGL2 by [fenceSync](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer).
--   WebGL2 is implemented by [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync)
--   WebGL1 does not support
+- Implemented in WebGPU by [copyBufferToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer), and in WebGL2 by [fenceSync](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copybuffertobuffer).
+- WebGL2 is implemented by [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync)
+- WebGL1 does not support
 
 The list of parameters is as follows.
 
--   srcBuffer Mandatory, source Buffer
--   srcByteOffset optional, the starting offset of the target Buffer, default is 0, i.e. read from scratch
--   dstBuffer optional, the content of the read is stored to the target ArrayBufferView, not filled automatically created, and finally returned as a result
--   dstOffset optional, the target ArrayBufferView offset, default is 0, that is, write from the beginning
--   length check or fill, the length of the read, the default is all
+- srcBuffer Mandatory, source Buffer
+- srcByteOffset optional, the starting offset of the target Buffer, default is 0, i.e. read from scratch
+- dstBuffer optional, the content of the read is stored to the target ArrayBufferView, not filled automatically created, and finally returned as a result
+- dstOffset optional, the target ArrayBufferView offset, default is 0, that is, write from the beginning
+- length check or fill, the length of the read, the default is all
 
 The return value is the result of reading the ArrayBufferView.
 
@@ -179,20 +179,20 @@ const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 
 Reads the texture content.
 
--   WebGL1 is implemented via [readPixels](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/readPixels)
--   WebGL2 is implemented with [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) as readBuffer.
--   WebGPU uses [copyTextureToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copytexturetobuffer) and then uses readBuffer in the same way as readBuffer
+- WebGL1 is implemented via [readPixels](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/readPixels)
+- WebGL2 is implemented with [fenceSync](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/fenceSync) as readBuffer.
+- WebGPU uses [copyTextureToBuffer](https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-copytexturetobuffer) and then uses readBuffer in the same way as readBuffer
 
 The list of parameters is as follows.
 
--   texture must be filled, source Texture
--   x must be filled, the starting x-coordinate of the read area
--   y must be filled, the starting y-coordinate of the read area
--   width must be filled, the width of the read area
--   height must be filled, the height of the read area
--   dstBuffer Mandatory, the content of the read area will be stored in the target ArrayBufferView and returned as a result.
--   dstOffset optional, the target ArrayBufferView offset, default is 0, i.e. write from scratch
--   length is optional, the length of the read, default is all
+- texture must be filled, source Texture
+- x must be filled, the starting x-coordinate of the read area
+- y must be filled, the starting y-coordinate of the read area
+- width must be filled, the width of the read area
+- height must be filled, the height of the read area
+- dstBuffer Mandatory, the content of the read area will be stored in the target ArrayBufferView and returned as a result.
+- dstOffset optional, the target ArrayBufferView offset, default is 0, i.e. write from scratch
+- length is optional, the length of the read, default is all
 
 The return value is the result of reading the ArrayBufferView.
 

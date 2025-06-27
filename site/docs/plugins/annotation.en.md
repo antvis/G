@@ -25,8 +25,8 @@ renderer.registerPlugin(new PluginAnnotation());
 
 The plugin provides two modes which can be switched via [setDrawingMode](/en/plugins/annotation#setdrawingmode).
 
--   Drawing mode. This mode allows drawing graphics in preset steps.
--   Edit mode. In this mode, select `selectable` graphics and the corresponding editing component will appear, so you can finish editing operations such as panning and resizing the graphics through component interaction.
+- Drawing mode. This mode allows drawing graphics in preset steps.
+- Edit mode. In this mode, select `selectable` graphics and the corresponding editing component will appear, so you can finish editing operations such as panning and resizing the graphics through component interaction.
 
 ### Drawing mode
 
@@ -75,7 +75,7 @@ Press the mouse, drag and drop and then lift to finish drawing.
 
 The following keyboard shortcuts are supported.
 
--   `esc` to cancel drawing
+- `esc` to cancel drawing
 
 #### Drawing polyline
 
@@ -85,9 +85,9 @@ Press the mouse in sequence to determine the vertices, double-click the mouse or
 
 The following keyboard shortcuts are supported.
 
--   `esc` to cancel drawing
--   `shift` + `Z` to undo the latest line segment
--   `space` to finish drawing
+- `esc` to cancel drawing
+- `shift` + `Z` to undo the latest line segment
+- `space` to finish drawing
 
 #### Drawing polygon
 
@@ -97,9 +97,9 @@ Press the mouse in sequence to determine the vertices and close them to form a p
 
 The following keyboard shortcuts are supported.
 
--   `esc` to cancel drawing
--   `shift` + `Z` to undo the latest line segment
--   `space` to finish drawing
+- `esc` to cancel drawing
+- `shift` + `Z` to undo the latest line segment
+- `space` to finish drawing
 
 ### Edit mode
 
@@ -121,8 +121,8 @@ To select a graphic via API, you can call the [selectDisplayObject](/en/plugins/
 
 Clicking on the graphic will complete a single selection, which is the most common way. We support the following two ways to complete multiple selections.
 
--   Hold down `shift` and click to add a selection while keeping the selected shape
--   Hold down `shift` and drag a rectangle to complete a region swipe
+- Hold down `shift` and click to add a selection while keeping the selected shape
+- Hold down `shift` and drag a rectangle to complete a region swipe
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*kf-wR5_SY4YAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="300">
 
@@ -130,8 +130,8 @@ Clicking on the graphic will complete a single selection, which is the most comm
 
 As opposed to selecting a graphic, there are two ways to unselect it.
 
--   Click on a blank area of the canvas or another graphic.
--   To unselect a graphic via API, call [deselectDisplayObject](/en/plugins/annotation#deselectdisplayobject) method.
+- Click on a blank area of the canvas or another graphic.
+- To unselect a graphic via API, call [deselectDisplayObject](/en/plugins/annotation#deselectdisplayobject) method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
@@ -163,8 +163,8 @@ If or not draw mode, the default value is `true`.
 
 Automatically switch in some scenes, the default value is `false`.
 
--   Clicking on an interactive drawing in drawing mode will automatically switch to editing mode.
--   Clicking on a blank area in edit mode will automatically switch to draw mode.
+- Clicking on an interactive drawing in drawing mode will automatically switch to editing mode.
+- Clicking on a blank area in edit mode will automatically switch to draw mode.
 
 ### enableDeleteTargetWithShortcuts
 
@@ -416,10 +416,10 @@ plugin.setDrawingMode(false);
 
 In drawing mode, we provide the ability to draw the following graphics.
 
--   `circle`
--   `rect`
--   `polyline`
--   `polygon`
+- `circle`
+- `rect`
+- `polyline`
+- `polygon`
 
 For example, to draw a rectangle.
 
@@ -505,8 +505,8 @@ export enum DrawerEvent {
 
 The event object contains the following data, where the key properties are
 
--   `type` The type of graph to draw. Currently supports `rect` `polyline` `polygon`
--   `path` draws a list of graph vertices, like: `[{ x: 0, y: 0 }, { x: 100, y: 100 }...] `
+- `type` The type of graph to draw. Currently supports `rect` `polyline` `polygon`
+- `path` draws a list of graph vertices, like: `[{ x: 0, y: 0 }, { x: 100, y: 100 }...]`
 
 ```js
 plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {});

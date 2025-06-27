@@ -4,8 +4,8 @@
 
 参考以下实现：
 
--   https://github.com/pmndrs/react-three-flex/
--   https://github.com/fireveined/pixi-flex-layout/
+- <https://github.com/pmndrs/react-three-flex/>
+- <https://github.com/fireveined/pixi-flex-layout/>
 
 # 安装方式
 

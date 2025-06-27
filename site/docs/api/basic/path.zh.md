@@ -69,8 +69,8 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 路径，支持 `字符串`和 `数组` 两种形式，可参考 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)：
 
--   字符串形式: `M 100,100 L 200,200`
--   数组形式: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ] ]`
+- 字符串形式: `M 100,100 L 200,200`
+- 数组形式: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ] ]`
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path>
 
@@ -82,8 +82,8 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 由于 Path 可通过 `Z` 命令闭合，因此对于 “起始点” 的定义在两种情况下有差别：
 
--   如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerStart](/zh/api/basic/polyline#markerstart) 属性。
--   如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerStart](/zh/api/basic/polygon#markerstart) 属性。
+- 如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerStart](/zh/api/basic/polyline#markerstart) 属性。
+- 如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerStart](/zh/api/basic/polygon#markerstart) 属性。
 
 例如下图中，同样指定了 markerStart 和 markerEnd 为“箭头”，左侧展示了一个未闭合路径的效果，右侧展示了闭合路径的效果：
 
@@ -112,8 +112,8 @@ path.style.markerStart = arrowMarker;
 
 由于 Path 可通过 `Z` 命令闭合，因此对于 “终止点” 的定义在两种情况下有差别：
 
--   如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEnd](/zh/api/basic/polyline#markerend) 属性。
--   如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerEnd](/zh/api/basic/polygon#markerend) 属性。
+- 如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEnd](/zh/api/basic/polyline#markerend) 属性。
+- 如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerEnd](/zh/api/basic/polygon#markerend) 属性。
 
 在该[示例](/zh/examples/shape/path#path)中，我们在多边形的终止点上放置了一个图片：
 
@@ -127,7 +127,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -166,16 +166,16 @@ path.style.markerMid = circleMarker;
 因此该属性适合“微调”，而非大幅改变路径定义。
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEndOffset](/zh/api/basic/polyline#markerendoffset) 属性。marker 会沿路径中最后一段的切线方向移动，同时主体路径也会进行相应延长或缩短。
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -228,8 +228,8 @@ path.getTotalLength(); // 0
 
 参数如下：
 
--   `ratio` 必填，长度比例
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `ratio` 必填，长度比例
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 其中 `Point` 的格式为:
 
@@ -268,8 +268,8 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 
 参数如下：
 
--   `distance` 必填，从起点出发的距离值
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `distance` 必填，从起点出发的距离值
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

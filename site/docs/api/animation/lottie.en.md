@@ -3,7 +3,7 @@ title: Lottie
 order: 2
 ---
 
-In addition to describing animations using the [Web Animations API](/en/api/animation/waapi), we also support playback of Lottie formats, for which we provide a player like [lottie-web](https://github.com/airbnb/lottie- web/) player. Internally we will convert the graphics and Keyframe animations defined there into our [basic graphics](/en/api/basic/display-object) and animation descriptions, while providing simple animation control methods.
+In addition to describing animations using the [Web Animations API](/en/api/animation/waapi), we also support playback of Lottie formats, for which we provide a player like [lottie-web](<https://github.com/airbnb/lottie-> web/) player. Internally we will convert the graphics and Keyframe animations defined there into our [basic graphics](/en/api/basic/display-object) and animation descriptions, while providing simple animation control methods.
 
 ## Usage
 
@@ -31,14 +31,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 ## loadAnimation
 
-Reference [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/ AnimationManager.js#L227) method of the same name for loading Lottie files to create [LottieAnimation](/en/api/animation/lottie#lottieanimation).
+Reference [lottie-web](<https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/> AnimationManager.js#L227) method of the same name for loading Lottie files to create [LottieAnimation](/en/api/animation/lottie#lottieanimation).
 
 The parameters are as follows.
 
--   `data` Lottie JSON
--   `options` configuration item
-    -   `loop` is of type `boolean | number`. If or not loop is enabled, the default value is `true` which means infinite loop. When `number` is passed in, it means the number of loops.
-    -   `autoplay` is of type `boolean`. The default value is `false` to start autoplay immediately after loading.
+- `data` Lottie JSON
+- `options` configuration item
+  - `loop` is of type `boolean | number`. If or not loop is enabled, the default value is `true` which means infinite loop. When `number` is passed in, it means the number of loops.
+  - `autoplay` is of type `boolean`. The default value is `false` to start autoplay immediately after loading.
 
 For example, to create an infinitely looping, immediately playable animation.
 
@@ -68,8 +68,8 @@ wrapper.translate(100, 100);
 
 The following two parameters are supported to be passed in.
 
--   Canvas. This will be added to the canvas under the root node
--   Any element that has been added to the canvas
+- Canvas. This will be added to the canvas under the root node
+- Any element that has been added to the canvas
 
 It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/en/api/canvas#ready).
 
@@ -111,8 +111,8 @@ Jump to the specified moment or frame.
 
 The parameters are as follows.
 
--   `value` specifies the second moment or frame
--   `isFrame` indicates whether `value` is passed in as a frame, the default value is `false`.
+- `value` specifies the second moment or frame
+- `isFrame` indicates whether `value` is passed in as a frame, the default value is `false`.
 
 ```js
 // Jump to the 2s moment of the timeline
@@ -128,7 +128,7 @@ Returns the duration, in seconds or frames.
 
 The parameters are as follows.
 
--   `inFrames` if or not in frames, default is `false`
+- `inFrames` if or not in frames, default is `false`
 
 ```js
 animation.getDuration(); // 2
@@ -150,7 +150,7 @@ Start playing the animation from the specified frame range.
 
 The parameters are as follows.
 
--   `segments` `[number, number]` Specify the start and end frame range
+- `segments` `[number, number]` Specify the start and end frame range
 
 ```js
 animation.playSegments([firstFrame, lastFrame]);
@@ -204,27 +204,27 @@ animation.version();
 
 Support the following [Shape Layer](https://lottiefiles.github.io/lottie-docs/layers/#shape-layer)
 
--   [x] Rectangle It will be converted to [Rect](/en/api/basic/rect) for rendering. https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
--   [x] Ellipse It will be converted to [Ellipse](/en/api/basic/ellipse) for rendering. https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
--   [x] Path It will be converted to [Path](/en/api/basic/path) for rendering. https://lottiefiles.github.io/lottie-docs/shapes/#path
--   [x] Group It will be converted to [Group](/en/api/basic/group) for rendering. https://lottiefiles.github.io/lottie-docs/shapes/#group
--   [ ] PolyStar https://lottiefiles.github.io/lottie-docs/shapes/#polystar
+- [x] Rectangle It will be converted to [Rect](/en/api/basic/rect) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
+- [x] Ellipse It will be converted to [Ellipse](/en/api/basic/ellipse) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
+- [x] Path It will be converted to [Path](/en/api/basic/path) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#path>
+- [x] Group It will be converted to [Group](/en/api/basic/group) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#group>
+- [ ] PolyStar <https://lottiefiles.github.io/lottie-docs/shapes/#polystar>
 
 ### Transform
 
-https://lottiefiles.github.io/lottie-docs/concepts/#transform
+<https://lottiefiles.github.io/lottie-docs/concepts/#transform>
 
 The following features are supported.
 
--   [anchor]() corresponds to the `a` field
--   [translation]() corresponds to the `p` field
--   [scaling]() for the `s` field
--   [rotation]() corresponds to the `r` field
+- [anchor]() corresponds to the `a` field
+- [translation]() corresponds to the `p` field
+- [scaling]() for the `s` field
+- [rotation]() corresponds to the `r` field
 
 The following features are not supported at this time.
 
--   [skew]() corresponds to the `sk` field
--   [skewAxis]() corresponds to the `sa` field
+- [skew]() corresponds to the `sk` field
+- [skewAxis]() corresponds to the `sa` field
 
 In this [example](/en/examples/ecosystem#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
 
@@ -232,48 +232,48 @@ In this [example](/en/examples/ecosystem#lottie-player-transform), the dark blue
 
 ### [WIP] Offset Path
 
-https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
+<https://lottiefiles.github.io/lottie-docs/concepts/#animated-position>
 
 ### Style
 
 The following style attributes are supported.
 
--   [x] Fill
--   [x] Stroke
--   [x] Gradients
+- [x] Fill
+- [x] Stroke
+- [x] Gradients
 
 #### Fill
 
-https://lottiefiles.github.io/lottie-docs/shapes/#fill
+<https://lottiefiles.github.io/lottie-docs/shapes/#fill>
 
 Fill color, while supporting the following features.
 
--   [fillOpacity](/en/api/basic/display-object#fillopacity) corresponds to the `o` field
--   [fillRule](/en/api/basic/display-object#fillrule) corresponds to the `r` field
+- [fillOpacity](/en/api/basic/display-object#fillopacity) corresponds to the `o` field
+- [fillRule](/en/api/basic/display-object#fillrule) corresponds to the `r` field
 
 #### Stroke
 
-https://lottiefiles.github.io/lottie-docs/shapes/#stroke
+<https://lottiefiles.github.io/lottie-docs/shapes/#stroke>
 
 Stroke color, while supporting the following features.
 
--   [strokeOpacity](/en/api/basic/display-object#strokeopacity) corresponds to the `o` field
--   [strokeWidth](/en/api/basic/display-object#strokewidth) corresponds to the `w` field
--   [lineCap](/en/api/basic/display-object#linecap) corresponds to the `lc` field
--   [lineJoin](/en/api/basic/display-object#linejoin) corresponds to the `lj` field
--   [miterLimit](/en/api/basic/display-object#miterlimit) corresponds to the `ml` field
--   [lineDash](/en/api/basic/display-object#linedash) corresponds to the `d` field
+- [strokeOpacity](/en/api/basic/display-object#strokeopacity) corresponds to the `o` field
+- [strokeWidth](/en/api/basic/display-object#strokewidth) corresponds to the `w` field
+- [lineCap](/en/api/basic/display-object#linecap) corresponds to the `lc` field
+- [lineJoin](/en/api/basic/display-object#linejoin) corresponds to the `lj` field
+- [miterLimit](/en/api/basic/display-object#miterlimit) corresponds to the `ml` field
+- [lineDash](/en/api/basic/display-object#linedash) corresponds to the `d` field
 
 #### Gradients
 
-https://lottiefiles.github.io/lottie-docs/shapes/#gradients
+<https://lottiefiles.github.io/lottie-docs/shapes/#gradients>
 
 Support [linear](/en/api/css/css-properties-values-api#linear-gradient) and [radial](/en/api/css/css-properties-values-api#radial-gradient) gradients.
 
 The following features are not supported at this time.
 
--   Apply animations to gradients
--   Highlight length & angle (`h` and `a` fields)
+- Apply animations to gradients
+- Highlight length & angle (`h` and `a` fields)
 
 ### Modifiers
 
@@ -283,27 +283,27 @@ The following features are not supported at this time.
 
 ## Layers
 
-https://lottiefiles.github.io/lottie-docs/layers/#layers
+<https://lottiefiles.github.io/lottie-docs/layers/#layers>
 
 ### Solid Color
 
-https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
+<https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer>
 
 ### Image
 
-https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefiles.github.io/lottie-docs/assets/#image
+<https://lottiefiles.github.io/lottie-docs/layers/#image-layer> <https://lottiefiles.github.io/lottie-docs/assets/#image>
 
 ### [WIP] Text
 
-https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
+<https://lottiefiles.github.io/lottie-docs/layers/#text-layer> <https://lottiefiles.github.io/lottie-docs/text/>
 
 ### Precomposition
 
-https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
+<https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer> <https://lottiefiles.github.io/lottie-docs/assets/#precomposition>
 
 ### [WIP] Merge Paths
 
-https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property
+<https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property>
 
 ### Clipping Mask
 
@@ -311,19 +311,19 @@ Internally, it will be converted to [clipPath](/en/api/basic/display-object#clip
 
 Caution.
 
--   Limited by the SVG implementation. Currently only a single Clipping Mask is supported, and only the first one will take effect if multiple are declared
--   [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) only supports the `Add` operator
+- Limited by the SVG implementation. Currently only a single Clipping Mask is supported, and only the first one will take effect if multiple are declared
+- [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) only supports the `Add` operator
 
-https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
+<https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks>
 
 ## Layer Effects
 
 Post-processing effects for Layer are not supported at this time.
 
-https://lottiefiles.github.io/lottie-docs/effects/#layer-effects
+<https://lottiefiles.github.io/lottie-docs/effects/#layer-effects>
 
 ## Expressions
 
 Expressions are not supported at this time.
 
-https://lottiefiles.github.io/lottie-docs/expressions/
+<https://lottiefiles.github.io/lottie-docs/expressions/>

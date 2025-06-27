@@ -66,8 +66,8 @@ polyline.getLocalPosition(); // [50, 50]
 
 支持以下两种写法：
 
--   `[number, number][]` 点数组
--   `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
+- `[number, number][]` 点数组
+- `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
 
 因此以下两种写法等价：
 
@@ -123,7 +123,7 @@ const imageMarker = new Image({
         anchor: [0.5, 0.5],
         transformOrigin: 'center',
         transform: 'rotate(90deg)',
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 
@@ -160,8 +160,8 @@ polyline.style.markerMid = circleMarker;
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
@@ -172,8 +172,8 @@ polyline.style.markerMid = circleMarker;
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -193,8 +193,8 @@ polyline.style.markerMid = circleMarker;
 
 参数如下：
 
--   `ratio` 必填，长度比例
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `ratio` 必填，长度比例
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 其中 `Point` 的格式为:
 
@@ -211,8 +211,8 @@ export type Point = {
 
 参数如下：
 
--   `distance` 必填，从起点出发的距离值
--   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+- `distance` 必填，从起点出发的距离值
+- `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 <https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 

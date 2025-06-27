@@ -142,8 +142,8 @@ git add ./
 git commit -a -m "chore: commit changeset"
 ```
 
-3. Merge dev branch into `release` branch, CI version process will create a `Version Package` PR
-4. Merge `release` into `next` branch
+1. Merge dev branch into `release` branch, CI version process will create a `Version Package` PR
+2. Merge `release` into `next` branch
 
 In addition, all API deprecations need to be `deprecate` prompted on the current stable version and guaranteed to be compatible on the current stable version until a new version is released.
 

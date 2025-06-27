@@ -60,10 +60,10 @@ A common interaction is to highlight a shape with the mouse. In this case, only 
 
 The following diagram illustrates this idea.
 
--   When the mouse hovers over the circle, we know the corresponding "dirty rectangle", which is the enclosing box of the circle.
--   Find other shapes in the scene that intersect with this enclosing box area, here another rectangle is found.
--   Use [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) to clear this "dirty rectangle ", instead of clearing the entire canvas
--   Draws a rectangle and a circle in order of z-index
+- When the mouse hovers over the circle, we know the corresponding "dirty rectangle", which is the enclosing box of the circle.
+- Find other shapes in the scene that intersect with this enclosing box area, here another rectangle is found.
+- Use [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) to clear this "dirty rectangle ", instead of clearing the entire canvas
+- Draws a rectangle and a circle in order of z-index
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
--   [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
--   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding.
+- [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding.
 
 ## Optional plug-ins
 

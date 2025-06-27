@@ -171,8 +171,8 @@ camera.setZoomByViewportPoint(zoom, [x, y]);
 
 The method signature is as follows.
 
--   `zoom` greater than 1 means zoom in, vice versa means zoom out.
--   `viewportPoint` is the point coordinate under [viewport coordinate system](/en/api/canvas/coordinates#viewport).
+- `zoom` greater than 1 means zoom in, vice versa means zoom out.
+- `viewportPoint` is the point coordinate under [viewport coordinate system](/en/api/canvas/coordinates#viewport).
 
 ```
 setZoomByViewportPoint(zoom: number, viewportPoint: vec2)

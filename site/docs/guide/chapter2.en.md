@@ -7,8 +7,8 @@ In this tutorial series, we will step-by-step implement a simple visualization s
 
 In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/en/api/renderer/intro) to complete the rendering.
 
--   [Example of this section](/en/examples/guide/basic/#chapter2)
--   [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
+- [Example of this section](/en/examples/guide/basic/#chapter2)
+- [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
 ## Choosing a renderer
 

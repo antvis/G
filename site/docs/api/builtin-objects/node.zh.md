@@ -7,8 +7,8 @@ order: 2
 
 在 G 中有以下继承关系：
 
--   Document -> Node -> EventTarget
--   DisplayObject -> Element -> Node -> EventTarget
+- Document -> Node -> EventTarget
+- DisplayObject -> Element -> Node -> EventTarget
 
 ## 继承自
 
@@ -25,7 +25,7 @@ circle.nodeName; // 'circle'
 rect.nodeName; // 'rect'
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName>
 
 G 内置图形名称如下：
 
@@ -50,7 +50,7 @@ export enum Shape {
 
 只读，返回节点字符串，默认为 null。[Text](/zh/api/basic/text) 会返回文本字符串。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue>
 
 ```js
 const group = new Group();
@@ -70,7 +70,7 @@ canvas.appendChild(circle); // 加入到画布中
 circle.isConnected; // true
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected>
 
 ### ownerDocument
 
@@ -82,49 +82,49 @@ canvas.appendChild(circle); // 加入到画布中
 circle.ownerDocument; // canvas.document
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument>
 
 ### parentNode
 
 只读，返回当前节点的父节点。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode>
 
 ### parentElement
 
 只读，在目前的实现中同 parentNode。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement>
 
 ### childNodes
 
 只读，返回当前节点的子节点列表。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes>
 
 ### firstChild
 
 只读，返回当前节点的第一个子节点，如果无子节点，则返回 null。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild>
 
 ### lastChild
 
 只读，返回当前节点的最后一个子节点，如果无子节点，则返回 null。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild>
 
 ### nextSibling
 
 只读，返回当前节点的后一个兄弟节点，没有则返回 null。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling>
 
 ### previousSibling
 
 只读，返回当前节点的前一个兄弟节点，没有则返回 null。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling>
 
 ### textContent
 
@@ -160,7 +160,7 @@ group.childNodes; // [Text]
 
 将一个节点添加到指定父节点的子节点列表末尾处。如果该节点已经在场景图中，会先从原位置处移除，再添加到新的位置。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild>
 
 ### cloneNode
 
@@ -180,15 +180,15 @@ clonedCircle.getPosition(); // [10, 20]
 
 注意事项：
 
--   支持深拷贝，即自身以及整棵子树
--   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
--   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+- 支持深拷贝，即自身以及整棵子树
+- 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
+- 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
 
 在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
 
--   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
--   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
--   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+- 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
+- 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
+- 非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
@@ -196,7 +196,7 @@ clonedCircle.getPosition(); // [10, 20]
 
 判断传入的节点是否为该节点的后代节点。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains>
 
 ### getRootNode
 
@@ -208,7 +208,7 @@ canvas.appendChild(circle);
 circle.getRootNode(); // canvas.document
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode>
 
 ### getAncestor
 
@@ -228,7 +228,7 @@ circle.getAncestor(100); // null
 
 是否有子节点。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes>
 
 ### insertBefore
 
@@ -240,7 +240,7 @@ insertBefore(child: Node, reference?: Node): Node
 
 在参考节点之前插入一个拥有指定父节点的子节点。如果给定的子节点是对文档中现有节点的引用，insertBefore() 会将其从当前位置移动到新位置（在将节点附加到其他节点之前，不需要从其父节点删除该节点）。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore>
 
 ### removeChild
 
@@ -252,25 +252,25 @@ removeChild(child: Node): Node
 
 删除一个子节点，返回被删除的子节点，但不会销毁这个子节点，因此可以重新添加回来。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild>
 
 ### replaceChild
 
 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild>
 
 ### isEqualNode
 
 判断两个节点是否相等。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode>
 
 ### compareDocumentPosition
 
 比较两个节点在场景图中的位置。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+<https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition>
 
 例如自己和自己比较返回 0：
 

@@ -37,8 +37,8 @@ const root = canvas.document.documentElement;
 
 Get [rendering context](/en/api/renderer#rendering environment context), which is implemented by the renderer (`g-canvas/svg/webgl`). There are many common methods on this rendering context, such as:
 
--   `getDomElement()` Get the DOM element of current renderer, for example `g-canvas/webgl` will return a `<canvas>` element while `g-svg` will return a `<svg>` element.
--   `getDPR()` Get devicePixelRatio of current rendering context.
+- `getDomElement()` Get the DOM element of current renderer, for example `g-canvas/webgl` will return a `<canvas>` element while `g-svg` will return a `<svg>` element.
+- `getDPR()` Get devicePixelRatio of current rendering context.
 
 ## getCamera
 

@@ -1,7 +1,11 @@
 import { defineConfig } from 'dumi';
 import { version } from '../packages/g/package.json';
+import process from 'process';
 
 export default defineConfig({
+  ...(process.env.NODE_ENV === 'production'
+    ? { ssr: { builder: 'webpack', mako: false } }
+    : { ssr: false, mako: {} }),
   locales: [
     { id: 'zh', name: '中文' },
     { id: 'en', name: 'English' },
@@ -11,54 +15,51 @@ export default defineConfig({
     'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*7svFR6wkPMoAAAAAAAAAAAAADmJ7AQ/original',
   ], // 网站 favicon
   themeConfig: {
-    title: 'G',
-    description: 'A flexible rendering engine for visualization.',
+    title: 'G', // 网站header标题
+    metas: {
+      title: {
+        zh: 'G - 一个灵活的可视化渲染引擎',
+        en: 'G - A flexible rendering engine for visualization',
+      },
+      description: {
+        zh: 'G 是一个灵活的可视化渲染引擎，支持多个渲染端口，例如 SVG/Canvas/WebGL/WebGPU，支持开发插件，可以灵活的扩展引擎能力。',
+        en: 'G is a flexible rendering engine for visualization, supporting multiple rendering ports, such as SVG/Canvas/WebGL/WebGPU, supporting plugin development, and can flexibly extend engine capabilities.',
+      },
+    },
     defaultLanguage: 'zh', // 默认语言
     isAntVSite: false, // 是否是 AntV 的大官网
+    siteUrl: 'https://g.antv.antgroup.com',
+    sitePackagePath: 'site', // 站点包地址
+    githubUrl: 'https://github.com/antvis/g',
     footerTheme: 'light', // 白色 底部主题
+    showSearch: true, // 是否显示搜索框
+    showGithubCorner: true, // 是否显示头部的 GitHub icon
+    showGithubStars: true, // 是否显示 GitHub star 数量
+    showAntVProductsCard: true, // 是否显示 AntV 产品汇总的卡片
+    showLanguageSwitcher: true, // 是否显示官网语言切换
+    showWxQrcode: true, // 是否显示头部菜单的微信公众号
+    showChartResize: true, // 是否在 demo 页展示图表视图切换
+    showAPIDoc: false, // 是否在 demo 页展示API文档
+    feedback: true, // 是否显示反馈组件
+    links: true, // 是否显示links答疑小蜜
+    petercat: {
+      show: true,
+      token: '4bd33b46-9b3c-4df1-be17-9206ea7c7e34',
+    },
+    prefersColor: {
+      default: 'light',
+      switch: false,
+    },
     versions: {
       // 历史版本以及切换下拉菜单
       [version]: 'https://g.antv.antgroup.com',
       '4.x': 'https://g.antv.vision/',
     },
-    siteUrl: 'https://g.antv.antgroup.com',
-    githubUrl: 'https://github.com/antvis/g',
-    detail: {
-      engine: {
-        zh: 'G',
-        en: 'G',
-      },
-      title: {
-        zh: 'G·一个灵活的可视化渲染引擎',
-        en: 'G·A flexible rendering engine for visualization.',
-      },
-      description: {
-        zh: '为上层提供稳定一致的渲染和通用计算能力',
-        en: 'G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products.',
-      },
-      image:
-        'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*OlhnTbTFWooAAAAAAAAAAAAADmJ7AQ/original',
-      imageStyle: {
-        marginLeft: '70px',
-        marginTop: '75px',
-      },
-      buttons: [
-        {
-          text: {
-            zh: '开始使用',
-            en: 'Getting Started',
-          },
-          link: `/guide/getting-started`,
-        },
-        {
-          text: {
-            zh: '更多示例',
-            en: 'Examples',
-          },
-          link: `/examples/`,
-          type: 'primary',
-        },
-      ],
+    docsearchOptions: {
+      // 头部搜索框配置
+      apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
+      indexName: 'antv_g',
+      sort: ['!/api/reference'],
     },
     navs: [
       {
@@ -305,32 +306,127 @@ export default defineConfig({
         },
       },
     ],
-    news: [
+    mdPlayground: {
+      // 第一个分块的大小
+      splitPaneMainSize: '62%',
+    },
+    playground: {},
+    // playground: {
+    //   extraLib: '',
+    //   // container: '<div id="container"><div id="container1"></div><div id="container2"></div></div>', // 定义演示的渲染节点，默认 <div id="container" />
+    //   devDependencies: {
+    //     typescript: 'latest',
+    //   },
+    // },
+    /** 公告 */
+    // announcement: {
+    //   title: {
+    //     zh: 'AntV OSCP 文档季火热进行中！成为 Issue Hunter，赢限定周边 & 超市卡等好礼 🎁',
+    //     en: 'AntV OSCP Doc Season: Hunt Issues to Win Exclusive Merch & Gift Cards! 🎁',
+    //   },
+    //   link: {
+    //     url: 'https://github.com/orgs/antvis/projects/31',
+    //     text: {
+    //       zh: '点击了解活动',
+    //       en: 'Learn More',
+    //     },
+    //   },
+    // },
+    /** 首页技术栈介绍 */
+    detail: {
+      engine: {
+        zh: 'G',
+        en: 'G',
+      },
+      title: {
+        zh: 'G·一个灵活的可视化渲染引擎',
+        en: 'G·A flexible rendering engine for visualization.',
+      },
+      description: {
+        zh: '为上层提供稳定一致的渲染和通用计算能力',
+        en: 'G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products.',
+      },
+      image:
+        'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*OlhnTbTFWooAAAAAAAAAAAAADmJ7AQ/original',
+      imageStyle: {
+        marginLeft: '70px',
+        marginTop: '75px',
+      },
+      buttons: [
+        {
+          text: {
+            zh: '开始使用',
+            en: 'Getting Started',
+          },
+          link: `/guide/getting-started`,
+        },
+        {
+          text: {
+            zh: '更多示例',
+            en: 'Examples',
+          },
+          link: `/examples/`,
+          type: 'primary',
+        },
+      ],
+    },
+    // 统一使用 site-data 配置
+    // news: [],
+    /** 首页特性介绍 */
+    features: [
       {
-        type: {
-          zh: '论坛',
-          en: 'Forum',
-        },
+        icon: 'https://gw.alipayobjects.com/zos/basement_prod/eae0ee4e-acbf-4486-88eb-ea17f441a0d5.svg',
         title: {
-          zh: 'AntV 芒种日 图新物：GraphInsight 发布',
-          en: 'AntV Seeds Day Graph New: GraphInsight Released',
+          zh: '易用的 API',
+          en: 'Easy-to-use API',
         },
-        date: '2022.06.06',
-        link: 'https://github.com/antvis/GraphInsight',
+        description: {
+          zh: '其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animations API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。',
+          en: 'The graphics and event system is compatible with DOM Element & Event API, and the animation system is compatible with Web Animations API, which can be adapted to the existing ecosystem of Web side such as D3, Hammer.js gesture library, etc. at a very low cost.',
+        },
       },
       {
-        type: {
-          zh: '论坛',
-          en: 'Forum',
-        },
+        icon: 'https://gw.alipayobjects.com/zos/basement_prod/7269ccc5-fbe2-4e55-85d1-17c05917e8b0.svg',
         title: {
-          zh: 'SEE Conf 2022 支付宝体验科技大会',
-          en: 'SEE Conf 2022 Alipay Experience Technology Conference',
+          zh: '适配 Web 端多种渲染环境',
+          en: 'Support multiple rendering environments',
         },
-        date: '2022.01.08',
-        link: 'https://seeconf.antfin.com/',
+        description: {
+          zh: '支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换，并支持服务端渲染。',
+          en: 'Support Canvas2D / SVG / WebGL / WebGPU and runtime switching, and also server-side rendering.',
+        },
+      },
+      {
+        icon: 'https://gw.alipayobjects.com/zos/basement_prod/d77e48ed-4e4c-43f5-bd83-329e12c28c16.svg',
+        title: {
+          zh: '丰富的插件集',
+          en: 'A rich set of plug-ins',
+        },
+        description: {
+          zh: '可扩展的插件机制以及丰富的插件集',
+          en: 'Extensible plug-in mechanism and rich set of plug-ins.',
+        },
       },
     ],
+    /** 首页案例 */
+    cases: [
+      // {
+      //   logo: 'https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*Uh1MSpdcj-kAAAAAAAAAAABkARQnAQ',
+      //   title: {
+      //     zh: '图表实验室',
+      //     en: 'Advanced Features',
+      //   },
+      //   description: {
+      //     zh: '来这里尝试一下我们正在开发中的高级图表功能',
+      //     en: 'We are now working on some advanced and powerful chart features.',
+      //   },
+      //   link: `/examples/plugin/multi-view`,
+      //   image:
+      //     'https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*SXLtRaVPGvMAAAAAAAAAAABkARQnAQ',
+      //   isAppLogo: true,
+      // },
+    ],
+    /** 首页合作公司 */
     companies: [
       {
         name: '阿里云',
@@ -365,80 +461,20 @@ export default defineConfig({
         img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ',
       },
     ],
-    cases: [
-      // {
-      //   logo: 'https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*Uh1MSpdcj-kAAAAAAAAAAABkARQnAQ',
-      //   title: {
-      //     zh: '图表实验室',
-      //     en: 'Advanced Features',
-      //   },
-      //   description: {
-      //     zh: '来这里尝试一下我们正在开发中的高级图表功能',
-      //     en: 'We are now working on some advanced and powerful chart features.',
-      //   },
-      //   link: `/examples/plugin/multi-view`,
-      //   image:
-      //     'https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*SXLtRaVPGvMAAAAAAAAAAABkARQnAQ',
-      //   isAppLogo: true,
-      // },
-    ],
-    features: [
-      {
-        icon: 'https://gw.alipayobjects.com/zos/basement_prod/eae0ee4e-acbf-4486-88eb-ea17f441a0d5.svg',
-        title: {
-          zh: '易用的 API',
-          en: 'Easy-to-use API',
-        },
-        description: {
-          zh: '其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animations API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。',
-          en: 'The graphics and event system is compatible with DOM Element & Event API, and the animation system is compatible with Web Animations API, which can be adapted to the existing ecosystem of Web side such as D3, Hammer.js gesture library, etc. at a very low cost.',
-        },
-      },
-      {
-        icon: 'https://gw.alipayobjects.com/zos/basement_prod/7269ccc5-fbe2-4e55-85d1-17c05917e8b0.svg',
-        title: {
-          zh: '适配 Web 端多种渲染环境',
-          en: 'Support multiple rendering environments',
-        },
-        description: {
-          zh: '支持 Canvas2D / SVG / CanvasKit / WebGL / WebGPU 以及运行时切换，并支持服务端渲染。',
-          en: 'Support Canvas2D / SVG / WebGL / WebGPU / CanvasKit and runtime switching, and also server-side rendering.',
-        },
-      },
-      {
-        icon: 'https://gw.alipayobjects.com/zos/basement_prod/d77e48ed-4e4c-43f5-bd83-329e12c28c16.svg',
-        title: {
-          zh: '丰富的插件集',
-          en: 'A rich set of plug-ins',
-        },
-        description: {
-          zh: '可扩展的插件机制以及丰富的插件集',
-          en: 'Extensible plug-in mechanism and rich set of plug-ins.',
-        },
-      },
-    ],
-    playground: {
-      extraLib: '',
-      // container: '<div id="container"><div id="container1"></div><div id="container2"></div></div>', // 定义演示的渲染节点，默认 <div id="container" />
-      devDependencies: {
-        typescript: 'latest',
-      },
-    },
-    docsearchOptions: {
-      apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
-      indexName: 'antv_g',
-    },
-    announcement: {
-      zh: '',
-      en: '',
-    },
+    /** 死链检查配置  */
+    // deadLinkChecker: {
+    //   checkExternalLinks: false, // 是否检查外部链接
+    // },
+    /** 站点地图配置 */
+    sitemap: {},
   },
+  mfsu: false,
   alias: {
     '@': __dirname,
   },
   copy: ['static'],
+  links: [],
   jsMinifier: 'terser',
-  mfsu: false,
   analytics: {
     // google analytics 的 key (GA 4)
     // ga_v2: 'G-abcdefg',

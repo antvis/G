@@ -96,9 +96,9 @@ const webgpuRenderer = new WebGPURenderer({
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-device-renderer](/en/plugins/device-renderer) GPUDevice based rendering capabilities
--   [g-plugin-webgpu-device](/en/plugins/webgl-device) Implementing GPUDevice Capabilities based on WebGPU
--   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-device-renderer](/en/plugins/device-renderer) GPUDevice based rendering capabilities
+- [g-plugin-webgpu-device](/en/plugins/webgl-device) Implementing GPUDevice Capabilities based on WebGPU
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 
