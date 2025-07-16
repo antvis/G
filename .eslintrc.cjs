@@ -10,6 +10,8 @@ module.exports = {
     'babel.config.mjs',
     'rollup.config.mjs',
     'vite.config.mjs',
+    'jest.unit.config.js',
+    'jest.visual.config.js',
     //
     'packages/g-devtool',
     'packages/g-webgpu-compiler',
