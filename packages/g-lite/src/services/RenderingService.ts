@@ -192,8 +192,6 @@ export class RenderingService {
       const shouldTriggerRenderHooks =
         !canvasConfig.disableRenderHooks || !onlyCameraChanged;
 
-      this.hooks.beginFrame.call(frame);
-
       if (shouldTriggerRenderHooks) {
         this.renderDisplayObject(
           renderingContext.root,
@@ -202,14 +200,23 @@ export class RenderingService {
         );
       }
 
+      this.hooks.beginFrame.call(frame);
+
+      if (shouldTriggerRenderHooks) {
+        renderingContext.renderListCurrentFrame.forEach((object) => {
+          this.hooks.beforeRender.call(object);
+          this.hooks.render.call(object);
+          this.hooks.afterRender.call(object);
+        });
+      }
+
       this.hooks.endFrame.call(frame);
 
+      renderingContext.renderListCurrentFrame = [];
       renderingContext.renderReasons.clear();
 
       rerenderCallback();
     }
-
-    // console.log('stats', this.stats);
   }
 
   private renderDisplayObject(
@@ -242,6 +249,7 @@ export class RenderingService {
 
         if (objectToRender) {
           self.stats.rendered += 1;
+          renderingContext.renderListCurrentFrame.push(objectToRender);
         }
       }
 
@@ -257,13 +265,6 @@ export class RenderingService {
         sortable.dirty = false;
         sortable.dirtyChildren = [];
         sortable.dirtyReason = undefined;
-      }
-
-      // trigger render hooks
-      if (objectToRender) {
-        self.hooks.beforeRender.call(objectToRender);
-        self.hooks.render.call(objectToRender);
-        self.hooks.afterRender.call(objectToRender);
       }
     }
 
