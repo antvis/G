@@ -10,6 +10,7 @@ export async function zIndex(context) {
       width: 400,
       height: 200,
       fill: 'blue',
+      zIndex: 1,
     },
   });
   const ul1Text = new Text({
@@ -96,10 +97,10 @@ export async function zIndex(context) {
 
   const zIndexFolder = gui.addFolder('z-index');
   const zIndexConfig = {
-    li1ZIndex: 0,
-    li2ZIndex: 0,
-    ul1ZIndex: 0,
-    ul2ZIndex: 0,
+    li1ZIndex: li1.style.zIndex || 0,
+    li2ZIndex: li2.style.zIndex || 0,
+    ul1ZIndex: ul1.style.zIndex || 0,
+    ul2ZIndex: ul2.style.zIndex || 0,
   };
   zIndexFolder.add(zIndexConfig, 'li1ZIndex', 0, 100).onChange((zIndex) => {
     li1.style.zIndex = zIndex;
