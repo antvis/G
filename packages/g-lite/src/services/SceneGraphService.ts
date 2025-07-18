@@ -938,7 +938,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       element.ownerDocument?.defaultView?.getConfig()?.future
         ?.experimentalAttributeUpdateOptimization === true;
 
-    while (p && !(p as Element).renderable?.dirty) {
+    while (p && !((p as Element).renderable?.dirty && (p as Element).renderable?.boundsDirty)) {
       (p as Element).dirty?.(true, true);
 
       if (enableAttributeUpdateOptimization) {
