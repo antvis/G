@@ -1,5 +1,11 @@
 # @antv/g-plugin-box2d
 
+## 2.0.38
+
+### Patch Changes
+
+- d106763: fix(plugin-box2d): remove trailing slash from BOX2D_UMD_DIR
+
 ## 2.0.37
 
 ### Patch Changes
