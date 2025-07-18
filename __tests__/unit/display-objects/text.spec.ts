@@ -252,9 +252,12 @@ describe('Text', () => {
     expect(text.isOverflowing()).toBe(false);
   });
 
+  // region wordWrap ----------------------------------------------------
+
   it('should terminate when line width is too small to display any character', async () => {
     await canvas.ready;
 
+    // First character
     const text = new Text({
       style: {
         text: '测试文本',
@@ -268,5 +271,17 @@ describe('Text', () => {
 
     expect(lineRects.length).toBe(1);
     expect(text.isOverflowing()).toBe(true);
+
+    // When wrapping
+    const text0 = new Text({
+      style: {
+        text: 'hello: world',
+        fontSize: 12,
+        wordWrap: true,
+        wordWrapWidth: 8,
+      },
+    });
+
+    expect(text0.isOverflowing()).toBe(true);
   });
 });
