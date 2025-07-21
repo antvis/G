@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 2.3.2
+
+### Patch Changes
+
+- 22e4e7b: fix: prevent NaN in transform calculations when scale is 0
+- 4fb9eaa: perf: Avoid duplicate dirty parent elements to improve performance by 2%
+
 ## 2.3.1
 
 ### Patch Changes
