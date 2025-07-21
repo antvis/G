@@ -1,5 +1,13 @@
 # @antv/g-components
 
+## 2.0.38
+
+### Patch Changes
+
+- Updated dependencies [22e4e7b]
+- Updated dependencies [4fb9eaa]
+    - @antv/g-lite@2.3.2
+
 ## 2.0.37
 
 ### Patch Changes
