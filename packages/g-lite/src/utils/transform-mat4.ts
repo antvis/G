@@ -14,6 +14,7 @@ import { deg2rad } from './math';
  * causing exceptions
  */
 const MIN_SCALE = 0.000001;
+const clampScale = (item: number) => Math.max(item, MIN_SCALE);
 
 function createSkewMatrix(skewMatrix: mat4, skewX: number, skewY: number) {
   // Create an identity matrix
@@ -32,34 +33,32 @@ const parser: Record<TransformType, (d: CSSUnitValue[]) => void> = {
   scale: (d: CSSUnitValue[]) => {
     mat4.fromScaling(
       $mat4_1,
-      [d[0].value, d[1].value, 1].map((item) =>
-        Math.max(item, MIN_SCALE),
-      ) as vec3,
+      [d[0].value, d[1].value, 1].map((item) => clampScale(item)) as vec3,
     );
   },
   scaleX: (d: CSSUnitValue[]) => {
     mat4.fromScaling(
       $mat4_1,
-      [d[0].value, 1, 1].map((item) => Math.max(item, MIN_SCALE)) as vec3,
+      [d[0].value, 1, 1].map((item) => clampScale(item)) as vec3,
     );
   },
   scaleY: (d: CSSUnitValue[]) => {
     mat4.fromScaling(
       $mat4_1,
-      [1, d[0].value, 1].map((item) => Math.max(item, MIN_SCALE)) as vec3,
+      [1, d[0].value, 1].map((item) => clampScale(item)) as vec3,
     );
   },
   scaleZ: (d: CSSUnitValue[]) => {
     mat4.fromScaling(
       $mat4_1,
-      [1, 1, d[0].value].map((item) => Math.max(item, MIN_SCALE)) as vec3,
+      [1, 1, d[0].value].map((item) => clampScale(item)) as vec3,
     );
   },
   scale3d: (d: CSSUnitValue[]) => {
     mat4.fromScaling(
       $mat4_1,
       [d[0].value, d[1].value, d[2].value].map((item) =>
-        Math.max(item, MIN_SCALE),
+        clampScale(item),
       ) as vec3,
     );
   },
