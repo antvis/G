@@ -2,6 +2,7 @@ import { CanvasLike, GlobalRuntime } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
 import { toFontString } from '../utils';
+import LRU from '../utils/LRU';
 
 export interface TextMetrics {
   font: string;
@@ -20,7 +21,6 @@ interface IFontMetrics {
   descent: number;
   fontSize: number;
 }
-type CharacterWidthCache = Record<string, number>;
 
 const TEXT_METRICS = {
   MetricsString: '|ÉqÅ',
@@ -78,7 +78,9 @@ const regexCannotEnd = new RegExp(
  * Borrow from pixi/packages/text/src/TextMetrics.ts
  */
 export class TextService {
-  constructor(private runtime: GlobalRuntime) {}
+  constructor(private runtime: GlobalRuntime) {
+    this.charWidthCache = new LRU<LRU<number>>(100);
+  }
 
   /**
    * font metrics cache
@@ -89,7 +91,7 @@ export class TextService {
    * A global cache for character widths, keyed by font string.
    * e.g. { '16px Arial': { 'a': 8, 'b': 9 } }
    */
-  private charWidthCache: Record<string, CharacterWidthCache> = {};
+  private charWidthCache: LRU<LRU<number>>;
 
   /**
    * Calculates the ascent, descent and fontSize of a given font-style.
@@ -376,10 +378,11 @@ export class TextService {
     // --- 优化核心 ---
     // 1. 获取或创建当前字体对应的字符缓存
     const font = toFontString(parsedStyle);
-    if (!this.charWidthCache[font]) {
-      this.charWidthCache[font] = {};
+    let charCache = this.charWidthCache.get(font);
+    if (!charCache) {
+      charCache = new LRU<number>(500);
+      this.charWidthCache.put(font, charCache);
     }
-    const charCache = this.charWidthCache[font];
 
     // 2. calcWidth 现在直接使用持久化的 charCache
     const calcWidth = (char: string): number => {
@@ -629,7 +632,7 @@ export class TextService {
   private getFromCache(
     key: string,
     letterSpacing: number,
-    cache: CharacterWidthCache,
+    cache: LRU<number>,
     context: CanvasRenderingContext2D,
   ): number {
     let width = cache[key];
@@ -641,5 +644,10 @@ export class TextService {
       cache[key] = width;
     }
     return width;
+  }
+
+  public clearCache() {
+    this.fontMetricsCache = {};
+    this.charWidthCache.clear();
   }
 }
