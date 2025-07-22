@@ -86,6 +86,12 @@ export class TextService {
   private fontMetricsCache: Record<string, IFontMetrics> = {};
 
   /**
+   * A global cache for character widths, keyed by font string.
+   * e.g. { '16px Arial': { 'a': 8, 'b': 9 } }
+   */
+  private charWidthCache: Record<string, CharacterWidthCache> = {};
+
+  /**
    * Calculates the ascent, descent and fontSize of a given font-style.
    */
   measureFont(font: string, offscreenCanvas: CanvasLike): IFontMetrics {
@@ -363,12 +369,21 @@ export class TextService {
     // @see https://github.com/antvis/G/issues/1932
     let prevLineLastCharIndex = -1;
 
-    const cache: { [key in string]: number } = {};
-    const calcWidth = (txt: string): number => {
+    // --- 优化核心 ---
+    // 1. 获取或创建当前字体对应的字符缓存
+    const font = toFontString(parsedStyle);
+    if (!this.charWidthCache[font]) {
+      this.charWidthCache[font] = {};
+    }
+    const charCache = this.charWidthCache[font];
+
+    // 2. calcWidth 现在直接使用持久化的 charCache
+    const calcWidth = (char: string): number => {
+      // getFromCache 现在只需要传入 key 和 cache
       return this.getFromCache(
-        txt,
+        char,
         letterSpacing,
-        cache,
+        charCache, // 使用持久化的缓存
         context as CanvasRenderingContext2D,
       );
     };
