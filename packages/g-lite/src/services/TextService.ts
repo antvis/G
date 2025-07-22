@@ -635,13 +635,13 @@ export class TextService {
     cache: LRU<number>,
     context: CanvasRenderingContext2D,
   ): number {
-    let width = cache[key];
+    let width = cache.get(key);
     if (typeof width !== 'number') {
       const spacing = key.length * letterSpacing;
       const metrics = context.measureText(key);
 
       width = metrics.width + spacing;
-      cache[key] = width;
+      cache.put(key, width);
     }
     return width;
   }
