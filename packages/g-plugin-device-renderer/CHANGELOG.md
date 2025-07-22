@@ -1,5 +1,20 @@
 # @antv/g-plugin-device-renderer
 
+## 2.3.2
+
+### Patch Changes
+
+- d106763: perf: optimize element event distribution and attribute update process
+
+## 2.3.1
+
+### Patch Changes
+
+- Updated dependencies [088eb0d]
+- Updated dependencies [8aa491e]
+    - @antv/g-lite@2.3.1
+    - @antv/g-plugin-image-loader@2.1.25
+
 ## 2.3.0
 
 ### Minor Changes

@@ -344,6 +344,11 @@ export class TextService {
     parsedStyle: ParsedTextStyleProps,
     offscreenCanvas: CanvasLike,
   ): string {
+    const chars = Array.from(text);
+    if (chars.length === 0) {
+      return '';
+    }
+
     const self = this;
     const {
       wordWrapWidth = 0,
@@ -362,8 +367,7 @@ export class TextService {
       ellipsis = textOverflow;
     }
 
-    const chars = Array.from(text);
-    let lines: string[] = [];
+    let lines: string[] = [''];
     let currentLineIndex = 0;
     let currentLineWidth = 0;
     // @see https://github.com/antvis/G/issues/1932
@@ -462,12 +466,10 @@ export class TextService {
       if (this.isNewline(char)) {
         // exceed maxLines, break immediately
         if (currentLineIndex + 1 >= maxLines) {
-          parsedStyle.isOverflowing = true;
-
           if (i < chars.length - 1) {
             appendEllipsis(currentLineIndex, i - 1);
           }
-
+          parsedStyle.isOverflowing = true;
           break;
         }
 
@@ -479,17 +481,13 @@ export class TextService {
         continue;
       }
 
-      // If current line is empty and char width exceeds max width, no need to continue
-      if (currentLineWidth === 0 && charWidth > maxWidth) {
-        // Only add ellipsis if it can fit in the line
-        if (ellipsis && ellipsisWidth <= maxWidth) {
-          lines[currentLineIndex] = ellipsis;
-        } else {
-          lines[currentLineIndex] = '';
-        }
+      // If char width exceeds max width, no need to continue
+      if (charWidth > maxWidth) {
+        appendEllipsis(currentLineIndex, i - 1);
         parsedStyle.isOverflowing = true;
         break;
       }
+
       if (currentLineWidth > 0 && currentLineWidth + charWidth > maxWidth) {
         const result = findCharIndexClosestWidthThreshold(
           lines[currentLineIndex],
@@ -512,10 +510,8 @@ export class TextService {
         }
 
         if (currentLineIndex + 1 >= maxLines) {
-          parsedStyle.isOverflowing = true;
-
           appendEllipsis(currentLineIndex, i - 1);
-
+          parsedStyle.isOverflowing = true;
           break;
         }
 
@@ -543,7 +539,7 @@ export class TextService {
       }
 
       currentLineWidth += charWidth;
-      lines[currentLineIndex] = (lines[currentLineIndex] || '') + char;
+      lines[currentLineIndex] += char;
     }
 
     return lines.join('\n');

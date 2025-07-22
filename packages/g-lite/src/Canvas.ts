@@ -233,6 +233,8 @@ export class Canvas extends EventTarget implements ICanvas {
 
       unculledEntities: [],
 
+      renderListCurrentFrame: [],
+
       renderReasons: new Set(),
 
       force: false,

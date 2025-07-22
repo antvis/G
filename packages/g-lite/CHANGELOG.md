@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 2.3.1
+
+### Patch Changes
+
+- 088eb0d: fix(text): improve text overflow handling and word wrapping
+- 8aa491e: fix(rendering): fix render hooks execution order and z-index initialization
+
 ## 2.3.0
 
 ### Minor Changes
