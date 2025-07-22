@@ -383,11 +383,10 @@ export class TextService {
 
     // 2. calcWidth 现在直接使用持久化的 charCache
     const calcWidth = (char: string): number => {
-      // getFromCache 现在只需要传入 key 和 cache
       return this.getFromCache(
         char,
         letterSpacing,
-        charCache, // 使用持久化的缓存
+        charCache,
         context as CanvasRenderingContext2D,
       );
     };

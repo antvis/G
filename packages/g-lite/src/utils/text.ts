@@ -55,6 +55,6 @@ export const toFontString = memoize(
       fontVariant = 'normal',
       fontWeight = 'normal',
     } = attributes;
-    return `${fontStyle}_${fontVariant}_${fontWeight}_${fontSize}px_${fontFamily}`;
+    return `${fontStyle}_${fontVariant}_${fontWeight}_${fontSize}_${fontFamily}`;
   },
 );
