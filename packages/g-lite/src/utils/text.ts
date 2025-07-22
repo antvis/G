@@ -12,15 +12,21 @@ const genericFontFamilies = [
 ];
 const stringRegExp = /([\"\'])[^\'\"]+\1/;
 
+function getFontAttr(attributes: Partial<ParsedTextStyleProps>) {
+  const {
+    fontSize = 16,
+    fontFamily = 'sans-serif',
+    fontStyle = 'normal',
+    fontVariant = 'normal',
+    fontWeight = 'normal',
+  } = attributes;
+  return { fontSize, fontFamily, fontStyle, fontVariant, fontWeight };
+}
+
 export const toFontString = memoize(
   function toFontStringRaw(attributes: Partial<ParsedTextStyleProps>) {
-    const {
-      fontSize = 16,
-      fontFamily = 'sans-serif',
-      fontStyle = 'normal',
-      fontVariant = 'normal',
-      fontWeight = 'normal',
-    } = attributes;
+    const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } =
+      getFontAttr(attributes);
 
     // build canvas api font setting from individual components. Convert a numeric this.fontSize to px
     // const fontSizeString: string = isNumber(fontSize) ? `${fontSize}px` : fontSize.toString();
@@ -48,13 +54,8 @@ export const toFontString = memoize(
     )}`;
   },
   (attributes: Partial<ParsedTextStyleProps>) => {
-    const {
-      fontSize = 16,
-      fontFamily = 'sans-serif',
-      fontStyle = 'normal',
-      fontVariant = 'normal',
-      fontWeight = 'normal',
-    } = attributes;
+    const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } =
+      getFontAttr(attributes);
     return `${fontStyle}_${fontVariant}_${fontWeight}_${fontSize}_${fontFamily}`;
   },
 );
