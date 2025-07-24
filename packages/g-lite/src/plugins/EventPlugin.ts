@@ -26,44 +26,45 @@ export class EventPlugin implements RenderingPlugin {
   private lastWheelTimestamp = 0;
   private wheelingTimeout = 150; // ms
 
+  pickHandlerFn(position: EventPosition) {
+    // 1. 如果正在滚动，进行时间检查
+    if (this.isWheeling) {
+      // 2. 如果距离上次滚动的时间在阈值内，则判定为仍在滚动，跳过拾取
+      if (performance.now() - this.lastWheelTimestamp < this.wheelingTimeout) {
+        return null;
+      }
+      // 3. 如果超时，说明滚动已停止，重置标志位，继续执行正常的拾取
+      this.isWheeling = false;
+    }
+    const { picked } = this.context.renderingService.hooks.pickSync.call({
+      position,
+      picked: [],
+      topmost: true, // we only concern the topmost element
+    });
+    return picked[0] || null;
+  }
+
+  pointerWheelFn(nativeEvent: InteractivePointerEvent) {
+    // [优化] 滚动时，更新时间戳和标志位，
+    this.isWheeling = true;
+    this.lastWheelTimestamp = performance.now();
+
+    const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
+
+    this.context.eventService.mapEvent(wheelEvent);
+  }
+
   apply(context: RenderingPluginContext) {
     this.context = context;
     const { renderingService } = context;
 
     const canvas = this.context.renderingContext.root.ownerDocument.defaultView;
 
-    this.context.eventService.setPickHandler((position: EventPosition) => {
-      // 1. 如果正在滚动，进行时间检查
-      if (this.isWheeling) {
-        // 2. 如果距离上次滚动的时间在阈值内，则判定为仍在滚动，跳过拾取
-        if (
-          performance.now() - this.lastWheelTimestamp <
-          this.wheelingTimeout
-        ) {
-          return null;
-        }
-        // 3. 如果超时，说明滚动已停止，重置标志位，继续执行正常的拾取
-        this.isWheeling = false;
-      }
-      const { picked } = this.context.renderingService.hooks.pickSync.call({
-        position,
-        picked: [],
-        topmost: true, // we only concern the topmost element
-      });
-      return picked[0] || null;
-    });
+    this.context.eventService.setPickHandler(this.pickHandlerFn.bind(this));
 
     renderingService.hooks.pointerWheel.tap(
       EventPlugin.tag,
-      (nativeEvent: InteractivePointerEvent) => {
-        // [优化] 滚动时，更新时间戳和标志位，
-        this.isWheeling = true;
-        this.lastWheelTimestamp = performance.now();
-
-        const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
-
-        this.context.eventService.mapEvent(wheelEvent);
-      },
+      this.pointerWheelFn.bind(this),
     );
 
     renderingService.hooks.pointerDown.tap(
