@@ -23,7 +23,7 @@ export class EventPlugin implements RenderingPlugin {
   private context: RenderingPluginContext;
   // [优化] 增加滚动状态和定时器
   private isWheeling = false;
-  private wheelingTimer: any = null;
+  private lastWheelTimestamp = 0;
   private wheelingTimeout = 150; // ms
 
   apply(context: RenderingPluginContext) {
@@ -33,9 +33,17 @@ export class EventPlugin implements RenderingPlugin {
     const canvas = this.context.renderingContext.root.ownerDocument.defaultView;
 
     this.context.eventService.setPickHandler((position: EventPosition) => {
-      // 如果正在滚动，立即返回 null，跳过所有昂贵的拾取计算
+      // 1. 如果正在滚动，进行时间检查
       if (this.isWheeling) {
-        return null;
+        // 2. 如果距离上次滚动的时间在阈值内，则判定为仍在滚动，跳过拾取
+        if (
+          performance.now() - this.lastWheelTimestamp <
+          this.wheelingTimeout
+        ) {
+          return null;
+        }
+        // 3. 如果超时，说明滚动已停止，重置标志位，继续执行正常的拾取
+        this.isWheeling = false;
       }
       const { picked } = this.context.renderingService.hooks.pickSync.call({
         position,
@@ -48,15 +56,10 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerWheel.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        // [优化] 设置滚动状态并启动/重置定时器
+        // [优化] 滚动时，更新时间戳和标志位，
         this.isWheeling = true;
-        if (this.wheelingTimer) {
-          clearTimeout(this.wheelingTimer);
-        }
-        this.wheelingTimer = setTimeout(() => {
-          this.isWheeling = false;
-          this.wheelingTimer = null;
-        }, this.wheelingTimeout);
+        this.lastWheelTimestamp = performance.now();
+
         const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
 
         this.context.eventService.mapEvent(wheelEvent);
