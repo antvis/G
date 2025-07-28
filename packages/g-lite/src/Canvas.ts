@@ -417,6 +417,7 @@ export class Canvas extends EventTarget implements ICanvas {
     clearEventRetain(insertedEventCache);
     clearEventRetain(removedEventCache);
     clearEventRetain(destroyEventCache);
+    runtime.textService.clearCache();
   }
 
   /**
