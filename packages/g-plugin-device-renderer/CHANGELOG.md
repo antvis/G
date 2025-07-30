@@ -1,5 +1,15 @@
 # @antv/g-plugin-device-renderer
 
+## 2.3.3
+
+### Patch Changes
+
+- Updated dependencies [22e4e7b]
+- Updated dependencies [ffe2611]
+- Updated dependencies [4fb9eaa]
+    - @antv/g-lite@2.3.2
+    - @antv/g-plugin-image-loader@2.1.26
+
 ## 2.3.2
 
 ### Patch Changes

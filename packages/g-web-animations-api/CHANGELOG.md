@@ -1,5 +1,14 @@
 # @antv/g-web-animations-api
 
+## 2.1.28
+
+### Patch Changes
+
+- Updated dependencies [22e4e7b]
+- Updated dependencies [ffe2611]
+- Updated dependencies [4fb9eaa]
+    - @antv/g-lite@2.3.2
+
 ## 2.1.27
 
 ### Patch Changes

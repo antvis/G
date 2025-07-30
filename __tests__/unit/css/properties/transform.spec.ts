@@ -233,6 +233,31 @@ describe('CSSPropertyTransform', () => {
     expect(circle.getLocalBounds().halfExtents).toStrictEqual([25, 25, 0]);
   });
 
+  it('should handle scale(0) transform correctly without returning NaN in bounds', async () => {
+    const circle = new Circle({
+      style: {
+        cx: 10,
+        cy: 10,
+        r: 50,
+        transform: 'scale(0)',
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(circle);
+
+    const bounds = circle.getBounds();
+    expect(bounds).toBeDefined();
+
+    expect(bounds.center.every(Number.isFinite)).toBeTruthy();
+    expect(bounds.halfExtents.every(Number.isFinite)).toBeTruthy();
+    expect(bounds.min.every(Number.isFinite)).toBeTruthy();
+    expect(bounds.max.every(Number.isFinite)).toBeTruthy();
+
+    expect(bounds.center).toStrictEqual([10, 10, 0]);
+    // expect(bounds.halfExtents).toStrictEqual([0, 0, 0]);
+  });
+
   it("should reset transform with 'none' keyword correctly.", async () => {
     const circle = new Circle({
       style: {

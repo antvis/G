@@ -4,6 +4,17 @@ export async function transform(context) {
   const { canvas } = context;
   await canvas.ready;
 
+  const circle0 = new Circle({
+    style: {
+      cx: 50,
+      cy: 50,
+      r: 20,
+      fill: 'blue',
+      transform: 'scale(0)',
+    },
+  });
+  canvas.appendChild(circle0);
+
   const circle1 = new Circle({
     style: {
       cx: 100,
