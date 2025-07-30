@@ -1,5 +1,13 @@
 # @antv/g-lite
 
+## 2.3.2
+
+### Patch Changes
+
+- 22e4e7b: fix: prevent NaN in transform calculations when scale is 0
+- ffe2611: perf: use charWidthCache to improve performance by 1.5%
+- 4fb9eaa: perf: Avoid duplicate dirty parent elements to improve performance by 2%
+
 ## 2.3.1
 
 ### Patch Changes
