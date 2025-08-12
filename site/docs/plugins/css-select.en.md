@@ -61,7 +61,7 @@ import { Plugin } from '@antv/g-plugin-css-select';
 webglRenderer.registerPlugin(new Plugin());
 ```
 
-We can use something like the DOM API + CSS selector for node queries in the scene graph, [full example](/en/examples/plugins#css-select).
+We can use something like the DOM API + CSS selector for node queries in the scene graph, [full example](/en/examples/plugins/css-select/#css-select).
 
 ```javascript
 solarSystem.getElementsByName('sun');

@@ -3,9 +3,9 @@ title: Lottie 动画
 order: 2
 ---
 
-除了使用 [Web Animations API](/zh/api/animation/waapi) 描述动画，我们还支持播放 [Lottie](https://airbnb.design/lottie/) 格式，为此我们提供了一个类似 [lottie-web](https://github.com/airbnb/lottie-web/) 的播放器。在内部我们会将其中定义的图形和关键帧动画转换成我们的[基础图形](/zh/api/basic/display-object) 和动画描述，同时提供简单的动画控制方法例如播放、暂停以及跳转到指定时刻或帧，加入到画布后就可以像基础图形一样任意操作它们。
+除了使用 [Web Animations API](/api/animation/waapi) 描述动画，我们还支持播放 [Lottie](https://airbnb.design/lottie/) 格式，为此我们提供了一个类似 [lottie-web](https://github.com/airbnb/lottie-web/) 的播放器。在内部我们会将其中定义的图形和关键帧动画转换成我们的[基础图形](/api/basic/display-object) 和动画描述，同时提供简单的动画控制方法例如播放、暂停以及跳转到指定时刻或帧，加入到画布后就可以像基础图形一样任意操作它们。
 
-[示例](/zh/examples/ecosystem#lottie-player-assets)
+[示例](/examples/ecosystem/lottie/#lottie-player-assets)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*NVmwSb89Y3kAAAAAAAAAAAAAARQnAQ" alt="lottie player" width="400">
 
@@ -17,7 +17,7 @@ order: 2
 npm install @antv/g-lottie-player --save
 ```
 
-然后使用播放器提供的 [loadAnimation](/zh/api/animation/lottie#createanimation) 方法创建一个 [LottieAnimation](/zh/api/animation/lottie#lottieanimation) 对象，传入 Lottie JSON：
+然后使用播放器提供的 [loadAnimation](/api/animation/lottie#createanimation) 方法创建一个 [LottieAnimation](/api/animation/lottie#lottieanimation) 对象，传入 Lottie JSON：
 
 ```js
 import { loadAnimation } from '@antv/g-lottie-player';
@@ -35,7 +35,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 ## loadAnimation
 
-参考 [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/AnimationManager.js#L227) 的同名方法，用于加载 Lottie 文件创建 [LottieAnimation](/zh/api/animation/lottie#lottieanimation)。
+参考 [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/AnimationManager.js#L227) 的同名方法，用于加载 Lottie 文件创建 [LottieAnimation](/api/animation/lottie#lottieanimation)。
 
 参数如下：
 
@@ -57,11 +57,11 @@ const ballAnimation = loadAnimation(bouncy_ball, {
 
 ## LottieAnimation
 
-通过 [loadAnimation](/zh/api/animation/lottie#loadanimation) 可以创建该对象，进而对动画过程进行控制。
+通过 [loadAnimation](/api/animation/lottie#loadanimation) 可以创建该对象，进而对动画过程进行控制。
 
 ### render
 
-渲染到[画布](/zh/api/canvas)并返回一个 [Group](/zh/api/basic/group) 作为容器，添加到画布或者任意已挂载的元素下，随后可以对其进行变换：
+渲染到[画布](/api/canvas/intro)并返回一个 [Group](/api/basic/group) 作为容器，添加到画布或者任意已挂载的元素下，随后可以对其进行变换：
 
 ```js
 const wrapper = animation.render(canvas);
@@ -75,7 +75,7 @@ wrapper.translate(100, 100);
 - 画布。此时会添加到画布根节点下
 - 任意已添加到画布中的元素
 
-值得注意的是，和动画一样需要在[画布初始化完成后](/zh/api/canvas#ready)进行。
+值得注意的是，和动画一样需要在[画布初始化完成后](/api/canvas/scenegraph-lifecycle#ready)进行。
 
 ### play
 
@@ -216,10 +216,10 @@ animation.version();
 
 支持 [Shape Layer](https://lottiefiles.github.io/lottie-docs/layers/#shape-layer) 中定义的以下[元素](https://lottiefiles.github.io/lottie-docs/shapes/#shape-element)：
 
-- [x] Rectangle 会转换成 [Rect](/zh/api/basic/rect) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
-- [x] Ellipse 会转换成 [Ellipse](/zh/api/basic/ellipse) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
-- [x] Path 会转换成 [Path](/zh/api/basic/path) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#path>
-- [x] Group 会转换成 [Group](/zh/api/basic/group) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#group>
+- [x] Rectangle 会转换成 [Rect](/api/basic/rect) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
+- [x] Ellipse 会转换成 [Ellipse](/api/basic/ellipse) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
+- [x] Path 会转换成 [Path](/api/basic/path) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#path>
+- [x] Group 会转换成 [Group](/api/basic/group) 进行渲染。<https://lottiefiles.github.io/lottie-docs/shapes/#group>
 - [ ] PolyStar <https://lottiefiles.github.io/lottie-docs/shapes/#polystar>
 
 ### Transform
@@ -228,7 +228,7 @@ animation.version();
 
 支持以下特性：
 
-- [anchor](/zh/api/basic/display-object#anchor) 对应 `a` 字段
+- [anchor](/api/basic/display-object#anchor) 对应 `a` 字段
 - [translation]() 对应 `p` 字段
 - [scaling]() 对应 `s` 字段
 - [rotation]() 对应 `r` 字段
@@ -238,7 +238,7 @@ animation.version();
 - [skew]() 对应 `sk` 字段
 - [skewAxis]() 对应 `sa` 字段
 
-在该[示例](/zh/examples/ecosystem#lottie-player-transform)中，深蓝色为基准矩形，我们以红色圆点为 [transformOrigin]()，旋转一定角度得到淡蓝色矩形。
+在该[示例](/examples/ecosystem/lottie/#lottie-player-transform)中，深蓝色为基准矩形，我们以红色圆点为 [transformOrigin]()，旋转一定角度得到淡蓝色矩形。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="200">
 
@@ -260,8 +260,8 @@ animation.version();
 
 填充色，同时支持以下特性：
 
-- [fillOpacity](/zh/api/basic/display-object#fillopacity) 对应 `o` 字段
-- [fillRule](/zh/api/basic/display-object#fillrule) 对应 `r` 字段
+- [fillOpacity](/api/basic/display-object#fillopacity) 对应 `o` 字段
+- [fillRule](/api/basic/display-object#fillrule) 对应 `r` 字段
 
 #### Stroke
 
@@ -269,18 +269,18 @@ animation.version();
 
 描边色，同时支持以下特性：
 
-- [strokeOpacity](/zh/api/basic/display-object#strokeopacity) 对应 `o` 字段
-- [strokeWidth](/zh/api/basic/display-object#strokewidth) 对应 `w` 字段
-- [lineCap](/zh/api/basic/display-object#linecap) 对应 `lc` 字段
-- [lineJoin](/zh/api/basic/display-object#linejoin) 对应 `lj` 字段
-- [miterLimit](/zh/api/basic/display-object#miterlimit) 对应 `ml` 字段
-- [lineDash](/zh/api/basic/display-object#linedash) 对应 `d` 字段
+- [strokeOpacity](/api/basic/display-object#strokeopacity) 对应 `o` 字段
+- [strokeWidth](/api/basic/display-object#strokewidth) 对应 `w` 字段
+- [lineCap](/api/basic/display-object#linecap) 对应 `lc` 字段
+- [lineJoin](/api/basic/display-object#linejoin) 对应 `lj` 字段
+- [miterLimit](/api/basic/display-object#miterlimit) 对应 `ml` 字段
+- [lineDash](/api/basic/display-object#linedash) 对应 `d` 字段
 
 #### Gradients
 
 <https://lottiefiles.github.io/lottie-docs/shapes/#gradients>
 
-支持[线性](/zh/api/css/css-properties-values-api#linear-gradient)和[放射](/zh/api/css/css-properties-values-api#radial-gradient)渐变。
+支持[线性](/api/css/css-properties-values-api#linear-gradient)和[放射](/api/css/css-properties-values-api#radial-gradient)渐变。
 
 暂不支持以下特性：
 
@@ -319,7 +319,7 @@ animation.version();
 
 ### Clipping Mask
 
-内部会转换成 [clipPath](/zh/api/basic/display-object#clippath) 应用在目标元素上，并支持对其进行路径动画。
+内部会转换成 [clipPath](/api/basic/display-object#clippath) 应用在目标元素上，并支持对其进行路径动画。
 
 注意事项：
 

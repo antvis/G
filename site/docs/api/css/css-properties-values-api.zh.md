@@ -3,7 +3,7 @@ title: CSS Properties & Values API
 order: 2
 ---
 
-有了 [CSS Typed OM](/zh/api/css/css-typed-om) 我们能方便地定义例如 `CSS.px(5)` 这样的属性值，但属性并不只有值。
+有了 [CSS Typed OM](/api/css/css-typed-om) 我们能方便地定义例如 `CSS.px(5)` 这样的属性值，但属性并不只有值。
 
 在浏览器中 [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) 允许用户自定义 CSS 属性并为其配置类型检查、默认值、是否支持继承等元数据，它也是 CSS Houdini 的一部分。
 
@@ -39,7 +39,7 @@ CSS 属性值包含各种类型：<https://drafts.csswg.org/css-values-4/>
 
 ## 关键词
 
-对应 [CSS Typed OM](/zh/api/css/css-typed-om) 中的 [CSSKeywordValue](/zh/api/css/css-typed-om#csskeywordvalue)。
+对应 [CSS Typed OM](/api/css/css-typed-om) 中的 [CSSKeywordValue](/api/css/css-typed-om#csskeywordvalue)。
 
 例如会被解析成：
 
@@ -85,13 +85,13 @@ em {
 
 ## \<number\>
 
-对应 [CSS Typed OM](/zh/api/css/css-typed-om) 中的 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，无单位。
+对应 [CSS Typed OM](/api/css/css-typed-om) 中的 [CSSUnitValue](/api/css/css-typed-om#cssunitvalue)，无单位。
 
 目前使用该类型的属性值包括：
 
-- [opacity](/zh/api/basic/display-object#opacity)
-- [fillOpacity](/zh/api/basic/display-object#fillopacity)
-- [strokeOpacity](/zh/api/basic/display-object#strokeopacity)
+- [opacity](/api/basic/display-object#opacity)
+- [fillOpacity](/api/basic/display-object#fillopacity)
+- [strokeOpacity](/api/basic/display-object#strokeopacity)
 
 ```js
 circle.style.opacity = '0.5';
@@ -155,9 +155,9 @@ styleMap.get('r'); // CSSUnitValue { unit: 'px', value: 10 }
 
 参考 CSS 规范中对于 [\<color\>](https://www.w3.org/TR/css-color-3/#valuea-def-color) 类型的定义，我们支持以下颜色值类型，它们都以 JS 中的 `string` 类型存在。
 
-它是 [\<paint\>](/zh/api/css/painting) 包含的一种类型。
+它是 [\<paint\>](/api/css/css-properties-values-api#paint) 包含的一种类型。
 
-[示例](/zh/examples/style#color)。
+[示例](/examples/style/basic/#color)。
 
 目前会使用该类型的属性有：
 
@@ -170,7 +170,7 @@ CSS 定义了一系列基础的颜色关键词，它们都是**大小写敏感**
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*NFB5T69VUUwAAAAAAAAAAAAAARQnAQ" width="300"/>
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PKSDR4_nEgIAAAAAAAAAAAAAARQnAQ" width="300"/>
 
-在内部实现中，我们会把关键词字符串传给 [d3-color](https://github.com/d3/d3-color) 解析，得到 [CSSRGB](/zh/api/css/css-typed-om#cssrgb)。
+在内部实现中，我们会把关键词字符串传给 [d3-color](https://github.com/d3/d3-color) 解析，得到 [CSSRGB](/api/css/css-typed-om#cssrgb)。
 
 使用示例如下：
 
@@ -210,7 +210,7 @@ circle.style.fill = 'rgba(100%,0%,0%,1)';
 
 等同于 `rgba(0,0,0,0)` 即完全透明的黑色。
 
-注意它和 [\<paint\>](/zh/api/css/css-properties-values-api#paint) 支持的 `none` 是不同的含义。
+注意它和 [\<paint\>](/api/css/css-properties-values-api#paint) 支持的 `none` 是不同的含义。
 
 #### [WIP] hsl
 
@@ -238,16 +238,16 @@ Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 <paint> = none | <color> | <gradient> | <pattern>
 ```
 
-[示例](/zh/examples/style#paint)。
+[示例](/examples/style/basic/#paint)。
 
 目前使用的属性有：
 
-- [fill](/zh/api/basic/display-object#fill) 填充色
-- [stroke](/zh/api/basic/display-object#stroke) 描边色
+- [fill](/api/basic/display-object#fill) 填充色
+- [stroke](/api/basic/display-object#stroke) 描边色
 
 ### none
 
-不使用任何颜色，并不等于 [\<color\>](/zh/api/css/css-properties-values-api#color) 的 [transparent](/zh/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
+不使用任何颜色，并不等于 [\<color\>](/api/css/css-properties-values-api#color) 的 [transparent](/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
 
 例如当图形在初始化未设置 `fill` 属性时，等同于创建后手动修改为 `none`：
 
@@ -309,10 +309,10 @@ circle.style.fill = 'none';
 
 在这一步需要：
 
-- 处理特殊的关键词（通常是通用的），例如 [initial](/zh/api/css/css-properties-values-api#initial) [inherit](/zh/api/css/css-properties-values-api#inherit)
+- 处理特殊的关键词（通常是通用的），例如 [initial](/api/css/css-properties-values-api#initial) [inherit](/api/css/css-properties-values-api#inherit)
 - 做一些值计算，需要布局阶段参与的除外
 
-通过 [computedStyleMap](/zh/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
+通过 [computedStyleMap](/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
 
 ```js
 /**
@@ -355,7 +355,7 @@ CSS.registerProperty({
 
 随后就可以在 CSS 中使用这个属性。其中比较关键的是 `syntax`，局限性是只能使用浏览器内置的实现，无法做到真正意义上的自定义解析。
 
-在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
+在该[示例](/examples/style/basic/#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
 
 ```js
 import { CSS, PropertySyntax } from '@antv/g';
@@ -396,7 +396,7 @@ const animation = myCustomElement.animate(
 
 ## interpolate
 
-是否支持插值。只有支持才能应用[动画](/zh/api/animation/waapi)。
+是否支持插值。只有支持才能应用[动画](/api/animation/waapi)。
 
 例如在下面的自定义元素中，我们定义了自定义属性 `angle`，它使用 `<angle>` 解析器并支持插值：
 

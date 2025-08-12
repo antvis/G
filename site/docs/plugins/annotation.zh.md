@@ -7,11 +7,11 @@ order: -1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zXxcR4O7aHQAAAAAAAAAAAAAARQnAQ" alt="selectable UI" width="200">
 
-[示例](/zh/examples/plugins#annotation)
+[示例](/examples/plugins/annotation/#annotation)
 
 ## 安装方式
 
-该插件依赖 [g-plugin-dragndrop](/zh/plugins/dragndrop) 提供的拖拽能力，因此在使用时需要同时注册：
+该插件依赖 [g-plugin-dragndrop](/plugins/dragndrop) 提供的拖拽能力，因此在使用时需要同时注册：
 
 ```js
 import { Plugin as PluginDragndrop } from '@antv/g-plugin-dragndrop';
@@ -23,14 +23,14 @@ renderer.registerPlugin(new PluginAnnotation());
 
 ## 使用方式
 
-该插件提供两种模式，可以通过 [setDrawingMode](/zh/plugins/annotation#setdrawingmode) 进行切换：
+该插件提供两种模式，可以通过 [setDrawingMode](/plugins/annotation#setdrawingmode) 进行切换：
 
 - 绘制模式。该模式下可按预设步骤绘制图形。
 - 编辑模式。该模式下选中 `selectable` 图形会出现对应的编辑组件，通过组件交互完成图形平移、resize 等编辑操作。
 
 ### 绘制模式
 
-进入绘制模式后，使用 [setDrawer](/zh/plugins/annotation#setdrawer) 设置对应图形的绘制工具，即可开始绘制。例如我们想绘制折线：
+进入绘制模式后，使用 [setDrawer](/plugins/annotation#setdrawer) 设置对应图形的绘制工具，即可开始绘制。例如我们想绘制折线：
 
 ```js
 plugin.setDrawingMode(true);
@@ -65,7 +65,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 #### 绘制关键点
 
-按下鼠标确定点的位置，随后可以使用该位置绘制任意图形例如 [Circle](/zh/api/basic/circle)。
+按下鼠标确定点的位置，随后可以使用该位置绘制任意图形例如 [Circle](/api/basic/circle)。
 
 #### 绘制矩形
 
@@ -109,7 +109,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 circle.style.selectable = true;
 ```
 
-目前我们支持以下**基础图形**：[Circle](/zh/api/basic/circle)、[Ellipse](/zh/api/basic/ellipse)、[Rect](/zh/api/basic/rect)、[Image](/zh/api/basic/image)、[Line](/zh/api/basic/line)、[Polyline](/zh/api/basic/polyline)
+目前我们支持以下**基础图形**：[Circle](/api/basic/circle)、[Ellipse](/api/basic/ellipse)、[Rect](/api/basic/rect)、[Image](/api/basic/image)、[Line](/api/basic/line)、[Polyline](/api/basic/polyline)
 
 另外 `anchorsVisibility` 可以控制锚点可见性。`maskDraggable` 可以控制蒙层是否可拖拽。
 
@@ -117,7 +117,7 @@ circle.style.selectable = true;
 
 我们支持通过交互或者 API 选中单个或者多个图形。
 
-通过 API 方式选中图形，可以调用 [selectDisplayObject](/zh/plugins/annotation#selectdisplayobject) 方法。图形被选中后会在上面出现一个蒙层，蒙层中包含若干锚点。
+通过 API 方式选中图形，可以调用 [selectDisplayObject](/plugins/annotation#selectdisplayobject) 方法。图形被选中后会在上面出现一个蒙层，蒙层中包含若干锚点。
 
 点击图形即可完成单选，这也是最常见的方式。我们支持以下两种方式完成多选：
 
@@ -131,7 +131,7 @@ circle.style.selectable = true;
 和选中图形相对，取消选中也有两种方式：
 
 - 点击画布空白区域或者另一个图形。
-- 通过 API 方式取消选中图形，调用 [deselectDisplayObject](/zh/plugins/annotation#deselectdisplayobject) 方法。
+- 通过 API 方式取消选中图形，调用 [deselectDisplayObject](/plugins/annotation#deselectdisplayobject) 方法。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
@@ -143,7 +143,7 @@ circle.style.selectable = true;
 
 在移动过程中以及移动完毕后会触发相应 [事件]()。
 
-另外也可以在选中图形后，使用键盘上下左右方向键移动图形，移动的步长可以通过 [arrowKeyStepLength](/zh/plugins/annotation#arrowkeysteplength) 配置。
+另外也可以在选中图形后，使用键盘上下左右方向键移动图形，移动的步长可以通过 [arrowKeyStepLength](/plugins/annotation#arrowkeysteplength) 配置。
 
 #### 改变图形大小
 
@@ -217,11 +217,11 @@ export interface SelectableStyle {
 }
 ```
 
-除了在初始化插件时指定，后续也可以随时使用 [updateSelectableStyle](/zh/plugins/annotation#updateselectablestyle) 方法修改。
+除了在初始化插件时指定，后续也可以随时使用 [updateSelectableStyle](/plugins/annotation#updateselectablestyle) 方法修改。
 
 #### selectionFill
 
-蒙层填充色，可以参考 [fill](/zh/api/basic/display-object#fill) 的取值，例如：
+蒙层填充色，可以参考 [fill](/api/basic/display-object#fill) 的取值，例如：
 
 ```js
 const plugin = new PluginAnnotation({
@@ -233,11 +233,11 @@ const plugin = new PluginAnnotation({
 
 #### selectionFillOpacity
 
-蒙层填充色透明度，可以参考 [fillOpacity](/zh/api/basic/display-object#fillopacity) 的取值。
+蒙层填充色透明度，可以参考 [fillOpacity](/api/basic/display-object#fillopacity) 的取值。
 
 #### selectionStroke
 
-蒙层描边颜色。可以参考 [stroke](/zh/api/basic/display-object#stroke) 的取值。
+蒙层描边颜色。可以参考 [stroke](/api/basic/display-object#stroke) 的取值。
 
 ```js
 const plugin = new PluginAnnotation({
@@ -249,15 +249,15 @@ const plugin = new PluginAnnotation({
 
 #### selectionStrokeOpacity
 
-蒙层描边透明度，可以参考 [strokeOpacity](/zh/api/basic/display-object#strokeopacity) 的取值。
+蒙层描边透明度，可以参考 [strokeOpacity](/api/basic/display-object#strokeopacity) 的取值。
 
 #### selectionStrokeWidth
 
-蒙层描边线宽。可以参考 [strokeWidth](/zh/api/basic/display-object#strokewidth) 的取值。
+蒙层描边线宽。可以参考 [strokeWidth](/api/basic/display-object#strokewidth) 的取值。
 
 #### selectionLineDash
 
-蒙层描边虚线。可以参考 [lineDash](/zh/api/basic/display-object#linedash) 的取值。
+蒙层描边虚线。可以参考 [lineDash](/api/basic/display-object#linedash) 的取值。
 
 #### anchorFill
 
@@ -285,7 +285,7 @@ const plugin = new PluginAnnotation({
 
 ### drawerStyle
 
-辅助绘制组件样式。初始值通过构造函数 `drawStyle` 参数指定，后续可通过 [updateDrawerStyle](/zh/plugins/annotation#updatedrawerstyle) 更新。
+辅助绘制组件样式。初始值通过构造函数 `drawStyle` 参数指定，后续可通过 [updateDrawerStyle](/plugins/annotation#updatedrawerstyle) 更新。
 
 例如我们想指定矩形绘制组件的描边颜色：
 
@@ -299,27 +299,27 @@ const annotationPlugin = new AnnotationPlugin({
 
 #### rectFill
 
-可参考 [fill](/zh/api/basic/display-object#fill)，默认值为 `'none'`。
+可参考 [fill](/api/basic/display-object#fill)，默认值为 `'none'`。
 
 #### rectFillOpacity
 
-可参考 [fillOpacity](/zh/api/basic/display-object#fillopacity)，默认值为 `1`。
+可参考 [fillOpacity](/api/basic/display-object#fillopacity)，默认值为 `1`。
 
 #### rectStroke
 
-可参考 [stroke](/zh/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
+可参考 [stroke](/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
 #### rectStrokeOpacity
 
-可参考 [strokeOpacity](/zh/api/basic/display-object#strokeopacity)，默认值为 `1`。
+可参考 [strokeOpacity](/api/basic/display-object#strokeopacity)，默认值为 `1`。
 
 #### rectStrokeWidth
 
-可参考 [strokeWidth](/zh/api/basic/display-object#strokewidth)，默认值为 `2.5`。
+可参考 [strokeWidth](/api/basic/display-object#strokewidth)，默认值为 `2.5`。
 
 #### rectLineDash
 
-可参考 [lineDash](/zh/api/basic/display-object#linedash)，默认值为 `6`。
+可参考 [lineDash](/api/basic/display-object#linedash)，默认值为 `6`。
 
 #### polylineVertexSize
 
@@ -331,31 +331,31 @@ const annotationPlugin = new AnnotationPlugin({
 
 #### polylineVertexFill
 
-可参考 [fill](/zh/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
+可参考 [fill](/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
 
 #### polylineVertexFillOpacity
 
-可参考 [fillOpacity](/zh/api/basic/display-object#fillopacity)，默认值为 `1`。
+可参考 [fillOpacity](/api/basic/display-object#fillopacity)，默认值为 `1`。
 
 #### polylineVertexStroke
 
-可参考 [stroke](/zh/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
+可参考 [stroke](/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
 #### polylineVertexStrokeOpacity
 
-可参考 [strokeOpacity](/zh/api/basic/display-object#strokeopacity)，默认值为 `1`。
+可参考 [strokeOpacity](/api/basic/display-object#strokeopacity)，默认值为 `1`。
 
 #### polylineVertexStrokeWidth
 
-可参考 [strokeWidth](/zh/api/basic/display-object#strokewidth)，默认值为 `2`。
+可参考 [strokeWidth](/api/basic/display-object#strokewidth)，默认值为 `2`。
 
 #### polylineSegmentStroke
 
-折线已绘制线段颜色，可参考 [stroke](/zh/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
+折线已绘制线段颜色，可参考 [stroke](/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
 #### polylineSegmentStrokeWidth
 
-折线已绘制线段线宽，可参考 [strokeWidth](/zh/api/basic/display-object#strokewidth)，默认值为 `2`。
+折线已绘制线段线宽，可参考 [strokeWidth](/api/basic/display-object#strokewidth)，默认值为 `2`。
 
 #### polylineActiveVertexSize
 
@@ -363,31 +363,31 @@ const annotationPlugin = new AnnotationPlugin({
 
 #### polylineActiveVertexFill
 
-可参考 [fill](/zh/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
+可参考 [fill](/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
 
 #### polylineActiveVertexFillOpacity
 
-可参考 [fillOpacity](/zh/api/basic/display-object#fillopacity)，默认值为 `1`。
+可参考 [fillOpacity](/api/basic/display-object#fillopacity)，默认值为 `1`。
 
 #### polylineActiveVertexStroke
 
-可参考 [stroke](/zh/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
+可参考 [stroke](/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
 #### polylineActiveVertexStrokeOpacity
 
-可参考 [strokeOpacity](/zh/api/basic/display-object#strokeopacity)，默认值为 `0.2`。
+可参考 [strokeOpacity](/api/basic/display-object#strokeopacity)，默认值为 `0.2`。
 
 #### polylineActiveVertexStrokeWidth
 
-可参考 [strokeWidth](/zh/api/basic/display-object#strokewidth)，默认值为 `2`。
+可参考 [strokeWidth](/api/basic/display-object#strokewidth)，默认值为 `2`。
 
 #### polylineActiveSegmentStroke
 
-折线正在绘制线段颜色，可参考 [stroke](/zh/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
+折线正在绘制线段颜色，可参考 [stroke](/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
 #### polylineActiveSegmentStrokeWidth
 
-折线正在绘制线段线宽，可参考 [strokeWidth](/zh/api/basic/display-object#strokewidth)，默认值为 `2.5`。
+折线正在绘制线段线宽，可参考 [strokeWidth](/api/basic/display-object#strokewidth)，默认值为 `2.5`。
 
 ## API
 
@@ -454,7 +454,7 @@ plugin.getSelectedDisplayObjects(); // [circle, path]
 
 ### updateSelectableStyle
 
-实时更新交互组件的[样式](/zh/plugins/annotation#辅助操作组件样式)，例如在 [示例](/zh/examples/plugins#annotation) 中修改蒙层填充色：
+实时更新交互组件的[样式](/plugins/annotation#辅助操作组件样式)，例如在 [示例](/examples/plugins/annotation/#annotation) 中修改蒙层填充色：
 
 ```js
 plugin.updateSelectableStyle({
@@ -559,7 +559,7 @@ export enum SelectableEvent {
 
 #### 选中事件
 
-当目标图形被选中时触发。在 [示例](/zh/examples/plugins#annotation) 中，我们监听了图片的选中事件：
+当目标图形被选中时触发。在 [示例](/examples/plugins/annotation/#annotation) 中，我们监听了图片的选中事件：
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -571,7 +571,7 @@ image.addEventListener(SelectableEvent.SELECTED, () => {});
 
 #### 取消选中事件
 
-当目标图形被取消选中时触发。在 [示例](/zh/examples/plugins#annotation) 中，我们监听了图片的取消选中事件：
+当目标图形被取消选中时触发。在 [示例](/examples/plugins/annotation/#annotation) 中，我们监听了图片的取消选中事件：
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -583,7 +583,7 @@ image.addEventListener(SelectableEvent.DESELECTED, () => {});
 
 #### 移动中事件
 
-拖拽蒙层时目标图形会跟着移动，此过程会持续触发移动中事件，类似 [g-plugin-dragndrop](/zh/plugins/dragndrop) 中的 `dragging`：
+拖拽蒙层时目标图形会跟着移动，此过程会持续触发移动中事件，类似 [g-plugin-dragndrop](/plugins/dragndrop) 中的 `dragging`：
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -603,7 +603,7 @@ image.addEventListener('moving', (e) => {
 
 #### 移动完毕事件
 
-当拖拽结束后，会触发该事件，类似 [g-plugin-dragndrop](/zh/plugins/dragndrop) 中的 `dragend`：
+当拖拽结束后，会触发该事件，类似 [g-plugin-dragndrop](/plugins/dragndrop) 中的 `dragend`：
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';

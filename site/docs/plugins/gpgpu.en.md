@@ -7,9 +7,9 @@ Provides GPGPU capabilities based on WebGPU. Writing Compute Shaders directly in
 
 For example, there are very many layout and analysis algorithms suitable for parallelism in graph scenarios.
 
-- [Fruchterman layout algorithm](/en/examples/gpgpu#fruchterman)
-- [Pagerank](/en/examples/gpgpu#pagerank)
-- [SSSP](/en/examples/gpgpu#bellman-ford)
+- [Fruchterman layout algorithm](/en/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
+- [Pagerank](/en/examples/gpgpu/graph-analysis-algorithm/#pagerank)
+- [SSSP](/en/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
 
 The performance improvement is very impressive when the number of nodes/edges in the graph reaches a certain size. In the case of pagerank, for example, the GPU version has more than 100 times better performance than the CPU version (300ms vs. 30s) for 1k nodes and 50w edges.
 

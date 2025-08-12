@@ -70,7 +70,7 @@ circle.style.r = '5px';
 circle.style.r = '50%';
 ```
 
-我们会将这样的字符串解析成 [CSSStyleValue](/zh/api/css/css-typed-om#cssstylevalue)，例如 `CSS.px(5)` 和 `CSS.percent(50)`，更多信息详见 [CSS Typed OM](/zh/api/css/css-typed-om)。
+我们会将这样的字符串解析成 [CSSStyleValue](/api/css/css-typed-om#cssstylevalue)，例如 `CSS.px(5)` 和 `CSS.percent(50)`，更多信息详见 [CSS Typed OM](/api/css/css-typed-om)。
 
 # CSS Properties & Values API
 

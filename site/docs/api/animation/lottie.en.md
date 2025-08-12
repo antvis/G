@@ -57,7 +57,7 @@ This object can be created by [loadAnimation](/en/api/animation/lottie#loadanima
 
 ### render
 
-Renders to [canvas](/en/api/canvas) and returns a [Group](/en/api/basic/group) as a container, which can subsequently be transformed to.
+Renders to [canvas](/en/api/canvas/intro) and returns a [Group](/en/api/basic/group) as a container, which can subsequently be transformed to.
 
 ```js
 const wrapper = animation.render(canvas);
@@ -71,7 +71,7 @@ The following two parameters are supported to be passed in.
 - Canvas. This will be added to the canvas under the root node
 - Any element that has been added to the canvas
 
-It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/en/api/canvas#ready).
+It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/en/api/canvas/scenegraph-lifecycle#ready).
 
 ### play
 
@@ -226,7 +226,7 @@ The following features are not supported at this time.
 - [skew]() corresponds to the `sk` field
 - [skewAxis]() corresponds to the `sa` field
 
-In this [example](/en/examples/ecosystem#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
+In this [example](/en/examples/ecosystem/lottie/#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="400">
 

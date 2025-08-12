@@ -30,7 +30,7 @@ const canvas = new Canvas({
 
 ## 获取 Device
 
-在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/api/canvas#画布特有事件) 事件处理器中或者等待 `canvas.ready` Promise 完成后，我们都可以通过渲染器获取 Device，[完整 Device API](/zh/plugins/device-renderer#device)：
+在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/api/canvas/event#画布特有事件) 事件处理器中或者等待 `canvas.ready` Promise 完成后，我们都可以通过渲染器获取 Device，[完整 Device API](/plugins/device-renderer#device)：
 
 ```js
 import { CanvasEvent } from '@antv/g';

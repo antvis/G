@@ -108,7 +108,7 @@ This method supports the following base graphics, not [Group](/en/api/basic/grou
 
 The result of the transformation is a third-order Bezier curve in the form of a string, which is easy to split, and the paths before and after the transformation are normalized to the same number of segments, and finally the control points in each segment are interpolated to achieve the animation effect.
 
-The transformation process will consider the transformation of the input graphics in the local coordinate system (declarative transformation using [transform](/en/api/basic/display-object#transform) or [imperative transformation method](/en/api/basic/display- object#transform operation)), so the generated path definition already contains transformation information and you can create [Path](/en/api/basic/path) directly based on that path definition. [Example](/en/examples/animation#convert-to-path).
+The transformation process will consider the transformation of the input graphics in the local coordinate system (declarative transformation using [transform](/en/api/basic/display-object#transform) or [imperative transformation method](/en/api/basic/display- object#transform operation)), so the generated path definition already contains transformation information and you can create [Path](/en/api/basic/path) directly based on that path definition. [Example](/en/examples/animation/morph/#convert-to-path).
 
 ```js
 const circle = new Circle({

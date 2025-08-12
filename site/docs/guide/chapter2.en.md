@@ -35,7 +35,7 @@ const canvas = new Canvas({
 
 ## Adding graphics to the canvas
 
-With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/en/api/canvas#ready-event) or [waiting for the ready Promise to return](/en/api/canvas#ready).
+With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/en/api/canvas/intro#ready-event) or [waiting for the ready Promise to return](/en/api/canvas/scenegraph-lifecycle#ready).
 
 ```javascript
 canvas.addEventListener(CanvasEvent.READY, () => {

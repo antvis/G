@@ -136,7 +136,7 @@ GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多�
 
 > 运行屏障（execution barrier），可以通过 barrier() 函数触发。如果计算着色器的一个请求遇到 barrier，那么它会停止运行，等待同一个本地工作组的所有请求也到达 barrier，然后才会执行后面的代码。
 
-例如在我们实现的 Reduce 求和的[例子](/zh/examples/gpgpu#reduce)中，使用了：
+例如在我们实现的 Reduce 求和的[例子](/examples/gpgpu/basic-algorithm/#reduce)中，使用了：
 
 - [线程间共享内存](https://www.w3.org/TR/WGSL/#address-spaces-workgroup)
 - [workgroupBarrier](https://www.w3.org/TR/WGSL/#sync-builtin-functions)

@@ -79,7 +79,7 @@ redirect_from:
 
 但在可视化这类相对静态的场景下就显得有意义了，例如在触发拾取后只更新图表的局部，其余部分保持不变。
 
-我们将该渲染器特性做成了开关，可以随时[根据具体情况关闭](/zh/api/renderer#enabledirtyrectanglerendering)。
+我们将该渲染器特性做成了开关，可以随时[根据具体情况关闭](/en/api/renderer/canvas#enabledirtyrectanglerendering)。
 
 ## batching
 
@@ -89,7 +89,7 @@ redirect_from:
 
 不同于 Canvas2D / Skia 提供的抽象层次较高的绘制 API，WebGL / WebGPU 提供了更低层次的 API，可以让我们将一批“同类”图形合并成一次绘制命令。在渲染引擎中，常用于渲染类似森林中大量树木这种场景。图场景同样十分契合，场景中包含大量同类但简单的图形（节点、边）。
 
-结合我们的[这个教程](/zh/guide/diving-deeper/camera)，配合 Chrome Spector.js 插件能看出，一次 draw call 完成了 8k 个节点的绘制，这是性能提升的关键：
+结合我们的[这个教程](/en/guide/diving-deeper/camera)，配合 Chrome Spector.js 插件能看出，一次 draw call 完成了 8k 个节点的绘制，这是性能提升的关键：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*-8GtQrpM-jsAAAAAAAAAAAAAARQnAQ)
 

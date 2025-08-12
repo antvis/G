@@ -126,7 +126,7 @@ The z-axis coordinate of the second endpoint in the local coordinate system.
 
 ### isBillboard
 
-Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d#force-3d)
+Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d/3d-basic/#force-3d)
 
 ### markerStart
 
@@ -319,4 +319,4 @@ new Line({
 });
 ```
 
-2D lines are guaranteed to have a consistent width under orthogonal projection, but not under perspective projection. In some 3D scenes where the line width needs to be consistent at all times, you can turn on [isBillboard](/en/api/basic/line#isbillboard), [example](/en/examples/3d#force-3d)
+2D lines are guaranteed to have a consistent width under orthogonal projection, but not under perspective projection. In some 3D scenes where the line width needs to be consistent at all times, you can turn on [isBillboard](/en/api/basic/line#isbillboard), [example](/en/examples/3d/3d-basic/#force-3d)

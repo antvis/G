@@ -38,7 +38,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
 - Physics Engine
   - [g-plugin-box2d](/en/plugins/box2d) Based on [Box2D](https://box2d.org/).
   - [g-plugin-matterjs](/en/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-  - [g-plugin-physx](/en/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+  - [g-plugin-physx](/en/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
 - Layout Engine
   - [g-plugin-yoga](/en/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 - GPGPU
@@ -50,7 +50,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
 
 ### CDN
 
-[Import the core and renderer code](/en/guide/introduce#cdn) in UMD format first, then import plugin code in the same way.
+[Import the core and renderer code](/en/guide/getting-started#cdn-方式) in UMD format first, then import plugin code in the same way.
 
 ```html
 <script src="https://unpkg.com/@antv/g-plugin-rough-canvas-renderer@1.7.16/dist/index.umd.min.js"></script>
@@ -66,13 +66,13 @@ const plugin = new window.G.RoughCanvasRenderer.Plugin();
 
 ### NPM Module
 
-[Install core and renderer from NPM](/en/guide/introduce#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) as an example:
+[Install core and renderer from NPM](/en/guide/getting-started#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) as an example:
 
 ```bash
 npm install @antv/g-plugin-rough-canvas-renderer --save
 ```
 
-Then we can [registerPlugin](/en/api/renderer/renderer#registerplugin) on renderer:
+Then we can [registerPlugin](/en/api/renderer/intro#registerplugin) on renderer:
 
 ```js
 import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
@@ -82,7 +82,7 @@ renderer.registerPlugin(new Plugin());
 
 ## Relationship with Renderer
 
-These [renderers](/en/api/renderer/renderer) essentially consist of a set of plug-ins through which their capabilities can also be extended.
+These [renderers](/en/api/renderer/intro) essentially consist of a set of plug-ins through which their capabilities can also be extended.
 
 ```js
 renderer.registerPlugin(new Plugin());

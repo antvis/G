@@ -21,7 +21,7 @@ For transition effects, we currently support:
 - Tween, such as `linear`, `cubic-bezier` and custom easing function.
 - Spring, an effect based on real physical springs.
 
-Let's start with a Keyframe animation, implementing a [ScaleIn](https://animista.net/play/entrances/scale-in) animation [example](/en/examples/animation#lifecycle).
+Let's start with a Keyframe animation, implementing a [ScaleIn](https://animista.net/play/entrances/scale-in) animation [example](/en/examples/animation/animation-basic/#lifecycle).
 
 ```js
 const scaleInCenter = circle.animate(
@@ -158,7 +158,7 @@ const currentTime = animation.currentTime;
 animation.currentTime = newTime;
 ```
 
-In this [example](/en/examples/animation#offset-path), you can change the properties at any time. Since the single execution time of this animation is 3500ms, and the jogging function is linear, the small circle will return to the position corresponding to the path, and then continue to move.
+In this [example](/en/examples/animation/animation-effects/#offset-path), you can change the properties at any time. Since the single execution time of this animation is 3500ms, and the jogging function is linear, the small circle will return to the position corresponding to the path, and then continue to move.
 
 #### playState
 
@@ -204,7 +204,7 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
 );
 ```
 
-Or to complete a set of sequential animations, such as having a circle move first to the right and then down, [example](/en/examples/animation#sequence).
+Or to complete a set of sequential animations, such as having a circle move first to the right and then down, [example](/en/examples/animation/animation-basic/#sequence).
 
 ```js
 (async () => {
@@ -237,7 +237,7 @@ Or to complete a set of sequential animations, such as having a circle move firs
 
 #### onfinish
 
-Set the callback function when the animation is finished, similar to [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) event. [example](/en/examples/animation#lifecycle)
+Set the callback function when the animation is finished, similar to [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) event. [example](/en/examples/animation/animation-basic/#lifecycle)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish>
 
@@ -256,7 +256,7 @@ The event object in the callback function is [AnimationPlaybackEvent](https://de
 
 #### onframe
 
-Called for animations that are running, at the end of each frame, when the properties have finished interpolating. It will not be called if the animation is paused, not started or finished. [example](/en/examples/animation#onframe)
+Called for animations that are running, at the end of each frame, when the properties have finished interpolating. It will not be called if the animation is paused, not started or finished. [example](/en/examples/animation/animation-basic/#onframe)
 
 ```js
 animation.onframe = function (e) {
@@ -286,7 +286,7 @@ animation.playbackRate *= 1.1;
 
 ### Functions
 
-The following methods allow you to manually control the running state of the animation, such as pause, restart, end, etc. [example](/en/examples/animation#lifecycle)
+The following methods allow you to manually control the running state of the animation, such as pause, restart, end, etc. [example](/en/examples/animation/animation-basic/#lifecycle)
 
 #### play()
 
@@ -331,7 +331,7 @@ Flip the animation running direction, the effect is the same as setting playback
 
 #### updatePlaybackRate()
 
-Controls the animation run rate, the default rate is 1, [example](/en/examples/animation#easing).
+Controls the animation run rate, the default rate is 1, [example](/en/examples/animation/animation-basic/#easing).
 
 ```js
 animation.updatePlaybackRate(2); // accelerate the playback rate
@@ -411,7 +411,7 @@ In the opening example, we defined two Keyframes.
 
 ### Properties that support transformations
 
-The following attributes are currently supported for transformations, [example](/en/examples/animation#multiple-attributes).
+The following attributes are currently supported for transformations, [example](/en/examples/animation/animation-basic/#multiple-attributes).
 
 | name | type | range of values | remarks |
 | --- | --- | --- | --- |
@@ -431,7 +431,7 @@ The following attributes are currently supported for transformations, [example](
 | lineDashOffset | `number` | e.g. `-20` `0` `20` | 设置虚线的偏移量，在[蚂蚁线效果](/en/api/animation/waapi#蚂蚁线)中使用 |
 | path | `string` | e.g. `M 100,100 L 200,200` | Path 的定义，在[形变动画](/en/api/animation/waapi#形变动画)中使用 |
 
-For custom properties, you can [register them in the style system](/en/api/css/css-properties-values-api#custom-properties). In this [example](/en/examples/style#custom-property), we register several different types of custom properties to allow them to support interpolation.
+For custom properties, you can [register them in the style system](/en/api/css/css-properties-values-api#custom-properties). In this [example](/en/examples/style/basic/#custom-property), we register several different types of custom properties to allow them to support interpolation.
 
 where transform is consistent with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) and supports the following property values:
 
@@ -509,7 +509,7 @@ export default {
 };
 ```
 
-[Example](/en/examples/animation#animations)
+[Example](/en/examples/animation/animation-effects/#animations)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ)
 
@@ -568,7 +568,7 @@ The duration of the animation, in milliseconds, default is `auto`, same effect a
 
 ### easing
 
-The easing function, which defaults to `linear`, we also have a series of common functions built in. [example](/en/examples/animation#easing)
+The easing function, which defaults to `linear`, we also have a series of common functions built in. [example](/en/examples/animation/animation-basic/#easing)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9y3_TIoOUPMAAAAAAAAAAAAAARQnAQ" width="400" alt="easing">
 
@@ -722,7 +722,7 @@ Same as [currentTime](/en/api/animation/waapi#currenttime), in milliseconds.
 
 Returns the progress within the current iteration, in the range `[0-1]`. Returns null when the animation is not running.
 
-In this [example](/en/examples/animation#lifecycle), we print the progress value in the [onframe](/en/api/animation/waapi#onframe) callback function at the end of each frame.
+In this [example](/en/examples/animation/animation-basic/#lifecycle), we print the progress value in the [onframe](/en/api/animation/waapi#onframe) callback function at the end of each frame.
 
 ```js
 animation.onframe = (e) => {
@@ -810,7 +810,7 @@ circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
 });
 ```
 
-[Example](/en/examples/animation#offset-path).
+[Example](/en/examples/animation/animation-effects/#offset-path).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ" width="400" alt="path animation">
 
@@ -832,13 +832,13 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 });
 ```
 
-[Example](/en/examples/animation#marching-ants).
+[Example](/en/examples/animation/animation-effects/#marching-ants).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ant animation">
 
 ## Stroke Animation
 
-A common animation effect is to show the stroke from nothing to something. The [lineDash](/api/basic/display-object#linedash) attribute specifies the length of the solid line and interval of the stroke, and the initial state of the stroke, `nothing', can be represented by`[0, length]`, while the full state can be represented by`[length, 0]`. The length of the stroke can be obtained by graphical methods, such as Path's [getTotalLength](/en/api/basic/path#gettotallength-number) method.
+A common animation effect is to show the stroke from nothing to something. The [lineDash](/en/api/basic/display-object#linedash) attribute specifies the length of the solid line and interval of the stroke, and the initial state of the stroke, `nothing', can be represented by`[0, length]`, while the full state can be represented by`[length, 0]`. The length of the stroke can be obtained by graphical methods, such as Path's [getTotalLength](/en/api/basic/path#gettotallength-number) method.
 
 ```js
 const length = path.getTotalLength();
@@ -850,7 +850,7 @@ path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
 });
 ```
 
-[Example](/en/examples/animation#line-dash).
+[Example](/en/examples/animation/animation-effects/#line-dash).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
@@ -882,7 +882,7 @@ path.animate([{ path: path1 }, { path: path2 }], {
 });
 ```
 
-[Example](/en/examples/animation#morph).
+[Example](/en/examples/animation/morph/#morph).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ" width="400" alt="morphing">
 
@@ -909,7 +909,7 @@ path.animate([{ path: originalPath }, { path: circlePath }], {
 
 The base graphics that currently support conversion paths are: [Circle](/en/api/basic/circle) [Ellipse](/en/api/basic/ellipse) [Rect](/en/api/basic/rect) [Line](/en/api/basic/line) [Polyline](/en/api/basic/polyline) [Polygon](/en/api/basic/polygon) [Path](/en/api/basic/path).
 
-[Example](/en/examples/animation#morph)
+[Example](/en/examples/animation/morph/#morph)
 
 Note that the transformation of these base shapes affects the final generated path string. For example, the original path of the following pentagram is too large and can be scaled and animated.
 

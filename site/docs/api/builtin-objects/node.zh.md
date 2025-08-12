@@ -12,7 +12,7 @@ order: 2
 
 ## 继承自
 
-[EventTarget](/zh/api/builtin-objects/event-target)
+[EventTarget](/api/builtin-objects/event-target)
 
 ## 属性
 
@@ -48,7 +48,7 @@ export enum Shape {
 
 ### nodeValue
 
-只读，返回节点字符串，默认为 null。[Text](/zh/api/basic/text) 会返回文本字符串。
+只读，返回节点字符串，默认为 null。[Text](/api/basic/text) 会返回文本字符串。
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue>
 
@@ -74,7 +74,7 @@ circle.isConnected; // true
 
 ### ownerDocument
 
-只读，指向画布的入口 [Document](/zh/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
+只读，指向画布的入口 [Document](/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
 
 ```js
 circle.ownerDocument; // null
@@ -128,7 +128,7 @@ circle.ownerDocument; // canvas.document
 
 ### textContent
 
-读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/api/basic/text) 会返回文本字符串。
+读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/api/basic/text) 会返回文本字符串。
 
 在读取时，该方法会递归计算子节点，将最终拼接而成的字符串返回：
 
@@ -143,7 +143,7 @@ text.textContent; // 'test'
 group.textContent; // 'test'
 ```
 
-在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/zh/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/zh/api/basic/text)，会创建一个 [Text](/zh/api/basic/text) 作为子节点并设置文本内容。
+在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/api/basic/text)，会创建一个 [Text](/api/basic/text) 作为子节点并设置文本内容。
 
 ```js
 const text = new Text({ style: { text: 'test' } });
@@ -184,7 +184,7 @@ clonedCircle.getPosition(); // [10, 20]
 - 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
 - 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
 
-在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+在这个[示例](/examples/scenegraph/basic/#clone)中，我们展示了以上特性：
 
 - 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
 - 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽

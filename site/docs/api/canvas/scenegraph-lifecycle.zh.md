@@ -5,7 +5,7 @@ order: 2
 
 ## 添加/删除场景图节点
 
-由于画布并没有继承 [Node](/zh/api/builtin-objects/node)，因此它本身并不具备节点操作能力。但我们增加了一些快捷方式，以下节点操作本质上都是在根节点上完成的，例如以下两种写法等价：
+由于画布并没有继承 [Node](/api/builtin-objects/node)，因此它本身并不具备节点操作能力。但我们增加了一些快捷方式，以下节点操作本质上都是在根节点上完成的，例如以下两种写法等价：
 
 ```js
 canvas.appendChild(circle);
@@ -69,7 +69,7 @@ canvas.destroyChildren();
 
 ### ready
 
-初始化工作完成后，返回一个 Promise，等价于监听 [CanvasEvent.READY](/zh/api/canvas/event#ready-事件) 事件：
+初始化工作完成后，返回一个 Promise，等价于监听 [CanvasEvent.READY](/api/canvas/event#ready-事件) 事件：
 
 ```js
 await canvas.ready;
@@ -81,7 +81,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {});
 
 ### render
 
-渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/zh/guide/diving-deeper/rendering-on-demand) [示例](/zh/examples/canvas/canvas-basic/#rendering-on-demand)：
+渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/guide/diving-deeper/rendering-on-demand) [示例](/examples/canvas/canvas-basic/#rendering-on-demand)：
 
 ```js
 // 关闭自动渲染

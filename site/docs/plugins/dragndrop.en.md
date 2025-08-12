@@ -3,7 +3,7 @@ title: g-plugin-dragndrop
 order: 7
 ---
 
-Drag and drop based on [PointerEvents](/en/api/event#interaction events). In this [example](/en/examples/plugins#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
+Drag and drop based on [PointerEvents](/en/api/event#interaction events). In this [example](/en/examples/plugins/dragndrop/#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
@@ -42,7 +42,7 @@ const plugin = new Plugin({
 });
 ```
 
-In this [example](/en/examples/plugins#dragndrop), dragging in a blank area pans the camera with [camera.pan()](/en/api/camera#pan) to achieve the visual effect of the entire canvas moving.
+In this [example](/en/examples/plugins/dragndrop/#dragndrop), dragging in a blank area pans the camera with [camera.pan()](/en/api/camera/action#pan) to achieve the visual effect of the entire canvas moving.
 
 ```js
 const camera = canvas.getCamera();
@@ -71,7 +71,7 @@ const plugin = new Plugin({
 });
 ```
 
-In this [example](/en/examples/plugins#dragndrop), when we drag the soccer to a blank area, the console prints the following message.
+In this [example](/en/examples/plugins/dragndrop/#dragndrop), when we drag the soccer to a blank area, the console prints the following message.
 
 ```js
 canvas.addEventListener('drop', function (e) {
@@ -87,7 +87,7 @@ We provide the following configurations for what conditions are met to determine
 
 This configuration item is used to configure the detection threshold of the drag distance in pixels, and only **greater than** this value will be passed. The default value is 0.
 
-In this [example](/en/examples/plugins#dragndrop), we have configured this option to 10, i.e. only dragging more than 10 pixels will trigger a drag event.
+In this [example](/en/examples/plugins/dragndrop/#dragndrop), we have configured this option to 10, i.e. only dragging more than 10 pixels will trigger a drag event.
 
 ```js
 const plugin = new Plugin({
@@ -99,7 +99,7 @@ const plugin = new Plugin({
 
 This configuration item is used to configure the detection threshold of drag and drop time in milliseconds, and only **greater than** this value will be passed. The default value is 0.
 
-In this [example](/en/examples/plugins#dragndrop), we have configured this option to 100, i.e. the drag event will only be triggered if the drag exceeds 100 milliseconds.
+In this [example](/en/examples/plugins/dragndrop/#dragndrop), we have configured this option to 100, i.e. the drag event will only be triggered if the drag exceeds 100 milliseconds.
 
 ```js
 const plugin = new Plugin({
@@ -146,7 +146,7 @@ const ball = new Image({
 });
 ```
 
-At this point, you can listen to drag-related events for the graph, including the following three types of events, the [target](/en/api/event#target) of the event object are the graph being dragged.
+At this point, you can listen to drag-related events for the graph, including the following three types of events, the [target](/en/api/event/event-object#target) of the event object are the graph being dragged.
 
 - dragstart triggered at the start of dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
 - drag Triggered frequently during dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
@@ -204,7 +204,7 @@ const gate = new Image({
 });
 ```
 
-At this point you can listen to drag/drop related events in the placement area, including the following three types of events, the [target](/en/api/event#target) of the event object are the graphics of the placement area.
+At this point you can listen to drag/drop related events in the placement area, including the following three types of events, the [target](/en/api/event/event-object#target) of the event object are the graphics of the placement area.
 
 - dragenter has the graphic being dragged into the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
 - dragleave has graphics being dragged out of the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>

@@ -94,7 +94,7 @@ The renderer relies on the rendering capabilities of the SVG DOM API and is not 
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg), we will work with [JSDOM](https://github.com/jsdom/node-) on the Node side jsdom) with [node-canvas](https://github.com/Automattic/node-canvas) to render the result image and compare it with the benchmark image. Other server-side rendering scenes can also follow the following steps.
 
-1. Use [unregisterPlugin](/en/api/renderer/renderer#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/en/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/en/plugins/dom-interaction).
+1. Use [unregisterPlugin](/en/api/renderer/intro#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/en/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/en/plugins/dom-interaction).
 2. Create a canvas container using JSDOM.
 3. Use the container from the previous step to create the canvas, and pass in the `document` created by JSDOM instead of `window.document` in the browser environment, and the same for `raf`.
 4. Normal use of [g-svg](/en/api/renderer/svg) renderer to create scenes via G's API.

@@ -18,6 +18,6 @@ const webglRenderer = new WebGLRenderer();
 webglRenderer.registerPlugin(new Plugin());
 ```
 
-[Example](/en/examples/plugins#orbit-control)：
+[Example](/en/examples/plugins/control/#orbit-control)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1u8eRKMbVX8AAAAAAAAAAAAAARQnAQ)

@@ -11,10 +11,10 @@ Create a Landmark with the following parameters.
 
 - markName
 - options Camera parameters, including.
-  - `position` The position of the camera in the world coordinate system, taking the type reference [setPosition](/en/api/camera#setposition)
-  - `focalPoint` Viewpoint in the world coordinate system, reference to the value type [setFocalPoint](/en/api/camera#setfocalpoint)
-  - `roll` Rotation angle, take the value type reference [setRoll](/en/api/camera#setroll)
-  - `zoom` Zoom scaling, take the value type reference [setZoom](/en/api/camera#setzoom)
+  - `position` The position of the camera in the world coordinate system, taking the type reference [setPosition](/en/api/camera/action#pan)
+  - `focalPoint` Viewpoint in the world coordinate system, reference to the value type [setFocalPoint](/en/api/camera/action#pan)
+  - `roll` Rotation angle, take the value type reference [setRoll](/en/api/camera/action#rotate)
+  - `zoom` Zoom scaling, take the value type reference [setZoom](/en/api/camera/action#dolly)
 
 ```js
 camera.createLandmark('mark1', {

@@ -10,8 +10,8 @@ DisplayObject is the base class of all graph like [Group](/en/api/basic/group), 
 We tried to make it as compatible as possible with [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element), which in addition to reducing learning costs, allows us to take advantage of the existing Web ecosystem by disguising ourselves as a DOM Element, e.g.
 
 - Using CSS selectors for [advanced queries](/en/plugins/css-select).
-- Using Hammer.js for [gesture](/en/api/event#直接使用-hammerjs)
-- Using Interact.js for [Drag'n'Drop and Resize](/en/api/event#直接使用-interactjs)
+- Using Hammer.js for [gesture](/en/api/basic/display-object#扩展手势)
+- Using Interact.js for [Drag'n'Drop and Resize](/en/api/basic/display-object#实现-dragdropresize)
 - [Taking over D3's rendering implementation](/en/guide/diving-deeper/d3)
 - [Taking over Observable Plot's rendering implementation](/en/guide/diving-deeper/plot)
 
@@ -100,9 +100,9 @@ group.class;
 
 ## interactive
 
-Whether to support responding to [events](/en/api/event), default is `true`. Can be turned off on some graphics that do not need to support interaction.
+Whether to support responding to [events](/en/api/event/intro), default is `true`. Can be turned off on some graphics that do not need to support interaction.
 
-For example, we don't want the following circle to respond to the mouse `mouseenter/leave` event, [example](/en/examples/event#circle)
+For example, we don't want the following circle to respond to the mouse `mouseenter/leave` event, [example](/en/examples/event/event-others/#circle)
 
 ```js
 const circle = new Circle({
@@ -158,7 +158,7 @@ rect.style.setProperty('line-width', 4);
 
 ### Position
 
-The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/api/display-object#panning).
+The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/api/basic/display-object#平移).
 
 ```js
 const circle = new Cirle({
@@ -309,7 +309,7 @@ This attribute is a presentation attribute defining the algorithm to use to dete
 - `'nonzero'` Default <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero>
 - `'evenodd'` <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd>
 
-This [example](/en/examples/shape#polygon) shows the fill effects of `'nonzero'` and `'evenodd'` in order.
+This [example](/en/examples/shape/polygon/#polygon) shows the fill effects of `'nonzero'` and `'evenodd'` in order.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
 
@@ -411,7 +411,7 @@ Dashed line offset, type `number`, transform it to achieve [marching ants animat
 
 ### Shadow
 
-Add shadow effect at the bottom of the shape, support configuring shadow color, blur radius and horizontal/vertical offset distance. [example](/en/examples/shape#circle).
+Add shadow effect at the bottom of the shape, support configuring shadow color, blur radius and horizontal/vertical offset distance. [example](/en/examples/shape/circle/#circle).
 
 Shadows do not affect the graph's [Geometry Bounds](/en/api/basic/concept#bounding-box), e.g. in the following figure, after adding a shadow to a circle with a radius of 100, the geometry wrapping box size remains the same.
 
@@ -477,7 +477,7 @@ Filters can perform some processing on the generated image, such as blurring, hi
 - SVG Filter: <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter>
 - Post Processing in WebGL.
 
-Referring to the CSS Filter syntax, we support applying one or more filter effects to a shape, [example](/en/examples/shape#filter).
+Referring to the CSS Filter syntax, we support applying one or more filter effects to a shape, [example](/en/examples/shape/image/#filter).
 
 ```js
 circle.style.filter = 'blur(5px)';
@@ -503,7 +503,7 @@ As with shadows, blurring also does not affect the size of the geometry bounds f
 circle.style.filter = 'blur(5px)';
 ```
 
-The following figure shows the blurring effect of 2px 4px and 10px in order, [example](/en/examples/shape#filter).
+The following figure shows the blurring effect of 2px 4px and 10px in order, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ" width="300" alt="blur filter">
 
@@ -516,7 +516,7 @@ circle.style.filter = 'brightness(2)';
 circle.style.filter = 'brightness(200%)';
 ```
 
-The following figure shows the bright effects of 0 100% and 200% in order, [example](/en/examples/shape#filter).
+The following figure shows the bright effects of 0 100% and 200% in order, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ" width="300" alt="brightness filter">
 
@@ -535,7 +535,7 @@ The shading does not affect the size of the geometry bounding box of the graph.
 circle.style.filter = 'drop-shadow(16px 16px 10px black)';
 ```
 
-The following figure shows the effect of the above configuration in turn, [example](/en/examples/shape#filter).
+The following figure shows the effect of the above configuration in turn, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="300" alt="drop-shadow filter">
 
@@ -548,7 +548,7 @@ circle.style.filter = 'contrast(2)';
 circle.style.filter = 'contrast(200%)';
 ```
 
-The following figure shows the contrast effect of 0, 1 and 10 in order，[example](/en/examples/shape#filter).
+The following figure shows the contrast effect of 0, 1 and 10 in order，[example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ" width="300" alt="contrast filter">
 
@@ -561,7 +561,7 @@ circle.style.filter = 'grayscale(1)';
 circle.style.filter = 'grayscale(100%)';
 ```
 
-The following figure shows the grayscale effect of 0 50% and 100% in order, [example](/en/examples/shape#filter).
+The following figure shows the grayscale effect of 0 50% and 100% in order, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ" alt="grayscale filter" width="300">
 
@@ -574,7 +574,7 @@ circle.style.filter = 'saturate(1)';
 circle.style.filter = 'saturate(100%)';
 ```
 
-The following figure shows the saturation effect at 0 50% and 100% in order, [example](/en/examples/shape#filter).
+The following figure shows the saturation effect at 0 50% and 100% in order, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
@@ -587,7 +587,7 @@ circle.style.filter = 'sepia(1)';
 circle.style.filter = 'sepia(100%)';
 ```
 
-The following figure shows the results of 0 50% and 100% processing in order, [example](/en/examples/shape#filter).
+The following figure shows the results of 0 50% and 100% processing in order, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
@@ -600,7 +600,7 @@ circle.style.filter = 'hue-rotate(30deg)';
 circle.style.filter = 'hue-rotate(180deg)';
 ```
 
-The following figure shows the effect of 0, 90deg and 180deg processing in turn, [example](/en/examples/shape#filter).
+The following figure shows the effect of 0, 90deg and 180deg processing in turn, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
@@ -613,7 +613,7 @@ circle.style.filter = 'invert(1)';
 circle.style.filter = 'invert(100%)';
 ```
 
-The following figure shows in turn the effect of 0, 50% and 100% inversions, [example](/en/examples/shape#filter).
+The following figure shows in turn the effect of 0, 50% and 100% inversions, [example](/en/examples/shape/image/#filter).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
@@ -639,7 +639,7 @@ For example, in the scene below, li2 is displayed on top of li1 by default becau
 li1.style.zIndex = 1; // li1 在 li2 之上
 ```
 
-For example, even though li2 has a much larger zIndex than ul2, it can only be under ul2 because ul1 is smaller than ul2, [example](/en/examples/scenegraph#z-index)
+For example, even though li2 has a much larger zIndex than ul2, it can only be under ul2 because ul1 is smaller than ul2, [example](/en/examples/scenegraph/basic/#z-index)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" alt="z-index" width="500">
 
@@ -695,9 +695,9 @@ There are two points to note about visibility.
 
 ### clipPath
 
-Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event#shapes).
+Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event/event-others/#shapes).
 
-For example, if we want to create a picture that is cropped into a circle, so that the cropping area is just in the center of the picture (size 200 \* 200), we can set the world coordinates of the circle in the cropping area to `[100, 100]`. [example](/en/examples/shape#clip).
+For example, if we want to create a picture that is cropped into a circle, so that the cropping area is just in the center of the picture (size 200 \* 200), we can set the world coordinates of the circle in the cropping area to `[100, 100]`. [example](/en/examples/style/clip-path/#clip).
 
 ```js
 const image = new Image({
@@ -755,7 +755,7 @@ image.setClip(null);
 
 #### Caveats
 
-The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
+The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/style/clip-path/#clip).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
@@ -859,11 +859,11 @@ To set how the graph responds to interaction events, see. <https://developer.moz
   - Triggered in graphics fill area, not affected by [stroke](/en/api/basic/display-object#stroke) and [visibility](/en/api/basic/display-object#visibility) values.
 - `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) [visibility](/en/api/ basic/display-object#visibility) is affected by the value of
 
-In this [example](/en/examples/shape#circle), we set the property to `stroke`, so the filled area will not respond to events.
+In this [example](/en/examples/shape/circle/#circle), we set the property to `stroke`, so the filled area will not respond to events.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2a6jSpYP0LoAAAAAAAAAAAAAARQnAQ" alt="pointer-events stroke">
 
-In this [example](/en/examples/style#inheritance), we can easily control the interactivity based on the inheritance mechanism.
+In this [example](/en/examples/style/basic/#inheritance), we can easily control the interactivity based on the inheritance mechanism.
 
 ```js
 // The entire canvas does not respond to interaction events
@@ -878,7 +878,7 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 
 When [lineWidth](/en/api/basic/display-object#linewidth) is small, the interactable area becomes smaller, sometimes we want to increase this area to make the "thin line" easier to be picked up. Note that this property does not affect the rendering effect.
 
-In the [example](/en/examples/shape#polyline) below, we set this property to `50`, so that the line width is equal to `50 + the original line width` when picking up, making it easier to pick up when close:
+In the [example](/en/examples/shape/polyline/#polyline) below, we set this property to `50`, so that the line width is equal to `50 + the original line width` when picking up, making it easier to pick up when close:
 
  <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
 
@@ -979,7 +979,7 @@ Using the [transformOrigin](/en/api/basic/display-object#transformorigin) proper
 | setOrigin | `[number, number]` or `[number, number, number]` or `number, number` or `number, number, number` | - | Set the scaling and rotation center in the local coordinate system. |
 | getOrigin | `[number, number, number]` | - | Get the scaling and rotation center in the local coordinate system. |
 
-Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph#origin).
+Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph/basic/#origin).
 
 The default value is `[0, 0]`.
 
@@ -1011,7 +1011,7 @@ circle.scale(0.5);
 circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
 ```
 
-In the following [example](/en/examples/scenegraph#origin), we have created a rectangle whose default anchor point is the upper left corner of the enclosing box in the local coordinate system. If we want it to rotate at the center of the enclosing box, we need to set the transformation center to be offset by half the length and width relative to the anchor point, i.e., `[150, 100]`.
+In the following [example](/en/examples/scenegraph/basic/#origin), we have created a rectangle whose default anchor point is the upper left corner of the enclosing box in the local coordinate system. If we want it to rotate at the center of the enclosing box, we need to set the transformation center to be offset by half the length and width relative to the anchor point, i.e., `[150, 100]`.
 
 ```js
 const rect = new Rect({
@@ -1261,7 +1261,7 @@ Caveats:
 - The cloned node does not retain the parent-child relationship of the original node and needs to be added to the canvas using `appendChild` before it will be rendered
 - Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original drawing are not copied
 
-In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
+In this [example](/en/examples/scenegraph/basic/#clone), we demonstrate the above features.
 
 - The style properties of the original node can be changed at any time, and the copy obtained will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
 - However, since no event listeners will be copied, only the original node can be dragged
@@ -1317,7 +1317,7 @@ rect.style.width = '100px';
 rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-Note that currently, when using [animation](/en/api/animation/waapi), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
+Note that currently, when using [animation](/en/api/animation/waapi), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation/animation-basic/#onframe).
 
 ```js
 animation.onframe = () => {
@@ -1383,9 +1383,9 @@ circle.destroyed; // true
 
 ### Lifecycle Event Listening
 
-In the [event system](/en/api/event), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
+In the [event system](/en/api/event/intro), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
 
-In addition to interactive events such as click and mouseenter, we also provide a series of built-in node lifecycle events, such as listening for node additions and deletions, which also have full propagation paths (bubbling, capturing), [example](/en/examples/event#builtin).
+In addition to interactive events such as click and mouseenter, we also provide a series of built-in node lifecycle events, such as listening for node additions and deletions, which also have full propagation paths (bubbling, capturing), [example](/en/examples/event/event-others/#builtin).
 
 ```js
 import { ElementEvent, MutationEvent } from '@antv/g';

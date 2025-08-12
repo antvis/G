@@ -29,7 +29,7 @@ const text = new Text({
 canvas.appendChild(text);
 ```
 
-In this [example](/en/examples/style#inheritance), modifying the font size of the root node also affects the child elements, and with units like `rem` we can easily achieve an "elastic layout:"
+In this [example](/en/examples/style/basic/#inheritance), modifying the font size of the root node also affects the child elements, and with units like `rem` we can easily achieve an "elastic layout:"
 
 ```js
 canvas.document.documentElement.style.fontSize = `32px`;

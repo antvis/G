@@ -3,7 +3,7 @@ title: g-plugin-canvas-path-generator
 order: 4
 ---
 
-使用 CanvasRenderingContext2D 绘制各个图形的路径，例如使用 [arcTo()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/arcTo) 绘制 [Circle](/zh/api/basic/circle)。
+使用 CanvasRenderingContext2D 绘制各个图形的路径，例如使用 [arcTo()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/arcTo) 绘制 [Circle](/api/basic/circle)。
 
 除了用于最终渲染，在使用 [isPointInPath()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath) 前也需要在离屏画布中绘制。
 
@@ -18,7 +18,7 @@ export const PathGenerator = Syringe.defineToken('PathGenerator');
 
 ### PathGeneratorFactory
 
-例如目前在 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 和 [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 这两个插件中都能看到通过 `PathGeneratorFactory` 这个 token 将工厂方法注入，传入 [nodeName](/zh/api/builtin-objects/node#nodename) 就能得到对应图形路径的绘制方法：
+例如目前在 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 和 [g-plugin-canvas-picker](/plugins/canvas-picker) 这两个插件中都能看到通过 `PathGeneratorFactory` 这个 token 将工厂方法注入，传入 [nodeName](/api/builtin-objects/node#nodename) 就能得到对应图形路径的绘制方法：
 
 ```js
 @inject(PathGeneratorFactory)

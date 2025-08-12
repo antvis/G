@@ -7,21 +7,21 @@ redirect_from:
 
 通常用户使用 G 绘图可以分成三步：
 
-1. 使用[场景图](/zh/guide/diving-deeper/scenegraph)描述待渲染对象
-2. [按需引入](zh/docs/guide/diving-deeper/switch-renderer)一个或多个 Renderer 渲染器
+1. 使用[场景图](/guide/diving-deeper/scenegraph)描述待渲染对象
+2. [按需引入](/guide/diving-deeper/switch-renderer)一个或多个 Renderer 渲染器
 3. 使用渲染器渲染场景图，可以在运行时切换不同渲染器
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PAufRYPbf4UAAAAAAAAAAAAAARQnAQ)
 
-其中，场景图是独立于各种渲染器的抽象，因此在组件库、布局系统这类与实际渲染效果无关的应用中，并不需要直接与渲染器打交道，各个渲染器应该保证在各自环境下的一致渲染效果。在构建场景图，操作图中节点的语法上，我们提供了与 [DOM API 一致的方法](/zh/api/display-object#添加删除节点)，同时提供[类似 CSS 选择器的语法](/zh/api/display-object#高级查询)来查询图中节点，尽可能减少前端的学习成本。
+其中，场景图是独立于各种渲染器的抽象，因此在组件库、布局系统这类与实际渲染效果无关的应用中，并不需要直接与渲染器打交道，各个渲染器应该保证在各自环境下的一致渲染效果。在构建场景图，操作图中节点的语法上，我们提供了与 [DOM API 一致的方法](/api/basic/display-object#%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9)，同时提供[类似 CSS 选择器的语法](/api/basic/display-object#高级查询)来查询图中节点，尽可能减少前端的学习成本。
 
 在扩展性上，我们从场景图和渲染服务两个维度提供了**插件机制**。
 
-场景图的插件关心每个节点的[生命周期](/zh/guide/advanced-topics/container)，选取其中的某些阶段扩展节点能力。
+场景图的插件关心每个节点的[生命周期](/guide/advanced-topics/container)，选取其中的某些阶段扩展节点能力。
 
 我们定义了统一的核心渲染层，它不关心具体渲染器的实现，暴露生命周期供扩展。以 WebGL 渲染器为例，它通过注册插件，为场景图中每一个节点扩展了 Material 等组件，得以适应 WebGL 渲染环境。
 
-通过[依赖注入](/zh/guide/advanced-topics/container)使各个渲染器实现统一的上下文、渲染服务接口，核心层并不关心具体渲染器实现，因此可以在运行时动态替换不同渲染器。
+通过[依赖注入](/guide/advanced-topics/container)使各个渲染器实现统一的上下文、渲染服务接口，核心层并不关心具体渲染器实现，因此可以在运行时动态替换不同渲染器。
 
 # 统一的渲染服务
 
@@ -50,7 +50,7 @@ hooks = {
 
 - prepareEntities 首次挂载到画布时调用，触发渲染对象的 `mounted` 生命周期
 
-**DirtyCheckPlugin** 实现[脏矩形渲染](/zh/guide/advanced-topics/performance-optimization#脏矩形渲染)
+**DirtyCheckPlugin** 实现[脏矩形渲染](/guide/advanced-topics/performance-optimization#脏矩形渲染)
 
 - init 监听每个待渲染对象的包围盒变更
 - prepareEntities 过滤包含了脏标记的待渲染对象列表，合并脏矩形，通过 R-Tree 加速查询增量重绘对象列表

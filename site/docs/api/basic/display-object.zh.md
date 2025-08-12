@@ -5,25 +5,25 @@ redirect_from:
     - /zh/api/basic
 ---
 
-DisplayObject 是所有图形的基类，例如 [Group](/zh/api/basic/group) [Circle](/zh/api/basic/circle) [Text](/zh/api/basic/text) 等都会继承它。
+DisplayObject 是所有图形的基类，例如 [Group](/api/basic/group) [Circle](/api/basic/circle) [Text](/api/basic/text) 等都会继承它。
 
 我们尝试让它尽可能兼容 [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)，除了能降低学习成本，还能将自身伪装成 DOM Element 来充分利用已有的 Web 生态，例如：
 
-- 使用 CSS 选择器进行[高级查询](/zh/plugins/css-select)
-- 使用 Hammer.js [扩展手势](/zh/api/event#直接使用-hammerjs)
-- 使用 Interact.js [实现 Drag&Drop，Resize](/zh/api/event#直接使用-interactjs)
-- 保留 D3 的数据处理，[替换渲染层](/zh/guide/diving-deeper/d3)
-- 保留 Observable Plot 的数据处理，[替换渲染层](/zh/guide/diving-deeper/plot)
+- 使用 CSS 选择器进行[高级查询](/plugins/css-select)
+- 使用 Hammer.js [扩展手势](/api/basic/display-object#扩展手势)
+- 使用 Interact.js [实现 Drag&Drop，Resize](/api/basic/display-object#实现-dragdropresize)
+- 保留 D3 的数据处理，[替换渲染层](/guide/diving-deeper/d3)
+- 保留 Observable Plot 的数据处理，[替换渲染层](/guide/diving-deeper/plot)
 
 ## 继承自
 
-[Element](/zh/api/builtin-objects/element)
+[Element](/api/builtin-objects/element)
 
 ## id
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Element/id>
 
-全局唯一的标识，可通过 [getElementById](/zh/api/display-object#高级查询) 查询。
+全局唯一的标识，可通过 [getElementById](/api/basic/display-object#高级查询) 查询。
 
 ```js
 const circle = new Circle({
@@ -40,7 +40,7 @@ canvas.getElementById('my-circle-id'); // circle
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName>
 
-图形名称，不要求全局唯一，可通过 [getElementsByName](/zh/api/display-object#高级查询) 查询。
+图形名称，不要求全局唯一，可通过 [getElementsByName](/api/basic/display-object#高级查询) 查询。
 
 ```js
 const circle = new Circle({
@@ -57,7 +57,7 @@ canvas.getElementsByName('my-circle-name'); // [circle]
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Element/className>
 
-图形拥有的类名，可通过它获取/设置图形的类名。后续可以使用 [getElementsByClassName](/zh/api/display-object#高级查询) 查询。
+图形拥有的类名，可通过它获取/设置图形的类名。后续可以使用 [getElementsByClassName](/api/basic/display-object#高级查询) 查询。
 
 ```js
 const circle = new Circle({
@@ -70,7 +70,7 @@ circle.className; // 'my-circle-classname'
 canvas.getElementsByClassName('my-circle-classname'); // [circle]
 ```
 
-可以使用空格隔开多个类名，随后使用 [classList](/zh/api/builtin-objects/element#classlist) 只读属性获取类名列表：
+可以使用空格隔开多个类名，随后使用 [classList](/api/builtin-objects/element#classlist) 只读属性获取类名列表：
 
 ```js
 circle.className = 'c1 c2';
@@ -100,9 +100,9 @@ group.class;
 
 ## interactive
 
-是否支持响应[事件](/zh/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
+是否支持响应[事件](/api/event/intro)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
 
-例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event#circle)
+例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/examples/event/picking/#circle)
 
 ```js
 // 初始化时禁止交互
@@ -117,7 +117,7 @@ const circle = new Circle({
 circle.interactive = false;
 ```
 
-推荐使用 [pointerEvents](/zh/api/basic/display-object#pointerevents) 属性，因此上面禁止交互的操作等同于：
+推荐使用 [pointerEvents](/api/basic/display-object#pointerevents) 属性，因此上面禁止交互的操作等同于：
 
 ```js
 circle.style.pointerEvents = 'none';
@@ -143,7 +143,7 @@ const rect = new Rect({
 });
 ```
 
-属性名也可以使用连字符形式，因此以下写法完全等同，完整用法详见[获取/设置属性值](/zh/api/basic/display-object#获取设置属性值)：
+属性名也可以使用连字符形式，因此以下写法完全等同，完整用法详见[获取/设置属性值](/api/basic/display-object#获取设置属性值)：
 
 ```js
 const rect = new Rect({
@@ -159,7 +159,7 @@ rect.style.setProperty('line-width', 4);
 
 ### 位置
 
-图形在局部坐标系下的初始位置，根据图形种类使用不同属性描述，后续也可以通过 [setLocalPosition](/zh/api/display-object#平移) 重新设置。
+图形在局部坐标系下的初始位置，根据图形种类使用不同属性描述，后续也可以通过 [setLocalPosition](/api/basic/display-object#%E5%B9%B3%E7%A7%BB) 重新设置。
 
 #### transform
 
@@ -188,7 +188,7 @@ rect.style.setProperty('line-width', 4);
   - matrix3d()
 - none 清除变换
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | `'none'` | 所有 | 否 | 是 | `<transform>` |
 
@@ -249,9 +249,9 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 不同图形的默认值也不同：
 
-- [Text](/zh/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+- [Text](/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 不同图形各异 | 所有 | 否 | 否 | `<transform-origin>` |
 
@@ -266,9 +266,9 @@ circle.style.opacity = 0.5;
 circle.style.opacity = '0.5';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 否 | 是 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| '1' | 所有 | 否 | 是 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 #### fillOpacity
 
@@ -279,22 +279,22 @@ circle.style.fillOpacity = 0.5;
 circle.style.fillOpacity = '0.5';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| '1' | 所有 | 是 | 是 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 #### fill
 
-填充色，支持 `string` 类型，详见 [\<paint\>](/zh/api/css/css-properties-values-api#paint)：
+填充色，支持 `string` 类型，详见 [\<paint\>](/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.fill = 'red';
 circle.style.fill = 'rgb(255, 0, 0)';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/api/css/css-properties-values-api#paint) |
+| 'none' | 所有 | 否 | 是 | [\<paint\>](/api/css/css-properties-values-api#paint) |
 
 #### fillRule
 
@@ -303,7 +303,7 @@ circle.style.fill = 'rgb(255, 0, 0)';
 - `'nonzero'` 默认值 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill-rule#nonzero>
 - `'evenodd'` <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill-rule#evenodd>
 
-该 [示例](/zh/examples/shape#polygon) 依次展示了 `'nonzero'` 和 `'evenodd'` 的填充效果：
+该 [示例](/examples/shape/polygon/#polygon) 依次展示了 `'nonzero'` 和 `'evenodd'` 的填充效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
 
@@ -318,22 +318,22 @@ circle.style.strokeOpacity = 0.5;
 circle.style.strokeOpacity = '0.5';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| '1' | 所有 | 是 | 是 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 #### stroke
 
-描边色，支持 `string` 类型，详见 [\<paint\>](/zh/api/css/css-properties-values-api#paint)：
+描边色，支持 `string` 类型，详见 [\<paint\>](/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.stroke = 'red';
 circle.style.stroke = 'rgb(255, 0, 0)';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/api/css/css-properties-values-api#paint) |
+| 'none' | 所有 | 否 | 是 | [\<paint\>](/api/css/css-properties-values-api#paint) |
 
 #### lineWidth
 
@@ -349,9 +349,9 @@ circle.style.lineWidth = '1';
 circle.style.lineWidth = '1px';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '1' | 所有 | 是 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 #### lineCap
 
@@ -367,7 +367,7 @@ circle.style.lineWidth = '1px';
 
 连接处样式，支持以下取值：
 
-- 'miter' 默认值。通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置可以通过 [miterLimit](/zh/api/basic/display-object#miterlimit) 属性看到效果。
+- 'miter' 默认值。通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置可以通过 [miterLimit](/api/basic/display-object#miterlimit) 属性看到效果。
 - 'round' 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。 圆角的半径是线段的宽度。
 - 'bevel' 在相连部分的末端填充一个额外的以三角形为底的区域， 每个部分都有各自独立的矩形拐角。
 
@@ -375,7 +375,7 @@ circle.style.lineWidth = '1px';
 
 #### miterLimit
 
-斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。我们给 [Path](/zh/api/basic/path) [Polyline](/zh/api/basic/polyline) [Polygon](/zh/api/basic/polygon) 这三种图形设置为 4，其余图形设置为 10。
+斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。我们给 [Path](/api/basic/path) [Polyline](/api/basic/polyline) [Polygon](/api/basic/polygon) 这三种图形设置为 4，其余图形设置为 10。
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit>
 
@@ -385,29 +385,29 @@ circle.style.lineWidth = '1px';
 
 目前仅支持形如：`[dash, gap]` 的形式，如果数组中仅有一个元素，即 `[dash]` 等价于 `[dash, dash]`。
 
-对它应用动画可以实现[笔迹动画效果](/zh/api/animation/waapi#笔迹动画)。
+对它应用动画可以实现[笔迹动画效果](/api/animation/waapi#笔迹动画)。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 是 | 是 |  |
 
 #### lineDashOffset
 
-虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/api/animation/waapi#蚂蚁线)
+虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/api/animation/waapi#蚂蚁线)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 是 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | 所有 | 是 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### 阴影
 
-在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
+在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/examples/shape/circle/#circle)
 
-阴影不会影响图形的 [Geometry Bounds](/zh/api/basic/concept#包围盒)，例如下图中给一个半径为 100 的圆添加阴影后，几何包围盒尺寸不变：
+阴影不会影响图形的 [Geometry Bounds](/api/basic/concept#包围盒)，例如下图中给一个半径为 100 的圆添加阴影后，几何包围盒尺寸不变：
 
 ```js
 circle.getBounds(); // { halfExtents: [100, 100] }
@@ -417,7 +417,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="200" alt="outer shadow">
 
-当然外阴影会使 [Render Bounds](/zh/api/basic/concept#包围盒) 增大，内阴影则不会。
+当然外阴影会使 [Render Bounds](/api/basic/concept#包围盒) 增大，内阴影则不会。
 
 最后，阴影会对渲染性能造成非常大影响。
 
@@ -434,33 +434,33 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 阴影色，支持 `string` 类型，例如 `'#1890FF'`。不支持渐变或者纹理写法。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<color\>](/zh/api/css/css-properties-values-api#color) |
+| 无 | 所有 | 否 | 是 | [\<color\>](/api/css/css-properties-values-api#color) |
 
 #### shadowBlur
 
 阴影效果模糊程度，`number` 类型，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| 无 | 所有 | 否 | 是 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 #### shadowOffsetX
 
 水平方向偏移量，支持 `number` 或 `string` 类型，例如负数让阴影往左移，正数向右
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| 无 | 所有 | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 #### shadowOffsetY
 
 垂直方向偏移量，例如负数让阴影往上移，正数向下
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| 无 | 所有 | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### 滤镜
 
@@ -471,7 +471,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 - SVG Filter：<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter>
 - WebGL 中一般称作后处理
 
-参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果，[示例](/zh/examples/shape#filter)：
+参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果，[示例](/examples/shape/circle/#filter)：
 
 ```js
 circle.style.filter = 'blur(5px)';
@@ -497,7 +497,7 @@ circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
 circle.style.filter = 'blur(5px)';
 ```
 
-下图依次展示了 2px 4px 和 10px 的模糊效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 2px 4px 和 10px 的模糊效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ)
 
@@ -510,7 +510,7 @@ circle.style.filter = 'brightness(2)';
 circle.style.filter = 'brightness(200%)';
 ```
 
-下图依次展示了 0 100% 和 200% 的明亮效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 100% 和 200% 的明亮效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ)
 
@@ -529,7 +529,7 @@ circle.style.filter = 'brightness(200%)';
 circle.style.filter = 'drop-shadow(16px 16px 10px black)';
 ```
 
-下图依次展示了上面配置的效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了上面配置的效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
 
@@ -542,7 +542,7 @@ circle.style.filter = 'contrast(2)';
 circle.style.filter = 'contrast(200%)';
 ```
 
-下图依次展示了 0 1 和 10 的对比度效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 1 和 10 的对比度效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ)
 
@@ -555,7 +555,7 @@ circle.style.filter = 'grayscale(1)';
 circle.style.filter = 'grayscale(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的灰度效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 50% 和 100% 的灰度效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ)
 
@@ -568,7 +568,7 @@ circle.style.filter = 'saturate(1)';
 circle.style.filter = 'saturate(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的饱和度效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 50% 和 100% 的饱和度效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ)
 
@@ -581,7 +581,7 @@ circle.style.filter = 'sepia(1)';
 circle.style.filter = 'sepia(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的处理效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 50% 和 100% 的处理效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ)
 
@@ -594,7 +594,7 @@ circle.style.filter = 'hue-rotate(30deg)';
 circle.style.filter = 'hue-rotate(180deg)';
 ```
 
-下图依次展示了 0 90deg 和 180deg 的处理效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 90deg 和 180deg 的处理效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ)
 
@@ -607,7 +607,7 @@ circle.style.filter = 'invert(1)';
 circle.style.filter = 'invert(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的反转效果，[示例](/zh/examples/shape#filter)：
+下图依次展示了 0 50% 和 100% 的反转效果，[示例](/examples/shape/circle/#filter)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ)
 
@@ -619,9 +619,9 @@ circle.style.filter = 'invert(100%)';
 2. 只在当前上下文内生效
 3. 默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 否 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| '0' | 所有 | 否 | 否 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex：
 
@@ -633,7 +633,7 @@ circle.style.filter = 'invert(100%)';
 li1.style.zIndex = 1; // li1 在 li2 之上
 ```
 
-再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下，[示例](/zh/examples/scenegraph#z-index)
+再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下，[示例](/examples/scenegraph/basic/#z-index)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" alt="">
 
@@ -678,22 +678,22 @@ group.style.visibility = 'visible';
 // or group.show();
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/zh/api/css/css-properties-values-api#关键词) |
+| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/api/css/css-properties-values-api#关键词) |
 
 关于可见性有两点需要注意：
 
-1. 隐藏的图形仍然可以被拾取，此时需要配合 [pointerEvents](/zh/api/basic/display-object#pointerevents) 使用
-2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移除元素，应该使用 [removeChild](/zh/api/basic/display-object#添加删除节点)
+1. 隐藏的图形仍然可以被拾取，此时需要配合 [pointerEvents](/api/basic/display-object#pointerevents) 使用
+2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移除元素，应该使用 [removeChild](/api/basic/display-object#添加删除节点)
 
 ### 裁剪
 
 #### clipPath
 
-使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event#shapes)。
+使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/examples/event/picking/#shapes)。
 
-例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的世界坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
+例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的世界坐标为 `[100, 100]`。[示例](/examples/style/clip-path/#clip)：
 
 ```js
 const image = new Image({
@@ -753,7 +753,7 @@ image.setClip(null);
 
 裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。
 
-配合[动画系统](/zh/api/animation/waapi)我们可以对已经添加到画布中的裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
+配合[动画系统](/api/animation/waapi)我们可以对已经添加到画布中的裁剪区域图形进行变换，实现以下效果，[示例](/examples/style/clip-path/#clip)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
@@ -772,7 +772,7 @@ clipPathCircle.animate(
 
 ### 运动轨迹
 
-在[路径动画](/zh/api/animation/waapi#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/api/animation/waapi#路径动画)对 `offsetDistance` 属性应用变换：
+在[路径动画](/api/animation/waapi#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/api/animation/waapi#路径动画)对 `offsetDistance` 属性应用变换：
 
 ```js
 const circle = new Circle({
@@ -806,15 +806,15 @@ const animation = circle.animate(
 
 #### offsetPath
 
-指定路径轨迹，目前支持 [Line](/zh/api/basic/line) [Path](/zh/api/basic/path) 和 [Polyline](/zh/api/basic/polyline) 这三种图形。
+指定路径轨迹，目前支持 [Line](/api/basic/line) [Path](/api/basic/path) 和 [Polyline](/api/basic/polyline) 这三种图形。
 
 #### offsetDistance
 
 从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 是 | [\<number\>](/zh/api/css/css-properties-values-api#number) |
+| '0' | 所有 | 否 | 是 | [\<number\>](/api/css/css-properties-values-api#number) |
 
 ### 鼠标样式
 
@@ -839,62 +839,62 @@ const circle = new Circle({
 
 设置图形如何响应交互事件，可参考：<https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events>
 
-简而言之，[fill](/zh/api/basic/display-object#fill) [stroke](/zh/api/basic/display-object#stroke) 和 [visibility](/zh/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
+简而言之，[fill](/api/basic/display-object#fill) [stroke](/api/basic/display-object#stroke) 和 [visibility](/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
 - `'auto'` 默认值，等同于 `'visiblepainted'`。
 - `'none'` 永远不会成为响应事件的目标。
 - `'visiblepainted'` 满足以下条件才会响应事件：
-  - [visibility](/zh/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
-  - 在图形填充区域触发同时 [fill](/zh/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/zh/api/basic/display-object#stroke) 取非 `'none'` 的值。
+  - [visibility](/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+  - 在图形填充区域触发同时 [fill](/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/api/basic/display-object#stroke) 取非 `'none'` 的值。
 - `'visiblefill'` 满足以下条件才会响应事件：
-  - [visibility](/zh/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
-  - 在图形填充区域触发，不受 [fill](/zh/api/basic/display-object#fill) 取值的影响。
+  - [visibility](/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+  - 在图形填充区域触发，不受 [fill](/api/basic/display-object#fill) 取值的影响。
 - `'visiblestroke'` 满足以下条件才会响应事件：
-  - [visibility](/zh/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
-  - 在图形描边区域触发，不受 [stroke](/zh/api/basic/display-object#stroke) 取值的影响。
+  - [visibility](/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+  - 在图形描边区域触发，不受 [stroke](/api/basic/display-object#stroke) 取值的影响。
 - `'visible'` 满足以下条件才会响应事件：
-  - [visibility](/zh/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
-  - 在图形填充或者描边区域触发，不受 [fill](/zh/api/basic/display-object#fill) 和 [stroke](/zh/api/basic/display-object#stroke) 取值的影响。
+  - [visibility](/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+  - 在图形填充或者描边区域触发，不受 [fill](/api/basic/display-object#fill) 和 [stroke](/api/basic/display-object#stroke) 取值的影响。
 - `'painted'` 满足以下条件才会响应事件：
-  - 在图形填充区域触发同时 [fill](/zh/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/zh/api/basic/display-object#stroke) 取非 `'none'` 的值。不受 [visibility](/zh/api/basic/display-object#visibility) 取值的影响。
+  - 在图形填充区域触发同时 [fill](/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/api/basic/display-object#stroke) 取非 `'none'` 的值。不受 [visibility](/api/basic/display-object#visibility) 取值的影响。
 - `'fill'` 满足以下条件才会响应事件：
-  - 在图形填充区域触发，不受 [fill](/zh/api/basic/display-object#fill) 取值的影响。不受 [visibility](/zh/api/basic/display-object#visibility) 取值的影响。
+  - 在图形填充区域触发，不受 [fill](/api/basic/display-object#fill) 取值的影响。不受 [visibility](/api/basic/display-object#visibility) 取值的影响。
 - `'stroke'` 满足以下条件才会响应事件：
-  - 在图形描边区域触发，不受 [stroke](/zh/api/basic/display-object#stroke) 取值的影响。不受 [visibility](/zh/api/basic/display-object#visibility) 取值的影响。
-- `'all'` 只要进入图形的填充和描边区域就会响应事件。因此不会受 [fill](/zh/api/basic/display-object#fill) [stroke](/zh/api/basic/display-object#stroke) [visibility](/zh/api/basic/display-object#visibility) 的取值影响。
+  - 在图形描边区域触发，不受 [stroke](/api/basic/display-object#stroke) 取值的影响。不受 [visibility](/api/basic/display-object#visibility) 取值的影响。
+- `'all'` 只要进入图形的填充和描边区域就会响应事件。因此不会受 [fill](/api/basic/display-object#fill) [stroke](/api/basic/display-object#stroke) [visibility](/api/basic/display-object#visibility) 的取值影响。
 
-在该 [示例](/zh/examples/shape#circle) 中，我们将该属性设置为 `stroke`，因此填充区域不会响应事件：
+在该 [示例](/examples/shape/circle/#circle) 中，我们将该属性设置为 `stroke`，因此填充区域不会响应事件：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2a6jSpYP0LoAAAAAAAAAAAAAARQnAQ" alt="pointer-events stroke">
 
-在该 [示例](/zh/examples/style#inheritance) 中，基于继承机制我们能很方便的控制可交互性：
+在该 [示例](/examples/style/basic/#inheritance) 中，基于继承机制我们能很方便的控制可交互性：
 
 ```js
 // 整个画布不响应交互事件
 canvas.document.documentElement.style.pointerEvents = 'none';
 ```
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'auto' | 所有 | 是 | 否 | [\<keywords\>](/zh/api/css/css-properties-values-api#关键词) |
+| 'auto' | 所有 | 是 | 否 | [\<keywords\>](/api/css/css-properties-values-api#关键词) |
 
 #### increasedLineWidthForHitTesting
 
-当 [lineWidth](/zh/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
+当 [lineWidth](/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
 
-在下面的 [示例](/zh/examples/shape#polyline) 中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
+在下面的 [示例](/examples/shape/polyline/#polyline) 中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
 
 ```js
 line.style.increasedLineWidthForHitTesting = 50;
 ```
 
-另外和 [lineWidth](/zh/api/basic/display-object#linewidth) 一样，该属性同样会向两侧延展，下图中无填充的 [Path](/zh/api/basic/path) 内部拾取区域也变大了：
+另外和 [lineWidth](/api/basic/display-object#linewidth) 一样，该属性同样会向两侧延展，下图中无填充的 [Path](/api/basic/path) 内部拾取区域也变大了：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ude1Qo6PVNYAAAAAAAAAAAAAARQnAQ">
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 否 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | 所有 | 否 | 否 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ## 变换操作
 
@@ -974,14 +974,14 @@ circle.setLocalScale(-1, 1);
 
 ### 设置缩放和旋转中心
 
-除了使用 [transformOrigin](/zh/api/basic/display-object#transformorigin) 属性，还可以通过 `setOrigin` 重新设置变换中心。
+除了使用 [transformOrigin](/api/basic/display-object#transformorigin) 属性，还可以通过 `setOrigin` 重新设置变换中心。
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
 | setOrigin | `[number, number]` 或 `[number, number, number]` 或 `number, number` 或 `number, number, number` | 无 | 设置局部坐标系下的缩放和旋转中心 |
 | getOrigin | `[number, number, number]` | 无 | 获取局部坐标系下的缩放和旋转中心 |
 
-设置局部坐标系下的缩放和旋转中心，[示例](/zh/examples/scenegraph#origin)
+设置局部坐标系下的缩放和旋转中心，[示例](/examples/scenegraph/basic/#origin)
 
 默认值为 `[0, 0]`。
 
@@ -1013,7 +1013,7 @@ circle.scale(0.5);
 circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
 ```
 
-在下面的[示例](/zh/examples/scenegraph#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
+在下面的[示例](/examples/scenegraph/basic/#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
 
 ```js
 const rect = new Rect({
@@ -1048,7 +1048,7 @@ circle.style.transformOrigin = '0% 0%';
 
 ## 获取包围盒
 
-基于不同的[包围盒定义](/zh/api/basic/display-object#包围盒)，我们提供了以下获取方法。
+基于不同的[包围盒定义](/api/basic/display-object#包围盒)，我们提供了以下获取方法。
 
 ### getGeometryBounds(): AABB | null
 
@@ -1131,7 +1131,7 @@ interface DOMRect {
 
 ## 节点操作
 
-在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。基于继承关系，每个 DisplayObject 都拥有 [Node](/zh/api/builtin-objects/node) 和 [Element](/zh/api/builtin-objects/element) 能力。
+在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。基于继承关系，每个 DisplayObject 都拥有 [Node](/api/builtin-objects/node) 和 [Element](/api/builtin-objects/element) 能力。
 
 ### 简单节点查询
 
@@ -1194,7 +1194,7 @@ solarSystem.findAll((element) => element.style.r === 25);
 
 ### 添加/删除节点
 
-以下添加/删除节点能力来自继承的 [Element](/zh/api/builtin-objects/element) 基类。
+以下添加/删除节点能力来自继承的 [Element](/api/builtin-objects/element) 基类。
 
 | 名称 | 参数 | 返回值 | 备注 |
 | --- | --- | --- | --- |
@@ -1237,7 +1237,7 @@ parent.replaceChildren();
 在添加/删除节点时有以下注意点：
 
 1. 添加节点时会依次触发 ChildInserted 和 Inserted 事件
-2. 删除节点时会依次触发 Removed 和 ChildRemoved 事件，默认会调用 [destroy](/zh/api/basic/display-object#销毁) 销毁自身。如果只是暂时从场景图中移除，后续还可能继续添加回来，可以使用 `remove(false)`
+2. 删除节点时会依次触发 Removed 和 ChildRemoved 事件，默认会调用 [destroy](/api/basic/display-object#销毁) 销毁自身。如果只是暂时从场景图中移除，后续还可能继续添加回来，可以使用 `remove(false)`
 
 ### 克隆节点
 
@@ -1261,7 +1261,7 @@ clonedCircle.getPosition(); // [10, 20]
 - 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
 - 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
 
-在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+在这个[示例](/examples/scenegraph/basic/#clone)中，我们展示了以上特性：
 
 - 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
 - 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
@@ -1310,14 +1310,14 @@ circle.style.setProperty('r', 20);
 
 ### 获取解析后的属性值
 
-部分属性例如 [Rect](/zh/api/basic/rect) 的 width / height 是支持单位的，如果想获取[计算后的值](/zh/api/css/css-typed-om#cssunitvalue)，可以使用 `parsedStyle`：
+部分属性例如 [Rect](/api/basic/rect) 的 width / height 是支持单位的，如果想获取[计算后的值](/api/css/css-typed-om#cssunitvalue)，可以使用 `parsedStyle`：
 
 ```js
 rect.style.width = '100px';
 rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-需要注意的是，目前在使用[动画](/zh/api/animation/waapi)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
+需要注意的是，目前在使用[动画](/api/animation/waapi)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/examples/animation/animation-basic/#onframe)：
 
 ```js
 animation.onframe = () => {
@@ -1328,7 +1328,7 @@ animation.onframe = () => {
 
 ### 销毁
 
-调用 `destroy()` 将销毁节点。被销毁的节点将无法被再次加入画布渲染。通过 [destroyed](/zh/api/basic/display-object#destroyed) 属性可以判断一个节点是否已经被销毁。
+调用 `destroy()` 将销毁节点。被销毁的节点将无法被再次加入画布渲染。通过 [destroyed](/api/basic/display-object#destroyed) 属性可以判断一个节点是否已经被销毁。
 
 ```js
 circle.destroy();
@@ -1339,7 +1339,7 @@ circle.destroy();
 1. 触发 Destroy 事件
 2. 调用 `remove()` 将自身从场景图中移除，因此会触发 Removed 和 ChildRemoved 事件
 3. 移除该节点上的所有事件监听器和动画对象
-4. 将 [destroyed](/zh/api/basic/display-object#destroyed) 标志置为 true
+4. 将 [destroyed](/api/basic/display-object#destroyed) 标志置为 true
 
 ### 状态
 
@@ -1383,9 +1383,9 @@ circle.destroyed; // true
 
 ### 生命周期事件监听
 
-在[事件系统](/zh/api/event)中，我们可以使用类似 DOM Event API 的方式给添加到画布中的节点增加事件监听器。
+在[事件系统](/api/event/intro)中，我们可以使用类似 DOM Event API 的方式给添加到画布中的节点增加事件监听器。
 
-除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/zh/examples/event#builtin)：
+除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/examples/event/event-others/#builtin)：
 
 ```js
 import { ElementEvent, MutationEvent } from '@antv/g';
@@ -1439,7 +1439,7 @@ circle.animate(
 );
 ```
 
-更多用法详见[动画系统](/zh/api/animation/waapi)
+更多用法详见[动画系统](/api/animation/waapi)
 
 ## Dataset API
 
