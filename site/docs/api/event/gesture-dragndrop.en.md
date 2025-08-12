@@ -7,7 +7,7 @@ When we want to implement certain "advanced events" in addition to the base even
 
 ## Use Hammer.js
 
-Taking a gesture library like [Hammer.js](https://github.com/hammerjs/hammer.js) as an example, we can pass `DisplayObject` in directly since it is fully DOM API compatible. In addition, we need to tell Hammer.js that our input event is a PointerEvent via [inputClass](https://hammerjs.github.io/jsdoc/Hammer.defaults.html#.inputClass), so we don't need to take into account interaction events such as TouchEvent and other interactive events, [example](/examples/event/gesture/#hammer).
+Taking a gesture library like [Hammer.js](https://github.com/hammerjs/hammer.js) as an example, we can pass `DisplayObject` in directly since it is fully DOM API compatible. In addition, we need to tell Hammer.js that our input event is a PointerEvent via [inputClass](https://hammerjs.github.io/jsdoc/Hammer.defaults.html#.inputClass), so we don't need to take into account interaction events such as TouchEvent and other interactive events, [example](/en/examples/event/gesture/#hammer).
 
 ```js
 import Hammer from 'hammerjs';
@@ -25,11 +25,11 @@ hammer.on('press', (e) => {
 
 ## Implementing Pinch Gestures with PointerEvents
 
-The Pinch gesture is implemented in this [example](/examples/event/gesture/#pinch-with-pointer), see <https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch>\_zoom_gestures
+The Pinch gesture is implemented in this [example](/en/examples/event/gesture/#pinch-with-pointer), see <https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch>\_zoom_gestures
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 
-The core idea is to manage the touch points on the screen by listening to PointerEvents based on the [pointerId](/api/event/event-object#pointerid) on the event object without caring about Mouse/TouchEvent.
+The core idea is to manage the touch points on the screen by listening to PointerEvents based on the [pointerId](/en/api/event/event-object#pointerid) on the event object without caring about Mouse/TouchEvent.
 
 ## Direct use of Interact.js
 
@@ -55,21 +55,21 @@ interact(
 });
 ```
 
-[Example](/examples/event/gesture/#interact)
+[Example](/en/examples/event/gesture/#interact)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ" width="400">
 
 ## Using g-plugin-dragndrop
 
-If you find interact.js too heavy, you can choose to use the simple drag-and-drop plugin we provide: [g-plugin-dragndrop](/plugins/dragndrop).
+If you find interact.js too heavy, you can choose to use the simple drag-and-drop plugin we provide: [g-plugin-dragndrop](/en/plugins/dragndrop).
 
-This plugin is completely based on [PointerEvents](/api/event#interaction events) to implement drag and drop functionality. In this [example](/examples/plugins/dragndrop/#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
+This plugin is completely based on [PointerEvents](/en/api/event#interaction events) to implement drag and drop functionality. In this [example](/en/examples/plugins/dragndrop/#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
 ## Implementing simple drag'n'drop
 
-In addition to using the above off-the-shelf libraries, we can also implement simple drag-and-drop effects by combining PointerEvents listeners, which is what [g-plugin-dragndrop](/plugins/dragndrop) does internally, as referenced in [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop).
+In addition to using the above off-the-shelf libraries, we can also implement simple drag-and-drop effects by combining PointerEvents listeners, which is what [g-plugin-dragndrop](/en/plugins/dragndrop) does internally, as referenced in [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop).
 
 ```js
 ball.addEventListener('pointerdown', function (event) {
@@ -99,4 +99,4 @@ ball.addEventListener('pointerdown', function (event) {
 });
 ```
 
-[Example](/examples/event/dragndrop/#drag)
+[Example](/en/examples/event/dragndrop/#drag)

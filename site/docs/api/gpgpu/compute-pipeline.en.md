@@ -28,7 +28,7 @@ const canvas = new Canvas({
 
 ## Getting Device
 
-When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. We can get the Device through the renderer either in the [READY](/api/canvas#canvas-specific events) event handler of the canvas or after waiting for the `canvas.ready` Promise to complete, [full Device API](/plugins/device -renderer#device).
+When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. We can get the Device through the renderer either in the [READY](/en/api/canvas#canvas-specific events) event handler of the canvas or after waiting for the `canvas.ready` Promise to complete, [full Device API](/en/plugins/device -renderer#device).
 
 ```js
 import { CanvasEvent } from '@antv/g';
@@ -50,7 +50,7 @@ const device = plugin.getDevice();
 
 ## Creating Kernel
 
-Therefore, the [g-plugin-gpgpu](/plugins/gpgpu) plugin provides the Kernel to describe the computational task, which, in addition to passing in the device obtained in the previous section, needs to be described by the computeShader using the string.
+Therefore, the [g-plugin-gpgpu](/en/plugins/gpgpu) plugin provides the Kernel to describe the computational task, which, in addition to passing in the device obtained in the previous section, needs to be described by the computeShader using the string.
 
 ```ts
 import { Kernel } from '@antv/g-plugin-gpgpu';

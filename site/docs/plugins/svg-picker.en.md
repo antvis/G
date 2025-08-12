@@ -7,7 +7,7 @@ Provides SVG-based pickup capability.
 
 ## Usage
 
-The [g-svg](/api/renderer/svg) renderer is built in by default, so there is no need to introduce it manually.
+The [g-svg](/en/api/renderer/svg) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as SvgRenderer } from '@antv/g-svg';

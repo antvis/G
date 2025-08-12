@@ -3,7 +3,7 @@ title: webgpu-graph
 order: 6
 ---
 
-We refer to [cuGraph](https://github.com/rapidsai/cugraph) and other CUDA implementations to implement common graph analysis algorithms based on the WebGPU capabilities behind [g-plugin-gpgpu](/plugins/gpgpu) to achieve large-scale node edge data volume.
+We refer to [cuGraph](https://github.com/rapidsai/cugraph) and other CUDA implementations to implement common graph analysis algorithms based on the WebGPU capabilities behind [g-plugin-gpgpu](/en/plugins/gpgpu) to achieve large-scale node edge data volume.
 
 This is a significant improvement over the [CPU serial version](https://github.com/antvis/algorithm) currently offered by G6.
 
@@ -67,8 +67,8 @@ If the data format does not meet the above requirements, the algorithm will not 
 
 We offer the following two ways to use it.
 
-- [Canvas](/api/canvas/intro) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
-- There is already a [Canvas](/api/canvas/intro) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
+- [Canvas](/en/api/canvas/intro) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
+- There is already a [Canvas](/en/api/canvas/intro) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
 
 ### Method 1
 
@@ -87,9 +87,9 @@ const graph = new WebGPUGraph();
 
 If you are already using G's Canvas for rendering, you can reuse it and do the following.
 
-- Register [g-plugin-gpgpu](/plugins/gpgpu)
+- Register [g-plugin-gpgpu](/en/plugins/gpgpu)
 - Waiting for the canvas to initialize
-- Get GPU [Device](/plugins/device-renderer#device)
+- Get GPU [Device](/en/plugins/device-renderer#device)
 - The algorithm is called, and the first parameter of the algorithm is the Device obtained in the previous step
 
 ```js
@@ -145,7 +145,7 @@ Refer to the following CUDA version implementation.
 - <https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu>
 - <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html>
 
-It is used in the following way, [example](/examples/gpgpu/webgpu-graph/#webgpu-graph-pagerank)：
+It is used in the following way, [example](/en/examples/gpgpu/webgpu-graph/#webgpu-graph-pagerank)：
 
 ```js
 const result = await graph.pageRank(data);

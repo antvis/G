@@ -34,7 +34,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 **适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU / CanvasKit 以及运行时切换，并支持服务端渲染。
 
-**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](/api/basic/concept/basic/concept/basic/concept/basic/concept/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
+**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
 
 可扩展的插件机制以及丰富的插件集：
 
@@ -68,7 +68,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 - CSS 选择器
   - [g-plugin-css-select](/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
-完整 [API Spec](/api/basic/concept/basic/concept/basic/concept/basic/concept)。
+完整 [API Spec](/api)。
 
 ## 使用方式
 
@@ -93,7 +93,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
-然后就可以在 `window.G` 的命名空间下使用 [Canvas](/api/basic/concept/basic/concept/basic/concept/basic/concept/canvas/intro)、[Circle](/api/basic/concept/basic/concept/basic/concept/basic/concept/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/api/basic/concept/basic/concept/basic/concept/basic/concept/renderer/canvas) 这样的渲染器：
+然后就可以在 `window.G` 的命名空间下使用 [Canvas](/api/canvas/intro)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/api/renderer/canvas) 这样的渲染器：
 
 ```js
 // 从核心包中引入画布、Circle 等对象
@@ -146,7 +146,7 @@ $ npm install @antv/g-svg --save
 $ npm install @antv/g-webgl --save
 ```
 
-然后就可以在核心包中使用 [Canvas](/api/basic/concept/basic/concept/basic/concept/basic/concept/canvas/intro)、[Circle](/api/basic/concept/basic/concept/basic/concept/basic/concept/basic/circle) 这样的核心基础对象以及 [Renderer](/api/basic/concept/basic/concept/basic/concept/basic/concept/renderer/canvas) 这样的渲染器：
+然后就可以在核心包中使用 [Canvas](/api/canvas/intro)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Renderer](/api/renderer/intro) 这样的渲染器：
 
 ```js
 import { Canvas, CanvasEvent, Circle } from '@antv/g';

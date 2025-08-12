@@ -9,7 +9,7 @@ The following inheritance relationships exist in G.
 
 ## Inherited from
 
-[Node](/api/builtin-objects/node)
+[Node](/en/api/builtin-objects/node)
 
 ## Properties
 
@@ -73,13 +73,13 @@ Return the length of the list of child elements.
 
 ### firstElementChild
 
-Equals [Node.firstChild](/api/builtin-objects/node#firstchild).
+Equals [Node.firstChild](/en/api/builtin-objects/node#firstchild).
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild>
 
 ### lastElementChild
 
-Equals [Node.lastChild](/api/builtin-objects/node#lastchild).
+Equals [Node.lastChild](/en/api/builtin-objects/node#lastchild).
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild>
 
@@ -123,7 +123,7 @@ Returns the enclosing box in the browser coordinate system, regardless of child 
 
 ### computedStyleMap
 
-Get the parsed style Map of [style system](/api/css/intro), e.g.
+Get the parsed style Map of [style system](/en/api/css/intro), e.g.
 
 ```js
 const circle = new Circle({
@@ -268,12 +268,12 @@ parent.replaceChildren(); // 清空
 
 ### getAnimations
 
-Returns a list of animation objects applied to the current element, see [animation system](/api/animation/waapi)
+Returns a list of animation objects applied to the current element, see [animation system](/en/api/animation/waapi)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations>
 
 ### animate
 
-Apply Keyframe animation, see [animation system](/api/animation/waapi)
+Apply Keyframe animation, see [animation system](/en/api/animation/waapi)
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate>

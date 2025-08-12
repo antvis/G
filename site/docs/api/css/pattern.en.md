@@ -5,7 +5,7 @@ order: 10
 
 Just like tileable tiles, floors, sometimes we want to fill a shape with the same pattern repeated.
 
-In this [example](/examples/style/pattern/#pattern) we show the currently supported template padding effects, the sources can include image URLs, `HTMLImageElement` `HTMLCanvasElement` `HTMLVideoElement` [Rect](/api/basic/rect) etc., and also specify the padding repeat direction.
+In this [example](/en/examples/style/pattern/#pattern) we show the currently supported template padding effects, the sources can include image URLs, `HTMLImageElement` `HTMLCanvasElement` `HTMLVideoElement` [Rect](/en/api/basic/rect) etc., and also specify the padding repeat direction.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cRmFTItZOtYAAAAAAAAAAAAAARQnAQ" width="400" alt="pattern">
 
@@ -37,7 +37,7 @@ required. The following sources are supported:
 - HTMLImageElement
 - HTMLCanvasElement
 - HTMLVideoElement
-- [Rect](/api/basic/rect)
+- [Rect](/en/api/basic/rect)
 
 ### Image URL
 
@@ -114,7 +114,7 @@ video.onloadeddata = function () {
 
 In addition to using pictures and videos as sources, programmatic generation can also be used. In this case, `<canvas>` and native [Canvas API](<https://developer.mozilla.org/en-US/docs/Web> /API/Canvas_API).
 
-In this [example](/examples/style/pattern/#pattern), we use HTMLCanvasElement to draw a 20 \* 20 template first, and then use it to fill:
+In this [example](/en/examples/style/pattern/#pattern), we use HTMLCanvasElement to draw a 20 \* 20 template first, and then use it to fill:
 
 ```js
 // @see https://observablehq.com/@awoodruff/canvas-cartography-nacis-2019
@@ -156,7 +156,7 @@ Therefore, we hope to use G's graphics API to define Patterns, consistent with d
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*asBpS647S0EAAAAAAAAAAAAADmJ7AQ/original" alt="canvas vs svg pattern" width="400">
 
-In the [example](/examples/style/pattern#rect) below, we create a `16 * 16` pattern with a red dot on a white background. It can be seen that the usage of the conventional definition scene is no different:
+In the [example](/en/examples/style/pattern#rect) below, we create a `16 * 16` pattern with a red dot on a white background. It can be seen that the usage of the conventional definition scene is no different:
 
 ```js
 const background = new Rect({
@@ -177,7 +177,7 @@ const dot = new Circle({
 background.appendChild(dot);
 ```
 
-Then apply the Pattern tile to the graphics, and at the same time rotate a certain angle through [transform](/api/css/pattern#transform):
+Then apply the Pattern tile to the graphics, and at the same time rotate a certain angle through [transform](/en/api/css/pattern#transform):
 
 ```js
 const rect = new Rect({
@@ -195,11 +195,11 @@ The effect is as follows:
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8kA4QZ8xU88AAAAAAAAAAAAADmJ7AQ/original" alt="rect as pattern" width="300">
 
-Finally, the [g-pattern](/api/css/pattern#g-pattern) mentioned below is also defined in this way.
+Finally, the [g-pattern](/en/api/css/pattern#g-pattern) mentioned below is also defined in this way.
 
 ## repetition
 
-Optional. The following patterns are supported and can be viewed in this [example](/examples/style/pattern/#pattern):
+Optional. The following patterns are supported and can be viewed in this [example](/en/examples/style/pattern/#pattern):
 
 - `'repeat'` default, tiles horizontally and vertically
 - `'repeat-x'` tiles horizontally
@@ -210,7 +210,7 @@ Optional. The following patterns are supported and can be viewed in this [exampl
 
 Optional. Sometimes we want to transform the mode, such as rotating a certain angle, at this time we can use `transform` attribute, the value is exactly the same as CSS Transform.
 
-In the [example](/examples/style/pattern/#dots) below, we want the pattern to rotate:
+In the [example](/en/examples/style/pattern/#dots) below, we want the pattern to rotate:
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668740048992/Nov-18-2022%25252010-53-54.gif" alt="transform pattern">
 
@@ -232,7 +232,7 @@ Refer to [nivo patterns](https://nivo.rocks/guides/patterns/), we provide some b
 - `lines` Pattern with lines.
 - `squares` Pattern with squares.
 
-The method signatures of these three patterns are as follows, the first parameter is [Canvas](/api/canvas/intro), and the second parameter is the style configuration of the pattern:
+The method signatures of these three patterns are as follows, the first parameter is [Canvas](/en/api/canvas/intro), and the second parameter is the style configuration of the pattern:
 
 ```ts
 dots(cfg?: DotPatternCfg): HTMLCanvasElement;
@@ -240,7 +240,7 @@ lines(cfg?: LinePatternCfg): HTMLCanvasElement;
 squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 ```
 
-In the following [example](/examples/style/pattern/#dots), we choose `dots` and use [transform](/api/css/css-properties-values-api#transform) to rotate and scale it:
+In the following [example](/en/examples/style/pattern/#dots), we choose `dots` and use [transform](/en/api/css/css-properties-values-api#transform) to rotate and scale it:
 
 ```js
 import { dots } from '@antv/g-pattern';
@@ -272,7 +272,7 @@ Common configuration for all types of pattern:
 
 ### dots
 
-Additional configuration for `dots`, [example](/examples/style/pattern/#dots)：
+Additional configuration for `dots`, [example](/en/examples/style/pattern/#dots)：
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Xce3RrT3zAMAAAAAAAAAAAAADmJ7AQ/original" alt="dots pattern" width="200">
 
@@ -282,7 +282,7 @@ Additional configuration for `dots`, [example](/examples/style/pattern/#dots)：
 | padding   | number  | The distance between dots, default to `2` |
 | isStagger | boolean | Staggered dots. default to `true`         |
 
-Additional configuration for `lines`, [example](/examples/perf/webgl/#lines)：
+Additional configuration for `lines`, [example](/en/examples/perf/webgl/#lines)：
 
 ### lines
 
@@ -292,7 +292,7 @@ Additional configuration for `lines`, [example](/examples/perf/webgl/#lines)：
 | --------- | ------ | -------------------------------------------------- |
 | spacing   | number | The distance between the two lines, default to `5` |
 
-Additional configuration for `squares`, [example](/examples/style/pattern/#squares):
+Additional configuration for `squares`, [example](/en/examples/style/pattern/#squares):
 
 ### squares
 

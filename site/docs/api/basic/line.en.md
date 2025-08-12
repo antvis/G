@@ -5,7 +5,7 @@ order: 6
 
 You can refer to the [\<line\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line) element of SVG.
 
-The following [example](/examples/shape/line/#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
+The following [example](/en/examples/shape/line/#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
 
 ```javascript
 const line1 = new Line({
@@ -52,19 +52,19 @@ line.getLocalPosition(); // [200, 100]
 
 ## Inherited from
 
-Inherits [style property](/api/basic/display-object#drawing-properties) from [DisplayObject](/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ### lineWidth
 
-Default value is `'1'`. See [DisplayObject's lineWidth](/api/basic/display-object#lineWidth) for details.
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-object#lineWidth) for details.
 
 ## Additional Properties
 
@@ -74,9 +74,9 @@ The x-axis coordinate of the first endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y1
 
@@ -84,17 +84,17 @@ The y-axis coordinate of the first endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### z1
 
 The z-axis coordinate of the first endpoint in the local coordinate system.
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### x2
 
@@ -102,9 +102,9 @@ The x-axis coordinate of the second endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y2
 
@@ -112,29 +112,29 @@ The y-axis coordinate of the second endpoint in the local coordinate system.
 
 <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### z2
 
 The z-axis coordinate of the second endpoint in the local coordinate system.
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
-Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/examples/3d/3d-basic/#force-3d)
+Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d/3d-basic/#force-3d)
 
 ### markerStart
 
 You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start) of SVG.
 
-Add a marker graphic to the "start point" of the line, where the "start point" is the endpoint defined by [x1/y1](/api/basic/line#x1).
+Add a marker graphic to the "start point" of the line, where the "start point" is the endpoint defined by [x1/y1](/en/api/basic/line#x1).
 
-In the following [example](/examples/shape/line#line), we first created an arrow using [Path](/api/basic/path) and then added it to the start of the line with this property.
+In the following [example](/en/examples/shape/line#line), we first created an arrow using [Path](/en/api/basic/path) and then added it to the start of the line with this property.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
 
@@ -164,7 +164,7 @@ const arrowLine = new Line({
 
 The marker graphic can be any graphic, and we will place it in the right place and adjust the orientation. When the definition of a line is changed, it will be adjusted automatically as well.
 
-Of course you can also manually adjust its [anchor](/api/basic/display-object#anchor), [transformOrigin](/api/basic/display-object#transformorigin) and [transform](/api/basic/display-object#transform), for example in this [example](/examples/shape/line#line) we rotate [Image](/api/basic/image) as a marker graphic, manually rotated by 90 degrees.
+Of course you can also manually adjust its [anchor](/en/api/basic/display-object#anchor), [transformOrigin](/en/api/basic/display-object#transformorigin) and [transform](/en/api/basic/display-object#transform), for example in this [example](/en/examples/shape/line#line) we rotate [Image](/en/api/basic/image) as a marker graphic, manually rotated by 90 degrees.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
 
@@ -195,14 +195,14 @@ Line
   -> Path(#markerEnd)
 ```
 
-This can also be found using [childNodes](/api/builtin-objects/node#childnodes).
+This can also be found using [childNodes](/en/api/builtin-objects/node#childnodes).
 
 ```js
 line.style.markerStart = arrowHead;
 line.childNodes; // [Path]
 ```
 
-The "start point" and "end point" can be set to the same marker graph, and internally it will first use [cloneNode](/api/builtin-objects/node## clonenode) to generate a new graph. So once we specify a marker graph, subsequent attempts to modify its properties cannot operate on the original graph, but need to be obtained by [childNodes](/api/builtin-objects/node#childnodes).
+The "start point" and "end point" can be set to the same marker graph, and internally it will first use [cloneNode](/en/api/builtin-objects/node## clonenode) to generate a new graph. So once we specify a marker graph, subsequent attempts to modify its properties cannot operate on the original graph, but need to be obtained by [childNodes](/en/api/builtin-objects/node#childnodes).
 
 ```js
 line.style.markerStart = arrowhead;
@@ -217,7 +217,7 @@ line.childNodes[0].style.stroke = 'red';
 
 ### markerEnd
 
-Add a marker graphic to the "endpoint" of the line, where "endpoint" is the endpoint defined by [x2/y2](/api/basic/line#x2).
+Add a marker graphic to the "endpoint" of the line, where "endpoint" is the endpoint defined by [x2/y2](/en/api/basic/line#x2).
 
 You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end) of SVG.
 
@@ -225,27 +225,27 @@ You can refer to the [attribute of the same name](https://developer.mozilla.org/
 
 Sometimes we want to adjust the position of the marker shape, so we provide the option to increase the offset along the line by a certain amount, positive offset inward and negative offset outward.
 
-In [example](/examples/shape/line#line), we manipulate this property to give the line a "stretch effect".
+In [example](/en/examples/shape/line#line), we manipulate this property to give the line a "stretch effect".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
 
-It is worth noting that while the offset will make the line change visually, it does not affect the [x1/y1/x2/y2](/api/basic/line#x1) values of these attributes.
+It is worth noting that while the offset will make the line change visually, it does not affect the [x1/y1/x2/y2](/en/api/basic/line#x1) values of these attributes.
 
-In [example](/examples/shape/line#marker), the endpoints of the line coincide with the center of the circle at both ends, but to avoid the arrows coinciding with the nodes at both ends, they need to be indented a certain distance inward.
+In [example](/en/examples/shape/line#marker), the endpoints of the line coincide with the center of the circle at both ends, but to avoid the arrows coinciding with the nodes at both ends, they need to be indented a certain distance inward.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 Adjusts the position of the marker graphic at the "end point".
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Methods
 
@@ -302,7 +302,7 @@ line.getPoint(0.5); // Point {x: 300, y: 100}
 
 ## Lines in 3D scenes
 
-Requires use with [g-webgl](/api/renderer/webgl) renderer and [g-plugin-3d](/plugins/3d) plug-in.
+Requires use with [g-webgl](/en/api/renderer/webgl) renderer and [g-plugin-3d](/en/plugins/3d) plug-in.
 
 Extending endpoint coordinates to 3D.
 
@@ -319,4 +319,4 @@ new Line({
 });
 ```
 
-2D lines are guaranteed to have a consistent width under orthogonal projection, but not under perspective projection. In some 3D scenes where the line width needs to be consistent at all times, you can turn on [isBillboard](/api/basic/line#isbillboard), [example](/examples/3d/3d-basic/#force-3d)
+2D lines are guaranteed to have a consistent width under orthogonal projection, but not under perspective projection. In some 3D scenes where the line width needs to be consistent at all times, you can turn on [isBillboard](/en/api/basic/line#isbillboard), [example](/en/examples/3d/3d-basic/#force-3d)

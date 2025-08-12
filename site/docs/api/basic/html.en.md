@@ -6,7 +6,7 @@ order: 9
 Sometimes we need to add some HUDs to the canvas, e.g. Tooltip. In this case, the HTML + CSS presentation has the following advantages over using basic graphics.
 
 - Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
-- Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/examples/shape/html#html).
+- Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape/html#html).
 
 ![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -52,12 +52,12 @@ In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placin
 
 ## Inherited from
 
-- [DisplayObject](/api/basic/display-object)
+- [DisplayObject](/en/api/basic/display-object)
 
-Where [id](/api/basic/display-object#id), [name](/api/basic/display-object#name), [className](/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
+Where [id](/en/api/basic/display-object#id), [name](/en/api/basic/display-object#name), [className](/en/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
 
 - Get it through a DOM API like `getElementById`
-- using [getDomElement()](/api/basic/html#getdomelement)
+- using [getDomElement()](/en/api/basic/html#getdomelement)
 
 Other style attributes are applied via CSS.
 
@@ -91,7 +91,7 @@ Corresponds to the CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web
 
 Corresponds to the CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) property.
 
-When we implement a requirement like tooltip, we can have mouse events penetrate it, [example](/examples/shape/html#html).
+When we implement a requirement like tooltip, we can have mouse events penetrate it, [example](/en/examples/shape/html#html).
 
 ```js
 const tooltip = new HTML({
@@ -128,9 +128,9 @@ The x-axis coordinate of the top-left vertex of the container in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,15 +138,15 @@ The y-axis coordinate of the top-left vertex of the container in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
 HTML content, either as a string or as an HTMLElement.
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- | --- |
 | - | - | no | no | `string | HTMLElement` |
 
@@ -168,19 +168,19 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'auto' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| 'auto' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'auto' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| 'auto' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Other CSS Properties
 
-CSS properties will be passthrough and applied directly to the style of the DOM container. In the following [example](/examples/shape/html/#override-css), CSS attributes such as `fontSize` `textAlign` `color` will be directly reflected in the style:
+CSS properties will be passthrough and applied directly to the style of the DOM container. In the following [example](/en/examples/shape/html/#override-css), CSS attributes such as `fontSize` `textAlign` `color` will be directly reflected in the style:
 
 ```js
 const html = new HTML({
@@ -220,7 +220,7 @@ const $foreignObject = html.getDomElement(); // <foreignObject>
 
 #### Transformation
 
-Most of the scenegraph capabilities are available on HTML, such as [transform operations](/api/basic/display-object#transformation-operations).
+Most of the scenegraph capabilities are available on HTML, such as [transform operations](/en/api/basic/display-object#transformation-operations).
 
 ```js
 html.translate(100, 0); // 平移
@@ -232,7 +232,7 @@ When getting the enclosing box, we will use the native DOM API [getBoundingClien
 
 #### Node Operations
 
-For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
+For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/en/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
 
 ```js
 const $div = document.createElement('div');
@@ -256,7 +256,7 @@ html.hide();
 html.style.visibility = 'hidden';
 ```
 
-However, when specifying the rendering order by [z-index](/api/basic/display-object#zindex), it is limited by the specific implementation and only works between individual HTML contents. In the following example, html1 cannot be displayed between circle1 and circle2.
+However, when specifying the rendering order by [z-index](/en/api/basic/display-object#zindex), it is limited by the specific implementation and only works between individual HTML contents. In the following example, html1 cannot be displayed between circle1 and circle2.
 
 ```js
 // 在 <canvas> 中渲染的两个 circle

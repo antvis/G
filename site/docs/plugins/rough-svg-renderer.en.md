@@ -3,13 +3,13 @@ title: g-plugin-rough-svg-renderer
 order: 3
 ---
 
-Hand-drawn style rendering using the SVG version of [rough.js](https://roughjs.com/), [example](/examples/plugins/rough/#rough).
+Hand-drawn style rendering using the SVG version of [rough.js](https://roughjs.com/), [example](/en/examples/plugins/rough/#rough).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 ## Usage
 
-First you need to use the [g-svg](/api/renderer/svg) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-svg-renderer](/plugins/svg-renderer).
+First you need to use the [g-svg](/en/api/renderer/svg) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-svg-renderer](/en/plugins/svg-renderer).
 
 ```js
 import { Canvas } from '@antv/g';
@@ -29,12 +29,12 @@ const canvas = new Canvas({
 });
 ```
 
-In addition, we support all 2D graphics, among which [Text](/api/basic/text), [Image](/api/basic/image) and [HTML](/api/basic/html) have no hand-drawn style.
+In addition, we support all 2D graphics, among which [Text](/en/api/basic/text), [Image](/en/api/basic/image) and [HTML](/en/api/basic/html) have no hand-drawn style.
 
 ## Style properties
 
-In addition to the style properties of 2D graphics, the configuration items provided by rough.js can also be used. See [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer).
+In addition to the style properties of 2D graphics, the configuration items provided by rough.js can also be used. See [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer).
 
 ## Picking
 
-Non-`solid` fill styles leave a lot of white space, and these blank areas do not trigger interaction events. This is inconsistent with [g-plugin-canvas-renderer](/plugins/canvas-renderer).
+Non-`solid` fill styles leave a lot of white space, and these blank areas do not trigger interaction events. This is inconsistent with [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).

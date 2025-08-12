@@ -7,11 +7,11 @@ In addition to rendering the drawing out, sometimes we want to perform transform
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zXxcR4O7aHQAAAAAAAAAAAAAARQnAQ" alt="selectable UI" width="200">
 
-[Example](/examples/plugins/annotation/#annotation)
+[Example](/en/examples/plugins/annotation/#annotation)
 
 ## Installation
 
-This plugin relies on [g-plugin-dragndrop](/plugins/dragndrop) for drag-and-drop capabilities, so it needs to be used with the following registration.
+This plugin relies on [g-plugin-dragndrop](/en/plugins/dragndrop) for drag-and-drop capabilities, so it needs to be used with the following registration.
 
 ```js
 import { Plugin as PluginDragndrop } from '@antv/g-plugin-dragndrop';
@@ -23,14 +23,14 @@ renderer.registerPlugin(new PluginAnnotation());
 
 ## Usage
 
-The plugin provides two modes which can be switched via [setDrawingMode](/plugins/annotation#setdrawingmode).
+The plugin provides two modes which can be switched via [setDrawingMode](/en/plugins/annotation#setdrawingmode).
 
 - Drawing mode. This mode allows drawing graphics in preset steps.
 - Edit mode. In this mode, select `selectable` graphics and the corresponding editing component will appear, so you can finish editing operations such as panning and resizing the graphics through component interaction.
 
 ### Drawing mode
 
-After entering drawing mode, use [setDrawer](/plugins/annotation#setdrawer) to set the drawing tool for the corresponding graph and start drawing. For example, we want to draw a line.
+After entering drawing mode, use [setDrawer](/en/plugins/annotation#setdrawer) to set the drawing tool for the corresponding graph and start drawing. For example, we want to draw a line.
 
 ```js
 plugin.setDrawingMode(true);
@@ -65,7 +65,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 #### Drawing keypoint
 
-Press the mouse to determine the position of the point, which can then be used to draw any figure such as [Circle](/api/basic/circle).
+Press the mouse to determine the position of the point, which can then be used to draw any figure such as [Circle](/en/api/basic/circle).
 
 #### Drawing rectangles
 
@@ -109,7 +109,7 @@ The base graph can be made interactive by turning on `selectable`.
 circle.style.selectable = true;
 ```
 
-We currently support the following **basic graphics**: [Circle](/api/basic/circle)、[Ellipse](/api/basic/ellipse)、[Rect](/api/basic/rect)、[Image](/api/basic/image)、[Line](/api/basic/line)、[Polyline](/api/basic/polyline)
+We currently support the following **basic graphics**: [Circle](/en/api/basic/circle)、[Ellipse](/en/api/basic/ellipse)、[Rect](/en/api/basic/rect)、[Image](/en/api/basic/image)、[Line](/en/api/basic/line)、[Polyline](/en/api/basic/polyline)
 
 In addition `anchorsVisibility` can control anchor visibility. `maskDraggable` can control whether the mask is draggable or not.
 
@@ -117,7 +117,7 @@ In addition `anchorsVisibility` can control anchor visibility. `maskDraggable` c
 
 We support selecting single or multiple graphics either interactively or via API.
 
-To select a graphic via API, you can call the [selectDisplayObject](/plugins/annotation#selectdisplayobject) method. When the graphic is selected, a mask will appear on top of it, which contains several anchor points.
+To select a graphic via API, you can call the [selectDisplayObject](/en/plugins/annotation#selectdisplayobject) method. When the graphic is selected, a mask will appear on top of it, which contains several anchor points.
 
 Clicking on the graphic will complete a single selection, which is the most common way. We support the following two ways to complete multiple selections.
 
@@ -131,7 +131,7 @@ Clicking on the graphic will complete a single selection, which is the most comm
 As opposed to selecting a graphic, there are two ways to unselect it.
 
 - Click on a blank area of the canvas or another graphic.
-- To unselect a graphic via API, call [deselectDisplayObject](/plugins/annotation#deselectdisplayobject) method.
+- To unselect a graphic via API, call [deselectDisplayObject](/en/plugins/annotation#deselectdisplayobject) method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
@@ -143,7 +143,7 @@ After selecting the shape, drag and drop it on the mask to move it.
 
 The corresponding [event]() will be triggered during and after the movement.
 
-You can also use the keyboard up/down/left/right arrow keys to move the drawing after it is selected, and the step length can be configured by [arrowKeyStepLength](/plugins/annotation#arrowkeysteplength).
+You can also use the keyboard up/down/left/right arrow keys to move the drawing after it is selected, and the step length can be configured by [arrowKeyStepLength](/en/plugins/annotation#arrowkeysteplength).
 
 #### Resize graphics
 
@@ -217,11 +217,11 @@ export interface SelectableStyle {
 }
 ```
 
-In addition to specifying it when initializing the plugin, it can be modified at any time later using the [updateSelectableStyle](/plugins/annotation#updateselectablestyle) method.
+In addition to specifying it when initializing the plugin, it can be modified at any time later using the [updateSelectableStyle](/en/plugins/annotation#updateselectablestyle) method.
 
 #### selectionFill
 
-For the mask fill color, you can refer to [fill](/api/basic/display-object#fill) for the value, e.g.
+For the mask fill color, you can refer to [fill](/en/api/basic/display-object#fill) for the value, e.g.
 
 ```js
 const plugin = new PluginAnnotation({
@@ -233,11 +233,11 @@ const plugin = new PluginAnnotation({
 
 #### selectionFillOpacity
 
-For the opacity of the mask fill color, you can refer to [fillOpacity](/api/basic/display-object#fillopacity) for the value.
+For the opacity of the mask fill color, you can refer to [fillOpacity](/en/api/basic/display-object#fillopacity) for the value.
 
 #### selectionStroke
 
-Stroke color of the mask. You can refer to [stroke](/api/basic/display-object#stroke) for the value.
+Stroke color of the mask. You can refer to [stroke](/en/api/basic/display-object#stroke) for the value.
 
 ```js
 const plugin = new PluginAnnotation({
@@ -249,15 +249,15 @@ const plugin = new PluginAnnotation({
 
 #### selectionStrokeOpacity
 
-Mask stroke opacity, you can refer to [strokeOpacity](/api/basic/display-object#strokeopacity) for the value.
+Mask stroke opacity, you can refer to [strokeOpacity](/en/api/basic/display-object#strokeopacity) for the value.
 
 #### selectionStrokeWidth
 
-Stroke width of the mask. You can refer to [strokeWidth](/api/basic/display-object#strokewidth) for the value.
+Stroke width of the mask. You can refer to [strokeWidth](/en/api/basic/display-object#strokewidth) for the value.
 
 #### selectionLineDash
 
-The mask stroke dashed line. You can refer to [lineDash](/api/basic/display-object#linedash) for the value.
+The mask stroke dashed line. You can refer to [lineDash](/en/api/basic/display-object#linedash) for the value.
 
 #### anchorFill
 
@@ -285,7 +285,7 @@ The size of the anchor point. For now we only support circular anchors, so this 
 
 ### drawerStyle
 
-Auxiliary drawing style for the component. The initial value is specified by the constructor `drawStyle` parameter and can be updated by [updateDrawerStyle](/plugins/annotation#updatedrawerstyle).
+Auxiliary drawing style for the component. The initial value is specified by the constructor `drawStyle` parameter and can be updated by [updateDrawerStyle](/en/plugins/annotation#updatedrawerstyle).
 
 For example, if we want to specify the stroke color of a rectangular drawing component.
 
@@ -299,27 +299,27 @@ const annotationPlugin = new AnnotationPlugin({
 
 #### rectFill
 
-See [fill](/api/basic/display-object#fill), the default value is `'none'`.
+See [fill](/en/api/basic/display-object#fill), the default value is `'none'`.
 
 #### rectFillOpacity
 
-See [fillOpacity](/api/basic/display-object#fillopacity), the default value is `1`.
+See [fillOpacity](/en/api/basic/display-object#fillopacity), the default value is `1`.
 
 #### rectStroke
 
-See [stroke](/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+See [stroke](/en/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
 #### rectStrokeOpacity
 
-See [strokeOpacity](/api/basic/display-object#strokeopacity), the default value is `1`.
+See [strokeOpacity](/en/api/basic/display-object#strokeopacity), the default value is `1`.
 
 #### rectStrokeWidth
 
-See [strokeWidth](/api/basic/display-object#strokewidth), the default value is `2.5`.
+See [strokeWidth](/en/api/basic/display-object#strokewidth), the default value is `2.5`.
 
 #### rectLineDash
 
-You can refer to [lineDash](/api/basic/display-object#linedash), the default value is `6`.
+You can refer to [lineDash](/en/api/basic/display-object#linedash), the default value is `6`.
 
 #### polylineVertexSize
 
@@ -331,31 +331,31 @@ In the following figure, the hollow circle is the drawn vertex and the solid lin
 
 #### polylineVertexFill
 
-See [fill](/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
+See [fill](/en/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
 
 #### polylineVertexFillOpacity
 
-See [fillOpacity](/api/basic/display-object#fillopacity), the default value is `1`.
+See [fillOpacity](/en/api/basic/display-object#fillopacity), the default value is `1`.
 
 #### polylineVertexStroke
 
-See [stroke](/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+See [stroke](/en/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
 #### polylineVertexStrokeOpacity
 
-See [strokeOpacity](/api/basic/display-object#strokeopacity), the default value is `1`.
+See [strokeOpacity](/en/api/basic/display-object#strokeopacity), the default value is `1`.
 
 #### polylineVertexStrokeWidth
 
-See [strokeWidth](/api/basic/display-object#strokewidth), the default value is `2`.
+See [strokeWidth](/en/api/basic/display-object#strokewidth), the default value is `2`.
 
 #### polylineSegmentStroke
 
-The color of the drawn line segment of the fold line, see [stroke](/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+The color of the drawn line segment of the fold line, see [stroke](/en/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
 #### polylineSegmentStrokeWidth
 
-The line width of the drawn line segment of the folded line, refer to [strokeWidth](/api/basic/display-object#strokewidth), the default value is `2`.
+The line width of the drawn line segment of the folded line, refer to [strokeWidth](/en/api/basic/display-object#strokewidth), the default value is `2`.
 
 #### polylineActiveVertexSize
 
@@ -363,31 +363,31 @@ The size of the vertex being drawn by the fold. For now we only support circular
 
 #### polylineActiveVertexFill
 
-See [fill](/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
+See [fill](/en/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
 
 #### polylineActiveVertexFillOpacity
 
-See [fillOpacity](/api/basic/display-object#fillopacity), the default value is `1`.
+See [fillOpacity](/en/api/basic/display-object#fillopacity), the default value is `1`.
 
 #### polylineActiveVertexStroke
 
-See [stroke](/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+See [stroke](/en/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
 #### polylineActiveVertexStrokeOpacity
 
-See [strokeOpacity](/api/basic/display-object#strokeopacity), the default value is `0.2`.
+See [strokeOpacity](/en/api/basic/display-object#strokeopacity), the default value is `0.2`.
 
 #### polylineActiveVertexStrokeWidth
 
-See [strokeWidth](/api/basic/display-object#strokewidth), the default value is `2`.
+See [strokeWidth](/en/api/basic/display-object#strokewidth), the default value is `2`.
 
 #### polylineActiveSegmentStroke
 
-The fold line is drawing line color, see [stroke](/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+The fold line is drawing line color, see [stroke](/en/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
 #### polylineActiveSegmentStrokeWidth
 
-The line width of the line segment being drawn, refer to [strokeWidth](/api/basic/display-object#strokewidth), the default value is `2.5`.
+The line width of the line segment being drawn, refer to [strokeWidth](/en/api/basic/display-object#strokewidth), the default value is `2.5`.
 
 ## API
 
@@ -454,7 +454,7 @@ plugin.getSelectedDisplayObjects(); // [circle, path]
 
 ### updateSelectableStyle
 
-Update the [style](/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/examples/plugins/annotation/#annotation).
+Update the [style](/en/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/en/examples/plugins/annotation/#annotation).
 
 ```js
 plugin.updateSelectableStyle({
@@ -559,7 +559,7 @@ export enum SelectableEvent {
 
 #### Selected Event
 
-Triggered when the target graphic is selected. In [example](/examples/plugins/annotation/#annotation), we listen to the selected event of the image.
+Triggered when the target graphic is selected. In [example](/en/examples/plugins/annotation/#annotation), we listen to the selected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -571,7 +571,7 @@ image.addEventListener(SelectableEvent.SELECTED, () => {});
 
 #### Deselected Event
 
-Triggered when the target graphic is deselected. In [example](/examples/plugins/annotation/#annotation), we listen to the deselected event of the image.
+Triggered when the target graphic is deselected. In [example](/en/examples/plugins/annotation/#annotation), we listen to the deselected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -583,7 +583,7 @@ image.addEventListener(SelectableEvent.DESELECTED, () => {});
 
 #### Moving Event
 
-When dragging a mask, the target graphic will move with it, and this process will continue to trigger in-motion events, similar to `dragging` in [g-plugin-dragndrop](/plugins/dragndrop).
+When dragging a mask, the target graphic will move with it, and this process will continue to trigger in-motion events, similar to `dragging` in [g-plugin-dragndrop](/en/plugins/dragndrop).
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -603,7 +603,7 @@ image.addEventListener('moving', (e) => {
 
 #### Moved Event
 
-This event is triggered when the dragging is finished, similar to `dragend` in [g-plugin-dragndrop](/plugins/dragndrop).
+This event is triggered when the dragging is finished, similar to `dragend` in [g-plugin-dragndrop](/en/plugins/dragndrop).
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';

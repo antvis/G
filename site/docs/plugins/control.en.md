@@ -3,7 +3,7 @@ title: g-plugin-control
 order: 10
 ---
 
-Provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/api/camera#camera#camera type), different interactions are provided.
+Provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/api/camera#camera#camera type), different interactions are provided.
 
 ## Usage
 
@@ -18,6 +18,6 @@ const webglRenderer = new WebGLRenderer();
 webglRenderer.registerPlugin(new Plugin());
 ```
 
-[Example](/examples/plugins/control/#orbit-control)：
+[Example](/en/examples/plugins/control/#orbit-control)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1u8eRKMbVX8AAAAAAAAAAAAAARQnAQ)

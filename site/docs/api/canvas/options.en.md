@@ -7,7 +7,7 @@ When creating a canvas, we can pass in the following initialization parameters, 
 
 - `container` The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
 - `width / height`
-- `renderer` Currently we provides [g-canvas](/api/renderer/canvas), [g-svg](/api/renderer/svg), [g-webgl](/api/renderer/webgl) etc.
+- `renderer` Currently we provides [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg), [g-webgl](/en/api/renderer/webgl) etc.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -25,9 +25,9 @@ const canvas = new Canvas({
 
 The above initialization approach only requires providing a container `container` that carries `<canvas>/<svg>`, but sometimes we have custom requirements as follows:
 
-- [Using existed `<canvas>`](/api/canvas/faq#using-the-created-canvas-element)
-- [Using OffscreenCanvas in WebWorker](/api/canvas/offscreen-canvas-ssr#using-offscreencanvas-in-webworker)
-- [Server-side rendering in Node.js](/api/canvas/offscreen-canvas-ssr#server-side-rendering)
+- [Using existed `<canvas>`](/en/api/canvas/faq#using-the-created-canvas-element)
+- [Using OffscreenCanvas in WebWorker](/en/api/canvas/offscreen-canvas-ssr#using-offscreencanvas-in-webworker)
+- [Server-side rendering in Node.js](/en/api/canvas/offscreen-canvas-ssr#server-side-rendering)
 
 In this case you can use `canvas` instead of `container`, and more initialization parameters are as follows.
 
@@ -39,7 +39,7 @@ Optional, `string | HTMLElement`. The id or DOM element of the canvas container.
 
 Optional, `HTMLCanvasElement | OffscreenCanvas | NodeCanvas`. Using existed `<canvas>` or OffscreenCanvas.
 
-When this parameter is passed, the [container](/api/canvas/options#container) argument is ignored and we assume that `<canvas>` has been created and added to the document, e.g.
+When this parameter is passed, the [container](/en/api/canvas/options#container) argument is ignored and we assume that `<canvas>` has been created and added to the document, e.g.
 
 ```js
 // create a <canvas>
@@ -60,8 +60,8 @@ const canvas = new Canvas({
 
 In addition to the `HTMLCanvasElement` in the browser environment, you can also use:
 
-- [`OffscreenCanvas` in WebWorker](/api/canvas/intro#%E5%9C%A8-webworker-%E4%B8%AD%E4%BD%BF%E7%94%A8-offscreencanvas)
-- [`NodeCanvas` in server-side rendering](/api/canvas/intro#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93)
+- [`OffscreenCanvas` in WebWorker](/en/api/canvas/intro#%E5%9C%A8-webworker-%E4%B8%AD%E4%BD%BF%E7%94%A8-offscreencanvas)
+- [`NodeCanvas` in server-side rendering](/en/api/canvas/intro#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93)
 
 Note that once this parameter is used, runtime switching of the renderer is no longer supported.
 
@@ -69,34 +69,34 @@ Note that once this parameter is used, runtime switching of the renderer is no l
 
 Set the width and height of canvas.
 
-- Required if [container](/api/canvas/options#container) passed in. The renderer will create `<canvas>` with these values.
-- Optional if [canvas](/api/canvas/options#canvas) passed in. If not provided, we will calculate with `canvas.width/height` and `devicePixelRatio`.
+- Required if [container](/en/api/canvas/options#container) passed in. The renderer will create `<canvas>` with these values.
+- Optional if [canvas](/en/api/canvas/options#canvas) passed in. If not provided, we will calculate with `canvas.width/height` and `devicePixelRatio`.
 
 ## renderer
 
 Required. The following renderers are currently supported:
 
-- [g-canvas](/api/renderer/canvas)
-- [g-svg](/api/renderer/svg)
-- [g-webgl](/api/renderer/webgl)
-- [g-webgpu](/api/renderer/webgpu)
-- [g-canvaskit](/api/renderer/canvaskit)
+- [g-canvas](/en/api/renderer/canvas)
+- [g-svg](/en/api/renderer/svg)
+- [g-webgl](/en/api/renderer/webgl)
+- [g-webgpu](/en/api/renderer/webgpu)
+- [g-canvaskit](/en/api/renderer/canvaskit)
 
-It can be switched at runtime with [setRenderer()](/api/canvas/options#setrenderer) after initialized.
+It can be switched at runtime with [setRenderer()](/en/api/canvas/options#setrenderer) after initialized.
 
 ## background
 
 Optional. The color used to clear the canvas when it is initialized, similar to WebGL's [clearColor](https://developer.mozilla.org/zh-CN/Web/API/WebGLRenderingContext/clearColor).
 
-Using [\<color\>](/api/css/css-properties-values-api#color), defaults to `'transparent'`.
+Using [\<color\>](/en/api/css/css-properties-values-api#color), defaults to `'transparent'`.
 
-In [this example](/examples/canvas/canvas-basic/#background), we have set a translucent red color for the Canvas, and the bottom `<div>` has a background gray color set by CSS: `<div>`.
+In [this example](/en/examples/canvas/canvas-basic/#background), we have set a translucent red color for the Canvas, and the bottom `<div>` has a background gray color set by CSS: `<div>`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
 ## cursor
 
-Set the canvas default [mouse style](/api/basic/display-object#cursor-style). If this property is also configured on top of a drawing picked up by an interaction event, it will override the mouse style configured on the canvas, but when the mouse is moved to a blank area, the mouse style configured on the canvas will take effect. The following figure demonstrates this.
+Set the canvas default [mouse style](/en/api/basic/display-object#cursor-style). If this property is also configured on top of a drawing picked up by an interaction event, it will override the mouse style configured on the canvas, but when the mouse is moved to a blank area, the mouse style configured on the canvas will take effect. The following figure demonstrates this.
 
 ```js
 const canvas = new Canvas({
@@ -131,7 +131,7 @@ canvas.setCursor('crosshair');
 
 Optional. If or not support multiple canvases under one container, default is false.
 
-[Example](/examples/canvas/container/#shared-container)
+[Example](/en/examples/canvas/container/#shared-container)
 
 ## enableLargeImageOptimization <Badge>6.1.1</Badge>
 
@@ -151,7 +151,7 @@ On some special runtime platforms (e.g. applets), it is not possible to use glob
 
 ### document
 
-Optional. Default will use `window.document`. In [g-svg based server-side rendering scheme](/api/renderer/svg#server-side-rendering), you need to replace `window.document` with the corresponding element provided by [JSDOM](https://github.com/jsdom/jsdom) in order to create the corresponding SVG element.
+Optional. Default will use `window.document`. In [g-svg based server-side rendering scheme](/en/api/renderer/svg#server-side-rendering), you need to replace `window.document` with the corresponding element provided by [JSDOM](https://github.com/jsdom/jsdom) in order to create the corresponding SVG element.
 
 ### devicePixelRatio
 
@@ -183,7 +183,7 @@ Optional. 是否支持在容器上应用 CSS Transform 的情况下确保交互�
 
 Whether or not CSS Transform is supported on the container to ensure that the interaction event coordinates are transformed correctly.
 
-In this [example](/examples/canvas/container/#supports-css-transform), we have enlarged the container by a factor of 1.1, and with this configuration enabled, mouse movement over the circle changes the mouse style correctly.
+In this [example](/en/examples/canvas/container/#supports-css-transform), we have enlarged the container by a factor of 1.1, and with this configuration enabled, mouse movement over the circle changes the mouse style correctly.
 
 ```js
 const $wrapper = document.getElementById('container');
@@ -217,8 +217,8 @@ Optional, default is 200ms. Numeric type, determines whether two consecutive cli
 Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.
 
 - The core service calls `ctx.measureText` to measure the text.
-- [g-plugin-canvas-picker](/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
-- [g-plugin-device-renderer](/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
+- [g-plugin-device-renderer](/en/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
 
 When not passed in by default, it will try to create an `OffscreenCanvas` and then use the DOM API to create an `HTMLCanvasElement` when it fails. However, in non-dom environments like applets, you need to manually pass in.
 
@@ -255,7 +255,7 @@ resizeObserver.observe($container);
 
 ### setRenderer
 
-In most scenarios we should specify a renderer at canvas initialization and never change it again. However, there are a few scenarios where we need to [switch renderers at runtime](/guide/diving-deeper/switch-renderer#switching-at-runtime), for example, almost all of the examples on our website do this.
+In most scenarios we should specify a renderer at canvas initialization and never change it again. However, there are a few scenarios where we need to [switch renderers at runtime](/en/guide/diving-deeper/switch-renderer#switching-at-runtime), for example, almost all of the examples on our website do this.
 
 ```js
 // switch to WebGL renderer if possible
@@ -276,7 +276,7 @@ setRenderer(renderer: Renderer): Promise<void>;
 
 ### setCursor
 
-Set the canvas default [cursor style](/api/basic/display-object#cursor-style).
+Set the canvas default [cursor style](/en/api/basic/display-object#cursor-style).
 
 ```js
 canvas.setCursor('crosshair');

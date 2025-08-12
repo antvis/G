@@ -69,7 +69,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 It is worth noting that CanvasKit provides several versions of the WASM file.
 
 - Lite version, about 7.1MB`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
-- Full-featured, about 7.9MB, includes full [enhancements](/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
+- Full-featured, about 7.9MB, includes full [enhancements](/en/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
 - Development version, approx. 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
 ### fonts
@@ -115,9 +115,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 The renderer has the following plug-ins built in.
 
-- [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) Rendering with CanvasKit.
-- [g-plugin-canvas-picker](/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
-- [g-plugin-dom-interaction](/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
+- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Enhanced Features
 
@@ -131,11 +131,11 @@ CanvasKit (full version) provides the following enhancements compared to the fam
 
 The [Lottie](https://airbnb.design/introducing-lottie/) animation is created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format. JSON format. CanvasKit provides [Skottie](https://skia.org/user/modules/skottie/), a Lottie animation player.
 
-In this [example](/examples/plugins/canvaskit/#skottie) we show how to play a Lego animation.
+In this [example](/en/examples/plugins/canvaskit/#skottie) we show how to play a Lego animation.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/api/renderer/intro#getplugin) plugin via [getPlugin](/api/renderer/intro#getplugin).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -146,7 +146,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then wait for the canvas initialization to complete, load the Lottie animation description file, and call [playAnimation](/plugins/canvaskit-renderer#playanimation) to start playing immediately when it's done.
+Then wait for the canvas initialization to complete, load the Lottie animation description file, and call [playAnimation](/en/plugins/canvaskit-renderer#playanimation) to start playing immediately when it's done.
 
 ```js
 (async () => {
@@ -179,11 +179,11 @@ For example, particle effects such as fireworks, flames, etc. require generating
 
 CanvasKit provides a Skia-based programming language [SkSL(Skia's shading language)](https://skia.org/user/sksl/) implementation, which is syntactically very close to GLSL and is used in the shader to control particle generation and animation. and animation in the shader, which is a certain threshold for developers who have not been exposed to shader programming.
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-particles), we have implemented some particle effects.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-particles), we have implemented some particle effects.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/api/renderer/intro#getplugin) plugin via [getPlugin](/api/renderer/intro#getplugin).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -194,7 +194,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then call the plugin's [createParticles](/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
+Then call the plugin's [createParticles](/en/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {
@@ -253,7 +253,7 @@ const text = {
 
 Compared to [fillText](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/fillText) in the Canvas2D API, CanvasKit provides the ability to draw along a specified path text along a specified path.
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-text-along-path), we can draw text along [Path](/api/basic/path).
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-text-along-path), we can draw text along [Path](/en/api/basic/path).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
 
@@ -296,7 +296,7 @@ For example, `NotoSansCJKsc-VF` will show the following effect.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ADTaRYju0GsAAAAAAAAAAAAAARQnAQ" width="160" alt="broken emoji">
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-emoji), we load fonts that support Emoji such as [NotoColorEmoji](https://github.com/googlefonts/noto-emoji), which is also used in Android and Chrome use.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-emoji), we load fonts that support Emoji such as [NotoColorEmoji](https://github.com/googlefonts/noto-emoji), which is also used in Android and Chrome use.
 
 ```js
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -334,7 +334,7 @@ CanvasKit provides enhanced [paragraph drawing capabilities](https://skia.org/us
 
 The [text-decoration](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration) property can be used in CSS to set the appearance of the text's modifier lines.
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-paragraph), we use underscores.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we use underscores.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
 
@@ -364,7 +364,7 @@ The following attributes are supported.
 
 ### Text Ellipsis
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-paragraph), using `maxLines` and `ellipsis` allows you to truncate and add ellipses after exceeding.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), using `maxLines` and `ellipsis` allows you to truncate and add ellipses after exceeding.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 
@@ -414,7 +414,7 @@ We support specifying a set of shadows via the `shadows` property, where each sh
 - `blurRadius` The default is 0. The larger the value, the larger the blur radius and the lighter the shadows.
 - `offset` Specify the offset of the shadow relative to the text.
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-paragraph), we specify two shadows.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we specify two shadows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9zeYRbfP_6oAAAAAAAAAAAAAARQnAQ" width="160" alt="text shadows">
 
@@ -452,7 +452,7 @@ We will pass on the following attributes.
 - halfLeading
 - forceStrutHeight
 
-In this [example](/examples/plugins/canvaskit/#canvaskit-paragraph) we use this to control line height and line spacing.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph) we use this to control line height and line spacing.
 
 ```js
 decoratedText.style.strutStyle = {
@@ -470,7 +470,7 @@ decoratedText.style.strutStyle = {
 
 The [font-feature-settings](https://developer.mozilla.org/zh-CN/Web/CSS/font-feature-settings) property in CSS can be consulted to control the advanced printing features in OpenType fonts.
 
-We provide control of the `fontFeatures` property, which accepts an array of features. In this [example](/examples/plugins/canvaskit/#canvaskit-paragraph), we use the Roboto font and turn on the small-cap feature (note the initial D).
+We provide control of the `fontFeatures` property, which accepts an array of features. In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we use the Roboto font and turn on the small-cap feature (note the initial D).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g7gTKas4vYAAAAAAAAAAAAAARQnAQ" width="160" alt="text font-feature-settings">
 

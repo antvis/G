@@ -138,7 +138,7 @@ Since shared memory is involved, it is definitely necessary to set up synchroniz
 
 > The execution barrier, which can be triggered by the barrier() function. If a request from a compute shader encounters the barrier, it stops running and waits for all requests from the same local workgroup to also reach the barrier before executing the code that follows.
 
-For example, in our implementation of Reduce summation [example](/examples/gpgpu/basic-algorithm/#reduce), the following is used.
+For example, in our implementation of Reduce summation [example](/en/examples/gpgpu/basic-algorithm/#reduce), the following is used.
 
 - [shared memory](https://www.w3.org/TR/WGSL/#address-spaces-workgroup)
 - [workgroupBarrier](https://www.w3.org/TR/WGSL/#sync-builtin-functions)

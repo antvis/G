@@ -12,7 +12,7 @@ The following inheritance relationships exist in G.
 
 ## Inherited from
 
-[EventTarget](/api/builtin-objects/event-target)
+[EventTarget](/en/api/builtin-objects/event-target)
 
 ## Properties
 
@@ -48,7 +48,7 @@ export enum Shape {
 
 ### nodeValue
 
-Read-only, return node string, default is null.[Text](/api/basic/text) will return text string.
+Read-only, return node string, default is null.[Text](/en/api/basic/text) will return text string.
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue>
 
@@ -74,7 +74,7 @@ circle.isConnected; // true
 
 ### ownerDocument
 
-Read-only, pointing to the entry [Document](/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
+Read-only, pointing to the entry [Document](/en/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
 
 ```js
 circle.ownerDocument; // null
@@ -128,7 +128,7 @@ Read-only, returns the previous sibling of the current node, or null if there is
 
 ### textContent
 
-Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/api/basic/text) will return the text string.
+Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/en/api/basic/text) will return the text string.
 
 When reading, this method recursively computes the sub-nodes and returns the final stitched string as.
 
@@ -143,7 +143,7 @@ text.textContent; // 'test'
 group.textContent; // 'test'
 ```
 
-When setting, all children of this node will be removed first, if the node is [Text](/api/basic/text), the text content will be modified directly; if the node is not [Text](/api/basic/text), a [Text](/api/basic/text) will be created as a child node and the text content will be set.
+When setting, all children of this node will be removed first, if the node is [Text](/en/api/basic/text), the text content will be modified directly; if the node is not [Text](/en/api/basic/text), a [Text](/en/api/basic/text) will be created as a child node and the text content will be set.
 
 ```js
 const text = new Text({ style: { text: 'test' } });
@@ -184,7 +184,7 @@ Caveats.
 - Cloned new nodes do not retain the parent-child relationship of the original node, and need to be added to the canvas using `appendChild` before they will be rendered
 - Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original graph are not copied
 
-In this [example](/examples/scenegraph/basic/#clone), we demonstrate the above features.
+In this [example](/en/examples/scenegraph/basic/#clone), we demonstrate the above features.
 
 - The style properties of the original node can be changed at any time, the copy will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
 - However, since no event listeners are copied, only the original node can be dragged and dropped

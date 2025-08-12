@@ -9,12 +9,12 @@ order: 3
 
 其中会涉及以下 API，如果你熟悉 CSS Animation 或者 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，使用时会相当轻松：
 
-- 使用 [animate](/api/animation/waapi#创建) 创建一个 Animation 对象
-- 使用 [onfinish](/api/animation/waapi#onfinish) 监听动画结束事件
+- 使用 [animate](/en/api/animation/waapi#创建) 创建一个 Animation 对象
+- 使用 [onfinish](/en/api/animation/waapi#onfinish) 监听动画结束事件
 
 最终示例：
 
-- [官网示例](/examples/animation/animation-basic/#lifecycle)
+- [官网示例](/en/examples/animation/animation-basic/#lifecycle)
 - [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-dong-hua-li-zi-sfphx?file=/index.js)
 
 ## 使用 Keyframe 定义动画
@@ -42,7 +42,7 @@ order: 3
 
 如果理解了上述 CSS Animation 写法，那么就很容易将它转换成符合 Web Animations API 的代码：
 
-- `circle.animate()` 将创建一个 [Animation](/api/animation/waapi#animation) 对象，上面有很多有用的属性和控制方法，我们很快就将看到
+- `circle.animate()` 将创建一个 [Animation](/en/api/animation/waapi#animation) 对象，上面有很多有用的属性和控制方法，我们很快就将看到
 - 该方法拥有两个参数，第一个对应 keyframes，第二个则是动画控制参数
 
 ```js
@@ -72,8 +72,8 @@ const scaleInCenter = circle.animate(
 
 例如我们想知道动画何时结束，有两种方式实现：
 
-- [onfinsh](/api/animation/waapi#onfinish) 设置一个回调函数
-- [finished](/api/animation/waapi#finished) 该对象是一个 Promise
+- [onfinsh](/en/api/animation/waapi#onfinish) 设置一个回调函数
+- [finished](/en/api/animation/waapi#finished) 该对象是一个 Promise
 
 ```js
 animation.onfinish = (e) => {
@@ -86,19 +86,19 @@ animation.finished.then(() => {
 
 当我们想实现一组连续动画时，这个方法很好用。
 
-再比如我们想手动暂停一个运行中的动画，就可以使用 [pause()](/api/animation/waapi#pause)：
+再比如我们想手动暂停一个运行中的动画，就可以使用 [pause()](/en/api/animation/waapi#pause)：
 
 ```js
 animation.pause();
 ```
 
-除了暂停，[Animation 完整方法](/api/animation/waapi#方法)中还包含了恢复、停止、重启、反向播放、设置播放速度（加减速）等。
+除了暂停，[Animation 完整方法](/en/api/animation/waapi#方法)中还包含了恢复、停止、重启、反向播放、设置播放速度（加减速）等。
 
 ## 更多动画效果
 
 除了这个简单的 Scale-In 效果，我们还能实现更多复杂效果，例如：
 
-- `offsetDistance` 属性可以实现[路径动画](/api/animation/waapi#路径动画)
-- `lineDashOffset` 属性可以实现[蚂蚁线动画](/api/animation/waapi#蚂蚁线)
-- `lineDash` 属性可以实现[笔迹动画](/api/animation/waapi#笔迹动画)
-- Path 的 `path` 属性可以实现[形变动画（Morph）](/api/animation/waapi#形变动画)
+- `offsetDistance` 属性可以实现[路径动画](/en/api/animation/waapi#路径动画)
+- `lineDashOffset` 属性可以实现[蚂蚁线动画](/en/api/animation/waapi#蚂蚁线)
+- `lineDash` 属性可以实现[笔迹动画](/en/api/animation/waapi#笔迹动画)
+- Path 的 `path` 属性可以实现[形变动画（Morph）](/en/api/animation/waapi#形变动画)

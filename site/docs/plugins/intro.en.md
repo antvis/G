@@ -19,44 +19,44 @@ To make the rendering engine also well extensible, we also have a built-in plugi
 Extensible plug-in mechanism and rich set of plug-ins：
 
 - Rendering Related
-  - [g-plugin-canvas-renderer](/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-  - [g-plugin-svg-renderer](/plugins/svg-renderer) Rendering 2D graphics based on SVG.
-  - [g-plugin-device-renderer](/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-  - [g-plugin-html-renderer](/plugins/html-renderer) Rendering DOM with HTML.
-  - [g-plugin-3d](/plugins/3d) Extended 3D capabilities.
-  - [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
-  - [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-  - [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+  - [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [g-plugin-svg-renderer](/en/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [g-plugin-device-renderer](/en/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+  - [g-plugin-html-renderer](/en/plugins/html-renderer) Rendering DOM with HTML.
+  - [g-plugin-3d](/en/plugins/3d) Extended 3D capabilities.
+  - [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
+  - [g-plugin-rough-svg-renderer](/en/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
+  - [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
 - Picking
-  - [g-plugin-canvas-picker](/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-  - [g-plugin-svg-picker](/plugins/svg-picker) Do picking with SVG and DOM API.
+  - [g-plugin-canvas-picker](/en/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [g-plugin-svg-picker](/en/plugins/svg-picker) Do picking with SVG and DOM API.
 - Interaction
-  - [g-plugin-dom-interaction](/plugins/dom-interaction) Binds event listeners with DOM API.
-  - [g-plugin-control](/plugins/control) Provides camera interaction for 3D scenes.
-  - [g-plugin-dragndrop](/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
-  - [g-plugin-annotation](/plugins/annotation) Perform transformations on graphics in an interactive form like [Fabric.js](http://fabricjs.com/) and [Konva.js](https://konvajs.org/).
+  - [g-plugin-dom-interaction](/en/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [g-plugin-control](/en/plugins/control) Provides camera interaction for 3D scenes.
+  - [g-plugin-dragndrop](/en/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+  - [g-plugin-annotation](/en/plugins/annotation) Perform transformations on graphics in an interactive form like [Fabric.js](http://fabricjs.com/) and [Konva.js](https://konvajs.org/).
 - Physics Engine
-  - [g-plugin-box2d](/plugins/box2d) Based on [Box2D](https://box2d.org/).
-  - [g-plugin-matterjs](/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-  - [g-plugin-physx](/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+  - [g-plugin-box2d](/en/plugins/box2d) Based on [Box2D](https://box2d.org/).
+  - [g-plugin-matterjs](/en/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+  - [g-plugin-physx](/en/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
 - Layout Engine
-  - [g-plugin-yoga](/plugins/yoga) Provides Flex layout capabilities based on Yoga.
+  - [g-plugin-yoga](/en/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 - GPGPU
-  - [g-plugin-gpgpu](/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+  - [g-plugin-gpgpu](/en/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
 - CSS Selector
-  - [g-plugin-css-select](/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
+  - [g-plugin-css-select](/en/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
 - A11y
-  - [g-plugin-a11y](/plugins/a11y) Provides accessibility features.
+  - [g-plugin-a11y](/en/plugins/a11y) Provides accessibility features.
 
 ### CDN
 
-[Import the core and renderer code](/guide/getting-started#cdn-方式) in UMD format first, then import plugin code in the same way.
+[Import the core and renderer code](/en/guide/getting-started#cdn-方式) in UMD format first, then import plugin code in the same way.
 
 ```html
 <script src="https://unpkg.com/@antv/g-plugin-rough-canvas-renderer@1.7.16/dist/index.umd.min.js"></script>
 ```
 
-Then we can use plugin under the namespace `window.G`, take [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) as an example:
+Then we can use plugin under the namespace `window.G`, take [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) as an example:
 
 ```js
 const plugin = new window.G.RoughCanvasRenderer.Plugin();
@@ -66,13 +66,13 @@ const plugin = new window.G.RoughCanvasRenderer.Plugin();
 
 ### NPM Module
 
-[Install core and renderer from NPM](/guide/getting-started#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) as an example:
+[Install core and renderer from NPM](/en/guide/getting-started#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) as an example:
 
 ```bash
 npm install @antv/g-plugin-rough-canvas-renderer --save
 ```
 
-Then we can [registerPlugin](/api/renderer/intro#registerplugin) on renderer:
+Then we can [registerPlugin](/en/api/renderer/intro#registerplugin) on renderer:
 
 ```js
 import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
@@ -82,7 +82,7 @@ renderer.registerPlugin(new Plugin());
 
 ## Relationship with Renderer
 
-These [renderers](/api/renderer/intro) essentially consist of a set of plug-ins through which their capabilities can also be extended.
+These [renderers](/en/api/renderer/intro) essentially consist of a set of plug-ins through which their capabilities can also be extended.
 
 ```js
 renderer.registerPlugin(new Plugin());

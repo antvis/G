@@ -3,21 +3,21 @@ title: 创造一个“太阳系”
 order: 1
 ---
 
-有了[场景图](/guide/diving-deeper/scenegraph)的知识，在本教程中我们来创造一个“太阳系”，月球绕着地球转、地球绕着太阳转。
+有了[场景图](/en/guide/diving-deeper/scenegraph)的知识，在本教程中我们来创造一个“太阳系”，月球绕着地球转、地球绕着太阳转。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ)
 
 其中会涉及以下 API：
 
-- 使用 [appendChild](/api/basic/display-object#添加删除节点) 创建场景中各个节点的父子关系
-- 使用 [translate](/api/basic/display-object#平移) 移动节点
-- 使用 [rotate](/api/basic/display-object#旋转) 让节点旋转
-- 使用 [getElementsByName](/api/basic/display-object#简单节点查询) 在场景图中查询节点
-- 使用 [addEventListener](/api/event/intro#addeventlistener) 监听画布事件
+- 使用 [appendChild](/en/api/basic/display-object#添加删除节点) 创建场景中各个节点的父子关系
+- 使用 [translate](/en/api/basic/display-object#平移) 移动节点
+- 使用 [rotate](/en/api/basic/display-object#旋转) 让节点旋转
+- 使用 [getElementsByName](/en/api/basic/display-object#简单节点查询) 在场景图中查询节点
+- 使用 [addEventListener](/en/api/event/intro#addeventlistener) 监听画布事件
 
 最终示例：
 
-- [官网示例](/examples/scenegraph/basic/#hierarchy)
+- [官网示例](/en/examples/scenegraph/basic/#hierarchy)
 - [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
 
 ## 创建场景图
@@ -38,7 +38,7 @@ order: 1
      月球 moon
 ```
 
-从 `@antv/g` 核心包中引入基础对象 [Group](/api/basic/group) 和 [Circle](/api/basic/circle)。前者无可渲染实体，仅表示逻辑上的“容器”概念，适合“太阳系”、“地球轨道”、“月球轨道”这样的抽象概念，而后者用来表现太阳、地球和月球。当我们想表示“从属”关系时，就可以使用 `appendChild`，例如“太阳属于太阳系”：
+从 `@antv/g` 核心包中引入基础对象 [Group](/en/api/basic/group) 和 [Circle](/en/api/basic/circle)。前者无可渲染实体，仅表示逻辑上的“容器”概念，适合“太阳系”、“地球轨道”、“月球轨道”这样的抽象概念，而后者用来表现太阳、地球和月球。当我们想表示“从属”关系时，就可以使用 `appendChild`，例如“太阳属于太阳系”：
 
 ```js
 import { Group, Circle } from '@antv/g';
@@ -86,7 +86,7 @@ earthOrbit.appendChild(moonOrbit);
 moonOrbit.appendChild(moon);
 ```
 
-后续随时可以通过 [getElementsByName](/api/basic/display-object#简单节点查询) 在场景图中查询节点：
+后续随时可以通过 [getElementsByName](/en/api/basic/display-object#简单节点查询) 在场景图中查询节点：
 
 ```js
 canvas.getElementsByName('sun'); // [sun]
@@ -94,7 +94,7 @@ canvas.getElementsByName('sun'); // [sun]
 
 ## 确定位置
 
-此时我们使用 [setPosition](/api/basic/display-object#平移) 将整个太阳系移动到画布中央，基于场景图内的父子关系，太阳、地球轨道、地球、月球轨道和月球都被移动到了 `(300, 250)`，如下图（左）所示：
+此时我们使用 [setPosition](/en/api/basic/display-object#平移) 将整个太阳系移动到画布中央，基于场景图内的父子关系，太阳、地球轨道、地球、月球轨道和月球都被移动到了 `(300, 250)`，如下图（左）所示：
 
 ```javascript
 // 设置太阳系的位置
@@ -119,7 +119,7 @@ moonOrbit.translate(100, 0);
 
 ## 旋转起来
 
-现在我们需要让地球和月球都旋转起来。首先使用 [addEventListener](/api/event/intro#addeventlistener) 给画布添加一个事件监听器，监听 [AFTER_RENDER](/api/canvas/event#画布特有事件) 事件，该事件会在每一帧渲染完毕后触发。然后我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
+现在我们需要让地球和月球都旋转起来。首先使用 [addEventListener](/en/api/event/intro#addeventlistener) 给画布添加一个事件监听器，监听 [AFTER_RENDER](/en/api/canvas/event#画布特有事件) 事件，该事件会在每一帧渲染完毕后触发。然后我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
 
 ```javascript
 import { CanvasEvent } from '@antv/g';

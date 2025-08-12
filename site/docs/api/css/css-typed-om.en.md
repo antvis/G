@@ -22,7 +22,7 @@ CSS.percent(50);
 
 ## number()
 
-Create a [CSSUnitValue](/api/css/css-typed-om#cssunitvalue) in `UnitType.kNumber`, written in the same way as the following two.
+Create a [CSSUnitValue](/en/api/css/css-typed-om#cssunitvalue) in `UnitType.kNumber`, written in the same way as the following two.
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -35,7 +35,7 @@ We use it to store the result of parsing a property value of type [\<number\>]()
 
 ## px()
 
-Create a [CSSUnitValue](/api/css/css-typed-om#cssunitvalue) in `UnitType.kPixels`, written in the same way as the following two.
+Create a [CSSUnitValue](/en/api/css/css-typed-om#cssunitvalue) in `UnitType.kPixels`, written in the same way as the following two.
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -44,11 +44,11 @@ CSS.px(5);
 new CSSUnitValue(5, 'px');
 ```
 
-We will use it to store the result of parsing a property value of type [\<length\>](/api/css/css-properties-values-api#length), for example `r: 50` will be parsed to `CSS.px(50)` and saved in `computedStyle.r`.
+We will use it to store the result of parsing a property value of type [\<length\>](/en/api/css/css-properties-values-api#length), for example `r: 50` will be parsed to `CSS.px(50)` and saved in `computedStyle.r`.
 
 ## em()
 
-Create a [CSSUnitValue](/api/css/css-typed-om#cssunitvalue) in `UnitType.kEms`, written in the same way as the following two.
+Create a [CSSUnitValue](/en/api/css/css-typed-om#cssunitvalue) in `UnitType.kEms`, written in the same way as the following two.
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -59,7 +59,7 @@ new CSSUnitValue(5, 'em');
 
 ## rem()
 
-Create a [CSSUnitValue](/api/css/css-typed-om#cssunitvalue) in `UnitType.kRems`, written in the same way as the following two.
+Create a [CSSUnitValue](/en/api/css/css-typed-om#cssunitvalue) in `UnitType.kRems`, written in the same way as the following two.
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';

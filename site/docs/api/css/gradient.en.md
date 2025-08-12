@@ -15,7 +15,7 @@ We have followed that syntax so that it can be used in properties that support g
 rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 ```
 
-In this [example](/examples/style/gradient/#gradient) we show the currently supported gradient effects, including linear and radial gradients, multiple gradients overlaid, etc.
+In this [example](/en/examples/style/gradient/#gradient) we show the currently supported gradient effects, including linear and radial gradients, multiple gradients overlaid, etc.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sXoJTKPWg70AAAAAAAAAAAAAARQnAQ" width="400" alt="gradient">
 
@@ -27,7 +27,7 @@ The usage is exactly like CSS [linear-gradient](https://developer.mozilla.org/zh
 
 - The gradient direction defaults to bottom-to-top in CSS, while we use left-to-right to be consistent with Canvas / SVG.
 
-So a linear gradient with a left-to-right orientation and a rotation angle of 0 would look like this, [example](/examples/style/gradient/#gradient).
+So a linear gradient with a left-to-right orientation and a rotation angle of 0 would look like this, [example](/en/examples/style/gradient/#gradient).
 
 ```js
 rect.style.fill = 'linear-gradient(0deg, blue, green 40%, red)';
@@ -49,7 +49,7 @@ A radial gradient consists of a gradual transition between two or more colors em
 
 The usage is exactly like CSS [radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient).
 
-So a gradient centered at the center of the shape, with a radial gradient transitioning from red to blue to green as follows, [example](/examples/style/gradient/#gradient).
+So a gradient centered at the center of the shape, with a radial gradient transitioning from red to blue to green as follows, [example](/en/examples/style/gradient/#gradient).
 
 ```js
 rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';

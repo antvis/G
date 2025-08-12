@@ -5,7 +5,7 @@ order: 7
 
 You can refer to the [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) element of SVG.
 
-The following [example](/examples/shape/polyline#polyline) defines a polyline with the following endpoints in order
+The following [example](/en/examples/shape/polyline#polyline) defines a polyline with the following endpoints in order
 
 ```javascript
 const polyline = new Polyline({
@@ -42,23 +42,23 @@ polyline.getLocalPosition(); // [50, 50]
 
 ## Inherited from
 
-Inherits [style property](/api/basic/display-object#drawing-properties) from [DisplayObject](/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ### lineWidth
 
-Default value is `'1'`. See [DisplayObject's lineWidth](/api/basic/display-object#lineWidth) for details.
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-object#lineWidth) for details.
 
 ### miterLimit
 
-Default value is `'4'`. See [DisplayObject's miterLimit](/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-object#miterLimit)
 
 ## Additional Properties
 
@@ -84,11 +84,11 @@ polyline.style.points = [
 
 ### markerStart
 
-See the [markerStart](/api/basic/line) property of [Line](/api/basic/line#markerstart).
+See the [markerStart](/en/api/basic/line) property of [Line](/en/api/basic/line#markerstart).
 
-The "start point" is determined by the first point in [points](/api/basic/polyline#points).
+The "start point" is determined by the first point in [points](/en/api/basic/polyline#points).
 
-In this [example](/examples/shape/polyline#polyline), we have placed an arrow at the start of the line.
+In this [example](/en/examples/shape/polyline#polyline), we have placed an arrow at the start of the line.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -107,11 +107,11 @@ polyline.style.markerStart = arrowMarker;
 
 ### markerEnd
 
-See the [markerEnd](/api/basic/line) attribute of [Line](/api/basic/line#markerend).
+See the [markerEnd](/en/api/basic/line) attribute of [Line](/en/api/basic/line#markerend).
 
-The "end point" is determined by the last point in [points](/api/basic/polyline#points).
+The "end point" is determined by the last point in [points](/en/api/basic/polyline#points).
 
-In this [example](/examples/shape/polyline#polyline), we have placed an image at the termination point of the line.
+In this [example](/en/examples/shape/polyline#polyline), we have placed an image at the termination point of the line.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -136,7 +136,7 @@ You can refer to the SVG's [attribute of the same name](https://developer.mozill
 
 Place markers on each vertex of the line except for the "start" and "end" points.
 
-For example, in the following figure, a [Circle] (/api/basic/circle) is placed on each vertex of the line except for the beginning and end.
+For example, in the following figure, a [Circle] (/en/api/basic/circle) is placed on each vertex of the line except for the beginning and end.
 
 ```js
 const circleMarker = new Circle({
@@ -153,27 +153,27 @@ polyline.style.markerMid = circleMarker;
 
 ### markerStartOffset
 
-You can refer to the [markerStartOffset](/api/basic/line#markerstartoffset) property of [Line](/api/basic/line).
+You can refer to the [markerStartOffset](/en/api/basic/line#markerstartoffset) property of [Line](/en/api/basic/line).
 
 Moves the marker graphic in the direction of the first line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
-You can refer to the [markerEndOffset](/api/basic/line#markerendoffset) property of [Line](/api/basic/line).
+You can refer to the [markerEndOffset](/en/api/basic/line#markerendoffset) property of [Line](/en/api/basic/line).
 
-Moves the marker graphic in the direction of the last line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction. In this [example](/examples/shape/polyline/#polyline), we use this property to move the marker graphic.
+Moves the marker graphic in the direction of the last line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction. In this [example](/en/examples/shape/polyline/#polyline), we use this property to move the marker graphic.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -255,4 +255,4 @@ const polyline = new Polyline({
 
 ![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
 
-[Example](/examples/3d/3d-basic/#billboard)
+[Example](/en/examples/3d/3d-basic/#billboard)

@@ -5,7 +5,7 @@ order: 5
 
 You can refer to the [\<image\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/image) element of SVG.
 
-The following [example](/examples/shape/image/#image) defines an image with a top-left vertex position of `(200, 100)`.
+The following [example](/en/examples/shape/image/#image) defines an image with a top-left vertex position of `(200, 100)`.
 
 ```javascript
 const image = new Image({
@@ -19,7 +19,7 @@ const image = new Image({
 });
 ```
 
-Usually we are used to centering on the image, which can be modified by the anchor [anchor](/api/basic/display-object#anchor).
+Usually we are used to centering on the image, which can be modified by the anchor [anchor](/en/api/basic/display-object#anchor).
 
 ```javascript
 const image = new Image({
@@ -38,15 +38,15 @@ If you encounter performance issues with large images, try turning on the [`enab
 
 ## Inherited from
 
-Inherits [style property](/api/basic/display-object#drawing-properties) from [DisplayObject](/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ## Additional Properties
 
@@ -56,9 +56,9 @@ The x-axis coordinates of the top-left vertex of the image in the local coordina
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -66,9 +66,9 @@ The y-axis coordinates of the top-left vertex of the image in the local coordina
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### src
 
@@ -108,9 +108,9 @@ Image width.
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -118,13 +118,13 @@ Image height.
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### keepAspectRatio
 
-Whether to keep aspect ratio, when enabled we can only provide height or width, the missing item will be calculated according to raw ratio. [Example](/examples/shape/image#image-keep-aspect-ratio)
+Whether to keep aspect ratio, when enabled we can only provide height or width, the missing item will be calculated according to raw ratio. [Example](/en/examples/shape/image#image-keep-aspect-ratio)
 
 ```ts
 const image = new Image({
@@ -140,7 +140,7 @@ const image = new Image({
 
 Whether or not to always face the camera in 3D scenes, defaults to `false`, also known as the "billboard effect".
 
-In [example](/examples/3d/3d-basic#billboard), the image is rendered compressed when the camera is rotated without being turned on:
+In [example](/en/examples/3d/3d-basic#billboard), the image is rendered compressed when the camera is rotated without being turned on:
 
 ![disable billboard effect](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*DptES7Mly00AAAAAAAAAAAAADmJ7AQ/original)
 
@@ -152,7 +152,7 @@ Turning it on doesn't change the position of the image, but it will always face 
 
 Rotation angle in billboard mode, clockwise in radians.
 
-In [example](/examples/3d/3d-basic#billboard), we add a rotation angle to the image:
+In [example](/en/examples/3d/3d-basic#billboard), we add a rotation angle to the image:
 
 ```js
 image.style.isBillboard = true;
@@ -165,7 +165,7 @@ image.style.billboardRotation = Math.PI / 8;
 
 Whether or not to apply size attenuation in perspective projection. This option can be turned on if you want to keep the size consistent regardless of depth, following the "near big, far small" visual effect in perspective projection.
 
-In [example](/examples/3d/3d-basic#size-attenuation), we enable size attenuation for image:
+In [example](/en/examples/3d/3d-basic#size-attenuation), we enable size attenuation for image:
 
 ```js
 image.style.isSizeAttenuation = true;

@@ -3,7 +3,7 @@ title: g-plugin-canvas-path-generator
 order: 4
 ---
 
-Use CanvasRenderingContext2D to draw the path of individual shapes, for example using [arcTo()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/arcTo) Draws [Circle](/api/basic/circle).
+Use CanvasRenderingContext2D to draw the path of individual shapes, for example using [arcTo()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/arcTo) Draws [Circle](/en/api/basic/circle).
 
 In addition to being used for final rendering, you also need to draw in the off-screen canvas before using [isPointInPath()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath) .
 
@@ -18,7 +18,7 @@ export const PathGenerator = Syringe.defineToken('PathGenerator');
 
 ### PathGeneratorFactory
 
-For example, you can currently see the factory method injected into [g-plugin-canvas-renderer](/plugins/canvas-renderer) and [g-plugin-canvas-picker](/plugins/canvas-picker) in both plugins. You can see that the factory method is injected via the token `PathGeneratorFactory`, and passing [nodeName](/api/builtin-objects/node#nodename) will give you the drawing method for the corresponding graphic path: `PathGeneratorFactory`.
+For example, you can currently see the factory method injected into [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) and [g-plugin-canvas-picker](/en/plugins/canvas-picker) in both plugins. You can see that the factory method is injected via the token `PathGeneratorFactory`, and passing [nodeName](/en/api/builtin-objects/node#nodename) will give you the drawing method for the corresponding graphic path: `PathGeneratorFactory`.
 
 ```js
 @inject(PathGeneratorFactory)

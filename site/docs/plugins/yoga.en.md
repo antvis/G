@@ -7,11 +7,11 @@ order: -1
 
 Examples:
 
-- [Container-related configuration](/examples/plugins/yoga/#yoga-container)
-- [Sub-element related configuration](/examples/plugins/yoga/#yoga-child)
-- [Adaptive layout](/examples/plugins/yoga/#yoga-available-space)
-- [Text Line Feed](/examples/plugins/yoga/#yoga-text)
-- [Apply animations to relevant properties](/examples/plugins/yoga/#yoga-animation)
+- [Container-related configuration](/en/examples/plugins/yoga/#yoga-container)
+- [Sub-element related configuration](/en/examples/plugins/yoga/#yoga-child)
+- [Adaptive layout](/en/examples/plugins/yoga/#yoga-available-space)
+- [Text Line Feed](/en/examples/plugins/yoga/#yoga-text)
+- [Apply animations to relevant properties](/en/examples/plugins/yoga/#yoga-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -29,7 +29,7 @@ const renderer = new Renderer();
 renderer.registerPlugin(new Plugin());
 ```
 
-With `display: 'flex'` you can declare a graph to use Flex layout. Currently we only support [Rect](/api/basic/rect) and [Group](/api/basic/group) as Flex containers.
+With `display: 'flex'` you can declare a graph to use Flex layout. Currently we only support [Rect](/en/api/basic/rect) and [Group](/en/api/basic/group) as Flex containers.
 
 ```js
 // Declare a container
@@ -72,7 +72,7 @@ Different properties support different units, such as absolute pixel values of t
 
 ### Declare Flex containers
 
-Use `display: 'flex'` to declare a Flex container, all the immediate children inside the container will be laid out according to the layout engine calculation, only [Rect](/api/basic/rect) and [Group](/api/basic/group) are supported as containers for now.
+Use `display: 'flex'` to declare a Flex container, all the immediate children inside the container will be laid out according to the layout engine calculation, only [Rect](/en/api/basic/rect) and [Group](/en/api/basic/group) are supported as containers for now.
 
 ```js
 // or using Group
@@ -91,7 +91,7 @@ const container = new Rect({
 });
 ```
 
-There is no type restriction for child elements inside the container, for example, you can see in the following figure that [Image](/api/basic/image) can also be laid out normally according to the calculation result.
+There is no type restriction for child elements inside the container, for example, you can see in the following figure that [Image](/en/api/basic/image) can also be laid out normally according to the calculation result.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -146,7 +146,7 @@ For example, in the following figure Node1 sets a slightly larger aspect.
 
 #### minWidth / minHeight / maxWidth / maxHeight
 
-Max-min constraint, priority over other attributes. Can be used with [flexGrow](/plugins/yoga#flexgrow).
+Max-min constraint, priority over other attributes. Can be used with [flexGrow](/en/plugins/yoga#flexgrow).
 
 Default value is NaN, i.e. no constraint. Support percentage and absolute values, take percentage relative to parent element size, e.g. `{ minWidth: 50% }`.
 
@@ -225,13 +225,13 @@ The following image shows the effect of `margin: [0, 'auto', 0, 'auto']` to cent
 
 <tag color="green" text="Animatable">Animatable</tag>
 
-See [margin](/plugins/yoga#margin) for details.
+See [margin](/en/plugins/yoga#margin) for details.
 
 #### marginTop / marginRight / marginBottom / marginLeft
 
 <tag color="green" text="Animatable">Animatable</tag>
 
-See [margin](/plugins/yoga#margin) for details.
+See [margin](/en/plugins/yoga#margin) for details.
 
 #### border
 
@@ -270,7 +270,7 @@ The following values are supported.
 - `'no-wrap'` default value
 - `'wrap-reverse'`
 
-In this [example](/examples/plugins/yoga/#yoga-container), you can add child elements to the container by clicking the `appendChild` button. The image on the left below shows the effect of the container's default `no-wrap` (note that the child element is compressed in width because line breaks are not allowed), and the image on the right below is set to `wrap` with automatic line breaks.
+In this [example](/en/examples/plugins/yoga/#yoga-container), you can add child elements to the container by clicking the `appendChild` button. The image on the left below shows the effect of the container's default `no-wrap` (note that the child element is compressed in width because line breaks are not allowed), and the image on the right below is set to `wrap` with automatic line breaks.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BUfETp4tDZAAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -290,9 +290,9 @@ For example, in the figure below, Node1 and Node2 are both set to the initial si
 
 If you want Node1 and Node2 to split the space equally, you can set `{ flexGrow: 1 }` on Node2 as well.
 
-You can adjust this [example](/examples/plugins/yoga/#yoga-available-space) to see the effect. This is particularly suitable for implementing "adaptive" layouts, where when the container width is modified, the remaining space changes as well.
+You can adjust this [example](/en/examples/plugins/yoga/#yoga-available-space) to see the effect. This is particularly suitable for implementing "adaptive" layouts, where when the container width is modified, the remaining space changes as well.
 
-Also, the allocation of the remaining space takes into account constraints like [min/maxWidth/Height](/plugins/yoga#minwidth--minheight--maxwidth--maxheight) on the child elements, and in this [example](/ examples/plugins#yoga examples/plugins#yoga-available-space), Node1 also has `{ maxWidth: 200 }` set, so even if there is more space left in the container, it will not be allocated to it (note the blank part of the container on the right side of the image below).
+Also, the allocation of the remaining space takes into account constraints like [min/maxWidth/Height](/en/plugins/yoga#minwidth--minheight--maxwidth--maxheight) on the child elements, and in this [example](/ examples/plugins#yoga examples/plugins#yoga-available-space), Node1 also has `{ maxWidth: 200 }` set, so even if there is more space left in the container, it will not be allocated to it (note the blank part of the container on the right side of the image below).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fbvlTpdHR0IAAAAAAAAAAAAAARQnAQ" width="500px">
 
@@ -345,7 +345,7 @@ The following enumeration values are supported.
 - `'space-around'`
 - `'space-evenly'`
 
-In this [example](/examples/plugins/yoga/#yoga-container), the effect of `center` / `space-between` / `space-around` is shown.
+In this [example](/en/examples/plugins/yoga/#yoga-container), the effect of `center` / `space-between` / `space-around` is shown.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3KUrRZ8gjg0AAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -374,7 +374,7 @@ The following figure shows the `center` effect.
 
 #### alignSelf
 
-For child elements to override the existing [alignItems](/plugins/yoga#alignitems) value in the container.
+For child elements to override the existing [alignItems](/en/plugins/yoga#alignitems) value in the container.
 
 In the following figure, the container sets `alignItems` to the default value of `stretch`, but Node1 can set itself out of the original Node2 and Node3 layout effect by using `alignSelf: center`.
 
@@ -382,7 +382,7 @@ In the following figure, the container sets `alignItems` to the default value of
 
 #### alignContent
 
-How the container allocates space around child elements only takes effect if [flexWrap](/plugins/yoga#flexwrap) takes the value `wrap`.
+How the container allocates space around child elements only takes effect if [flexWrap](/en/plugins/yoga#flexwrap) takes the value `wrap`.
 
 The following enumeration values are supported.
 
@@ -393,7 +393,7 @@ The following enumeration values are supported.
 - `'space-between'`
 - `'space-around'`
 
-In this [example](/examples/plugins/yoga/#yoga-container), the `center` / `space-between` / `space-around` effects are shown in order.
+In this [example](/en/examples/plugins/yoga/#yoga-container), the `center` / `space-between` / `space-around` effects are shown in order.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*P8hPS6i7iPcAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -419,7 +419,7 @@ Once a container uses Flex, all child elements inside it should be positioned us
 
 Yes. However, the reference values for using percentages are not the same for different attributes.
 
-For example [width/height](/plugins/yoga#width--height) relative to the width and height of the parent element.
+For example [width/height](/en/plugins/yoga#width--height) relative to the width and height of the parent element.
 
 ```js
 {
@@ -430,7 +430,7 @@ For example [width/height](/plugins/yoga#width--height) relative to the width an
 
 ### Does it support automatic text line feeds?
 
-Currently [Text](/api/basic/text) already supports multi-line text with automatic line break, but requires user to set `wordWrapWidth` manually to break the line when it is exceeded.
+Currently [Text](/en/api/basic/text) already supports multi-line text with automatic line break, but requires user to set `wordWrapWidth` manually to break the line when it is exceeded.
 
 In Flex layout, when text is a child element, there is no need for user to set text line width manually, just turn on `wordWrap` with `width` and you can.
 
@@ -447,15 +447,15 @@ const text = new Text({
 });
 ```
 
-In this [example](/examples/plugins/yoga/#yoga-text), you can always change the line width of the text that needs a line break, as shown below for `width: '100%'`.
+In this [example](/en/examples/plugins/yoga/#yoga-text), you can always change the line width of the text that needs a line break, as shown below for `width: '100%'`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### Does the added property support animation?
 
-Flex layout adds many new properties, such as [padding](/plugins/yoga#padding) [margin](/plugins/yoga#margin), etc. It is possible to animate these properties in CSS.
+Flex layout adds many new properties, such as [padding](/en/plugins/yoga#padding) [margin](/en/plugins/yoga#margin), etc. It is possible to animate these properties in CSS.
 
-Some of these properties are currently supported and can be viewed in this [example](/examples/plugins/yoga/#yoga-animation).
+Some of these properties are currently supported and can be viewed in this [example](/en/examples/plugins/yoga/#yoga-animation).
 
 ```js
 node1.animate(

@@ -11,14 +11,14 @@ order: 2
 
 其中会涉及以下 API：
 
-- 使用 [getCamera()](/api/canvas/built-in-objects#getcamera) 获取画布相机
-- 使用 [setZoom()](/api/camera/action#dolly) 设置相机缩放参数
-- 使用 [pan()](/api/camera/action#pan) 平移相机
-- 使用 [createLandmark()](/api/camera/animation) 创建相机动画
+- 使用 [getCamera()](/en/api/canvas/built-in-objects#getcamera) 获取画布相机
+- 使用 [setZoom()](/en/api/camera/action#dolly) 设置相机缩放参数
+- 使用 [pan()](/en/api/camera/action#pan) 平移相机
+- 使用 [createLandmark()](/en/api/camera/animation) 创建相机动画
 
 最终示例：
 
-- [官网示例](/examples/perf/basic/#nodes-8k)
+- [官网示例](/en/examples/perf/basic/#nodes-8k)
 - [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-yong-xiang-ji-041xm?file=/index.js)
 
 ## 使用 g-webgl 渲染器
@@ -53,7 +53,7 @@ fetch('https://gw.alipayobjects.com/os/basement_prod/xxxx.json')
     });
 ```
 
-我们使用 [Line](/api/basic/line) 表现边，[Circle](/api/basic/circle) 表现节点，[Text](/api/basic/text) 表现文本：
+我们使用 [Line](/en/api/basic/line) 表现边，[Circle](/en/api/basic/circle) 表现节点，[Text](/en/api/basic/text) 表现文本：
 
 ```js
 // 使用预计算结果渲染边
@@ -82,7 +82,7 @@ data.edges.forEach(({ startPoint, endPoint }) => {
 
 ### 获取相机
 
-前面提到过，每个画布内置了一个相机，我们可以使用 [getCamera](/api/canvas/built-in-objects#getcamera) 获取画布相机：
+前面提到过，每个画布内置了一个相机，我们可以使用 [getCamera](/en/api/canvas/built-in-objects#getcamera) 获取画布相机：
 
 ```js
 const camera = canvas.getCamera();
@@ -90,7 +90,7 @@ const camera = canvas.getCamera();
 
 ### 实现缩放
 
-我们希望通过鼠标滚轮实现对于整个场景的缩放，很自然的，我们使用 addEventListener 监听 wheel 事件。在获取到原生滚轮事件对象上携带的 deltaY 信息后，我们调用 [setZoom()](/api/camera/action#dolly) 设置相机缩放参数，当然通过 [getZoom()](/api/camera/action#dolly) 可以随时获取这个参数。当这个参数的值大于 1 时代表放大（好比我们拿着一个放大镜观察世界），小于 1 时代表缩小：
+我们希望通过鼠标滚轮实现对于整个场景的缩放，很自然的，我们使用 addEventListener 监听 wheel 事件。在获取到原生滚轮事件对象上携带的 deltaY 信息后，我们调用 [setZoom()](/en/api/camera/action#dolly) 设置相机缩放参数，当然通过 [getZoom()](/en/api/camera/action#dolly) 可以随时获取这个参数。当这个参数的值大于 1 时代表放大（好比我们拿着一个放大镜观察世界），小于 1 时代表缩小：
 
 ```js
 // 设置最小和最大缩放比例
@@ -122,7 +122,7 @@ canvas.addEventListener(
 
 ### 实现平移
 
-有了缩放，很自然地我们也想实现利用鼠标拖拽完成场景的平移。在[入门教程](/guide/chapter3)中我们借助 interact.js 实现了节点的拖拽，这里我们使用 hammer.js 帮助我们完成手势操作。
+有了缩放，很自然地我们也想实现利用鼠标拖拽完成场景的平移。在[入门教程](/en/guide/chapter3)中我们借助 interact.js 实现了节点的拖拽，这里我们使用 hammer.js 帮助我们完成手势操作。
 
 直接将我们的画布传给 hammer.js，并让它监听 pan 事件，得益于对 DOM API 的兼容，我们再次“欺骗”了它。hammer.js 会给事件对象加上 deltaX/Y，即鼠标移动过程中水平和垂直方向上的偏移量：
 
@@ -136,14 +136,14 @@ hammer.on('pan', (ev) => {
 });
 ```
 
-接下来让我们根据偏移量使用 [pan()](/api/camera/action#pan) 来平移相机，需要注意的是，当我们向右拖拽鼠标想让场景向右平移时，需要让相机向左移动，这也和我们的生活常识相符：
+接下来让我们根据偏移量使用 [pan()](/en/api/camera/action#pan) 来平移相机，需要注意的是，当我们向右拖拽鼠标想让场景向右平移时，需要让相机向左移动，这也和我们的生活常识相符：
 
 ```js
 // 沿水平/垂直方向移动相机
 camera.pan(-ev.deltaX, -ev.deltaY);
 ```
 
-最后让我们做一个小小的优化，当放大场景时，我们希望移动的幅度小一点，反之当场景被缩小时，我们希望更快速地进行移动。因此我们可以根据相机当前的缩放参数来实现，使用 [getZoom()](/api/camera/action#dolly) 获取它：
+最后让我们做一个小小的优化，当放大场景时，我们希望移动的幅度小一点，反之当场景被缩小时，我们希望更快速地进行移动。因此我们可以根据相机当前的缩放参数来实现，使用 [getZoom()](/en/api/camera/action#dolly) 获取它：
 
 ```js
 const zoom = Math.pow(2, camera.getZoom());
@@ -171,11 +171,11 @@ mat4 MVPMatrix = ProjectionViewMatrix * ModelMatrix;
 
 ## 更多相机设置
 
-除了使用 pan 平移相机，我们还可以进行以下[相机动作](/api/camera/action)：
+除了使用 pan 平移相机，我们还可以进行以下[相机动作](/en/api/camera/action)：
 
-- [dolly()](/api/camera/action#dolly) 沿 n 轴移动相机。正交投影下没有“近大远小”，因此不会对画面产生影响。
-- [rotate()](/api/camera/action#rotate) 按相机方位角旋转，逆时针方向为正。
+- [dolly()](/en/api/camera/action#dolly) 沿 n 轴移动相机。正交投影下没有“近大远小”，因此不会对画面产生影响。
+- [rotate()](/en/api/camera/action#rotate) 按相机方位角旋转，逆时针方向为正。
 
-另外在 3D 场景中，我们还可以使用[透视投影](/api/camera/intro#setperspective)代替默认的正交投影。
+另外在 3D 场景中，我们还可以使用[透视投影](/en/api/camera/intro#setperspective)代替默认的正交投影。
 
-最后，[相机动画](/api/camera/animation)能让我们在不同视角间平滑切换。
+最后，[相机动画](/en/api/camera/animation)能让我们在不同视角间平滑切换。

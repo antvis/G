@@ -3,7 +3,7 @@ title: Coordinate system
 order: 2
 ---
 
-When we talk about "location", it must be relative to some coordinate system, in G we use Client, Screen, Page, Canvas and Viewport coordinate systems, for example, in [event system](/api/event/intro) you can get the coordinates from the event object in different coordinate systems.
+When we talk about "location", it must be relative to some coordinate system, in G we use Client, Screen, Page, Canvas and Viewport coordinate systems, for example, in [event system](/en/api/event/intro) you can get the coordinates from the event object in different coordinate systems.
 
 ```js
 canvas.addEventListener('click', (e) => {
@@ -21,9 +21,9 @@ These coordinate systems all have the upper left corner as the origin:
 
 <img src="https://developer.mozilla.org/en-US/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png" alt="canvas coordinates origin">
 
-⚠️ If [g-plugin-3d](/plugins/3d) plugin is used, the Z-axis is pointing off-screen.
+⚠️ If [g-plugin-3d](/en/plugins/3d) plugin is used, the Z-axis is pointing off-screen.
 
-We provide methods to convert between them, and in this [example](/examples/canvas/canvas-basic/#coordinates), move the mouse to see the value of the mouse location in each coordinate system:
+We provide methods to convert between them, and in this [example](/en/examples/canvas/canvas-basic/#coordinates), move the mouse to see the value of the mouse location in each coordinate system:
 
 - Client <-> Viewport
 - Canvas <-> Viewport
@@ -64,11 +64,11 @@ An analogy can be drawn to the browser's Client coordinate system, also known as
 
 In the browser's Page coordinate system, the coordinates of the element in the document do not change regardless of page scrolling; what changes is our viewing area.
 
-Similarly, [camera](/api/camera/intro) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so the coordinates of the upper-left corner of the Viewport are the same as the origin of the Canvas coordinate system, `[0, 0]`, in our visible range. However, if the camera is panned, rotated, or scaled, the viewport will also change accordingly, and the position of `[0, 0]` in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
+Similarly, [camera](/en/api/camera/intro) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so the coordinates of the upper-left corner of the Viewport are the same as the origin of the Canvas coordinate system, `[0, 0]`, in our visible range. However, if the camera is panned, rotated, or scaled, the viewport will also change accordingly, and the position of `[0, 0]` in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
 
 ## Conversion method
 
-We provide the following transformation methods needed to use Point, which has the following structure and can be introduced from the G core package, [example](/examples/canvas/canvas-basic/#coordinates):
+We provide the following transformation methods needed to use Point, which has the following structure and can be introduced from the G core package, [example](/en/examples/canvas/canvas-basic/#coordinates):
 
 ```js
 interface Point {
@@ -81,7 +81,7 @@ import type { Point } from '@antv/g';
 
 ### Client <-> Viewport
 
-We provide a method for converting from the browser's Client coordinate system to the canvas Viewport coordinate system, [example](/examples/canvas/canvas-basic/#coordinates):
+We provide a method for converting from the browser's Client coordinate system to the canvas Viewport coordinate system, [example](/en/examples/canvas/canvas-basic/#coordinates):
 
 - client2Viewport(client: Point): Point
 - viewport2Client(canvas: Point): Point
@@ -111,9 +111,9 @@ For compatibility with older versions of the G API, we also provide:
 
 ### Canvas <-> Viewport
 
-The [camera](/api/camera/intro) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so within our visible range, the coordinates of the upper-left corner of the viewport are the same as the Canvas coordinate system origin, both are `[0, 0]`. However, if the camera is panned, rotated, or scaled, the viewport will change accordingly, and the `[0, 0]` position in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
+The [camera](/en/api/camera/intro) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so within our visible range, the coordinates of the upper-left corner of the viewport are the same as the Canvas coordinate system origin, both are `[0, 0]`. However, if the camera is panned, rotated, or scaled, the viewport will change accordingly, and the `[0, 0]` position in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
 
-In [example](/examples/canvas/canvas-basic/#coordinates), we moved the camera up a distance (the whole world moves down in the viewer's eyes) and found that the center of the circle remains the same in the Canvas coordinate system, `[300, 200]`, but is shifted in the Viewport coordinate system as follows.
+In [example](/en/examples/canvas/canvas-basic/#coordinates), we moved the camera up a distance (the whole world moves down in the viewer's eyes) and found that the center of the circle remains the same in the Canvas coordinate system, `[300, 200]`, but is shifted in the Viewport coordinate system as follows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qe5tR4G5AD4AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas to viewport">
 

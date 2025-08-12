@@ -41,7 +41,7 @@ After acquiring a Device, you can use it to create a series of GPU-related resou
 
 ### Buffer
 
-Buffer represents a piece of memory used in GPU operations that can be specified at creation time to initialize the data and subsequently modify some of it. The data is stored in a linear layout. When you need to read the data on the CPU side (Host), you need to do it by [Readback](/plugins/device-renderer#readback).
+Buffer represents a piece of memory used in GPU operations that can be specified at creation time to initialize the data and subsequently modify some of it. The data is stored in a linear layout. When you need to read the data on the CPU side (Host), you need to do it by [Readback](/en/plugins/device-renderer#readback).
 
 ```ts
 export interface Buffer {
@@ -94,7 +94,7 @@ export enum BufferFrequencyHint {
 }
 ```
 
-For example, when used with [g-plugin-gpgpu](/plugins/gpgpu), to allocate input and output Buffer.
+For example, when used with [g-plugin-gpgpu](/en/plugins/gpgpu), to allocate input and output Buffer.
 
 ```js
 const buffer = device.createBuffer({
@@ -169,7 +169,7 @@ export interface Readback {
 }
 ```
 
-For example, when used with [g-plugin-gpgpu](/plugins/gpgpu), reads the result of the calculation.
+For example, when used with [g-plugin-gpgpu](/en/plugins/gpgpu), reads the result of the calculation.
 
 ```js
 const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
@@ -376,10 +376,10 @@ program.destroy();
 
 ## GPU-based pickup
 
-Unlike [g-plugin-canvas-picker](/plugins/canvas-picker) and [g-plugin-svg-picker](/plugins/svg-picker), which are CPU-based picking schemes, we use A GPU-based approach called "color coding".
+Unlike [g-plugin-canvas-picker](/en/plugins/canvas-picker) and [g-plugin-svg-picker](/en/plugins/svg-picker), which are CPU-based picking schemes, we use A GPU-based approach called "color coding".
 
 This approach consists of the following steps.
 
-1. assign a separate "color" to each graph for picking When pickup is needed (triggering [interaction event](/api/event/intro) or via [element(s) FromPoint](/api/builtin-objects/document#elementsfrompoint) API), use the "color" assigned in the previous step. Use the "color" assigned in the previous step instead of the real color to render into the Framebuffer (size does not need to be full screen, usually only 1x1). Also use [setViewOffset](/api/camera/params#setviewoffset) to set the offset for the camera so that only the pickup area (usually 1x1) needs to be rendered instead of the full screen.
+1. assign a separate "color" to each graph for picking When pickup is needed (triggering [interaction event](/en/api/event/intro) or via [element(s) FromPoint](/en/api/builtin-objects/document#elementsfrompoint) API), use the "color" assigned in the previous step. Use the "color" assigned in the previous step instead of the real color to render into the Framebuffer (size does not need to be full screen, usually only 1x1). Also use [setViewOffset](/en/api/camera/params#setviewoffset) to set the offset for the camera so that only the pickup area (usually 1x1) needs to be rendered instead of the full screen.
 2. read the texture pixel values from the Framebuffer and map them back to the graphics
-3. If you need to get all the graphics where the target points overlap together instead of the topmost one (e.g. using [elementsFromPoint](/api/builtin-objects/document#elementsfrompoint)), set the pickups of the picked graphics to "Color" is empty. Repeat step 2/3 until no graphics can be picked up
+3. If you need to get all the graphics where the target points overlap together instead of the topmost one (e.g. using [elementsFromPoint](/en/api/builtin-objects/document#elementsfrompoint)), set the pickups of the picked graphics to "Color" is empty. Repeat step 2/3 until no graphics can be picked up

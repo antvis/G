@@ -35,40 +35,40 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 
 **Support multiple rendering environments**。Support Canvas2D / SVG / WebGL / WebGPU / CanvasKit and runtime switching, and also server-side rendering.
 
-**High performance rendering and computing**。WebGPU-based GPGPU support for parallelizable algorithms. [webgpu-graph](/api/gpgpu/webgpu-graph) is a library of graph analysis algorithms using GPU acceleration.
+**High performance rendering and computing**。WebGPU-based GPGPU support for parallelizable algorithms. [webgpu-graph](/en/api/gpgpu/webgpu-graph) is a library of graph analysis algorithms using GPU acceleration.
 
 Extensible plug-in mechanism and rich set of plug-ins：
 
 - Rendering Related
-  - [g-plugin-canvas-renderer](/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-  - [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
-  - [g-plugin-svg-renderer](/plugins/svg-renderer) Rendering 2D graphics based on SVG.
-  - [g-plugin-device-renderer](/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-  - [g-plugin-html-renderer](/plugins/html-renderer) Rendering DOM with HTML.
-  - [g-plugin-3d](/plugins/3d) Extended 3D capabilities.
-  - [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvas2D.
-  - [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
+  - [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+  - [g-plugin-svg-renderer](/en/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [g-plugin-device-renderer](/en/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+  - [g-plugin-html-renderer](/en/plugins/html-renderer) Rendering DOM with HTML.
+  - [g-plugin-3d](/en/plugins/3d) Extended 3D capabilities.
+  - [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvas2D.
+  - [g-plugin-rough-svg-renderer](/en/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
 - Picking
-  - [g-plugin-canvas-picker](/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-  - [g-plugin-svg-picker](/plugins/svg-picker) Do picking with SVG and DOM API.
+  - [g-plugin-canvas-picker](/en/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [g-plugin-svg-picker](/en/plugins/svg-picker) Do picking with SVG and DOM API.
 - Accessibility
-  - [g-plugin-a11y](/plugins/a11y) Provides SEO, screen reader support and keyboard navigation.
+  - [g-plugin-a11y](/en/plugins/a11y) Provides SEO, screen reader support and keyboard navigation.
 - Interaction
-  - [g-plugin-dom-interaction](/plugins/dom-interaction) Binds event listeners with DOM API.
-  - [g-plugin-control](/plugins/control) Provides camera interaction for 3D scenes.
-  - [g-plugin-dragndrop](/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+  - [g-plugin-dom-interaction](/en/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [g-plugin-control](/en/plugins/control) Provides camera interaction for 3D scenes.
+  - [g-plugin-dragndrop](/en/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
 - Physics Engine
-  - [g-plugin-box2d](/plugins/box2d) Based on [Box2D](https://box2d.org/).
-  - [g-plugin-matterjs](/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-  - [g-plugin-physx](/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+  - [g-plugin-box2d](/en/plugins/box2d) Based on [Box2D](https://box2d.org/).
+  - [g-plugin-matterjs](/en/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+  - [g-plugin-physx](/en/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
 - Layout Engine
-  - [g-plugin-yoga](/plugins/yoga) Provides Flex layout capabilities based on Yoga.
+  - [g-plugin-yoga](/en/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 - GPGPU
-  - [g-plugin-gpgpu](/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+  - [g-plugin-gpgpu](/en/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
 - CSS Selector
-  - [g-plugin-css-select](/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
+  - [g-plugin-css-select](/en/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
 
-Full [API Spec](/api/basic/concept).
+Full [API Spec](/api).
 
 ## Usage
 
@@ -93,7 +93,7 @@ Import the core and renderer code in UMD format:
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
-Then we can use some core objects such as [Canvas](/api/canvas/intro) and [Circle](/api/basic/circle) under the namespace `window.G`:
+Then we can use some core objects such as [Canvas](/en/api/canvas/intro) and [Circle](/en/api/basic/circle) under the namespace `window.G`:
 
 ```js
 const { Circle, Canvas, CanvasEvent } = window.G;
@@ -145,7 +145,7 @@ $ npm install @antv/g-svg --save
 $ npm install @antv/g-webgl --save
 ```
 
-Then we can import some core objects such as [Canvas](/api/canvas/intro) and [Circle](/api/basic/circle) from `@antv/g`:
+Then we can import some core objects such as [Canvas](/en/api/canvas/intro) and [Circle](/en/api/basic/circle) from `@antv/g`:
 
 ```js
 import { Canvas, CanvasEvent, Circle } from '@antv/g';

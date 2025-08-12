@@ -70,9 +70,9 @@ The renderer adds the `id` attribute when generating the SVGElement, which is us
 
 The renderer has the following plug-ins built in.
 
-- [g-plugin-svg-renderer](/plugins/svg-renderer) Draw shapes using SVG elements, such as `<circle>`, `<rect>`, etc.
-- [g-plugin-svg-picker](/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API
-- [g-plugin-dom-interaction](/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-svg-renderer](/en/plugins/svg-renderer) Draw shapes using SVG elements, such as `<circle>`, `<rect>`, etc.
+- [g-plugin-svg-picker](/en/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API
+- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 
@@ -82,9 +82,9 @@ In addition to the built-in plug-ins, the following optional plug-ins are availa
 
 Use the SVG version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
-We provide [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) plugin, which will replace [g-plugin-svg-renderer](/plugins/svg- renderer) for some 2D graphics.
+We provide [g-plugin-rough-svg-renderer](/en/plugins/rough-svg-renderer) plugin, which will replace [g-plugin-svg-renderer](/en/plugins/svg- renderer) for some 2D graphics.
 
-The effect of [example](/examples/plugins/rough/#rough) is as follows.
+The effect of [example](/en/examples/plugins/rough/#rough) is as follows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
@@ -94,10 +94,10 @@ The renderer relies on the rendering capabilities of the SVG DOM API and is not 
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg), we will work with [JSDOM](https://github.com/jsdom/node-) on the Node side jsdom) with [node-canvas](https://github.com/Automattic/node-canvas) to render the result image and compare it with the benchmark image. Other server-side rendering scenes can also follow the following steps.
 
-1. Use [unregisterPlugin](/api/renderer/intro#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/plugins/dom-interaction).
+1. Use [unregisterPlugin](/en/api/renderer/intro#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/en/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/en/plugins/dom-interaction).
 2. Create a canvas container using JSDOM.
 3. Use the container from the previous step to create the canvas, and pass in the `document` created by JSDOM instead of `window.document` in the browser environment, and the same for `raf`.
-4. Normal use of [g-svg](/api/renderer/svg) renderer to create scenes via G's API.
+4. Normal use of [g-svg](/en/api/renderer/svg) renderer to create scenes via G's API.
 5. Use [xmlserializer](https://www.npmjs.com/package/xmlserializer) to serialize JSDOM to a string and save it as an SVG image.
 
 <https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js>

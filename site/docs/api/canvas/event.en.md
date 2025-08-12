@@ -3,7 +3,7 @@ title: Event
 order: 8
 ---
 
-In the [event system](/api/event/intro), most events bubble up to the canvas. For example, if we click Circle in the following simple scenario, we can see the propagation path of the events in order.
+In the [event system](/en/api/event/intro), most events bubble up to the canvas. For example, if we click Circle in the following simple scenario, we can see the propagation path of the events in order.
 
 ```
 Circle -> Group(canvas.document.documentElement) -> Document(canvas.document) -> Canvas：
@@ -26,7 +26,7 @@ canvas.addEventListener('click', () => {});
 canvas.document.addEventListener('click', () => {});
 ```
 
-More event-related operations are described in [event system](/api/event/intro).
+More event-related operations are described in [event system](/en/api/event/intro).
 
 ## Canvas-specific events
 
@@ -76,7 +76,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 });
 ```
 
-In addition to listening to the `ready` event, you can also choose to [wait for this Promise](/api/canvas/scenegraph-lifecycle#ready).
+In addition to listening to the `ready` event, you can also choose to [wait for this Promise](/en/api/canvas/scenegraph-lifecycle#ready).
 
 ```js
 await canvas.ready;
