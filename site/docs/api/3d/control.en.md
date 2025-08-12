@@ -16,7 +16,7 @@ order: 6
 - 鼠标拖拽将引起相机在 u、v 轴的移动，即 pan 动作
 - 鼠标滚轮缩放将引起相机在 n 轴的移动，即 dolly 动作
 
-[示例](/zh/examples/3d#force-3d)：
+[示例](/examples/3d/3d-basic/#force-3d)：
 
 ```js
 import { Plugin as PluginControl } from '@antv/g-plugin-control';

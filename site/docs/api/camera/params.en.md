@@ -27,7 +27,7 @@ The method signature is as follows.
 setPosition(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 500]`, where `width/height` is the size of the [Canvas](/en/api/canvas). So if we want to reset the `x/y` coordinates of the camera, while keeping the `z` coordinates the same, we can do this.
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 500]`, where `width/height` is the size of the [Canvas](/api/canvas/intro). So if we want to reset the `x/y` coordinates of the camera, while keeping the `z` coordinates the same, we can do this.
 
 ```js
 // Keep the Z-coordinate constant.
@@ -63,7 +63,7 @@ The method signature is as follows.
 setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 0]`, where `width/height` is the size of the [Canvas](/en/api/canvas). So if we want to reset the `x/y` coordinates of the camera viewpoint while keeping the `z` coordinates the same, we can do this.
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 0]`, where `width/height` is the size of the [Canvas](/api/canvas/intro). So if we want to reset the `x/y` coordinates of the camera viewpoint while keeping the `z` coordinates the same, we can do this.
 
 ```js
 // Keep the Z-coordinate constant.
@@ -147,7 +147,7 @@ camera.getZoom(); // 1
 
 ## setZoom
 
-`zoom` greater than 1 means zoom in, and vice versa means zoom out, [example](/en/examples/camera/projection-mode/#ortho).
+`zoom` greater than 1 means zoom in, and vice versa means zoom out, [example](/examples/camera/projection-mode/#ortho).
 
 The method signature is as follows.
 
@@ -157,9 +157,9 @@ setZoom(zoom: number)
 
 ## setZoomByViewportPoint
 
-[setZoom](/en/api/camera/params#setzoom) will scale at the center of the camera's position under the world coordinate system. However, sometimes we want to fix the viewpoint, i.e. to scale at the point under [viewport coordinate system](/en/api/canvas/coordinates#viewport).
+[setZoom](/api/camera/params#setzoom) will scale at the center of the camera's position under the world coordinate system. However, sometimes we want to fix the viewpoint, i.e. to scale at the point under [viewport coordinate system](/api/canvas/coordinates#viewport).
 
-In the following [example](/en/examples/camera/camera-action/#zoom-by-point), we listen to the `wheel` event to scale at the position of the event object under the client coordinate system.
+In the following [example](/examples/camera/camera-action/#zoom-by-point), we listen to the `wheel` event to scale at the position of the event object under the client coordinate system.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*cIK-RL1MHtYAAAAAAAAAAAAAARQnAQ" alt="zoom by viewport point" width="200">
 
@@ -172,7 +172,7 @@ camera.setZoomByViewportPoint(zoom, [x, y]);
 The method signature is as follows.
 
 - `zoom` greater than 1 means zoom in, vice versa means zoom out.
-- `viewportPoint` is the point coordinate under [viewport coordinate system](/en/api/canvas/coordinates#viewport).
+- `viewportPoint` is the point coordinate under [viewport coordinate system](/api/canvas/coordinates#viewport).
 
 ```
 setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
@@ -180,7 +180,7 @@ setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
 
 ## setFov
 
-Only works in perspective projection, the larger the perspective is the more objects it can hold. [example](/en/examples/camera/projection-mode/#perspective)
+Only works in perspective projection, the larger the perspective is the more objects it can hold. [example](/examples/camera/projection-mode/#perspective)
 
 The method signature is as follows.
 
@@ -200,13 +200,13 @@ setAspect(aspect: number)
 
 ## setMinDistance
 
-Set the minimum view distance. It will not be smaller than this distance when [dolly](/en/api/camera/action#dolly) operation is performed.
+Set the minimum view distance. It will not be smaller than this distance when [dolly](/api/camera/action#dolly) operation is performed.
 
 The default value is `-Infinity`.
 
 ## setMaxDistance
 
-Set the maximum view distance. It will not be greater than this distance when [dolly](/en/api/camera/action#dolly) operation is performed.
+Set the maximum view distance. It will not be greater than this distance when [dolly](/api/camera/action#dolly) operation is performed.
 
 The default value is `Infinity`.
 
@@ -229,17 +229,17 @@ setViewOffset(
 
 where `fullWidth/fullHeight` is the original viewport size, `x/y` is the viewport offset coordinate, and `width/height` is the offset viewport size.
 
-In this [example](/en/examples/camera/camera-action/#view-offset), [Cube](/en/api/3d/geometry#cubegeometry) is originally in the center of the viewport, by setting the `x/y` offset to the center of the viewport.
+In this [example](/examples/camera/camera-action/#view-offset), [Cube](/api/3d/geometry#cubegeometry) is originally in the center of the viewport, by setting the `x/y` offset to the center of the viewport.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*U6ELSY2EVNIAAAAAAAAAAAAAARQnAQ" alt="setViewOffset" width="300">
 
-When picking up in [g-plugin-device-renderer](/en/plugins/device-renderer), we use this method to set the offset (aligning the camera to the pickup area) and render only the pickup area instead of the whole screen to improve performance.
+When picking up in [g-plugin-device-renderer](/plugins/device-renderer), we use this method to set the offset (aligning the camera to the pickup area) and render only the pickup area instead of the whole screen to improve performance.
 
 ## clearViewOffset
 
 Clear the previously set viewport offset and immediately recalculate the projection matrix.
 
-In this [example](/en/examples/camera/camera-action/#view-offset), the set offset can be removed at any time by clicking the button.
+In this [example](/examples/camera/camera-action/#view-offset), the set offset can be removed at any time by clicking the button.
 
 ## Set azimuth
 
@@ -257,7 +257,7 @@ Sets the angle of rotation around the `forward` axis in `deg`, with the followin
 setRoll(roll: number)
 ```
 
-Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/api/camera#camera type).
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/api/camera#camera type).
 
 ```js
 camera.setRoll(30);
@@ -271,7 +271,7 @@ Sets the `elevation` angle in `deg`, with the following method signature.
 setElevation(angle: number)
 ```
 
-Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/api/camera#camera type).
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/api/camera#camera type).
 
 ```js
 camera.setElevation(30);
@@ -285,7 +285,7 @@ Set the angle around `azimuth` in `deg`, with the following method signature.
 setAzimuth(angle: number)
 ```
 
-Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/api/camera/intro#camera-types).
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/api/camera/intro#camera-types).
 
 ```js
 camera.setAzimuth(30);

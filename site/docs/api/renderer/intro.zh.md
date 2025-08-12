@@ -7,13 +7,13 @@ redirect_from:
 
 渲染器使用底层渲染 API 绘制各类图形，目前我们提供了以下渲染器，分别是：
 
-- 基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
-- 基于 Canvaskit / Skia 的 [g-canvaskit](/zh/api/renderer/canvaskit)
-- 基于 SVG 的 [g-svg](/zh/api/renderer/svg)
-- 基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
-- 基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
+- 基于 Canvas2D 的 [g-canvas](/api/renderer/canvas)
+- 基于 Canvaskit / Skia 的 [g-canvaskit](/api/renderer/canvaskit)
+- 基于 SVG 的 [g-svg](/api/renderer/svg)
+- 基于 WebGL 2/1 的 [g-webgl](/api/renderer/webgl)
+- 基于 WebGPU 的 [g-webgpu](/api/renderer/webgpu)
 
-渲染器由一个渲染上下文和一组[插件](/zh/plugins)组成，通过插件可以在运行时动态扩展渲染器的能力。
+渲染器由一个渲染上下文和一组[插件](/plugins/intro)组成，通过插件可以在运行时动态扩展渲染器的能力。
 
 以 `g-canvas` 渲染器为例，基础使用方式如下：
 
@@ -69,7 +69,7 @@ renderer.setConfig({ enableAutoRendering: true });
 
 ### registerPlugin
 
-渲染器可以在运行时动态添加插件，扩展自身能力，例如 `g-webgl` 可以通过 [g-pluin-3d](/zh/plugins/3d) 进行 3D 场景的渲染：
+渲染器可以在运行时动态添加插件，扩展自身能力，例如 `g-webgl` 可以通过 [g-pluin-3d](/plugins/3d) 进行 3D 场景的渲染：
 
 ```js
 import { Plugin } from '@antv/g-plugin-3d';

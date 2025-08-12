@@ -25,7 +25,7 @@ Disregarding the crane and tongue movements, which rely on the rocker, the trans
 | tilt | Center of Rotation |  | rotate |  |  |
 | arc |  | Center of Rotation |  | rotate |  |
 
-Naturally, depending on the camera type, the same camera action is implemented differently. Let's take [dolly](/en/api/camera/action#dolly) action as an example, it's also an action to move the camera position forward and backward, for [Orbiting](/en/api/camera/intro#orbiting) / [Exploring](/en/api/camera/intro#exploring) mode the point of view remains the same. In [Tracking](/en/api/camera/intro#tracking) mode, the point of view is adjusted.
+Naturally, depending on the camera type, the same camera action is implemented differently. Let's take [dolly](/api/camera/action#dolly) action as an example, it's also an action to move the camera position forward and backward, for [Orbiting](/api/camera/intro#orbiting) / [Exploring](/api/camera/intro#exploring) mode the point of view remains the same. In [Tracking](/api/camera/intro#tracking) mode, the point of view is adjusted.
 
 ## pan
 
@@ -42,19 +42,19 @@ Parameters:
 - `tx` Positive translation along u-axis
 - `ty` Positive translation along v-axis
 
-In this [example](/en/examples/camera/camera-action/#action), the following action will cause the object originally at the point of view to be displayed in the upper left corner.
+In this [example](/examples/camera/camera-action/#action), the following action will cause the object originally at the point of view to be displayed in the upper left corner.
 
 ```ts
 camera.pan(200, 200);
 ```
 
-In [g-plugin-control](/en/plugins/control) we respond to the mouse panning event by calling this method.
+In [g-plugin-control](/plugins/control) we respond to the mouse panning event by calling this method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
 ## dolly
 
-Move the camera along the n-axis. Fix the viewpoint and change the camera position to change the view distance. It will keep the view distance between [minDistance](/en/api/camera/params#setmindistance) and [maxDistance](/en/api/camera/params#setmaxdistance).
+Move the camera along the n-axis. Fix the viewpoint and change the camera position to change the view distance. It will keep the view distance between [minDistance](/api/camera/params#setmindistance) and [maxDistance](/api/camera/params#setmaxdistance).
 
 The method signature is as follows.
 
@@ -73,7 +73,7 @@ camera.dolly(10); // Away from the point of view
 camera.dolly(-10); // Close to the point of view
 ```
 
-The effect in the pivot projection is as follows. In [g-plugin-control](/en/plugins/control) we respond to the mouse wheel event by calling this method.
+The effect in the pivot projection is as follows. In [g-plugin-control](/plugins/control) we respond to the mouse wheel event by calling this method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Q-OJQ5cCbowAAAAAAAAAAAAAARQnAQ">
 

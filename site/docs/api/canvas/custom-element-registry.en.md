@@ -3,7 +3,7 @@ title: CustomElementRegistry
 order: 10
 ---
 
-Usually we recommend using `new Circle()` to create built-in or custom graphics, but we also provide something like the DOM [CustomElementRegistry](<https://developer.mozilla.org/en-US/docs/Web/API/> CustomElementRegistry) API to create a completed registered graph using [document.createElement](/en/api/builtin-objects/document#createelement), so the following writeup is equivalent.
+Usually we recommend using `new Circle()` to create built-in or custom graphics, but we also provide something like the DOM [CustomElementRegistry](<https://developer.mozilla.org/en-US/docs/Web/API/> CustomElementRegistry) API to create a completed registered graph using [document.createElement](/api/builtin-objects/document#createelement), so the following writeup is equivalent.
 
 ```js
 import { Shape, Circle } from '@antv/g';

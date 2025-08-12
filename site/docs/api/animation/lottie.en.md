@@ -3,7 +3,7 @@ title: Lottie
 order: 2
 ---
 
-In addition to describing animations using the [Web Animations API](/en/api/animation/waapi), we also support playback of Lottie formats, for which we provide a player like [lottie-web](<https://github.com/airbnb/lottie-> web/) player. Internally we will convert the graphics and Keyframe animations defined there into our [basic graphics](/en/api/basic/display-object) and animation descriptions, while providing simple animation control methods.
+In addition to describing animations using the [Web Animations API](/api/animation/waapi), we also support playback of Lottie formats, for which we provide a player like [lottie-web](<https://github.com/airbnb/lottie-> web/) player. Internally we will convert the graphics and Keyframe animations defined there into our [basic graphics](/api/basic/display-object) and animation descriptions, while providing simple animation control methods.
 
 ## Usage
 
@@ -13,7 +13,7 @@ Install player first:
 npm install @antv/g-lottie-player --save
 ```
 
-Then use the [loadAnimation](/en/api/animation/lottie#createanimation) method provided by the player to create a [LottieAnimation](/en/api/animation/lottie#lottieanimation) object, passing in the Lottie JSON.
+Then use the [loadAnimation](/api/animation/lottie#createanimation) method provided by the player to create a [LottieAnimation](/api/animation/lottie#lottieanimation) object, passing in the Lottie JSON.
 
 ```js
 import { loadAnimation } from '@antv/g-lottie-player';
@@ -31,7 +31,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 ## loadAnimation
 
-Reference [lottie-web](<https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/> AnimationManager.js#L227) method of the same name for loading Lottie files to create [LottieAnimation](/en/api/animation/lottie#lottieanimation).
+Reference [lottie-web](<https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/> AnimationManager.js#L227) method of the same name for loading Lottie files to create [LottieAnimation](/api/animation/lottie#lottieanimation).
 
 The parameters are as follows.
 
@@ -53,11 +53,11 @@ const ballAnimation = loadAnimation(bouncy_ball, {
 
 ## LottieAnimation
 
-This object can be created by [loadAnimation](/en/api/animation/lottie#loadanimation) to control the animation process.
+This object can be created by [loadAnimation](/api/animation/lottie#loadanimation) to control the animation process.
 
 ### render
 
-Renders to [canvas](/en/api/canvas) and returns a [Group](/en/api/basic/group) as a container, which can subsequently be transformed to.
+Renders to [canvas](/api/canvas/intro) and returns a [Group](/api/basic/group) as a container, which can subsequently be transformed to.
 
 ```js
 const wrapper = animation.render(canvas);
@@ -71,7 +71,7 @@ The following two parameters are supported to be passed in.
 - Canvas. This will be added to the canvas under the root node
 - Any element that has been added to the canvas
 
-It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/en/api/canvas#ready).
+It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/api/canvas/scenegraph-lifecycle#ready).
 
 ### play
 
@@ -204,10 +204,10 @@ animation.version();
 
 Support the following [Shape Layer](https://lottiefiles.github.io/lottie-docs/layers/#shape-layer)
 
-- [x] Rectangle It will be converted to [Rect](/en/api/basic/rect) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
-- [x] Ellipse It will be converted to [Ellipse](/en/api/basic/ellipse) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
-- [x] Path It will be converted to [Path](/en/api/basic/path) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#path>
-- [x] Group It will be converted to [Group](/en/api/basic/group) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#group>
+- [x] Rectangle It will be converted to [Rect](/api/basic/rect) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#rectangle>
+- [x] Ellipse It will be converted to [Ellipse](/api/basic/ellipse) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#ellipse>
+- [x] Path It will be converted to [Path](/api/basic/path) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#path>
+- [x] Group It will be converted to [Group](/api/basic/group) for rendering. <https://lottiefiles.github.io/lottie-docs/shapes/#group>
 - [ ] PolyStar <https://lottiefiles.github.io/lottie-docs/shapes/#polystar>
 
 ### Transform
@@ -226,7 +226,7 @@ The following features are not supported at this time.
 - [skew]() corresponds to the `sk` field
 - [skewAxis]() corresponds to the `sa` field
 
-In this [example](/en/examples/ecosystem#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
+In this [example](/examples/ecosystem/lottie/#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="400">
 
@@ -248,8 +248,8 @@ The following style attributes are supported.
 
 Fill color, while supporting the following features.
 
-- [fillOpacity](/en/api/basic/display-object#fillopacity) corresponds to the `o` field
-- [fillRule](/en/api/basic/display-object#fillrule) corresponds to the `r` field
+- [fillOpacity](/api/basic/display-object#fillopacity) corresponds to the `o` field
+- [fillRule](/api/basic/display-object#fillrule) corresponds to the `r` field
 
 #### Stroke
 
@@ -257,18 +257,18 @@ Fill color, while supporting the following features.
 
 Stroke color, while supporting the following features.
 
-- [strokeOpacity](/en/api/basic/display-object#strokeopacity) corresponds to the `o` field
-- [strokeWidth](/en/api/basic/display-object#strokewidth) corresponds to the `w` field
-- [lineCap](/en/api/basic/display-object#linecap) corresponds to the `lc` field
-- [lineJoin](/en/api/basic/display-object#linejoin) corresponds to the `lj` field
-- [miterLimit](/en/api/basic/display-object#miterlimit) corresponds to the `ml` field
-- [lineDash](/en/api/basic/display-object#linedash) corresponds to the `d` field
+- [strokeOpacity](/api/basic/display-object#strokeopacity) corresponds to the `o` field
+- [strokeWidth](/api/basic/display-object#strokewidth) corresponds to the `w` field
+- [lineCap](/api/basic/display-object#linecap) corresponds to the `lc` field
+- [lineJoin](/api/basic/display-object#linejoin) corresponds to the `lj` field
+- [miterLimit](/api/basic/display-object#miterlimit) corresponds to the `ml` field
+- [lineDash](/api/basic/display-object#linedash) corresponds to the `d` field
 
 #### Gradients
 
 <https://lottiefiles.github.io/lottie-docs/shapes/#gradients>
 
-Support [linear](/en/api/css/css-properties-values-api#linear-gradient) and [radial](/en/api/css/css-properties-values-api#radial-gradient) gradients.
+Support [linear](/api/css/css-properties-values-api#linear-gradient) and [radial](/api/css/css-properties-values-api#radial-gradient) gradients.
 
 The following features are not supported at this time.
 
@@ -307,7 +307,7 @@ The following features are not supported at this time.
 
 ### Clipping Mask
 
-Internally, it will be converted to [clipPath](/en/api/basic/display-object#clippath) to be applied to the target element and support path animation on it.
+Internally, it will be converted to [clipPath](/api/basic/display-object#clippath) to be applied to the target element and support path animation on it.
 
 Caution.
 

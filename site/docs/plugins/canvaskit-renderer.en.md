@@ -12,7 +12,7 @@ Skia offers more features than the Canvas2D API, such as text paragraph layout, 
 
 ## Usage
 
-The [g-canvaskit](/en/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
+The [g-canvaskit](/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
@@ -39,7 +39,7 @@ Returns a `ManagedSkottieAnimation` object
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/en/api/renderer/renderer#getplugin).
+First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -81,11 +81,11 @@ For example, particle effects such as fireworks, flames, etc. require generating
 
 CanvasKit provides a Skia-based programming language [SkSL(Skia's shading language)](https://skia.org/docs/user/sksl/) implementation, which is syntactically very close to GLSL and is used in the shader to control particle generation and animation. and animation in the shader, which is a certain threshold for developers who have not been exposed to shader programming.
 
-In this [example](/en/examples/plugins#canvaskit-particles), we have implemented some particle effects.
+In this [example](/examples/plugins/canvaskit/#canvaskit-particles), we have implemented some particle effects.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/plugins/canvaskit-renderer).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/api/renderer/intro#getplugin) plugin via [getPlugin](/plugins/canvaskit-renderer).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -96,7 +96,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then call the plugin's [createParticles](/en/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
+Then call the plugin's [createParticles](/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {

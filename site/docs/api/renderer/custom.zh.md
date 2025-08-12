@@ -3,7 +3,7 @@ title: 自定义渲染器
 order: 4
 ---
 
-在[渲染器简介](/zh/api/renderer/renderer)中，我们了解到渲染器由一个渲染上下文和一组插件组成，通过插件可以在运行时动态扩展渲染器的能力。
+在[渲染器简介](/api/renderer/intro)中，我们了解到渲染器由一个渲染上下文和一组插件组成，通过插件可以在运行时动态扩展渲染器的能力。
 
 当已有的渲染器不能满足当前渲染环境时，可以按照以下步骤完成自定义：
 
@@ -11,11 +11,11 @@ order: 4
 2. 实现一个自定义上下文注册插件
 3. 自定义渲染环境上下文服务
 
-下面我们将以 [g-canvas](/zh/api/renderer/canvas) 为例，展示如何完成以上步骤。
+下面我们将以 [g-canvas](/api/renderer/canvas) 为例，展示如何完成以上步骤。
 
 ## 实现自定义渲染器
 
-继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/zh/api/renderer/renderer#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/zh/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/zh/plugins/canvas-picker)。
+继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/api/renderer/intro#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/plugins/canvas-picker)。
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
@@ -52,7 +52,7 @@ export class Renderer extends AbstractRenderer {
 
 ## 实现一个自定义上下文注册插件
 
-关于如何实现一个插件可以参考 [插件基本结构](/zh/plugins/intro#基本结构)，该插件只做一件事，那就是注册渲染上下文服务。
+关于如何实现一个插件可以参考 [插件基本结构](/plugins/intro#基本结构)，该插件只做一件事，那就是注册渲染上下文服务。
 
 ```js
 import { AbstractRendererPlugin, Module } from '@antv/g';
@@ -122,7 +122,7 @@ async init() {
 }
 ```
 
-在该方法中，我们可以通过注入的方式获取用户创建 [Canvas](/zh/api/renderer/canvas) 时传入的参数，例如 [devicePixelRatio](/zh/api/canvas#devicepixelratio)。
+在该方法中，我们可以通过注入的方式获取用户创建 [Canvas](/api/renderer/canvas) 时传入的参数，例如 [devicePixelRatio](/api/canvas/options#devicepixelratio)。
 
 关于调用时机，除了首次初始化画布时会调用，在后续运行时切换渲染器时也会调用。
 
@@ -134,15 +134,15 @@ async init() {
 
 ### resize
 
-在运行过程中，有时初始化的[画布尺寸](/zh/api/canvas#width--height)会发生改变，此时 `canvas.resize()` 最终会调用到该方法。
+在运行过程中，有时初始化的[画布尺寸](/api/canvas/options#width--height)会发生改变，此时 `canvas.resize()` 最终会调用到该方法。
 
 ### getContext
 
 返回自定义渲染上下文，不同的渲染器返回不同的对象，例如：
 
-- [g-canvas](/zh/api/renderer/canvas) 返回 `CanvasRenderingContext2D`
-- [g-svg](/zh/api/renderer/svg) 返回 `SVGElement`
-- [g-webgl](/zh/api/renderer/webgl) 返回一个复杂对象 `WebGLRenderingContext`
+- [g-canvas](/api/renderer/canvas) 返回 `CanvasRenderingContext2D`
+- [g-svg](/api/renderer/svg) 返回 `SVGElement`
+- [g-webgl](/api/renderer/webgl) 返回一个复杂对象 `WebGLRenderingContext`
 
 ```js
 interface WebGLRenderingContext {
@@ -170,9 +170,9 @@ interface WebGLRenderingContext {
 
 ### toDataURL
 
-在实现[导出图片](/zh/guide/advanced-topics/image-exporter)这样的需求时，需要依靠渲染上下文的能力。
+在实现[导出图片](/guide/advanced-topics/image-exporter)这样的需求时，需要依靠渲染上下文的能力。
 
-不同的渲染环境实现起来难度自然也不同，例如 [g-canvas](/zh/api/renderer/canvas) 中可以使用原生 [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/HTMLCanvasElement/toDataURL) 方法
+不同的渲染环境实现起来难度自然也不同，例如 [g-canvas](/api/renderer/canvas) 中可以使用原生 [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/HTMLCanvasElement/toDataURL) 方法
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110>
 
@@ -183,7 +183,7 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 }
 ```
 
-但 [g-svg](/zh/api/renderer/svg) 实现起来就要麻烦很多，需要借助 [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) 的序列化能力：
+但 [g-svg](/api/renderer/svg) 实现起来就要麻烦很多，需要借助 [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) 的序列化能力：
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90>
 
@@ -207,6 +207,6 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 }
 ```
 
-在 [g-webgl](/zh/api/renderer/webgl) 中情况就更复杂了，甚至需要使用异步方式。
+在 [g-webgl](/api/renderer/webgl) 中情况就更复杂了，甚至需要使用异步方式。
 
 <https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438>

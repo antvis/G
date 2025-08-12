@@ -11,7 +11,7 @@ The following figure shows the composition of the bundle `@antv/g`.
 
 The full version `@antv/g` consists of the following parts.
 
-- `@antv/g-lite` Includes [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro) and other core functions
+- `@antv/g-lite` Includes [canvas](/api/canvas/intro), [basic graphics](/api/basic/concept), [event system](/api/event/intro), [plugins system](/plugins/intro) and other core functions
 - `@antv/g-camera-api` Provides full camera motion and animation capabilities
 - `@antv/g-web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)
 - `@antv/g-css-typed-om-api` Provides CSS Typed OM API
@@ -48,9 +48,9 @@ The following is a detailed description of the functions of each part after spli
 
 ### g-lite
 
-Contains core functions such as [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro).
+Contains core functions such as [canvas](/api/canvas/intro), [basic graphics](/api/basic/concept), [event system](/api/event/intro), [plugins system](/plugins/intro).
 
-There is no change in the way the above functions are used, [example](/en/examples/ecosystem#lite).
+There is no change in the way the above functions are used, [example](/examples/ecosystem/lite/#lite).
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
@@ -70,7 +70,7 @@ const circle = new Circle({
 
 ### g-camera-api
 
-`@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/en/api/camera#actions) and [camera animation](/en/api/camera#animation).
+`@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/api/camera/action) and [camera animation](/api/camera/animation).
 
 ```js
 camera.pan(); // throw new Error('Method not implemented.');
@@ -79,41 +79,41 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 ### g-web-animations-api
 
-Provides [animation capabilities](/en/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
+Provides [animation capabilities](/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
 
 ### g-css-typed-om-api
 
 The [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) allows parsed property values to be manipulated using JS, which is also the basis of CSS Houdini. In the case of `width: '50%'`, the property value in string form is parsed to `CSS.percent(50)`, facilitating the next calculation.
 
-We provide [similar capabilities](/en/api/css/css-typed-om).
+We provide [similar capabilities](/api/css/css-typed-om).
 
 ### g-css-layout-api
 
-Reference [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) provides [layout capabilities](/en/api/css/css-layout-api).
+Reference [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) provides [layout capabilities](/api/css/css-layout-api).
 
 ### g-dom-mutation-observer-api
 
 In the DOM API, we can use [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) when we want to sense modifications in the DOM tree nodes, such as new nodes added, attribute values changed.
 
-In G we also implement this [API](/en/api/builtin-objects/mutation-observer) to listen to changes in the scene graph.
+In G we also implement this [API](/api/builtin-objects/mutation-observer) to listen to changes in the scene graph.
 
 ### g-compat
 
 Methods compatible with older versions are provided on the base graphics, most of which have DOM API-compatible implementations in newer versions. The use of these methods is therefore not recommended and may be removed at any time subsequently.
 
-- `getCount` Get the number of child nodes, the new version uses [childElementCount](/en/api/builtin-objects/element#childelementcount)
-- `getParent` Get the parent, the new version uses [parentElement](/en/api/builtin-objects/node#parentelement)
-- `getChildren` Get the list of child nodes, the new version uses [children](/en/api/builtin-objects/element#children)
-- `getFirst` Get the first child node, the new version uses [firstElementChild](/en/api/builtin-objects/element#firstelementchild)
-- `getLast` Get the last child node, the new version uses [lastElementChild](/en/api/builtin-objects/element#lastelementchild)
+- `getCount` Get the number of child nodes, the new version uses [childElementCount](/api/builtin-objects/element#childelementcount)
+- `getParent` Get the parent, the new version uses [parentElement](/api/builtin-objects/node#parentelement)
+- `getChildren` Get the list of child nodes, the new version uses [children](/api/builtin-objects/element#children)
+- `getFirst` Get the first child node, the new version uses [firstElementChild](/api/builtin-objects/element#firstelementchild)
+- `getLast` Get the last child node, the new version uses [lastElementChild](/api/builtin-objects/element#lastelementchild)
 - `getChildByIndex` the new version uses `this.children[index]`
-- `add` the new version uses [appendChild](/en/api/builtin-objects/node#appendchild)
-- `setClip` the new version uses [clipPath](/en/api/basic/display-object#clippath)
+- `add` the new version uses [appendChild](/api/builtin-objects/node#appendchild)
+- `setClip` the new version uses [clipPath](/api/basic/display-object#clippath)
 - `getClip` ld.
 - `set` Storing key-value pairs on initialized configurations
 - `get` Read values on initialized configuration
-- `show` the new version uses [visibility](/en/api/basic/display-object#visibility)
+- `show` the new version uses [visibility](/api/basic/display-object#visibility)
 - `hide` ld.
-- `moveTo` the new version uses [setPosition](/en/api/basic/display-object#平移)
+- `moveTo` the new version uses [setPosition](/api/basic/display-object#平移)
 - `move` ld.
-- `setZIndex` the new version uses [zIndex](/en/api/basic/display-object#zindex)
+- `setZIndex` the new version uses [zIndex](/api/basic/display-object#zindex)

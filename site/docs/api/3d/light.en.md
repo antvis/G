@@ -3,7 +3,7 @@ title: 光源
 order: 3
 ---
 
-[材质](/zh/api/3d/material)需要配合光源呈现出某种“立体感”。
+[材质](/api/3d/material)需要配合光源呈现出某种“立体感”。
 
 日常生活中的光源有很多，太阳、台灯、手电筒。它们需要被抽象成可参数化描述的光源。
 
@@ -51,7 +51,7 @@ light.style.fill = 'red';
 
 #### direction
 
-世界坐标系下的方向，类型为 `[number, number, number]`。[示例](/zh/examples/3d#sphere)
+世界坐标系下的方向，类型为 `[number, number, number]`。[示例](/examples/3d/geometry/#sphere)
 
 ```js
 light.style.direction = [-1, 0, 1];
@@ -63,7 +63,7 @@ light.style.direction = [-1, 0, 1];
 
 ### 环境光
 
-严格意义上讲这并不是一种光源，它是一种简单模拟全局光照的手段。当我们想提亮整个场景时，可以使用它。[示例](/zh/examples/3d#sphere)
+严格意义上讲这并不是一种光源，它是一种简单模拟全局光照的手段。当我们想提亮整个场景时，可以使用它。[示例](/examples/3d/geometry/#sphere)
 
 ```js
 import { AmbientLight } from '@antv/g-plugin-3d';

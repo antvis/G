@@ -5,7 +5,7 @@ order: 7
 
 可以参考 SVG 的 [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) 元素。
 
-如下 [示例](/zh/examples/shape/polyline#polyline) 定义了一条折线，各个端点依次为：
+如下 [示例](/examples/shape/polyline#polyline) 定义了一条折线，各个端点依次为：
 
 ```javascript
 const polyline = new Polyline({
@@ -42,23 +42,23 @@ polyline.getLocalPosition(); // [50, 50]
 
 ## 继承自
 
-继承了 [DisplayObject](/zh/api/basic/display-object) 的 [样式属性](/zh/api/basic/display-object#绘图属性)。
+继承了 [DisplayObject](/api/basic/display-object) 的 [样式属性](/api/basic/display-object#绘图属性)。
 
 ### anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/api/basic/display-object#anchor)
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/api/basic/display-object#anchor)
 
 ### transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/api/basic/display-object#transformOrigin)
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/api/basic/display-object#transformOrigin)
 
 ### lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/api/basic/display-object#lineWidth)
+默认值为 `'1'`。详见 [DisplayObject lineWidth](/api/basic/display-object#lineWidth)
 
 ### miterLimit
 
-默认值 `4`。详见 [DisplayObject miterLimit](/zh/api/basic/display-object#miterLimit)
+默认值 `4`。详见 [DisplayObject miterLimit](/api/basic/display-object#miterLimit)
 
 ## 额外属性
 
@@ -84,11 +84,11 @@ polyline.style.points = [
 
 ### markerStart
 
-可以参考 [Line](/zh/api/basic/line) 的 [markerStart](/zh/api/basic/line#markerstart) 属性。
+可以参考 [Line](/api/basic/line) 的 [markerStart](/api/basic/line#markerstart) 属性。
 
-“起始点” 由 [points](/zh/api/basic/polyline#points) 中的第一个点决定。
+“起始点” 由 [points](/api/basic/polyline#points) 中的第一个点决定。
 
-在该[示例](/zh/examples/shape/polyline#polyline)中，我们在折线的起始点上放置了一个箭头：
+在该[示例](/examples/shape/polyline#polyline)中，我们在折线的起始点上放置了一个箭头：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -107,11 +107,11 @@ polyline.style.markerStart = arrowMarker;
 
 ### markerEnd
 
-可以参考 [Line](/zh/api/basic/line) 的 [markerEnd](/zh/api/basic/line#markerend) 属性。
+可以参考 [Line](/api/basic/line) 的 [markerEnd](/api/basic/line#markerend) 属性。
 
-“终止点” 由 [points](/zh/api/basic/polyline#points) 中的最后一个点决定。
+“终止点” 由 [points](/api/basic/polyline#points) 中的最后一个点决定。
 
-在该[示例](/zh/examples/shape/polyline#polyline)中，我们在折线的终止点上放置了一个图片：
+在该[示例](/examples/shape/polyline#polyline)中，我们在折线的终止点上放置了一个图片：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -136,7 +136,7 @@ polyline.style.markerEnd = imageMarker;
 
 在折线除了 “起始点” 和 “终止点” 之外的每一个顶点上放置标记图形。
 
-例如下图中在折线上除首尾的每个顶点上都放置了一个 [Circle](/zh/api/basic/circle)：
+例如下图中在折线上除首尾的每个顶点上都放置了一个 [Circle](/api/basic/circle)：
 
 ```js
 const circleMarker = new Circle({
@@ -153,27 +153,27 @@ polyline.style.markerMid = circleMarker;
 
 ### markerStartOffset
 
-可以参考 [Line](/zh/api/basic/line) 的 [markerStartOffset](/zh/api/basic/line#markerstartoffset) 属性。
+可以参考 [Line](/api/basic/line) 的 [markerStartOffset](/api/basic/line#markerstartoffset) 属性。
 
 沿折线的第一个线段方向移动标记图形。需要注意的是，如果偏移距离超过了原始线段的长度，会向反方向延伸：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
-可以参考 [Line](/zh/api/basic/line) 的 [markerEndOffset](/zh/api/basic/line#markerendoffset) 属性。
+可以参考 [Line](/api/basic/line) 的 [markerEndOffset](/api/basic/line#markerendoffset) 属性。
 
-沿折线的最后一个线段方向移动标记图形。需要注意的是，如果偏移距离超过了原始线段的长度，会向反方向延伸。在该[示例](/zh/examples/shape#polyline)中，我们使用该属性移动标记图形：
+沿折线的最后一个线段方向移动标记图形。需要注意的是，如果偏移距离超过了原始线段的长度，会向反方向延伸。在该[示例](/examples/shape/polyline/#polyline)中，我们使用该属性移动标记图形：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
@@ -257,4 +257,4 @@ const polyline = new Polyline({
 
 ![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
 
-但如果应用了公告牌效果，3D 效果将消失[示例](/zh/examples/3d/3d-basic/#billboard)。
+但如果应用了公告牌效果，3D 效果将消失[示例](/examples/3d/3d-basic/#billboard)。

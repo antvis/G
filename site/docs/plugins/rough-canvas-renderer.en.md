@@ -3,13 +3,13 @@ title: g-plugin-rough-canvas-renderer
 order: 3
 ---
 
-Hand-drawn style rendering using the Canvas version of [rough.js](https://roughjs.com/), [example](/en/examples/plugins#rough).
+Hand-drawn style rendering using the Canvas version of [rough.js](https://roughjs.com/), [example](/examples/plugins/rough/#rough).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 ## Usage
 
-First you need to use the [g-canvas](/en/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
+First you need to use the [g-canvas](/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-canvas-renderer](/plugins/canvas-renderer).
 
 ```js
 import { Canvas } from '@antv/g';
@@ -31,7 +31,7 @@ const canvas = new Canvas({
 
 Note that once the plugin is used, "Dirty Rectangle Rendering" is not available, which means that any change in the style properties of any graphic will result in a full redraw of the canvas.
 
-In addition, we support all 2D graphics, among which [Text](/en/api/basic/text), [Image](/en/api/basic/image) and [HTML](/en/api/basic/html) have no hand-drawn style.
+In addition, we support all 2D graphics, among which [Text](/api/basic/text), [Image](/api/basic/image) and [HTML](/api/basic/html) have no hand-drawn style.
 
 ## Style properties
 
@@ -39,7 +39,7 @@ In addition to the style properties of 2D graphics, the configuration items prov
 
 ### opacity
 
-rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
+rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/plugins/canvas-renderer).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -55,7 +55,7 @@ rough.js does not support `shadow` related effects, but we do provide them.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
 
-Configuration items can be found in [shadow](/en/api/basic/display-object#shadow).
+Configuration items can be found in [shadow](/api/basic/display-object#shadow).
 
 ```js
 circle.style.shadowColor = '#000';
@@ -66,7 +66,7 @@ circle.style.shadowOffsetY = 0;
 
 ### roughness
 
-rough.js provides many [configuration items](https://github.com/rough-stuff/rough/wiki#options) that affect the hand-drawn effect, all of which work properly. [example](/en/examples/plugins/rough/#rough-options)
+rough.js provides many [configuration items](https://github.com/rough-stuff/rough/wiki#options) that affect the hand-drawn effect, all of which work properly. [example](/examples/plugins/rough/#rough-options)
 
 The default value is `1`, indicating the degree of hand-drawn style. `0` means no hand-drawn effect, the larger the number the more obvious the stylization effect, but more than `10` will completely lose the original shape and it is meaningless.
 
@@ -78,7 +78,7 @@ circle.style.roughness = 2;
 
 ### bowing
 
-The degree of curvature of the line, the default value is `1`. `0` represents a straight line. [example](/en/examples/plugins/rough/#rough-options)
+The degree of curvature of the line, the default value is `1`. `0` represents a straight line. [example](/examples/plugins/rough/#rough-options)
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668150135837/Nov-11-2022%25252015-01-56.gif" alt="bowing">
 
@@ -88,7 +88,7 @@ circle.style.bowing = 2;
 
 ### fillStyle
 
-Fill style, supporting the following enumerated values, [example](/en/examples/plugins/rough/#rough-options)：
+Fill style, supporting the following enumerated values, [example](/examples/plugins/rough/#rough-options)：
 
 - `'hachure'`
 - `'solid'`
@@ -236,6 +236,6 @@ When filling a shape using the zigzag-line style, this property indicates the no
 
 ## Picking
 
-In [g-plugin-canvas-picker](/en/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
+In [g-plugin-canvas-picker](/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
 
 However, in the hand-drawn style, it seems impossible and unnecessary to do exact picking, so we still use this plugin.

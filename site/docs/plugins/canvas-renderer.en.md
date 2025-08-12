@@ -7,7 +7,7 @@ Provides Canvas2D-based rendering capabilities.
 
 ## Usage
 
-The [g-canvas](/en/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
+The [g-canvas](/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
@@ -19,7 +19,7 @@ const canvasRenderer = new CanvasRenderer();
 
 ### StyleRenderer
 
-When rendering the base graphics using [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D), you can implement this interface after using [g-plugin- canvas-path-generator](/en/plugins/canvas-path-generator) to generate the graphical path, implement this interface to finish drawing the style.
+When rendering the base graphics using [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D), you can implement this interface after using [g-plugin- canvas-path-generator](/plugins/canvas-path-generator) to generate the graphical path, implement this interface to finish drawing the style.
 
 ```js
 export interface StyleRenderer {
@@ -32,7 +32,7 @@ export interface StyleRenderer {
 }
 ```
 
-We provide different extension points for different types of graphics. For example, in [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer), we use the API provided by rough.js for [Circle](/en/api/basic/circle) to add a hand-drawn style.
+We provide different extension points for different types of graphics. For example, in [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer), we use the API provided by rough.js for [Circle](/api/basic/circle) to add a hand-drawn style.
 
 ```js
 @singleton({

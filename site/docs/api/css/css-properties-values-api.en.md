@@ -3,7 +3,7 @@ title: CSS Properties & Values API
 order: 2
 ---
 
-With [CSS Typed OM](/en/api/css/css-typed-om) we can easily define property values such as `CSS.px(5)`, but properties don't only have values.
+With [CSS Typed OM](/api/css/css-typed-om) we can easily define property values such as `CSS.px(5)`, but properties don't only have values.
 
 The [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) in the browser allows users to customize CSS properties and configure their types for checks, default values, whether inheritance is supported, and other metadata, which is also part of CSS Houdini.
 
@@ -39,7 +39,7 @@ In some scenarios, these types can be combined, e.g. \<length-percentage\> is a 
 
 ## Keywords
 
-Corresponds to [CSSKeywordValue](/en/api/css/css-typed-om#csskeywordvalue) in [CSS Typed OM](/en/api/css/css-typed-om).
+Corresponds to [CSSKeywordValue](/api/css/css-typed-om#csskeywordvalue) in [CSS Typed OM](/api/css/css-typed-om).
 
 For example, `'normal'` will be parsed as
 
@@ -85,13 +85,13 @@ em {
 
 ## \<number\>
 
-Corresponds to [CSSUnitValue](/en/api/css/css-typed-om#cssunitvalue) in [CSS Typed OM](/en/api/css/css-typed-om).
+Corresponds to [CSSUnitValue](/api/css/css-typed-om#cssunitvalue) in [CSS Typed OM](/api/css/css-typed-om).
 
 Property values that currently use this type include.
 
-- [opacity](/en/api/basic/display-object#opacity)
-- [fillOpacity](/en/api/basic/display-object#fillopacity)
-- [strokeOpacity](/en/api/basic/display-object#strokeopacity)
+- [opacity](/api/basic/display-object#opacity)
+- [fillOpacity](/api/basic/display-object#fillopacity)
+- [strokeOpacity](/api/basic/display-object#strokeopacity)
 
 ```js
 circle.style.opacity = '0.5';
@@ -155,13 +155,13 @@ Represents an angle in a number of turns. One full circle is 1turn. Examples: 0t
 
 Referring to the CSS specification definition of the type [\<color\>](https://www.w3.org/TR/css-color-3/#valuea-def-color), we support the following color value types, which exist as `string` types in JS.
 
-It is a type included in [\<paint\>](/en/api/css/painting).
+It is a type included in [\<paint\>](/api/css/css-properties-values-api#paint).
 
-[examples](/en/examples/style#color).
+[examples](/examples/style/basic/#color).
 
 Properties that would currently use this type are.
 
-- [shadowColor](/en/api/basic/display-object#shadowcolor)
+- [shadowColor](/api/basic/display-object#shadowcolor)
 
 ### Basic color keywords
 
@@ -170,7 +170,7 @@ CSS defines a series of basic color keywords that are **case sensitive**. The im
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*NFB5T69VUUwAAAAAAAAAAAAAARQnAQ" width="300"/>
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PKSDR4_nEgIAAAAAAAAAAAAAARQnAQ" width="300"/>
 
-In the internal implementation, we will pass the keyword string to [d3-color](https://github.com/d3/d3-color) to parse it and get [CSSRGB](/en/api/css/css-typed-om#cssrgb).
+In the internal implementation, we will pass the keyword string to [d3-color](https://github.com/d3/d3-color) to parse it and get [CSSRGB](/api/css/css-typed-om#cssrgb).
 
 Example usage is as follows.
 
@@ -210,7 +210,7 @@ circle.style.fill = 'rgba(100%,0%,0%,1)';
 
 Equivalent to `rgba(0,0,0,0)` i.e. completely transparent black.
 
-Note that it has a different meaning than `none` supported by [\<paint\>](/en/api/css/css-properties-values-api#paint).
+Note that it has a different meaning than `none` supported by [\<paint\>](/api/css/css-properties-values-api#paint).
 
 #### [WIP] hsl
 
@@ -234,16 +234,16 @@ Referring to [\<paint\>](https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint
 <paint> = none | <color> | <gradient> | <pattern>
 ```
 
-[Example](/en/examples/style#paint)。
+[Example](/examples/style/basic/#paint)。
 
 The following properties are currently in use.
 
-- [fill](/en/api/basic/display-object#fill)
-- [stroke](/en/api/basic/display-object#stroke)
+- [fill](/api/basic/display-object#fill)
+- [stroke](/api/basic/display-object#stroke)
 
 ### none
 
-Not using any color is not equal to [\<color\>](/en/api/css/css-properties-values-api#color) of [transparent](/en/api/css/css-properties-values-api #transparent) keyword. In the case of the `fill` property, for example, both are visually identical, but setting it to `'transparent'` will still pick it up, while setting it to `'none'` will not.
+Not using any color is not equal to [\<color\>](/api/css/css-properties-values-api#color) of [transparent](/api/css/css-properties-values-api #transparent) keyword. In the case of the `fill` property, for example, both are visually identical, but setting it to `'transparent'` will still pick it up, while setting it to `'none'` will not.
 
 For example, when a drawing is initialized without the `fill` attribute set, it is equivalent to manually changing it to `none` after creation.
 
@@ -305,10 +305,10 @@ The parsing of property values goes through the following stages.
 
 In this step it is necessary to.
 
-- Handle special keywords (usually generic), e.g. [initial](/en/api/css/css-properties-values-api#initial) [inherit](/en/api/css/css-properties-values- api#inherit)
+- Handle special keywords (usually generic), e.g. [initial](/api/css/css-properties-values-api#initial) [inherit](/api/css/css-properties-values- api#inherit)
 - Do some value calculations, except for those that require the layout phase to be involved
 
-The computed value map can be obtained via the [computedStyleMap](/en/api/builtin-objects/element#computedstylemap) method, which is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) type.
+The computed value map can be obtained via the [computedStyleMap](/api/builtin-objects/element#computedstylemap) method, which is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) type.
 
 ```js
 /**
@@ -351,7 +351,7 @@ CSS.registerProperty({
 
 This property can then be used in CSS. One of the more critical ones is `syntax`, the limitation being that you can only use the browser's built-in implementation and can't really do custom parsing in the true sense.
 
-In this [example](/en/examples/style#custom-property), we register several different types of custom properties, allowing them to support interpolation.
+In this [example](/examples/style/basic/#custom-property), we register several different types of custom properties, allowing them to support interpolation.
 
 ```js
 import { CSS, PropertySyntax } from '@antv/g';
@@ -392,7 +392,7 @@ Default value.
 
 ## interpolate
 
-If or not interpolation is supported. Only supported to apply [animation](/en/api/animation/waapi).
+If or not interpolation is supported. Only supported to apply [animation](/api/animation/waapi).
 
 For example, in the following custom element, we define the custom attribute `angle`, which uses the `<angle>` parser and supports interpolation.
 

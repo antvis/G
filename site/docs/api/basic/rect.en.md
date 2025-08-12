@@ -5,7 +5,7 @@ order: 4
 
 You can refer to the [\<rect\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/rect) element of SVG.
 
-The following [example](/en/examples/shape/rect/#rect) defines a rounded rectangle with the top left vertex at `(200, 100)`.
+The following [example](/examples/shape/rect/#rect) defines a rounded rectangle with the top left vertex at `(200, 100)`.
 
 ```javascript
 const rect = new Rect({
@@ -24,15 +24,15 @@ const rect = new Rect({
 
 ## Inherited from
 
-Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
+Inherits [style property](/api/basic/display-object#drawing-properties) from [DisplayObject](/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/api/basic/display-object#transformOrigin).
 
 ## Additional Properties
 
@@ -42,9 +42,9 @@ The x-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -52,13 +52,13 @@ The y-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### width
 
-The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/en/examples/shape/rect/#rect).
+The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_sVnRJmw7m8AAAAAAAAAAAAAARQnAQ" width="300" alt="negative width of rect">
 
@@ -66,29 +66,29 @@ This is consistent with the Canvas2D API, [see](https://stackoverflow.com/a/1559
 
 > The width and height properties define the overall width and height of the rectangle. A negative value for either property is illegal and must be ignored as a parsing error. A computed value of zero for either dimension disables rendering of the element.
 
-We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/en/api/renderer/svg).
+We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/api/renderer/svg).
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### height
 
-The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/en/examples/shape/rect/#rect).
+The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gPkGR56c5QgAAAAAAAAAAAAAARQnAQ" width="300" alt="negative height of rect">
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### radius
 
-Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/en/examples/shape#rect).
+Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_pegTqJKe54AAAAAAAAAAAAAARQnAQ" alt="rounded rect">
 
@@ -119,6 +119,6 @@ const [tlr, trr, brr, blr] = radius.map((r) =>
 );
 ```
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/api/css/inheritance) | Animatable | [Computed value](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |

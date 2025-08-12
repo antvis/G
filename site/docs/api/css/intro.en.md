@@ -70,7 +70,7 @@ circle.style.r = '5px';
 circle.style.r = '50%';
 ```
 
-We will parse such strings as [CSSStyleValue](/en/api/css/css-typed-om#cssstylevalue), for example `CSS.px(5)` and `CSS.percent(50)`, for more information see [CSS Typed OM](/en/ docs/api/css/css-typed-om).
+We will parse such strings as [CSSStyleValue](/api/css/css-typed-om#cssstylevalue), for example `CSS.px(5)` and `CSS.percent(50)`, for more information see [CSS Typed OM](/ docs/api/css/css-typed-om).
 
 # CSS Properties & Values API
 

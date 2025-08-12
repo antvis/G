@@ -77,7 +77,7 @@ moonOrbit.appendChild(moon);
 
 ⚠️ 此时我们并不需要使用到 `Canvas`，场景图是一种抽象的数据结构，只有在渲染时才需要与 `Canvas` 交互。
 
-描述完层次关系，我们通常需要进一步定义场景图中对象的行为。在之前简单的太阳系模型中，我们希望让地球绕着太阳旋转，月亮绕着地球旋转，实时更新它们的位置属性，[DEMO](/en/examples/scenegraph#hierarchy)。但月球的轨迹（下图中红色虚线）计算似乎很复杂。
+描述完层次关系，我们通常需要进一步定义场景图中对象的行为。在之前简单的太阳系模型中，我们希望让地球绕着太阳旋转，月亮绕着地球旋转，实时更新它们的位置属性，[DEMO](/examples/scenegraph/basic/#hierarchy)。但月球的轨迹（下图中红色虚线）计算似乎很复杂。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VDIfSJrf6xEAAAAAAAAAAAAAARQnAQ)
 

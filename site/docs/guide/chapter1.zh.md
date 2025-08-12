@@ -5,9 +5,9 @@ order: 1
 
 在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
 
-在本节中，我们将学习如何使用[场景图](/zh/guide/diving-deeper/scenegraph)描述场景。
+在本节中，我们将学习如何使用[场景图](/guide/diving-deeper/scenegraph)描述场景。
 
-我们的场景十分简单，包含两个节点，用 [Circle](/zh/api/basic/circle) 实现，连接它们的一条边用 [Line](/zh/api/basic/line) 实现，其中每个节点上的文本使用 [Text](/zh/api/basic/text) 实现。
+我们的场景十分简单，包含两个节点，用 [Circle](/api/basic/circle) 实现，连接它们的一条边用 [Line](/api/basic/line) 实现，其中每个节点上的文本使用 [Text](/api/basic/text) 实现。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ)
 
@@ -15,7 +15,7 @@ order: 1
 
 ## 创建节点
 
-首先我们从 `@antv/g` 中引入基础图形 [Circle](/zh/api/basic/circle)，我们的节点用它来实现：
+首先我们从 `@antv/g` 中引入基础图形 [Circle](/api/basic/circle)，我们的节点用它来实现：
 
 ```javascript
 import { Circle } from '@antv/g';
@@ -39,7 +39,7 @@ const node1 = new Circle({
 
 ## 给节点添加文本
 
-我们想在节点上展示描述性文本，同样我们从 `@antv/g` 中引入基础图形 [Text](/zh/api/basic/text)：
+我们想在节点上展示描述性文本，同样我们从 `@antv/g` 中引入基础图形 [Text](/api/basic/text)：
 
 ```javascript
 import { Text } from '@antv/g';
@@ -70,7 +70,7 @@ node1.setPosition(200, 200);
 
 ## 创建边
 
-我们从 `@antv/g` 中引入基础图形 [Line](/zh/api/basic/line)，将两个端点连接起来：
+我们从 `@antv/g` 中引入基础图形 [Line](/api/basic/line)，将两个端点连接起来：
 
 ```javascript
 import { Line } from '@antv/g';

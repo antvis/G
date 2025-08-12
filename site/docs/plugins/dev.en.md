@@ -108,4 +108,4 @@ All plugins follow the above structure implementation.
 
 ## Relationship between plug-ins
 
-There are also dependencies between plugins, for example [g-plugin-gpgpu](/en/plugins/gpgpu) depends on [g-plugin-device-renderer](/en/plugins/device-renderer). You need to exclude dependencies when building UMD independently, see [build instructions]() for details.
+There are also dependencies between plugins, for example [g-plugin-gpgpu](/plugins/gpgpu) depends on [g-plugin-device-renderer](/plugins/device-renderer). You need to exclude dependencies when building UMD independently, see [build instructions]() for details.

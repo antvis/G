@@ -7,4 +7,4 @@ redirect_from:
 
 # API 风格
 
-使用[场景图](/en/guide/diving-deeper/scenegraph)构建
+使用[场景图](/guide/diving-deeper/scenegraph)构建

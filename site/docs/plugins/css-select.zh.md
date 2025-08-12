@@ -3,7 +3,7 @@ title: g-plugin-css-select
 order: 0
 ---
 
-在场景图中查找节点时，我们可以使用一些类似 DOM API 的[高级查询方式](/zh/api/basic/display-object#高级查询)：
+在场景图中查找节点时，我们可以使用一些类似 DOM API 的[高级查询方式](/api/basic/display-object#高级查询)：
 
 - **getElementById** 在当前节点子树下按 id 查找单一元素
 - **getElementsByName** 在当前节点子树下按 name 查找元素列表
@@ -64,7 +64,7 @@ webglRenderer.registerPlugin(new Plugin());
 
 ## 使用方式
 
-我们可以使用类似 DOM API + CSS 选择器的方式进行场景图中的节点查询，[完整示例](/zh/examples/plugins#css-select)：
+我们可以使用类似 DOM API + CSS 选择器的方式进行场景图中的节点查询，[完整示例](/examples/plugins/css-select/#css-select)：
 
 ```javascript
 solarSystem.getElementsByName('sun');

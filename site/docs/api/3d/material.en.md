@@ -11,7 +11,7 @@ order: 1
 
 当然除了内置的材质，也可以通过 ShaderMaterial 这种完全自定义的方式使用。
 
-在[示例](/zh/examples/3d#sphere)中，我们使用 [Mesh](/zh/api/3d/mesh) 创建了一个球体，它的几何形体由 [Geometry](/zh/api/3d/geometry) 定义，而外观由 [MeshPhongMaterial](/zh/api/3d/material#meshphongmaterial) 决定。可以看到它的很多用法和 2D 基础图形完全一样，例如添加到画布、变换等：
+在[示例](/examples/3d/geometry/#sphere)中，我们使用 [Mesh](/api/3d/mesh) 创建了一个球体，它的几何形体由 [Geometry](/api/3d/geometry) 定义，而外观由 [MeshPhongMaterial](/api/3d/material#meshphongmaterial) 决定。可以看到它的很多用法和 2D 基础图形完全一样，例如添加到画布、变换等：
 
 ```js
 import {
@@ -277,7 +277,7 @@ material.setUniform({
 
 ### PointMaterial
 
-使用 Point 原语绘制。[示例](/zh/examples/3d#point)
+使用 Point 原语绘制。[示例](/examples/3d/material/#point)
 
 #### size
 
@@ -353,7 +353,7 @@ const basicMaterial = new MeshBasicMaterial({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WeScR4Wmg2YAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-以下参数可以在该[示例](/zh/examples/3d#sphere)中调整。
+以下参数可以在该[示例](/examples/3d/geometry/#sphere)中调整。
 
 #### emissive
 
@@ -365,7 +365,7 @@ const basicMaterial = new MeshBasicMaterial({
 
 #### specularMap
 
-高光贴图。例如[示例](/zh/examples/3d#sphere)中使用的：
+高光贴图。例如[示例](/examples/3d/geometry/#sphere)中使用的：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8wz0QaP_bjoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -375,7 +375,7 @@ const basicMaterial = new MeshBasicMaterial({
 
 #### bumpMap
 
-凹凸贴图，用于干扰法线。例如[示例](/zh/examples/3d#sphere)中使用的：
+凹凸贴图，用于干扰法线。例如[示例](/examples/3d/geometry/#sphere)中使用的：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IZNyQ4_m7aMAAAAAAAAAAAAAARQnAQ" height='200'/>
 

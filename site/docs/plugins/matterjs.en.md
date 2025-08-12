@@ -5,9 +5,9 @@ order: -1
 
 Supports [matter.js](https://brm.io/matter-js/) physics engine (rigid bodies only). 2D graphics are initialized to start the simulation, and in addition to gravity and surface friction, external forces can be applied at any time to change the position and rotation angle of the graphics.
 
-The following 2D graphics are supported: [Circle](/en/api/basic/circle), [Rect](/en/api/basic/rect), [Line](/en/api/basic/line), [Image](/en/api/basic/image) and [Polygon](/en/api/basic/polygon).
+The following 2D graphics are supported: [Circle](/api/basic/circle), [Rect](/api/basic/rect), [Line](/api/basic/line), [Image](/api/basic/image) and [Polygon](/api/basic/polygon).
 
-In this [example](/en/examples/plugins#matterjs), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
+In this [example](/examples/plugins/physics-engine/#matterjs), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -38,7 +38,7 @@ Global physical world configuration.
 
 ### debug
 
-matter.js itself supports rendering. With [debugContainer](/en/plugins/matterjs#debugcontainer) on, you can draw a wireframe of each object in the physics engine world for debug.
+matter.js itself supports rendering. With [debugContainer](/plugins/matterjs#debugcontainer) on, you can draw a wireframe of each object in the physics engine world for debug.
 
 ```js
 const plugin = new PluginMatterjs({

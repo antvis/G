@@ -15,7 +15,7 @@ p { color: green; }
 <p>This paragraph has <em>emphasized text</em> in it.</p>
 ```
 
-We have implemented a style system in G that also supports inheritance. For example, we create a [Text](/en/api/basic/text) without specifying `fontSize` or `fontFamily` properties, but it can still be rendered because it inherits the default style from the root node when added to the canvas: `fontSize: '16px'; fontFamily: 'sans-serif'`.
+We have implemented a style system in G that also supports inheritance. For example, we create a [Text](/api/basic/text) without specifying `fontSize` or `fontFamily` properties, but it can still be rendered because it inherits the default style from the root node when added to the canvas: `fontSize: '16px'; fontFamily: 'sans-serif'`.
 
 ```js
 const text = new Text({
@@ -29,7 +29,7 @@ const text = new Text({
 canvas.appendChild(text);
 ```
 
-In this [example](/en/examples/style#inheritance), modifying the font size of the root node also affects the child elements, and with units like `rem` we can easily achieve an "elastic layout:"
+In this [example](/examples/style/basic/#inheritance), modifying the font size of the root node also affects the child elements, and with units like `rem` we can easily achieve an "elastic layout:"
 
 ```js
 canvas.document.documentElement.style.fontSize = `32px`;
@@ -39,7 +39,7 @@ canvas.document.documentElement.style.fontSize = `32px`;
 
 As with browsers, the default value ([initial value](https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value)) applies inheritable attributes at the root node.
 
-For example, the browser default `fontSize` is `16px`. We have styled [root node](/en/api/builtin-objects/document#documentelement) in G as follows.
+For example, the browser default `fontSize` is `16px`. We have styled [root node](/api/builtin-objects/document#documentelement) in G as follows.
 
 ```js
 expect(documentElement.style.fill).to.equal('');

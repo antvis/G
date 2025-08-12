@@ -22,7 +22,7 @@ CSS.percent(50);
 
 ## number()
 
-创建一个 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kNumber`，以下两种写法一致：
+创建一个 [CSSUnitValue](/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kNumber`，以下两种写法一致：
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -35,7 +35,7 @@ new CSSUnitValue(5); // 默认单位就是 UnitType.kNumber
 
 ## px()
 
-创建一个 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kPixels`，以下两种写法一致：
+创建一个 [CSSUnitValue](/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kPixels`，以下两种写法一致：
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -44,11 +44,11 @@ CSS.px(5);
 new CSSUnitValue(5, 'px');
 ```
 
-我们会用它存储 [\<length\>](/zh/api/css/length) 类型属性值的解析结果，例如 `r: 50` 会被解析成 `CSS.px(50)` 后保存在 `computedStyle.r` 中。
+我们会用它存储 [\<length\>](/api/css/css-properties-values-api#length) 类型属性值的解析结果，例如 `r: 50` 会被解析成 `CSS.px(50)` 后保存在 `computedStyle.r` 中。
 
 ## em()
 
-创建一个 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kEms`，以下两种写法一致：
+创建一个 [CSSUnitValue](/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kEms`，以下两种写法一致：
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';
@@ -59,7 +59,7 @@ new CSSUnitValue(5, 'em');
 
 ## rem()
 
-创建一个 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kRems`，以下两种写法一致：
+创建一个 [CSSUnitValue](/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kRems`，以下两种写法一致：
 
 ```js
 import { CSS, CSSUnitValue } from '@antv/g';

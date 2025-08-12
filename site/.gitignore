@@ -8,3 +8,6 @@ pkg
 .dumi/tmp-production
 # Dead links report
 dead-links-report.log
+
+# server side render result
+server

@@ -3,7 +3,7 @@ title: WebGL Renderer
 order: 2
 ---
 
-Use [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) or [WebGL2RenderingContext](https: //developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) for rendering. Compared with [Canvas renderer](/en/api/renderer/canvas) and [SVG renderer](/en/api/renderer/svg), it has more powerful rendering capabilities and has obvious advantages in large volume graphics and 3D scenes.
+Use [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) or [WebGL2RenderingContext](https: //developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) for rendering. Compared with [Canvas renderer](/api/renderer/canvas) and [SVG renderer](/api/renderer/svg), it has more powerful rendering capabilities and has obvious advantages in large volume graphics and 3D scenes.
 
 ## Usage
 
@@ -95,9 +95,9 @@ const webglRenderer = new WebGLRenderer({
 
 The renderer has the following plug-ins built in.
 
-- [g-plugin-device-renderer](/en/plugins/device-renderer) GPUDevice based rendering capabilities
-- [g-plugin-webgl-device](/en/plugins/webgl-device) Implementing GPUDevice Capabilities based on [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) and [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext)
-- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [g-plugin-device-renderer](/plugins/device-renderer) GPUDevice based rendering capabilities
+- [g-plugin-webgl-device](/plugins/device-renderer) Implementing GPUDevice Capabilities based on [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) and [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext)
+- [g-plugin-dom-interaction](/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 
@@ -105,8 +105,8 @@ In addition to the built-in plug-ins, the following plug-ins are also available.
 
 ### 3D rendering capabilities
 
-[g-plugin-3d](/en/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/en/api/3d/mesh) [Material](/en/api/3d/material) [Geometry](/en/api/3d/geometry).
+[g-plugin-3d](/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/api/3d/mesh) [Material](/api/3d/material) [Geometry](/api/3d/geometry).
 
 ### Camera Interaction
 
-[g-plugin-control](/en/plugins/control) provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/api/camera/intro), different interaction effects are provided.
+[g-plugin-control](/plugins/control) provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/api/camera/intro), different interaction effects are provided.

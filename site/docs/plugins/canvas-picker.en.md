@@ -7,7 +7,7 @@ Provides Canvas2D-based pickup capabilities.
 
 ## Usage
 
-The [g-canvas](/en/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
+The [g-canvas](/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';

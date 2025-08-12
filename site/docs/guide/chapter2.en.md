@@ -5,14 +5,14 @@ order: 2
 
 In this tutorial series, we will step-by-step implement a simple visualization scene that shows nodes and edges and gives them basic interaction capabilities such as dragging and picking.
 
-In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/en/api/renderer/intro) to complete the rendering.
+In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/api/renderer/intro) to complete the rendering.
 
-- [Example of this section](/en/examples/guide/basic/#chapter2)
+- [Example of this section](/examples/guide/basic/#chapter2)
 - [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
 ## Choosing a renderer
 
-First we need to introduce one or more renderers, and if we introduce more than one, we can also switch them [at runtime](/en/guide/diving-deeper/switch-renderer#runtime). In this example we have selected only one Canvas2D renderer:
+First we need to introduce one or more renderers, and if we introduce more than one, we can also switch them [at runtime](/guide/diving-deeper/switch-renderer#runtime). In this example we have selected only one Canvas2D renderer:
 
 ```javascript
 import { Renderer } from '@antv/g-canvas';
@@ -35,7 +35,7 @@ const canvas = new Canvas({
 
 ## Adding graphics to the canvas
 
-With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/en/api/canvas#ready-event) or [waiting for the ready Promise to return](/en/api/canvas#ready).
+With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/api/canvas/intro#ready-event) or [waiting for the ready Promise to return](/api/canvas/scenegraph-lifecycle#ready).
 
 ```javascript
 canvas.addEventListener(CanvasEvent.READY, () => {

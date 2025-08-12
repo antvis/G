@@ -83,7 +83,7 @@ Most calculations involving paths rely on `@antv/util`.
 
 ### convertToPath
 
-[Morph animation](/en/api/animation/waapi#morping) is implemented by interpolating the [path/d](/en/api/basic/path#d) property of [Path](/en/api/basic/path).
+[Morph animation](/api/animation/waapi#morping) is implemented by interpolating the [path/d](/api/basic/path#d) property of [Path](/api/basic/path).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ">
 
@@ -96,19 +96,19 @@ convertToPath(
 ): string;
 ```
 
-This method supports the following base graphics, not [Group](/en/api/basic/group) or other custom graphics.
+This method supports the following base graphics, not [Group](/api/basic/group) or other custom graphics.
 
-- [Circle](/en/api/basic/circle)
-- [Ellipse](/en/api/basic/ellipse)
-- [Rect](/en/api/basic/rect)
-- [Line](/en/api/basic/line)
-- [Polyline](/en/api/basic/polyline)
-- [Polygon](/en/api/basic/polygon)
-- [Path](/en/api/basic/path)
+- [Circle](/api/basic/circle)
+- [Ellipse](/api/basic/ellipse)
+- [Rect](/api/basic/rect)
+- [Line](/api/basic/line)
+- [Polyline](/api/basic/polyline)
+- [Polygon](/api/basic/polygon)
+- [Path](/api/basic/path)
 
 The result of the transformation is a third-order Bezier curve in the form of a string, which is easy to split, and the paths before and after the transformation are normalized to the same number of segments, and finally the control points in each segment are interpolated to achieve the animation effect.
 
-The transformation process will consider the transformation of the input graphics in the local coordinate system (declarative transformation using [transform](/en/api/basic/display-object#transform) or [imperative transformation method](/en/api/basic/display- object#transform operation)), so the generated path definition already contains transformation information and you can create [Path](/en/api/basic/path) directly based on that path definition. [Example](/en/examples/animation#convert-to-path).
+The transformation process will consider the transformation of the input graphics in the local coordinate system (declarative transformation using [transform](/api/basic/display-object#transform) or [imperative transformation method](/api/basic/display- object#transform operation)), so the generated path definition already contains transformation information and you can create [Path](/api/basic/path) directly based on that path definition. [Example](/examples/animation/morph/#convert-to-path).
 
 ```js
 const circle = new Circle({

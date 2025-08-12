@@ -7,14 +7,14 @@ After describing the objects to be rendered by the scene graph, we need to give 
 
 ## Use renderer on demand
 
-We currently provide a variety of [renderers](/en/api/renderer/intro) that users can introduce on-demand like plugins, but at least one is required.
+We currently provide a variety of [renderers](/api/renderer/intro) that users can introduce on-demand like plugins, but at least one is required.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 ```
 
-This allows you to choose one of the renderers introduced when creating [Canvas](/zh/api/canvas/intro), e.g. if we introduce a Canvas and a WebGL renderer, we can choose between the two.
+This allows you to choose one of the renderers introduced when creating [Canvas](/api/canvas/intro), e.g. if we introduce a Canvas and a WebGL renderer, we can choose between the two.
 
 ```js
 import { Canvas } from '@antv/g';

@@ -27,7 +27,7 @@ camera.getPosition(); // [300, 200, 500]
 setPosition(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 500]`，其中 `width/height` 为 [Canvas](/zh/api/canvas) 的尺寸。因此如果我们想重新设置相机的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
+在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 500]`，其中 `width/height` 为 [Canvas](/api/canvas/intro) 的尺寸。因此如果我们想重新设置相机的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
 
 ```js
 // 保持 Z 坐标不变
@@ -63,7 +63,7 @@ camera.getFocalPoint(); // [300, 200, 0]
 setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 0]`，其中 `width/height` 为 [Canvas](/zh/api/canvas) 的尺寸。因此如果我们想重新设置相机视点的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
+在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 0]`，其中 `width/height` 为 [Canvas](/api/canvas/intro) 的尺寸。因此如果我们想重新设置相机视点的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
 
 ```js
 // 保持 Z 坐标不变
@@ -147,7 +147,7 @@ camera.getZoom(); // 1
 
 ## setZoom
 
-`zoom` 大于 1 代表放大，反之代表缩小，[示例](/zh/examples/camera/projection-mode/#ortho)。
+`zoom` 大于 1 代表放大，反之代表缩小，[示例](/examples/camera/projection-mode/#ortho)。
 
 方法签名如下：
 
@@ -157,9 +157,9 @@ setZoom(zoom: number)
 
 ## setZoomByViewportPoint
 
-[setZoom](/zh/api/camera/params#setzoom) 会以相机在世界坐标系下的位置为中心进行缩放。但有时我们希望固定视点，即以[视口坐标系](/zh/api/canvas/coordinates#viewport)下的点为中心进行缩放。
+[setZoom](/api/camera/params#setzoom) 会以相机在世界坐标系下的位置为中心进行缩放。但有时我们希望固定视点，即以[视口坐标系](/api/canvas/coordinates#viewport)下的点为中心进行缩放。
 
-在下面的[示例](/zh/examples/camera/camera-action/#zoom-by-point)中，我们监听了 `wheel` 事件，以事件对象在 client 坐标系下的位置为中心进行缩放：
+在下面的[示例](/examples/camera/camera-action/#zoom-by-point)中，我们监听了 `wheel` 事件，以事件对象在 client 坐标系下的位置为中心进行缩放：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*cIK-RL1MHtYAAAAAAAAAAAAAARQnAQ" alt="zoom by viewport point" width="200">
 
@@ -172,7 +172,7 @@ camera.setZoomByViewportPoint(zoom, [x, y]);
 方法签名如下：
 
 - `zoom` 大于 1 代表放大，反之代表缩小。
-- `viewportPoint` 为[视口坐标系](/zh/api/canvas/coordinates#viewport)下的点坐标。
+- `viewportPoint` 为[视口坐标系](/api/canvas/coordinates#viewport)下的点坐标。
 
 ```
 setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
@@ -180,7 +180,7 @@ setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
 
 ## setFov
 
-仅透视投影下生效，视角越大容纳的对象越多。[示例](/zh/examples/camera/projection-mode/#perspective)
+仅透视投影下生效，视角越大容纳的对象越多。[示例](/examples/camera/projection-mode/#perspective)
 
 方法签名如下：
 
@@ -200,13 +200,13 @@ setAspect(aspect: number)
 
 ## setMinDistance
 
-设置最小视距。在进行 [dolly](/zh/api/camera/action#dolly) 操作时不会小于该距离。
+设置最小视距。在进行 [dolly](/api/camera/action#dolly) 操作时不会小于该距离。
 
 默认值为 `-Infinity`。
 
 ## setMaxDistance
 
-设置最大视距。在进行 [dolly](/zh/api/camera/action#dolly) 操作时不会大于该距离。
+设置最大视距。在进行 [dolly](/api/camera/action#dolly) 操作时不会大于该距离。
 
 默认值为 `Infinity`。
 
@@ -229,17 +229,17 @@ setViewOffset(
 
 其中 `fullWidth/fullHeight` 为原始视口大小，`x/y` 为视口偏移坐标，`width/height` 为偏移后视口大小。
 
-在该[示例](/zh/examples/camera/camera-action/#view-offset)中，[Cube](/zh/api/3d/geometry#cubegeometry) 原本位于视口正中央，通过设置 `x/y` 偏移量到视口中心。
+在该[示例](/examples/camera/camera-action/#view-offset)中，[Cube](/api/3d/geometry#cubegeometry) 原本位于视口正中央，通过设置 `x/y` 偏移量到视口中心。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*U6ELSY2EVNIAAAAAAAAAAAAAARQnAQ" alt="setViewOffset" width="300">
 
-在 [g-plugin-device-renderer](/zh/plugins/device-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
+在 [g-plugin-device-renderer](/plugins/device-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
 
 ## clearViewOffset
 
 清除之前设置的视口偏移量，立刻重新计算投影矩阵。
 
-在该[示例](/zh/examples/camera/camera-action/#view-offset)中，点击按钮可以随时移除已设置的偏移量。
+在该[示例](/examples/camera/camera-action/#view-offset)中，点击按钮可以随时移除已设置的偏移量。
 
 ## 设置方位角
 
@@ -257,7 +257,7 @@ setViewOffset(
 setRoll(roll: number)
 ```
 
-注意不同的[相机类型](/zh/api/camera/intro#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+注意不同的[相机类型](/api/camera/intro#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
 
 ```js
 camera.setRoll(30);
@@ -271,7 +271,7 @@ camera.setRoll(30);
 setElevation(angle: number)
 ```
 
-注意不同的[相机类型](/zh/api/camera#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+注意不同的[相机类型](/api/camera/intro#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
 
 ```js
 camera.setElevation(30);
@@ -285,7 +285,7 @@ camera.setElevation(30);
 setAzimuth(angle: number)
 ```
 
-注意不同的[相机类型](/zh/api/camera#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+注意不同的[相机类型](/api/camera/intro#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
 
 ```js
 camera.setAzimuth(30);

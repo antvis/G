@@ -3,7 +3,7 @@ title: Custom Renderer
 order: 4
 ---
 
-In [Renderer Introduction](/en/api/renderer/renderer), we learned that a renderer consists of a rendering context and a set of plugins that can dynamically extend the capabilities of the renderer at runtime.
+In [Renderer Introduction](/api/renderer/intro), we learned that a renderer consists of a rendering context and a set of plugins that can dynamically extend the capabilities of the renderer at runtime.
 
 When the existing renderer does not satisfy the current rendering context, customization can be accomplished by following these steps.
 
@@ -11,11 +11,11 @@ When the existing renderer does not satisfy the current rendering context, custo
 2. Implement a custom context registration plugin
 3. Customize the rendering environment context service
 
-Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how to complete the above steps.
+Here we will take [g-canvas](/api/renderer/canvas) as an example to show how to complete the above steps.
 
 ## Implementing a custom renderer
 
-After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/renderer#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/en/ plugins/canvas-picker).
+After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/api/renderer/intro#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/ plugins/canvas-picker).
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
@@ -52,7 +52,7 @@ In addition to these ready-made built-in plugins, we need to develop an addition
 
 ## Implement a custom contextual registration plugin
 
-You can refer to [plugin basic structure](/en/plugins/intro#basic-structure) on how to implement a plugin that does only one thing, and that is to register the rendering context service.
+You can refer to [plugin basic structure](/plugins/intro#basic-structure) on how to implement a plugin that does only one thing, and that is to register the rendering context service.
 
 ```js
 import { AbstractRendererPlugin, Module } from '@antv/g';
@@ -122,7 +122,7 @@ async init() {
 }
 ```
 
-In this method, we can get the parameters passed by the user when creating [Canvas](/en/api/renderer/canvas) by injection, such as [devicePixelRatio](/en/api/canvas#devicepixelratio).
+In this method, we can get the parameters passed by the user when creating [Canvas](/api/renderer/canvas) by injection, such as [devicePixelRatio](/api/canvas/options#devicepixelratio).
 
 Regarding the timing of the call, it will be called not only when initializing the canvas for the first time, but also when switching the renderer at subsequent runtimes.
 
@@ -134,15 +134,15 @@ Regarding the timing of the call, in addition to being called when the canvas is
 
 ### resize
 
-During runtime, sometimes the initialized [canvas size](/en/api/canvas#width--height) will change, and then `canvas.resize()` will eventually call this method.
+During runtime, sometimes the initialized [canvas size](/api/canvas/options#width--height) will change, and then `canvas.resize()` will eventually call this method.
 
 ### getContext
 
 Returns a custom rendering context, with different renderers returning different objects, e.g.
 
-- [g-canvas](/en/api/renderer/canvas) will return `CanvasRenderingContext2D`
-- [g-svg](/en/api/renderer/svg) will return `SVGElement`
-- [g-webgl](/en/api/renderer/webgl) will return a complex object `WebGLRenderingContext`
+- [g-canvas](/api/renderer/canvas) will return `CanvasRenderingContext2D`
+- [g-svg](/api/renderer/svg) will return `SVGElement`
+- [g-webgl](/api/renderer/webgl) will return a complex object `WebGLRenderingContext`
 
 ```js
 interface WebGLRenderingContext {
@@ -170,9 +170,9 @@ Set the mouse style. This can be set in most rendering environments via the DOM 
 
 ### toDataURL
 
-When implementing requirements like [export-image](/en/guide/advanced-topics/image-exporter), you need to rely on the capabilities of the rendering context.
+When implementing requirements like [export-image](/guide/advanced-topics/image-exporter), you need to rely on the capabilities of the rendering context.
 
-Different rendering contexts naturally have different difficulties to implement, for example, native [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/) can be used in [g-canvas](/en/api/renderer/canvas) HTMLCanvasElement/toDataURL) method.
+Different rendering contexts naturally have different difficulties to implement, for example, native [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/) can be used in [g-canvas](/api/renderer/canvas) HTMLCanvasElement/toDataURL) method.
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110>
 
@@ -183,7 +183,7 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 }
 ```
 
-However, [g-svg](/en/api/renderer/svg) is much more complicated to implement and requires the [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) serialization capabilities.
+However, [g-svg](/api/renderer/svg) is much more complicated to implement and requires the [XMLSerializer](https://developer.mozilla.org/zh-CN/Web/API/XMLSerializer) serialization capabilities.
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/SVGContextService.ts#L74-L90>
 
@@ -207,6 +207,6 @@ async toDataURL(options: Partial<DataURLOptions> = {}) {
 }
 ```
 
-The situation is more complicated in [g-webgl](/en/api/renderer/webgl), which even requires the use of asynchronous methods.
+The situation is more complicated in [g-webgl](/api/renderer/webgl), which even requires the use of asynchronous methods.
 
 <https://github.com/antvis/G/blob/next/packages/g-plugin-device-renderer/src/RenderGraphPlugin.ts#L428-L438>

@@ -15,7 +15,7 @@ We will use OffscreenCanvas in the following two scenarios, mainly using the Wor
 1. GPGPU 配合 g-webgl 和 g-plugin-gpgpu 使用，例如上层的图分析算法库
 2. g-webgl 在 Worker 中渲染，同步结果到主线程
 
-In this [example](/en/examples/canvas#offscreen-canvas) we demonstrate the second use, creating `<canvas>` in the main thread, transferring control to the WebWorker via `transferControlToOffscreen()`, and subsequently completing the rendering in the WebWorker and synchronizing the results to the main thread.
+In this [example](/examples/canvas/container/#offscreen-canvas) we demonstrate the second use, creating `<canvas>` in the main thread, transferring control to the WebWorker via `transferControlToOffscreen()`, and subsequently completing the rendering in the WebWorker and synchronizing the results to the main thread.
 
 ```js
 // main thread
@@ -70,14 +70,14 @@ We can achieve this by:
     }
     ```
 
-3. [cursor](/en/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
+3. [cursor](/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
 
 ## Server-side rendering
 
 Depending on the renderer, we offer the following server-side rendering options:
 
-- [g-canvas + node-canvas](/en/api/renderer/canvas#服务端渲染)
-- [g-svg + JSDOM](/en/api/renderer/svg#服务端渲染)
+- [g-canvas + node-canvas](/api/renderer/canvas#服务端渲染)
+- [g-svg + JSDOM](/api/renderer/svg#服务端渲染)
 - [g-webgl + headless-gl]()
 
 We currently use them in [integration tests](https://github.com/antvis/g/tree/next/integration/__node__tests__/).

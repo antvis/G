@@ -7,9 +7,9 @@ Provides GPGPU capabilities based on WebGPU. Writing Compute Shaders directly in
 
 For example, there are very many layout and analysis algorithms suitable for parallelism in graph scenarios.
 
-- [Fruchterman layout algorithm](/en/examples/gpgpu#fruchterman)
-- [Pagerank](/en/examples/gpgpu#pagerank)
-- [SSSP](/en/examples/gpgpu#bellman-ford)
+- [Fruchterman layout algorithm](/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
+- [Pagerank](/examples/gpgpu/graph-analysis-algorithm/#pagerank)
+- [SSSP](/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
 
 The performance improvement is very impressive when the number of nodes/edges in the graph reaches a certain size. In the case of pagerank, for example, the GPU version has more than 100 times better performance than the CPU version (300ms vs. 30s) for 1k nodes and 50w edges.
 
@@ -27,7 +27,7 @@ webgpuRenderer.registerPlugin(new Plugin());
 
 ## Get Device
 
-When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. In the [READY](/en/api/canvas#canvas-specific events) event handler of the canvas, we can get the Device through the renderer.
+When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. In the [READY](/api/canvas#canvas-specific events) event handler of the canvas, we can get the Device through the renderer.
 
 ```js
 import { CanvasEvent } from '@antv/g';
