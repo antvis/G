@@ -3,7 +3,7 @@ title: webgpu-graph
 order: 6
 ---
 
-我们参考 [cuGraph](https://github.com/rapidsai/cugraph) 以及其他 CUDA 实现，基于 [g-plugin-gpgpu](/zh/plugins/gpgpu) 背后的 WebGPU 能力实现常见的图分析算法，达到大规模节点边数据量下并行加速的目的。
+我们参考 [cuGraph](https://github.com/rapidsai/cugraph) 以及其他 CUDA 实现，基于 [g-plugin-gpgpu](/plugins/gpgpu) 背后的 WebGPU 能力实现常见的图分析算法，达到大规模节点边数据量下并行加速的目的。
 
 对比 G6 目前提供的 [CPU 串行版本](https://github.com/antvis/algorithm)有很大提升。
 
@@ -69,8 +69,8 @@ const data = {
 
 我们提供以下两种方式使用：
 
-- 没有 G 的 [Canvas 画布](/zh/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
-- 已有 G 的 [Canvas 画布](/zh/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
+- 没有 G 的 [Canvas 画布](/api/canvas/intro)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
+- 已有 G 的 [Canvas 画布](/api/canvas/intro)，例如正在使用它渲染，此时仅需要调用算法。
 
 ### 方法一
 
@@ -90,9 +90,9 @@ const graph = new WebGPUGraph();
 
 如果已经在使用 G 的 Canvas 画布进行渲染，可以复用它，并执行以下操作：
 
-- 注册 [g-plugin-gpgpu](/zh/plugins/gpgpu) 插件
+- 注册 [g-plugin-gpgpu](/plugins/gpgpu) 插件
 - 等待画布初始化
-- 获取 GPU [Device](/zh/plugins/device-renderer#device)
+- 获取 GPU [Device](/plugins/device-renderer#device)
 - 调用算法，此时算法的第一个参数为上一步获取到的 Device
 
 ```js
@@ -150,7 +150,7 @@ const canvas = new Canvas({
 - <https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu>
 - <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html>
 
-使用方式如下，[示例](/zh/examples/gpgpu#webgpu-graph-pagerank)：
+使用方式如下，[示例](/examples/gpgpu/webgpu-graph/#webgpu-graph-pagerank)：
 
 ```js
 const result = await graph.pageRank(data);
@@ -196,7 +196,7 @@ const result = await graph.pageRank(data);
 
 <img src="https://miro.medium.com/max/964/1*vJL5M_DamI4HDZ_e_97ziA.png" height='200'/>
 
-在图数据中，边的权重字段为 `weight`，[示例](/zh/examples/gpgpu#webgpu-graph-sssp)：
+在图数据中，边的权重字段为 `weight`，[示例](/examples/gpgpu/webgpu-graph/#webgpu-graph-sssp)：
 
 ```js
 edges: [

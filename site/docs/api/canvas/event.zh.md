@@ -3,7 +3,7 @@ title: 画布事件
 order: 8
 ---
 
-在[事件系统](/zh/api/event/intro)中，大部分事件都会冒泡直至画布。例如我们在如下简单场景下点击 Circle，可以查看事件的传播路径依次为：
+在[事件系统](/api/event/intro)中，大部分事件都会冒泡直至画布。例如我们在如下简单场景下点击 Circle，可以查看事件的传播路径依次为：
 
 ```
 Circle -> Group(canvas.document.documentElement) -> Document(canvas.document) -> Canvas：
@@ -27,7 +27,7 @@ canvas.addEventListener('click', () => {});
 canvas.document.addEventListener('click', () => {});
 ```
 
-更多事件相关操作详见[事件系统](/zh/api/event/intro)
+更多事件相关操作详见[事件系统](/api/event/intro)
 
 ## 画布特有事件
 
@@ -81,7 +81,7 @@ canvas.addEventListener('ready', () => {
 });
 ```
 
-除了监听 `ready` 事件，还可以选择[等待 ready 这个 Promise](/zh/api/canvas/scenegraph-lifecycle#ready)：
+除了监听 `ready` 事件，还可以选择[等待 ready 这个 Promise](/api/canvas/scenegraph-lifecycle#ready)：
 
 ```js
 await canvas.ready;

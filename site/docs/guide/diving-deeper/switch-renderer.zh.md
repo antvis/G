@@ -7,14 +7,14 @@ order: 99
 
 ## 按需引入渲染器
 
-目前我们提供了多种[渲染器](/zh/api/renderer/intro)，用户可以像插件一样按需引入，但至少需要一种：
+目前我们提供了多种[渲染器](/api/renderer/intro)，用户可以像插件一样按需引入，但至少需要一种：
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 ```
 
-这样在创建[画布](/zh/api/canvas/intro)时可以选择引入的渲染器之一，例如我们引入了 Canvas 和 WebGL 渲染器，就可以在两者之间选择：
+这样在创建[画布](/api/canvas/intro)时可以选择引入的渲染器之一，例如我们引入了 Canvas 和 WebGL 渲染器，就可以在两者之间选择：
 
 ```js
 import { Canvas } from '@antv/g';

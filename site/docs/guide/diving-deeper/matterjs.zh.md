@@ -5,9 +5,9 @@ order: 12
 
 [matter.js](https://brm.io/matter-js/) 物理引擎提供了一系列针对刚体的仿真计算，例如重力和表面摩擦力。另外，在任意时刻也可以施加外力改变图形的位置和旋转角度，这为我们实现一些基于真实物理规则的布局提供了帮助。
 
-通过 [g-plugin-matterjs](/zh/plugins/matterjs) 插件的支持，我们可以给已有的大部分 2D 图形增加物理属性。
+通过 [g-plugin-matterjs](/plugins/matterjs) 插件的支持，我们可以给已有的大部分 2D 图形增加物理属性。
 
-在该[示例](/zh/examples/plugins#matterjs)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
+在该[示例](/examples/plugins/physics-engine/#matterjs)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -36,7 +36,7 @@ const canvas = new Canvas({
 
 在开发时，我们常常希望能把物理引擎中的世界也渲染出来，便于和“现实世界”对照。
 
-matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
+matter.js  本身支持渲染。开启后配合 [debugContainer](/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
 
 ```js
 const plugin = new PluginMatterjs({
@@ -53,7 +53,7 @@ const plugin = new PluginMatterjs({
 
 ## 创建静态地面
 
-我们使用 [Line](/zh/api/basic/line) 创建一个平地，需要特别注意 [rigid](/zh/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
+我们使用 [Line](/api/basic/line) 创建一个平地，需要特别注意 [rigid](/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
 
 ```js
 const ground = new Line({
@@ -71,8 +71,8 @@ canvas.appendChild(ground);
 
 接下来我们创建一个受重力影响的“弹力球”，其中：
 
-- [density](/zh/plugins/matterjs#density) 表示物体密度，单位为千克/立方米
-- [restitution](/zh/plugins/matterjs#restitution) 表示弹力系数
+- [density](/plugins/matterjs#density) 表示物体密度，单位为千克/立方米
+- [restitution](/plugins/matterjs#restitution) 表示弹力系数
 
 ```js
 const circle = new Circle({
@@ -91,7 +91,7 @@ canvas.appendChild(circle);
 
 插件会自动完成仿真过程，你可以看到小球自由落体至地面并弹起。
 
-使用 [applyForce](/zh/plugins/matterjs#applyforce) 可以向图形施加外力。在该 [示例](/zh/examples/plugins#matterjs) 中，点击按钮可以向 Circle 施加一个 `[0, 0]` 点处 `[0, -10]` 的外力，因此受力会向上弹起：
+使用 [applyForce](/plugins/matterjs#applyforce) 可以向图形施加外力。在该 [示例](/examples/plugins/physics-engine/#matterjs) 中，点击按钮可以向 Circle 施加一个 `[0, 0]` 点处 `[0, -10]` 的外力，因此受力会向上弹起：
 
 ```js
 plugin.applyForce(circle, [0, -10], [0, 0]);

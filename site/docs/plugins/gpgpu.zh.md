@@ -7,9 +7,9 @@ order: -1
 
 例如在图场景中有非常多适合并行的布局和分析算法：
 
-- [Fruchterman 布局算法](/zh/examples/gpgpu#fruchterman)
-- [Pagerank](/zh/examples/gpgpu#pagerank)
-- [SSSP 单源最短路径](/zh/examples/gpgpu#bellman-ford)
+- [Fruchterman 布局算法](/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
+- [Pagerank](/examples/gpgpu/graph-analysis-algorithm/#pagerank)
+- [SSSP 单源最短路径](/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
 
 在图中节点/边数目达到一定规模时会带来非常可观的性能提升效果。以 pagerank 为例，在 1k 节点和 50w 条边的测试数据中，GPU 版本相较 CPU 版本有 100 倍以上的提升（300ms vs 30s）。
 
@@ -27,7 +27,7 @@ webgpuRenderer.registerPlugin(new Plugin());
 
 ## 获取 Device
 
-在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/api/canvas#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
+在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/api/canvas/event#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
 
 ```js
 import { CanvasEvent } from '@antv/g';

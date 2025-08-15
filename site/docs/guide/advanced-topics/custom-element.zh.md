@@ -3,7 +3,7 @@ title: 自定义图形
 order: 3
 ---
 
-我们提供了一些[基础图形](/zh/api/basic/display-object)，例如 [Circle](/zh/api/basic/circle)、[Path](/zh/api/basic/path) 等等。通过[场景图](/zh/guide/diving-deeper/scenegraph)能力也能构建它们之间的层次关系。但当场景层次嵌套较深又需要复用时，我们便需要一种自定义组件机制，能把这些基础图形封装成高级图形。
+我们提供了一些[基础图形](/api/basic/display-object)，例如 [Circle](/api/basic/circle)、[Path](/api/basic/path) 等等。通过[场景图](/guide/diving-deeper/scenegraph)能力也能构建它们之间的层次关系。但当场景层次嵌套较深又需要复用时，我们便需要一种自定义组件机制，能把这些基础图形封装成高级图形。
 
 类似的问题在 Web Components 中是通过 [Custom Element](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements) 实现的。在[官方示例](https://github.com/mdn/web-components-examples/blob/main/life-cycle-callbacks/main.js)中我们能看到一个自定义图形的注册过程按照如下步骤进行：
 
@@ -23,9 +23,9 @@ order: 3
 
 ![arrow](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
-过程中会涉及[场景图](/zh/guide/diving-deeper/scenegraph)、[动画系统](/zh/api/animation/waapi)、[事件系统](/zh/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
+过程中会涉及[场景图](/guide/diving-deeper/scenegraph)、[动画系统](/api/animation/waapi)、[事件系统](/api/event/intro)等。在开始前我们推荐先阅读以上各个系统的文档。
 
-- [完整 DEMO](/zh/examples/shape#arrow)
+- [完整 DEMO](/examples/shape/custom-element/#arrow)
 - [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
 
 ## 问题背景
@@ -44,7 +44,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {}
 
 然后可以定义自定义图形的属性，这里我们给箭头提供了以下自定义属性：
 
-- body 躯干部分只能接受 [Line](/zh/api/basic/line) [Path](/zh/api/basic/path) [Polyline](/zh/api/basic/polyline)
+- body 躯干部分只能接受 [Line](/api/basic/line) [Path](/api/basic/path) [Polyline](/api/basic/polyline)
 - start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
 - stroke/lineWidth/opacity 等常规绘图属性
 
@@ -67,7 +67,7 @@ export interface ArrowStyleProps extends BaseStyleProps {
 
 ## 定义场景图
 
-我们需要在构造函数中完成场景图的定义。这里会使用到基础图形的节点操作能力，例如使用 [appendChild](/zh/api/basic/display-object#添加删除节点) 添加箭头的躯干和端点部分。
+我们需要在构造函数中完成场景图的定义。这里会使用到基础图形的节点操作能力，例如使用 [appendChild](/api/basic/display-object#添加删除节点) 添加箭头的躯干和端点部分。
 
 ```js
 static tag = 'arrow';
@@ -107,7 +107,7 @@ constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
 
 ### 添加端点
 
-我们支持内置端点和用户传入的端点，即使是由用户传入，它也只用于描述端点的形状，为了确保箭头和躯干部分朝向一致，我们还需要对端点进行变换。另外，我们使用了 [zIndex](/zh/api/basic/display-object#zindex)，由于默认 zIndex 为 0，因此设置成 1 就可以保证端点的展示次序在躯干部分之上。
+我们支持内置端点和用户传入的端点，即使是由用户传入，它也只用于描述端点的形状，为了确保箭头和躯干部分朝向一致，我们还需要对端点进行变换。另外，我们使用了 [zIndex](/api/basic/display-object#zindex)，由于默认 zIndex 为 0，因此设置成 1 就可以保证端点的展示次序在躯干部分之上。
 
 ```js
 private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
@@ -138,7 +138,7 @@ private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
 }
 ```
 
-对于内置默认端点，我们使用一个形如 `<` 的 [Path](/zh/api/basic/path)，这里将 anchor 设置为 `[0.5, 0.5]` 即 Path 的中心点，便于后续对端点进行变换：
+对于内置默认端点，我们使用一个形如 `<` 的 [Path](/api/basic/path)，这里将 anchor 设置为 `[0.5, 0.5]` 即 Path 的中心点，便于后续对端点进行变换：
 
 ```js
 private createDefaultArrowHead() {
@@ -201,7 +201,7 @@ private transformArrowHead(head: DisplayObject, isStart: boolean) {
 
 ### 计算切线
 
-对于 Line 和 Polyline 只需要找到两个端点坐标相减即可，对于 Path 我们提供了[计算切线的 API](/zh/api/basic/path#getstarttangent-number)：
+对于 Line 和 Polyline 只需要找到两个端点坐标相减即可，对于 Path 我们提供了[计算切线的 API](/api/basic/path#getstarttangent-number)：
 
 ```js
 private getTangent(path: Path, isStart: boolean): number[][] {
@@ -247,7 +247,7 @@ canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 
 ### 应用动画
 
-同样也可以对它[应用动画](/zh/api/animation/waapi)，例如对 transform stroke 和 opacity 这三个属性：
+同样也可以对它[应用动画](/api/animation/waapi)，例如对 transform stroke 和 opacity 这三个属性：
 
 ```js
 lineArrow.animate(
@@ -263,11 +263,11 @@ lineArrow.animate(
 );
 ```
 
-[完整 DEMO](/zh/examples/shape#arrow)
+[完整 DEMO](/examples/shape/custom-element/#arrow)
 
 ### 响应事件
 
-自定义图形也可以[响应事件](/zh/api/event)，例如当鼠标移入移出时更改颜色：
+自定义图形也可以[响应事件](/api/event/intro)，例如当鼠标移入移出时更改颜色：
 
 ```js
 lineArrow.addEventListener('mouseenter', () => {
@@ -305,7 +305,7 @@ export interface CustomElement<CustomElementStyleProps> {
 }
 ```
 
-在我们的 [DEMO](/zh/examples/shape#arrow) 中，可以随时切换端点和躯干图形。例如切换起始端点为一个图片：
+在我们的 [DEMO](/examples/shape/custom-element/#arrow) 中，可以随时切换端点和躯干图形。例如切换起始端点为一个图片：
 
 ```js
 const image = new Image({

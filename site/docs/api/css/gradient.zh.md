@@ -15,9 +15,9 @@ background: linear-gradient(#e66465, #9198e5);
 rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 ```
 
-其中渐变色列表 `<color-stop-list>` 形如：`radial-gradient(cyan 0%, transparent 20%, salmon 40%)`，使用 [\<color\>](/zh/api/css/css-properties-values-api#color) 和 [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) 的组合。
+其中渐变色列表 `<color-stop-list>` 形如：`radial-gradient(cyan 0%, transparent 20%, salmon 40%)`，使用 [\<color\>](/api/css/css-properties-values-api#color) 和 [\<percentage\>](/api/css/css-properties-values-api#percentage) 的组合。
 
-在该[示例](/zh/examples/style/gradient/#gradient)中我们展示了目前支持的渐变效果，包括线性和径向渐变、多个渐变叠加等：
+在该[示例](/examples/style/gradient/#gradient)中我们展示了目前支持的渐变效果，包括线性和径向渐变、多个渐变叠加等：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sXoJTKPWg70AAAAAAAAAAAAAARQnAQ" width="400" alt="gradient">
 
@@ -29,7 +29,7 @@ rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 
 - 渐变方向在 CSS 中默认为从下到上，而我们为了和 Canvas / SVG 保持一致，使用从左到右。
 
-因此一个从左到右方向，旋转角度为 0 的线性渐变如下，[示例](/zh/examples/style/gradient/#gradient)：
+因此一个从左到右方向，旋转角度为 0 的线性渐变如下，[示例](/examples/style/gradient/#gradient)：
 
 ```js
 rect.style.fill = 'linear-gradient(0deg, blue, green 40%, red)';
@@ -51,7 +51,7 @@ rect.style.fill = `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.
 
 用法完全可以参考 CSS [radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)。
 
-因此一个渐变中心位于图形中心，从红过渡到蓝再到绿的径向渐变如下，[示例](/zh/examples/style/gradient/#gradient)：
+因此一个渐变中心位于图形中心，从红过渡到蓝再到绿的径向渐变如下，[示例](/examples/style/gradient/#gradient)：
 
 ```js
 rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';

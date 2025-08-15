@@ -23,7 +23,7 @@ const line = new Path({
 
 Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
-The default anchor definition is the top-left corner of the enclosing box, which can be changed by [anchor](/en/api/display-object#anchor).
+The default anchor definition is the top-left corner of the enclosing box, which can be changed by [anchor](/en/api/basic/display-object#anchor).
 
 On this point we refer to the actual performance of SVG, the following figure as an example we defined a segment of arc with `[100, 100]` as the starting point, obviously its top left corner of the enclosing box vertex is not `[0, 0]` or `[100, 100]`, but needs to be calculated according to the real shape of the path, we will use this calculation as the default anchor position, but also the coordinates of the local coordinate system: `[0, 0]`.
 

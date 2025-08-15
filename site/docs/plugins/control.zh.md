@@ -3,7 +3,7 @@ title: g-plugin-control
 order: 10
 ---
 
-为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/api/camera#相机类型)，提供不同的交互效果。
+为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/api/camera/intro#相机类型)，提供不同的交互效果。
 
 ## 安装方式
 
@@ -20,6 +20,6 @@ webglRenderer.registerPlugin(new Plugin());
 
 ## 效果
 
-[完整示例](/zh/examples/plugins#orbit-control)：
+[完整示例](/examples/plugins/control/#orbit-control)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1u8eRKMbVX8AAAAAAAAAAAAAARQnAQ)

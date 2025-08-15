@@ -14,7 +14,7 @@ Currently using Box2D latest version 2.4, refer to the documentation: <https://b
 
 The following 2D graphics are supported: [Circle](/en/api/basic/circle), [Rect](/en/api/basic/rect), [Line](/en/api/basic/line), [Image](/en/api/basic/image) and [Polygon](/en/api/basic/polygon).
 
-In this [example](/en/examples/plugins#box2d), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
+In this [example](/en/examples/plugins/physics-engine/#box2d), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 

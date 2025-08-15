@@ -14,7 +14,7 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 ```
 
-This allows you to choose one of the renderers introduced when creating [Canvas](/zh/api/canvas/intro), e.g. if we introduce a Canvas and a WebGL renderer, we can choose between the two.
+This allows you to choose one of the renderers introduced when creating [Canvas](/en/api/canvas/intro), e.g. if we introduce a Canvas and a WebGL renderer, we can choose between the two.
 
 ```js
 import { Canvas } from '@antv/g';

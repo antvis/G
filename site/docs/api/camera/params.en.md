@@ -27,7 +27,7 @@ The method signature is as follows.
 setPosition(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 500]`, where `width/height` is the size of the [Canvas](/en/api/canvas). So if we want to reset the `x/y` coordinates of the camera, while keeping the `z` coordinates the same, we can do this.
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 500]`, where `width/height` is the size of the [Canvas](/en/api/canvas/intro). So if we want to reset the `x/y` coordinates of the camera, while keeping the `z` coordinates the same, we can do this.
 
 ```js
 // Keep the Z-coordinate constant.
@@ -63,7 +63,7 @@ The method signature is as follows.
 setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 0]`, where `width/height` is the size of the [Canvas](/en/api/canvas). So if we want to reset the `x/y` coordinates of the camera viewpoint while keeping the `z` coordinates the same, we can do this.
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 0]`, where `width/height` is the size of the [Canvas](/en/api/canvas/intro). So if we want to reset the `x/y` coordinates of the camera viewpoint while keeping the `z` coordinates the same, we can do this.
 
 ```js
 // Keep the Z-coordinate constant.

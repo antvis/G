@@ -67,8 +67,8 @@ If the data format does not meet the above requirements, the algorithm will not 
 
 We offer the following two ways to use it.
 
-- [Canvas](/en/api/canvas) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
-- There is already a [Canvas](/en/api/canvas) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
+- [Canvas](/en/api/canvas/intro) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
+- There is already a [Canvas](/en/api/canvas/intro) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
 
 ### Method 1
 
@@ -145,7 +145,7 @@ Refer to the following CUDA version implementation.
 - <https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu>
 - <https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html>
 
-It is used in the following way, [example](/en/examples/gpgpu#webgpu-graph-pagerank)：
+It is used in the following way, [example](/en/examples/gpgpu/webgpu-graph/#webgpu-graph-pagerank)：
 
 ```js
 const result = await graph.pageRank(data);

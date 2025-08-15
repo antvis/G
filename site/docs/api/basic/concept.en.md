@@ -63,12 +63,12 @@ In the figure below, ul1 has two word nodes, li1 and li2, which are not consider
 
 How should the anchor point (origin) of a graph be defined? We can define it based on Geometry Bounds, with the value range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper left corner of Geometry Bounds and `[1, 1]` represents the lower right corner. And the default anchor points for different shapes due to different geometry definitions are as follows.
 
-- The center of [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
-- The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/basic/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
+- The center of [Circle](/en/api/basic/circle) and [Ellipse](/en/api/basic/ellipse) is `[0.5, 0.5]`
+- The top left corner of [Rect](/en/api/basic/rect), [Image](/en/api/basic/image), [Line](/en/api/basic/line), [Polyline](/en/api/basic/polyline), [Polygon](/en/api/basic/polygon) and [Path](/en/api/basic/path) is `[0, 0]`.
 - We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/basic/text).
 - Since [Group](/en/api/basic/text) has no geometry bounds, so its anchor is `[0, 0]`.
 
-Sometimes we want to change the definition of the origin of a base graph, for example by defining the anchor of Rect as the center instead of the top left corner, [example](/en/examples/shape#rect)：
+Sometimes we want to change the definition of the origin of a base graph, for example by defining the anchor of Rect as the center instead of the top left corner, [example](/en/examples/shape/rect/#rect)：
 
 ```js
 rect.style.anchor = [0.5, 0.5];

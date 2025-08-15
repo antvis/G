@@ -5,7 +5,7 @@ order: 10
 
 就像可平铺的瓷砖、地板一样，有时我们希望使用重复的相同图案填充图形。
 
-在该[示例](/zh/examples/style/pattern/#pattern)中我们展示了目前支持的 Pattern（模版填充）效果，来源可以包括图片 URL，`HTMLImageElement`，`HTMLCanvasElement`，`HTMLVideoElement` 和 [Rect](/zh/api/basic/rect) 等，同时还可以指定填充重复方向：
+在该[示例](/examples/style/pattern/#pattern)中我们展示了目前支持的 Pattern（模版填充）效果，来源可以包括图片 URL，`HTMLImageElement`，`HTMLCanvasElement`，`HTMLVideoElement` 和 [Rect](/api/basic/rect) 等，同时还可以指定填充重复方向：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cRmFTItZOtYAAAAAAAAAAAAAARQnAQ" width="400" alt="pattern">
 
@@ -37,7 +37,7 @@ interface Pattern {
 - HTMLImageElement
 - HTMLCanvasElement
 - HTMLVideoElement
-- [Rect](/zh/api/basic/rect)
+- [Rect](/api/basic/rect)
 
 ### 图片 URL
 
@@ -114,7 +114,7 @@ video.onloadeddata = function () {
 
 除了使用图片、视频作为来源，还可以使用程序化生成，此时就需要使用到 `<canvas>` 以及原生 [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)。
 
-在该[示例](/zh/examples/style/pattern/#pattern)中，我们使用了 HTMLCanvasElement 先绘制了一个 20 \* 20 的模版，再使用它进行填充：
+在该[示例](/examples/style/pattern/#pattern)中，我们使用了 HTMLCanvasElement 先绘制了一个 20 \* 20 的模版，再使用它进行填充：
 
 ```js
 // @see https://observablehq.com/@awoodruff/canvas-cartography-nacis-2019
@@ -156,7 +156,7 @@ const rect3 = new Rect({
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*asBpS647S0EAAAAAAAAAAAAADmJ7AQ/original" alt="canvas vs svg pattern" width="400">
 
-在下面的 [示例](/zh/examples/style/pattern#rect) 中，我们创建了一个 `16 * 16` 的 Pattern，白色背景上包含一个红点。可以看出和常规定义场景的用法别无二致：
+在下面的 [示例](/examples/style/pattern#rect) 中，我们创建了一个 `16 * 16` 的 Pattern，白色背景上包含一个红点。可以看出和常规定义场景的用法别无二致：
 
 ```js
 const background = new Rect({
@@ -177,7 +177,7 @@ const dot = new Circle({
 background.appendChild(dot);
 ```
 
-然后将 Pattern 平铺应用图形上，同时通过 [transform](/zh/api/css/pattern#transform) 旋转一定角度：
+然后将 Pattern 平铺应用图形上，同时通过 [transform](/api/css/pattern#transform) 旋转一定角度：
 
 ```js
 const rect = new Rect({
@@ -199,7 +199,7 @@ const rect = new Rect({
 
 ## repetition
 
-选填。支持以下模式，可以在该[示例](/zh/examples/style/pattern/#pattern)中查看：
+选填。支持以下模式，可以在该[示例](/examples/style/pattern/#pattern)中查看：
 
 - `'repeat'` 默认值，沿水平和垂直方向平铺
 - `'repeat-x'` 沿水平方向平铺
@@ -210,7 +210,7 @@ const rect = new Rect({
 
 选填。有时我们希望对模式进行变换，例如旋转一定角度，此时可以使用 `transform` 属性，取值和 CSS Transform 完全一致。
 
-在下面的[示例](/zh/examples/ecosystem/pattern/#dots)中，我们希望让模式旋转起来：
+在下面的[示例](/examples/style/pattern/#dots)中，我们希望让模式旋转起来：
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668740048992/Nov-18-2022%25252010-53-54.gif" alt="transform pattern">
 
@@ -240,7 +240,7 @@ lines(cfg?: LinePatternCfg): HTMLCanvasElement;
 squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 ```
 
-在该[示例](/zh/examples/ecosystem/pattern/#dots)中，我们使用了圆点模式，并通过 [transform](/api/css/css-properties-values-api#transform) 对其进行了一些变换：
+在该[示例](/examples/style/pattern/#dots)中，我们使用了圆点模式，并通过 [transform](/api/css/css-properties-values-api#transform) 对其进行了一些变换：
 
 ```js
 import { dots } from '@antv/g-pattern';
@@ -272,7 +272,7 @@ rect.style.fill = {
 
 ### dots
 
-`dots` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#dots)：
+`dots` 模式支持额外配置如下，[示例](/examples/style/pattern/#dots)：
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Xce3RrT3zAMAAAAAAAAAAAAADmJ7AQ/original" alt="dots pattern" width="200">
 
@@ -284,7 +284,7 @@ rect.style.fill = {
 
 ### lines
 
-`lines` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#lines)：
+`lines` 模式支持额外配置如下，[示例](/examples/perf/webgl/#lines)：
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*cQp7TrgGMoUAAAAAAAAAAAAADmJ7AQ/original" alt="lines pattern" width="200">
 
@@ -294,7 +294,7 @@ rect.style.fill = {
 
 ### squares
 
-`squares` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#squares)：
+`squares` 模式支持额外配置如下，[示例](/examples/style/pattern/#squares)：
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JB3lRoeyzdIAAAAAAAAAAAAADmJ7AQ/original" alt="squares pattern" width="200">
 

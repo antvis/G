@@ -5,11 +5,11 @@ order: 50
 
 在事件监听器的回调函数中，我们可以取得事件对象并访问其上的属性和方法。这些属性和方法和 DOM Event API 保持一致，因此可以直接参考它们的文档。
 
-我们会尽量将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/zh/api/event#nativeevent) 上访问原生事件。
+我们会尽量将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/api/event/event-object#nativeevent) 上访问原生事件。
 
 ## 通用属性
 
-事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/zh/api/canvas#坐标系)相关。
+事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/api/canvas/intro#%E5%9D%90%E6%A0%87%E7%B3%BB)相关。
 
 ### type
 
@@ -25,11 +25,11 @@ order: 50
 
 ### nativeEvent
 
-原生事件对象。当我们调用 [preventDefault](/zh/api/event#preventdefault) 方法时，会调用原生事件对象上的同名方法。
+原生事件对象。当我们调用 [preventDefault](/api/event/event-object#preventdefault) 方法时，会调用原生事件对象上的同名方法。
 
 ### view
 
-指向 [Canvas](/zh/api/canvas)。
+指向 [Canvas](/api/canvas/intro)。
 
 <https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view>
 
@@ -95,7 +95,7 @@ circle.addEventListener(
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target>
 
-当前触发事件的 [EventTarget](/zh/api/builtin-objects/event-target)。
+当前触发事件的 [EventTarget](/api/builtin-objects/event-target)。
 
 在实现事件委托时很有用，例如有这样一个场景，类似 DOM 中的 `ul/li`：
 
@@ -122,7 +122,7 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event#delegate)
+[示例](/examples/event/event-others/#delegate)
 
 ### currentTarget
 
@@ -142,7 +142,7 @@ ul.addEventListener(
 
 ### canvasX/Y
 
-在 [Canvas 坐标系/世界坐标系](/zh/api/canvas#canvas)下，以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。可以与 [viewportX/Y](/zh/api/event#viewportxy) 互相转换，[详见](/zh/api/canvas#canvas---viewport)：
+在 [Canvas 坐标系/世界坐标系](/api/canvas/coordinates#canvas)下，以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。可以与 [viewportX/Y](/api/event/event-object#viewportxy) 互相转换，[详见](/api/canvas/coordinates#canvas---viewport)：
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
@@ -161,16 +161,16 @@ e.y;
 
 ### viewportX/Y
 
-在 [Viewport 坐标系](/zh/api/canvas#viewport)下，考虑相机变换。
+在 [Viewport 坐标系](/api/canvas/coordinates#viewport)下，考虑相机变换。
 
-可以与 [canvasX/Y](/zh/api/event#canvasxy) 互相转换，[详见](/zh/api/canvas#canvas---viewport)：
+可以与 [canvasX/Y](/api/event/event-object#canvasxy) 互相转换，[详见](/api/canvas/coordinates#canvas---viewport)：
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
 canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
 ```
 
-可以与 [clientX/Y](/zh/api/event#clientxy) 互相转换，[详见](/zh/api/canvas#client---viewport)：
+可以与 [clientX/Y](/api/event/event-object#clientxy) 互相转换，[详见](/api/canvas/coordinates#client---viewport)：
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -181,14 +181,14 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX>
 
-在[浏览器坐标系](/zh/api/canvas#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
+在[浏览器坐标系](/api/canvas/coordinates#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
 
 ```js
 e.clientX;
 e.nativeEvent.clientX;
 ```
 
-可以与 [viewportX/Y](/zh/api/event#viewportxy) 互相转换，[详见](/zh/api/canvas#client---viewport)：
+可以与 [viewportX/Y](/api/event/event-object#viewportxy) 互相转换，[详见](/api/canvas/coordinates#client---viewport)：
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -199,7 +199,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX>
 
-在[屏幕坐标系](/zh/api/canvas#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+在[屏幕坐标系](/api/canvas/coordinates#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
 
 ```js
 e.screenX;
@@ -210,7 +210,7 @@ e.nativeEvent.screenX;
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX>
 
-在[文档坐标系](/zh/api/canvas#page)下，考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+在[文档坐标系](/api/canvas/coordinates#page)下，考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
 
 ```js
 e.pageX;
@@ -372,13 +372,13 @@ group.on(
 
 阻止浏览器默认行为。对于 Passive 事件调用该方法无效，并且会抛出警告。
 
-关于 wheel 事件的解决方案可以参考：[在 Chrome 中禁止页面默认滚动行为](/zh/api/event#在-chrome-中禁止页面默认滚动行为)。
+关于 wheel 事件的解决方案可以参考：[在 Chrome 中禁止页面默认滚动行为](/api/event/intro#%E5%9C%A8-chrome-%E4%B8%AD%E7%A6%81%E6%AD%A2%E9%A1%B5%E9%9D%A2%E9%BB%98%E8%AE%A4%E6%BB%9A%E5%8A%A8%E8%A1%8C%E4%B8%BA)。
 
 ### composedPath
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath>
 
-返回事件路径，是包含 [EventTarget](/zh/api/builtin-objects/event-target) 的数组，类似旧版 G 中的 `propagationPath`。在这个数组中，`event.target` 为数组的第一个元素，[场景图根节点](/zh/api/canvas#入口与根节点)、[Document](/zh/api/canvas#入口与根节点) 和 [Canvas](/zh/api/canvas) 为数组末尾的三个元素。
+返回事件路径，是包含 [EventTarget](/api/builtin-objects/event-target) 的数组，类似旧版 G 中的 `propagationPath`。在这个数组中，`event.target` 为数组的第一个元素，[场景图根节点](/api/canvas/intro#%E5%85%A5%E5%8F%A3%E4%B8%8E%E6%A0%B9%E8%8A%82%E7%82%B9)、[Document](/api/canvas/intro#%E5%85%A5%E5%8F%A3%E4%B8%8E%E6%A0%B9%E8%8A%82%E7%82%B9) 和 [Canvas](/api/canvas/intro) 为数组末尾的三个元素。
 
 仍然以类似 DOM `ul/li` 场景为例：
 
@@ -404,7 +404,7 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event#delegate)
+[示例](/examples/event/event-others/#delegate)
 
 ### clone
 
@@ -420,4 +420,4 @@ circle.addEventListener('click', (e) => {
 
 克隆后的事件对象将保留原事件对象上的一切属性。
 
-目前我们暂时只支持交互事件，即 [PointerEvent](/zh/api/event#pointerevent-属性) 和 [WheelEvent](/zh/api/event#wheelevent-属性)。其他事件例如 AnimationEvent 和 CustomEvent 暂不支持。
+目前我们暂时只支持交互事件，即 [PointerEvent](/api/event/intro#pointerevent-%E5%B1%9E%E6%80%A7) 和 [WheelEvent](/api/event/intro#wheelevent-%E5%B1%9E%E6%80%A7)。其他事件例如 AnimationEvent 和 CustomEvent 暂不支持。

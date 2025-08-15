@@ -13,7 +13,7 @@ Renderers use the underlying rendering API to draw various types of graphics. We
 - [g-webgl](/en/api/renderer/webgl) based on WebGL 2/1
 - [g-webgpu](/en/api/renderer/webgpu) based on WebGPU
 
-The renderer consists of a rendering context and a set of [plugins](/en/plugins) that allow the capabilities of the renderer to be dynamically extended at runtime.
+The renderer consists of a rendering context and a set of [plugins](/en/plugins/intro) that allow the capabilities of the renderer to be dynamically extended at runtime.
 
 Using the `g-canvas` renderer as an example, the basic usage is as follows.
 

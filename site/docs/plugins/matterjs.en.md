@@ -7,7 +7,7 @@ Supports [matter.js](https://brm.io/matter-js/) physics engine (rigid bodies onl
 
 The following 2D graphics are supported: [Circle](/en/api/basic/circle), [Rect](/en/api/basic/rect), [Line](/en/api/basic/line), [Image](/en/api/basic/image) and [Polygon](/en/api/basic/polygon).
 
-In this [example](/en/examples/plugins#matterjs), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
+In this [example](/en/examples/plugins/physics-engine/#matterjs), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 

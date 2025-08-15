@@ -3,11 +3,11 @@ title: 理解事件传播路径
 order: 4
 ---
 
-在之前的[入门教程](/zh/guide/chapter3)中，我们已经掌握了如何为图形添加事件监听器。在本教程中我们将深入了解监听器被触发时，事件对象上一些有用的属性和方法，同时理解事件传播路径，最终实现一个简单的事件委托效果。
+在之前的[入门教程](/en/guide/chapter3)中，我们已经掌握了如何为图形添加事件监听器。在本教程中我们将深入了解监听器被触发时，事件对象上一些有用的属性和方法，同时理解事件传播路径，最终实现一个简单的事件委托效果。
 
 最终示例：
 
-- [官网示例](/zh/examples/event#delegate)
+- [官网示例](/en/examples/event/picking/#delegate)
 - [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
 
 ## 事件传播机制
@@ -45,7 +45,7 @@ ul.addEventListener('click', (ev) => {
 
 ## 事件对象
 
-事件对象上有很多有用的属性，我们先来看看上一节中提到的事件传播路径，通过[composedPath()](/zh/api/event#composedpath)方法可以获取它。当我们点击 li1 时，此时路径会返回如下结果：
+事件对象上有很多有用的属性，我们先来看看上一节中提到的事件传播路径，通过[composedPath()](/en/api/event/event-object#composedpath)方法可以获取它。当我们点击 li1 时，此时路径会返回如下结果：
 
 ```js
 ev.composedPath(); // [Rect(li1), Group(ul), Group(root), Document, Canvas];
@@ -53,15 +53,15 @@ ev.composedPath(); // [Rect(li1), Group(ul), Group(root), Document, Canvas];
 
 该结果是一个数组，依次展示了从事件触发的目标节点到根节点的路径，我们从后往前看：
 
-- [Canvas](/zh/api/canvas) 即画布对象，可以对应 `window`
-- [Document](/zh/api/builtin-objects/document) 文档，可以对应 `window.document`
-- [Group(root)](/zh/api/builtin-objects/document#documentelement) 文档根节点，可以对应 `window.document.documentElement`
+- [Canvas](/en/api/canvas/intro) 即画布对象，可以对应 `window`
+- [Document](/en/api/builtin-objects/document) 文档，可以对应 `window.document`
+- [Group(root)](/en/api/builtin-objects/document#documentelement) 文档根节点，可以对应 `window.document.documentElement`
 
 除了事件传播路径，事件对象上其他的常用属性有：
 
-- [target](/zh/api/event#target) 返回当前触发事件的图形
-- [currentTarget](/zh/api/event#currenttarget) 总是指向事件绑定的图形
-- 各个坐标系下的[事件坐标](/zh/api/event#canvasxy)
+- [target](/en/api/event/event-object#target) 返回当前触发事件的图形
+- [currentTarget](/en/api/event/event-object#currenttarget) 总是指向事件绑定的图形
+- 各个坐标系下的[事件坐标](/en/api/event/event-object#canvasxy)
 
 ## 添加事件监听器的高级用法
 
@@ -79,4 +79,4 @@ circle.addEventListener('click', () => {}, { capture: true });
 circle.addEventListener('click', () => {}, true);
 ```
 
-更多用法可以参考 [addEventListener()](/zh/api/event#addeventlistener) 的文档。
+更多用法可以参考 [addEventListener()](/en/api/event/intro#addeventlistener) 的文档。

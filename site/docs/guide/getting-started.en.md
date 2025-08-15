@@ -60,7 +60,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
 - Physics Engine
   - [g-plugin-box2d](/en/plugins/box2d) Based on [Box2D](https://box2d.org/).
   - [g-plugin-matterjs](/en/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-  - [g-plugin-physx](/en/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+  - [g-plugin-physx](/en/plugins/physics-engine) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
 - Layout Engine
   - [g-plugin-yoga](/en/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 - GPGPU
@@ -68,7 +68,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
 - CSS Selector
   - [g-plugin-css-select](/en/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
 
-Full [API Spec](/api.html).
+Full [API Spec](/api).
 
 ## Usage
 
@@ -93,7 +93,7 @@ Import the core and renderer code in UMD format:
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
-Then we can use some core objects such as [Canvas](/en/api/canvas) and [Circle](/en/api/basic/circle) under the namespace `window.G`:
+Then we can use some core objects such as [Canvas](/en/api/canvas/intro) and [Circle](/en/api/basic/circle) under the namespace `window.G`:
 
 ```js
 const { Circle, Canvas, CanvasEvent } = window.G;
@@ -145,7 +145,7 @@ $ npm install @antv/g-svg --save
 $ npm install @antv/g-webgl --save
 ```
 
-Then we can import some core objects such as [Canvas](/en/api/canvas) and [Circle](/en/api/basic/circle) from `@antv/g`:
+Then we can import some core objects such as [Canvas](/en/api/canvas/intro) and [Circle](/en/api/basic/circle) from `@antv/g`:
 
 ```js
 import { Canvas, CanvasEvent, Circle } from '@antv/g';

@@ -155,9 +155,9 @@ Represents an angle in a number of turns. One full circle is 1turn. Examples: 0t
 
 Referring to the CSS specification definition of the type [\<color\>](https://www.w3.org/TR/css-color-3/#valuea-def-color), we support the following color value types, which exist as `string` types in JS.
 
-It is a type included in [\<paint\>](/en/api/css/painting).
+It is a type included in [\<paint\>](/en/api/css/css-properties-values-api#paint).
 
-[examples](/en/examples/style#color).
+[examples](/en/examples/style/basic/#color).
 
 Properties that would currently use this type are.
 
@@ -234,7 +234,7 @@ Referring to [\<paint\>](https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint
 <paint> = none | <color> | <gradient> | <pattern>
 ```
 
-[Example](/en/examples/style#paint)。
+[Example](/en/examples/style/basic/#paint)。
 
 The following properties are currently in use.
 
@@ -351,7 +351,7 @@ CSS.registerProperty({
 
 This property can then be used in CSS. One of the more critical ones is `syntax`, the limitation being that you can only use the browser's built-in implementation and can't really do custom parsing in the true sense.
 
-In this [example](/en/examples/style#custom-property), we register several different types of custom properties, allowing them to support interpolation.
+In this [example](/en/examples/style/basic/#custom-property), we register several different types of custom properties, allowing them to support interpolation.
 
 ```js
 import { CSS, PropertySyntax } from '@antv/g';

@@ -33,7 +33,7 @@ In fact, there are already many excellent GPGPU practices on the Web side, such 
 
 ### Implementation based on WebGL
 
-From an implementation point of view, the above solutions all use the WebGL graphics API to emulate Compute Shaders that are not supported, specifically through programmable Vertex/Fragment Shaders in the regular rendering pipeline, if you are interested in our implementation, you can read [Principles of Classic GPGPU Implementation](/zh/ api/implements). The following diagram from [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/) briefly shows the basic implementation.
+From an implementation point of view, the above solutions all use the WebGL graphics API to emulate Compute Shaders that are not supported, specifically through programmable Vertex/Fragment Shaders in the regular rendering pipeline, if you are interested in our implementation, you can read [Principles of Classic GPGPU Implementation](/ api/implements). The following diagram from [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/) briefly shows the basic implementation.
 
 <img src="https://user-images.githubusercontent.com/3608471/83623503-fd97a100-a5c3-11ea-83d3-bf2c11836219.png" alt="GPGPU based on WebGL" width="300">
 

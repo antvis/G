@@ -3,7 +3,7 @@ title: g-plugin-dragndrop
 order: 7
 ---
 
-基于 [PointerEvents](/zh/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
+基于 [PointerEvents](/api/event/intro#%E4%BA%A4%E4%BA%92%E4%BA%8B%E4%BB%B6) 实现拖放功能。在该[示例](/examples/plugins/dragndrop/#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
@@ -19,7 +19,7 @@ canvasRenderer.registerPlugin(new Plugin());
 
 ## 插件配置项
 
-我们提供了以下配置项，可以在创建插件时传入，例如 [overlap](/zh/plugins/dragndrop#overlap)：
+我们提供了以下配置项，可以在创建插件时传入，例如 [overlap](/plugins/dragndrop#overlap)：
 
 ```js
 new Plugin({
@@ -29,7 +29,7 @@ new Plugin({
 
 ### isDocumentDraggable
 
-由于 [Document](/zh/api/builtin-objects/document) 上并没有“样式”，因此当我们想在画布的空白区域进行拖拽时，并不能这么做：
+由于 [Document](/api/builtin-objects/document) 上并没有“样式”，因此当我们想在画布的空白区域进行拖拽时，并不能这么做：
 
 ```js
 // wrong
@@ -42,7 +42,7 @@ const plugin = new Plugin({
 });
 ```
 
-在该[示例](/zh/examples/plugins#dragndrop)中，在空白区域进行拖拽可以通过 [camera.pan()](/zh/api/camera#pan) 平移相机，以达到整个画布发生移动的视觉效果：
+在该[示例](/examples/plugins/dragndrop/#dragndrop)中，在空白区域进行拖拽可以通过 [camera.pan()](/api/camera/action#pan) 平移相机，以达到整个画布发生移动的视觉效果：
 
 ```js
 const camera = canvas.getCamera();
@@ -55,11 +55,11 @@ canvas.addEventListener('drag', function (e) {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sF1WQr4zrsQAAAAAAAAAAAAAARQnAQ" width="300" alt="drag document">
 
-在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/zh/api/builtin-objects/document) 元素也造成相机移动。
+在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/api/builtin-objects/document) 元素也造成相机移动。
 
 ### isDocumentDroppable
 
-同样的，如果我们想让 [Document](/zh/api/builtin-objects/document) 也成为“可放置区域”，可以使用该配置项：
+同样的，如果我们想让 [Document](/api/builtin-objects/document) 也成为“可放置区域”，可以使用该配置项：
 
 ```js
 // wrong
@@ -71,7 +71,7 @@ const plugin = new Plugin({
 });
 ```
 
-在该[示例](/zh/examples/plugins#dragndrop)中，当我们拖动足球到空白区域时，控制台会打印如下信息：
+在该[示例](/examples/plugins/dragndrop/#dragndrop)中，当我们拖动足球到空白区域时，控制台会打印如下信息：
 
 ```js
 canvas.addEventListener('drop', function (e) {
@@ -87,7 +87,7 @@ canvas.addEventListener('drop', function (e) {
 
 该配置项用于配置拖放距离的检测阈值，单位为像素，只有 **大于** 该值才会判定通过。默认值为 0。
 
-在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 10，即只有拖动超过 10 像素距离才会触发拖动事件：
+在该[示例](/examples/plugins/dragndrop/#dragndrop)中，我们配置了该选项为 10，即只有拖动超过 10 像素距离才会触发拖动事件：
 
 ```js
 const plugin = new Plugin({
@@ -99,7 +99,7 @@ const plugin = new Plugin({
 
 该配置项用于配置拖放时间的检测阈值，单位为毫秒，只有 **大于** 该值才会判定通过。默认值为 0。
 
-在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 100，即只有拖动超过 100 毫秒才会触发拖动事件：
+在该[示例](/examples/plugins/dragndrop/#dragndrop)中，我们配置了该选项为 100，即只有拖动超过 100 毫秒才会触发拖动事件：
 
 ```js
 const plugin = new Plugin({
@@ -146,15 +146,15 @@ const ball = new Image({
 });
 ```
 
-此时就可以监听该图形的 drag 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是被拖拽的图形：
+此时就可以监听该图形的 drag 相关事件，包括以下三类事件，事件对象的 [target](/api/event/event-object#target) 都是被拖拽的图形：
 
 - dragstart 在开始拖拽时触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
 - drag 在拖拽中频繁触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
 - dragend 在拖拽结束后触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
 
-drag 相关事件都是 [PointerEvents](/zh/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
+drag 相关事件都是 [PointerEvents](/api/event/intro#%E4%BA%A4%E4%BA%92%E4%BA%8B%E4%BB%B6)，因此可以在事件监听器中访问事件对象上的属性。
 
-例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/zh/api/canvas/coordinates#canvas)下。在 `drag` 事件中我们调用 [setPosition](/zh/api/basic/display-object#平移) 完成被拖拽图形的平移。
+例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/api/canvas/coordinates#canvas)下。在 `drag` 事件中我们调用 [setPosition](/api/basic/display-object#平移) 完成被拖拽图形的平移。
 
 <https://javascript.info/mouse-drag-and-drop#correct-positioning>
 
@@ -204,7 +204,7 @@ const gate = new Image({
 });
 ```
 
-此时就可以监听放置区域的 drag/drop 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是放置区域的图形：
+此时就可以监听放置区域的 drag/drop 相关事件，包括以下三类事件，事件对象的 [target](/api/event/event-object#target) 都是放置区域的图形：
 
 - dragenter 有图形被拖入该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
 - dragleave 有图形被拖离该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>

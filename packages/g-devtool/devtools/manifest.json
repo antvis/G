@@ -3,17 +3,24 @@
   "description": "devtool for g canvas",
   "version": "0.3.0",
   "devtools_page": "g_devtools.html",
-  "minimum_chrome_version": "49",
-  "manifest_version": 2,
-  "permissions": ["file:///*", "http://*/*", "https://*/*"],
+  "minimum_chrome_version": "88",
+  "manifest_version": 3,
+  "permissions": ["scripting"],
+  "host_permissions": ["file:///*", "http://*/*", "https://*/*"],
   "icons": {
     "16": "icons/16.png",
     "32": "icons/32.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["main.html", "panel.html", "script/backend.js"],
-  "browser_action": {}
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["main.html", "panel.html", "script/backend.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {}
 }

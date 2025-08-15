@@ -3,7 +3,7 @@ title: Custom Renderer
 order: 4
 ---
 
-In [Renderer Introduction](/en/api/renderer/renderer), we learned that a renderer consists of a rendering context and a set of plugins that can dynamically extend the capabilities of the renderer at runtime.
+In [Renderer Introduction](/en/api/renderer/intro), we learned that a renderer consists of a rendering context and a set of plugins that can dynamically extend the capabilities of the renderer at runtime.
 
 When the existing renderer does not satisfy the current rendering context, customization can be accomplished by following these steps.
 
@@ -15,7 +15,7 @@ Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how 
 
 ## Implementing a custom renderer
 
-After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/renderer#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/en/ plugins/canvas-picker).
+After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/intro#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/ plugins/canvas-picker).
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
@@ -122,7 +122,7 @@ async init() {
 }
 ```
 
-In this method, we can get the parameters passed by the user when creating [Canvas](/en/api/renderer/canvas) by injection, such as [devicePixelRatio](/en/api/canvas#devicepixelratio).
+In this method, we can get the parameters passed by the user when creating [Canvas](/en/api/renderer/canvas) by injection, such as [devicePixelRatio](/en/api/canvas/options#devicepixelratio).
 
 Regarding the timing of the call, it will be called not only when initializing the canvas for the first time, but also when switching the renderer at subsequent runtimes.
 
@@ -134,7 +134,7 @@ Regarding the timing of the call, in addition to being called when the canvas is
 
 ### resize
 
-During runtime, sometimes the initialized [canvas size](/en/api/canvas#width--height) will change, and then `canvas.resize()` will eventually call this method.
+During runtime, sometimes the initialized [canvas size](/en/api/canvas/options#width--height) will change, and then `canvas.resize()` will eventually call this method.
 
 ### getContext
 

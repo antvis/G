@@ -5,11 +5,11 @@ order: 10
 
 ⚠️ GPGPU 相关能力需要支持 WebGPU 的浏览器环境（例如 Chrome 94+）。
 
-在本教程中，我们将尝试使用 GPU 的并行计算能力，实现两个矩阵相乘，相较 CPU 获得 10 倍以上的性能提升。最终效果可以参考这个[示例](/zh/examples/gpgpu#matrix-multiplication)，矩阵尺寸越大性能提升效果越明显。
+在本教程中，我们将尝试使用 GPU 的并行计算能力，实现两个矩阵相乘，相较 CPU 获得 10 倍以上的性能提升。最终效果可以参考这个[示例](/examples/gpgpu/basic-algorithm/#matrix-multiplication)，矩阵尺寸越大性能提升效果越明显。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4332Qb6F9McAAAAAAAAAAAAAARQnAQ" width="400"/>
 
-我们很容易写出一个能在 CPU 侧运行的算法，串行计算结果矩阵中每一个元素的值。但仔细想想第二个元素的计算并不依赖第一个元素的计算结果对吗？现在让我们从线程并行的角度来考虑这个问题，我们让每一个线程负责处理一个元素。如果对网格、线程组这些概念还不熟悉，可以参考[线程、共享内存与同步](/zh/api/workgroup)。
+我们很容易写出一个能在 CPU 侧运行的算法，串行计算结果矩阵中每一个元素的值。但仔细想想第二个元素的计算并不依赖第一个元素的计算结果对吗？现在让我们从线程并行的角度来考虑这个问题，我们让每一个线程负责处理一个元素。如果对网格、线程组这些概念还不熟悉，可以参考[线程、共享内存与同步](/api/gpgpu/programing-model#workgroup)。
 
 下面我们通过两步完成该计算任务的创建：
 
@@ -48,7 +48,7 @@ const canvas = new Canvas({
 
 在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在执行这些操作前，需要确保画布的初始化工作（特别是渲染服务）准备就绪，有两种方式：
 
-- 监听画布的 [READY](/zh/api/canvas#画布特有事件) 事件
+- 监听画布的 [READY](/api/canvas/event#画布特有事件) 事件
 - 等待 `canvas.ready` 这个 Promise
 
 随后就可以通过渲染器获取 Device：
@@ -146,7 +146,7 @@ fn main(
 
 ## 输入与输出
 
-定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/zh/plugins/device-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
+定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/plugins/device-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
 
 ```js
 const firstMatrixBuffer = device.createBuffer({
@@ -190,8 +190,8 @@ const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 
 上述矩阵乘法更多用于演示目的，在图场景中有非常多适合并行的布局和分析算法，我们可以从 CUDA 实现中进行移植，例如：
 
-- [Fruchterman 布局算法](/zh/examples/gpgpu#fruchterman)
-- [Pagerank](/zh/examples/gpgpu#pagerank)
-- [SSSP 单源最短路径](/zh/examples/gpgpu#bellman-ford)
+- [Fruchterman 布局算法](/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
+- [Pagerank](/examples/gpgpu/graph-analysis-algorithm/#pagerank)
+- [SSSP 单源最短路径](/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
 
 在图中节点/边数目达到一定规模时会带来非常可观的性能提升效果。以 pagerank 为例，在 1k 节点和 50w 条边的测试数据中，GPU 版本相较 CPU 版本有 100 倍以上的提升（300ms vs 30s）。

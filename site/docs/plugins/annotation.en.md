@@ -7,7 +7,7 @@ In addition to rendering the drawing out, sometimes we want to perform transform
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zXxcR4O7aHQAAAAAAAAAAAAAARQnAQ" alt="selectable UI" width="200">
 
-[Example](/en/examples/plugins#annotation)
+[Example](/en/examples/plugins/annotation/#annotation)
 
 ## Installation
 
@@ -454,7 +454,7 @@ plugin.getSelectedDisplayObjects(); // [circle, path]
 
 ### updateSelectableStyle
 
-Update the [style](/en/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/en/examples/plugins#annotation).
+Update the [style](/en/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/en/examples/plugins/annotation/#annotation).
 
 ```js
 plugin.updateSelectableStyle({
@@ -559,7 +559,7 @@ export enum SelectableEvent {
 
 #### Selected Event
 
-Triggered when the target graphic is selected. In [example](/en/examples/plugins#annotation), we listen to the selected event of the image.
+Triggered when the target graphic is selected. In [example](/en/examples/plugins/annotation/#annotation), we listen to the selected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -571,7 +571,7 @@ image.addEventListener(SelectableEvent.SELECTED, () => {});
 
 #### Deselected Event
 
-Triggered when the target graphic is deselected. In [example](/en/examples/plugins#annotation), we listen to the deselected event of the image.
+Triggered when the target graphic is deselected. In [example](/en/examples/plugins/annotation/#annotation), we listen to the deselected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';

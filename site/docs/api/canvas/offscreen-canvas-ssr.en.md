@@ -15,7 +15,7 @@ We will use OffscreenCanvas in the following two scenarios, mainly using the Wor
 1. GPGPU 配合 g-webgl 和 g-plugin-gpgpu 使用，例如上层的图分析算法库
 2. g-webgl 在 Worker 中渲染，同步结果到主线程
 
-In this [example](/en/examples/canvas#offscreen-canvas) we demonstrate the second use, creating `<canvas>` in the main thread, transferring control to the WebWorker via `transferControlToOffscreen()`, and subsequently completing the rendering in the WebWorker and synchronizing the results to the main thread.
+In this [example](/en/examples/canvas/container/#offscreen-canvas) we demonstrate the second use, creating `<canvas>` in the main thread, transferring control to the WebWorker via `transferControlToOffscreen()`, and subsequently completing the rendering in the WebWorker and synchronizing the results to the main thread.
 
 ```js
 // main thread

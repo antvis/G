@@ -5,7 +5,7 @@ order: 3
 
 基于 [WebGPU](https://www.w3.org/TR/webgpu/) 提供渲染和计算能力。
 
-特别是利用 GPU 进行并行计算的能力，是 WebGL 所不具备的，我们提供了 [g-plugin-gpgpu](/zh/plugins/gpgpu) 帮助简化这一过程。
+特别是利用 GPU 进行并行计算的能力，是 WebGL 所不具备的，我们提供了 [g-plugin-gpgpu](/plugins/gpgpu) 帮助简化这一过程。
 
 ## 前置条件
 
@@ -96,9 +96,9 @@ const webgpuRenderer = new WebGPURenderer({
 
 该渲染器内置了以下插件：
 
-- [g-plugin-device-renderer](/zh/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
-- [g-plugin-webgpu-device](/zh/plugins/webgpu-device) 基于 WebGPU 实现 GPUDevice 能力
-- [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [g-plugin-device-renderer](/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
+- [g-plugin-webgpu-device](/plugins/device-renderer) 基于 WebGPU 实现 GPUDevice 能力
+- [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -106,12 +106,12 @@ const webgpuRenderer = new WebGPURenderer({
 
 ### GPGPU
 
-[g-plugin-gpgpu](/zh/plugins/gpgpu) 提供 GPGPU 能力。得益于 WebGPU 对于 Compute Shader 的支持度，我们可以实现很多可并行算法。
+[g-plugin-gpgpu](/plugins/gpgpu) 提供 GPGPU 能力。得益于 WebGPU 对于 Compute Shader 的支持度，我们可以实现很多可并行算法。
 
 ### 3D 渲染能力
 
-[g-plugin-3d](/zh/plugins/3d) 提供 3D 渲染能力，包括 [Mesh](/zh/api/3d/mesh) [Material](/zh/api/3d/material) [Geometry](/zh/api/3d/geometry) 等常见对象。
+[g-plugin-3d](/plugins/3d) 提供 3D 渲染能力，包括 [Mesh](/api/3d/mesh) [Material](/api/3d/material) [Geometry](/api/3d/geometry) 等常见对象。
 
 ### 相机交互
 
-[g-plugin-control](/zh/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/api/camera/intro)，提供不同的交互效果。
+[g-plugin-control](/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/api/camera/intro)，提供不同的交互效果。

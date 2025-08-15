@@ -135,8 +135,8 @@ This renderer relies on [CanvasRenderingContext2D](https://developer.mozilla.org
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas), it will be paired with [node-canvas](https://github.com/) on the Node side Automattic/node-canvas) to render the result image and compare it with the baseline image. Other server-side rendering scenarios can also follow the following steps.
 
-1. Use [unregisterPlugin](/en/api/renderer/renderer#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/api/renderer/canvas). For example [g-plugin-dom-interaction](/en/plugins/dom-interaction) which is responsible for event binding
-2. Use [node-canvas](https://github.com/Automattic/node-canvas) to create a class `Canvas` object to be passed into the canvas via the [canvas](/en/api/canvas#canvas) property
+1. Use [unregisterPlugin](/en/api/renderer/intro#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/api/renderer/canvas). For example [g-plugin-dom-interaction](/en/plugins/dom-interaction) which is responsible for event binding
+2. Use [node-canvas](https://github.com/Automattic/node-canvas) to create a class `Canvas` object to be passed into the canvas via the [canvas](/en/api/canvas/coordinates#canvas) property
 3. Normal use of [g-canvas](/en/api/renderer/canvas) renderer to create scenes via G's API
 4. Use the methods provided by [node-canvas](https://github.com/Automattic/node-canvas) (e.g. [createPNGStream](<https://github.com/Automattic/node-canvas># canvascreatepngstream)) to output the resulting image
 

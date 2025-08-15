@@ -5,7 +5,7 @@ order: 5
 
 雾和光源一样，都属于场景级别的对象，距离相机近处的物体能见度较大。
 
-在下面的 [示例](/zh/examples/3d#sphere) 中展示了红色的雾，注意远离相机的地方（球体边缘处）：
+在下面的 [示例](/examples/3d/geometry/#sphere) 中展示了红色的雾，注意远离相机的地方（球体边缘处）：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LBDUTJiLjHEAAAAAAAAAAAAAARQnAQ" height='300'/>
 

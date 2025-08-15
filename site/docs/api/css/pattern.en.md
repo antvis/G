@@ -5,7 +5,7 @@ order: 10
 
 Just like tileable tiles, floors, sometimes we want to fill a shape with the same pattern repeated.
 
-In this [example](/en/examples/style/pattern/#pattern) we show the currently supported template padding effects, the sources can include image URLs, `HTMLImageElement` `HTMLCanvasElement` `HTMLVideoElement` [Rect](/zh/api/basic/rect) etc., and also specify the padding repeat direction.
+In this [example](/en/examples/style/pattern/#pattern) we show the currently supported template padding effects, the sources can include image URLs, `HTMLImageElement` `HTMLCanvasElement` `HTMLVideoElement` [Rect](/en/api/basic/rect) etc., and also specify the padding repeat direction.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cRmFTItZOtYAAAAAAAAAAAAAARQnAQ" width="400" alt="pattern">
 
@@ -37,7 +37,7 @@ required. The following sources are supported:
 - HTMLImageElement
 - HTMLCanvasElement
 - HTMLVideoElement
-- [Rect](/em/api/basic/rect)
+- [Rect](/en/api/basic/rect)
 
 ### Image URL
 
@@ -195,7 +195,7 @@ The effect is as follows:
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8kA4QZ8xU88AAAAAAAAAAAAADmJ7AQ/original" alt="rect as pattern" width="300">
 
-Finally, the [g-pattern](/api/css/pattern#g-pattern) mentioned below is also defined in this way.
+Finally, the [g-pattern](/en/api/css/pattern#g-pattern) mentioned below is also defined in this way.
 
 ## repetition
 
@@ -210,7 +210,7 @@ Optional. The following patterns are supported and can be viewed in this [exampl
 
 Optional. Sometimes we want to transform the mode, such as rotating a certain angle, at this time we can use `transform` attribute, the value is exactly the same as CSS Transform.
 
-In the [example](/en/examples/ecosystem/pattern/#dots) below, we want the pattern to rotate:
+In the [example](/en/examples/style/pattern/#dots) below, we want the pattern to rotate:
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668740048992/Nov-18-2022%25252010-53-54.gif" alt="transform pattern">
 
@@ -240,7 +240,7 @@ lines(cfg?: LinePatternCfg): HTMLCanvasElement;
 squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 ```
 
-In the following [example](/en/examples/ecosystem/pattern/#dots), we choose `dots` and use [transform](/api/css/css-properties-values-api#transform) to rotate and scale it:
+In the following [example](/en/examples/style/pattern/#dots), we choose `dots` and use [transform](/en/api/css/css-properties-values-api#transform) to rotate and scale it:
 
 ```js
 import { dots } from '@antv/g-pattern';
@@ -272,7 +272,7 @@ Common configuration for all types of pattern:
 
 ### dots
 
-Additional configuration for `dots`, [example](/en/examples/ecosystem/pattern/#dots)：
+Additional configuration for `dots`, [example](/en/examples/style/pattern/#dots)：
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Xce3RrT3zAMAAAAAAAAAAAAADmJ7AQ/original" alt="dots pattern" width="200">
 
@@ -282,7 +282,7 @@ Additional configuration for `dots`, [example](/en/examples/ecosystem/pattern/#d
 | padding   | number  | The distance between dots, default to `2` |
 | isStagger | boolean | Staggered dots. default to `true`         |
 
-Additional configuration for `lines`, [example](/en/examples/ecosystem/pattern/#lines)：
+Additional configuration for `lines`, [example](/en/examples/perf/webgl/#lines)：
 
 ### lines
 
@@ -292,7 +292,7 @@ Additional configuration for `lines`, [example](/en/examples/ecosystem/pattern/#
 | --------- | ------ | -------------------------------------------------- |
 | spacing   | number | The distance between the two lines, default to `5` |
 
-Additional configuration for `squares`, [example](/en/examples/ecosystem/pattern/#squares):
+Additional configuration for `squares`, [example](/en/examples/style/pattern/#squares):
 
 ### squares
 

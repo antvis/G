@@ -167,7 +167,7 @@ Moves the marker graphic in the direction of the first line segment of the fold.
 
 You can refer to the [markerEndOffset](/en/api/basic/line#markerendoffset) property of [Line](/en/api/basic/line).
 
-Moves the marker graphic in the direction of the last line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction. In this [example](/en/examples/shape#polyline), we use this property to move the marker graphic.
+Moves the marker graphic in the direction of the last line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction. In this [example](/en/examples/shape/polyline/#polyline), we use this property to move the marker graphic.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 

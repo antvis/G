@@ -77,7 +77,7 @@ moonOrbit.appendChild(moon);
 
 ⚠️ We don't need to use `Canvas` at this point, the scene graph is an abstract data structure that only needs to interact with `Canvas` when rendering.
 
-After describing the hierarchical relationships, we usually need to further define the behavior of the objects in the scene graph. In the previous simple solar system model, we wanted to have the Earth rotate around the Sun and the Moon rotate around the Earth, updating their position properties in real time, [DEMO](/en/examples/scenegraph#hierarchy). However, the calculation of the moon's trajectory (red dashed line in the figure below) seems to be complicated.
+After describing the hierarchical relationships, we usually need to further define the behavior of the objects in the scene graph. In the previous simple solar system model, we wanted to have the Earth rotate around the Sun and the Moon rotate around the Earth, updating their position properties in real time, [DEMO](/en/examples/scenegraph/basic/#hierarchy). However, the calculation of the moon's trajectory (red dashed line in the figure below) seems to be complicated.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VDIfSJrf6xEAAAAAAAAAAAAAARQnAQ)
 

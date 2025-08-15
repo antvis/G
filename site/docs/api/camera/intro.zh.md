@@ -3,7 +3,7 @@ title: 简介
 order: 0
 ---
 
-相机（Camera）描述了我们观察世界的角度。视点、相机位置都会影响最终的成像。在创建 [Canvas](/zh/api/canvas) 画布时，已经内置了一个默认使用正交投影的相机。因此我们不需要手动创建它，可以通过如下方式获取：
+相机（Camera）描述了我们观察世界的角度。视点、相机位置都会影响最终的成像。在创建 [Canvas](/api/canvas/intro) 画布时，已经内置了一个默认使用正交投影的相机。因此我们不需要手动创建它，可以通过如下方式获取：
 
 ```js
 const camera = canvas.getCamera();
@@ -13,10 +13,10 @@ const camera = canvas.getCamera();
 
 目前相机支持以下特性：
 
-- 两种投影模式：正交投影 [Orthographic](/zh/api/camera/intro#投影模式) 和透视投影 [Perspective](/zh/api/camera/intro#投影模式)，默认使用前者。
-- 三种相机类型：[Exploring](/zh/api/camera/intro#exploring)、[Orbiting](/zh/api/camera/intro#orbiting) 和 [Tracking](/zh/api/camera/intro#tracking)，默认使用 Exploring。
-- 相机动作。例如 [pan](/api/camera/action#pan)、[dolly](/zh/api/camera/action#dolly)、[rotate](/zh/api/camera/action#rotate)
-- 自定义[相机动画](/zh/api/camera/animation)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
+- 两种投影模式：正交投影 [Orthographic](/api/camera/intro#投影模式) 和透视投影 [Perspective](/api/camera/intro#投影模式)，默认使用前者。
+- 三种相机类型：[Exploring](/api/camera/intro#exploring)、[Orbiting](/api/camera/intro#orbiting) 和 [Tracking](/api/camera/intro#tracking)，默认使用 Exploring。
+- 相机动作。例如 [pan](/api/camera/action#pan)、[dolly](/api/camera/action#dolly)、[rotate](/api/camera/action#rotate)
+- 自定义[相机动画](/api/camera/animation)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
 
 ## 投影模式
 
@@ -62,7 +62,7 @@ setOrthographic(left: number, right: number,
 - `near` 近平面
 - `far` 远平面
 
-G 的默认相机设置如下，其中 `width/height` 为 [Canvas](/zh/api/canvas) 的尺寸，[使用示例](/zh/examples/camera/projection-mode/#ortho)：
+G 的默认相机设置如下，其中 `width/height` 为 [Canvas](/api/canvas/intro) 的尺寸，[使用示例](/examples/camera/projection-mode/#ortho)：
 
 ```js
 const camera = new Camera()
@@ -88,7 +88,7 @@ setPerspective(near: number, far: number, fov: number, aspect: number)
 - `fov` 可视角度，越大意味着能容纳场景中的更多对象
 - `aspect` 宽高比
 
-[使用示例](/zh/examples/camera/projection-mode/#perspective)：
+[使用示例](/examples/camera/projection-mode/#perspective)：
 
 ```js
 camera
@@ -116,7 +116,7 @@ export enum CameraType {
 
 ```
 
-配合 [g-plugin-control](/zh/plugins/control) 可以使用鼠标平移、缩放进行交互，[示例](/zh/examples/camera/camera-animation/#landmark)。
+配合 [g-plugin-control](/plugins/control) 可以使用鼠标平移、缩放进行交互，[示例](/examples/camera/camera-animation/#landmark)。
 
 ### Orbiting
 
@@ -124,7 +124,7 @@ export enum CameraType {
 
 在 Three.js 中称作 [OrbitControls](https://threejs.org/#examples/zh/controls/OrbitControls)
 
-在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
+在该[示例](/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
@@ -136,7 +136,7 @@ G 的**默认相机**选择了该模式。
 
 在 Three.js 中称作 [TrackballControls](https://threejs.org/#examples/en/controls/TrackballControls)
 
-在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan]() 动作，让相机绕固定视点“旋转”。
+在该[示例](/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan]() 动作，让相机绕固定视点“旋转”。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dGgTTKjUrKoAAAAAAAAAAAAAARQnAQ">
 

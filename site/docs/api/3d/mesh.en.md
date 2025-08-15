@@ -3,7 +3,7 @@ title: Mesh
 order: 3
 ---
 
-在 3D 场景中 Mesh 的描述能力是最强大的，需要配合 [Geometry](/zh/api/3d/geometry) 和 [Material](/zh/api/3d/material) 使用。
+在 3D 场景中 Mesh 的描述能力是最强大的，需要配合 [Geometry](/en/api/3d/geometry) 和 [Material](/en/api/3d/material) 使用。
 
 ```js
 import {

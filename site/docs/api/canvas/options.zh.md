@@ -7,9 +7,9 @@ order: 1
 
 - `container` 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
 - `width / height` 画布宽度和高度
-- `renderer` 渲染器，目前支持 [g-canvas](/zh/api/renderer/canvas)、[g-svg](/zh/api/renderer/svg)、[g-webgl](/zh/api/renderer/webgl) 等
+- `renderer` 渲染器，目前支持 [g-canvas](/api/renderer/canvas)、[g-svg](/api/renderer/svg)、[g-webgl](/api/renderer/webgl) 等
 
-以 [g-canvas](/zh/api/renderer/canvas) 为例：
+以 [g-canvas](/api/renderer/canvas) 为例：
 
 ```js
 import { Canvas } from '@antv/g';
@@ -29,9 +29,9 @@ const canvas = new Canvas({
 
 以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
 
-- 自行创建 `<canvas>`，[详见](/zh/api/canvas/faq#使用创建好的-canvas-元素)
-- 在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/api/canvas/offscreen-canvas-ssr)
-- 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas/offscreen-canvas-ssr#服务端渲染)
+- 自行创建 `<canvas>`，[详见](/api/canvas/faq#使用创建好的-canvas-元素)
+- 在 WebWorker 中使用 OffscreenCanvas，[详见](/api/canvas/offscreen-canvas-ssr)
+- 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/api/canvas/offscreen-canvas-ssr#服务端渲染)
 
 此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
 
@@ -43,7 +43,7 @@ const canvas = new Canvas({
 
 可选，`HTMLCanvasElement | OffscreenCanvas | NodeCanvas`，已创建好的 `<canvas>` 元素或者 OffscreenCanvas。
 
-当传入此参数时，[container](/zh/api/canvas#container) 参数将被忽略，我们假定 `<canvas>` 已经创建完毕并且加入到文档中，例如：
+当传入此参数时，[container](/api/canvas/options#container) 参数将被忽略，我们假定 `<canvas>` 已经创建完毕并且加入到文档中，例如：
 
 ```js
 // 用户自行创建 <canvas>
@@ -66,8 +66,8 @@ const canvas = new Canvas({
 
 除了浏览器环境下的 `HTMLCanvasElement`，还可以使用：
 
-- `OffscreenCanvas` 在 WebWorker 中运行，[详见](/zh/api/canvas#在-webworker-中使用-offscreencanvas)
-- `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas#服务端渲染)
+- `OffscreenCanvas` 在 WebWorker 中运行，[详见](/api/canvas/intro#%E5%9C%A8-webworker-%E4%B8%AD%E4%BD%BF%E7%94%A8-offscreencanvas)
+- `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/api/canvas/intro#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93)
 
 需要注意的是，一旦使用了该参数，就不再支持运行时切换渲染器了。
 
@@ -75,34 +75,34 @@ const canvas = new Canvas({
 
 画布宽高。
 
-- 如果设置了 [container](/zh/api/canvas/options#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
-- 如果设置了 [canvas](/zh/api/canvas/options#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
+- 如果设置了 [container](/api/canvas/options#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
+- 如果设置了 [canvas](/api/canvas/options#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
 
 ## renderer
 
 必填，目前支持以下渲染器:
 
-- 基于 Canvas2D 的 [g-canvas](/zh/api/renderer/canvas)
-- 基于 CanvasKit 的 [g-canvaskit](/zh/api/renderer/canvaskit)
-- 基于 SVG 的 [g-svg](/zh/api/renderer/svg)
-- 基于 WebGL 2/1 的 [g-webgl](/zh/api/renderer/webgl)
-- 基于 WebGPU 的 [g-webgpu](/zh/api/renderer/webgpu)
+- 基于 Canvas2D 的 [g-canvas](/api/renderer/canvas)
+- 基于 CanvasKit 的 [g-canvaskit](/api/renderer/canvaskit)
+- 基于 SVG 的 [g-svg](/api/renderer/svg)
+- 基于 WebGL 2/1 的 [g-webgl](/api/renderer/webgl)
+- 基于 WebGPU 的 [g-webgpu](/api/renderer/webgpu)
 
-后续可以在运行时通过 [setRenderer()](/zh/api/canvas/options#setrenderer) 切换。
+后续可以在运行时通过 [setRenderer()](/api/canvas/options#setrenderer) 切换。
 
 ## background
 
 选填，画布初始化时用于清除的颜色。类似 WebGL 中的 [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor)。
 
-支持 [\<color\>](/zh/api/css/css-properties-values-api#color) 取值，默认值为 `'transparent'`。
+支持 [\<color\>](/api/css/css-properties-values-api#color) 取值，默认值为 `'transparent'`。
 
-在该[示例](/zh/examples/canvas/canvas-basic/#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
+在该[示例](/examples/canvas/canvas-basic/#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
 ## cursor
 
-选填，设置画布默认的[鼠标样式](/zh/api/basic/display-object#鼠标样式)。如果通过交互事件拾取到的图形之上也配置了该属性，会覆盖掉画布上配置的鼠标样式，但当鼠标移动到空白区域时，画布上配置的鼠标样式就会生效了。下图展示了这一点：
+选填，设置画布默认的[鼠标样式](/api/basic/display-object#鼠标样式)。如果通过交互事件拾取到的图形之上也配置了该属性，会覆盖掉画布上配置的鼠标样式，但当鼠标移动到空白区域时，画布上配置的鼠标样式就会生效了。下图展示了这一点：
 
 ```js
 const canvas = new Canvas({
@@ -137,7 +137,7 @@ canvas.setCursor('crosshair');
 
 可选。是否支持一个 container 下容纳多个画布，默认为 false。
 
-[示例](/zh/examples/canvas/container/#shared-container)
+[示例](/examples/canvas/container/#shared-container)
 
 ## enableLargeImageOptimization <Badge>6.1.1</Badge>
 
@@ -157,7 +157,7 @@ canvas.setCursor('crosshair');
 
 ### document
 
-可选。默认将使用 `window.document`。在[基于 g-svg 的服务端渲染方案](/zh/api/renderer/svg#服务端渲染)中，需要将 `window.document` 替换成 [JSDOM](https://github.com/jsdom/jsdom) 提供的对应元素，以便创建对应 SVG 元素。
+可选。默认将使用 `window.document`。在[基于 g-svg 的服务端渲染方案](/api/renderer/svg#服务端渲染)中，需要将 `window.document` 替换成 [JSDOM](https://github.com/jsdom/jsdom) 提供的对应元素，以便创建对应 SVG 元素。
 
 ### devicePixelRatio
 
@@ -188,7 +188,7 @@ const canvas = new Canvas({
 
 可选。是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
 
-在该 [示例](/zh/examples/canvas/container/#supports-css-transform) 中，我们将容器放大了 1.1 倍，开启该配置项后，鼠标移动到圆上可以正确变化鼠标样式：
+在该 [示例](/examples/canvas/container/#supports-css-transform) 中，我们将容器放大了 1.1 倍，开启该配置项后，鼠标移动到圆上可以正确变化鼠标样式：
 
 ```js
 const $wrapper = document.getElementById('container');
@@ -222,8 +222,8 @@ $wrapper.style.transform = 'scale(1.1)';
 可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
 
 - g 绘制并调用 `ctx.measureText` 度量文本
-- [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
-- [g-plugin-device-renderer](/zh/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
+- [g-plugin-canvas-picker](/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
+- [g-plugin-device-renderer](/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
 
 默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：
 
@@ -267,7 +267,7 @@ resizeObserver.observe($container);
 
 ### setRenderer
 
-在绝大部分场景下我们都应该在画布初始化时指定一个渲染器，后续再也不会更改。但也有小部分场景需要在运行时[切换渲染器](/zh/guide/diving-deeper/switch-renderer#运行时切换)，例如 G 官网中几乎所有的示例都是这样做的：
+在绝大部分场景下我们都应该在画布初始化时指定一个渲染器，后续再也不会更改。但也有小部分场景需要在运行时[切换渲染器](/guide/diving-deeper/switch-renderer#运行时切换)，例如 G 官网中几乎所有的示例都是这样做的：
 
 ```js
 // 当图元数目很多时切换到 WebGL 渲染器
@@ -288,7 +288,7 @@ setRenderer(renderer: Renderer): Promise<void>;
 
 ### setCursor
 
-修改画布默认的[鼠标样式](/zh/api/basic/display-object#鼠标样式)。
+修改画布默认的[鼠标样式](/api/basic/display-object#鼠标样式)。
 
 ```js
 canvas.setCursor('crosshair');

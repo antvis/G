@@ -3,7 +3,7 @@ title: g-plugin-rough-canvas-renderer
 order: 3
 ---
 
-Hand-drawn style rendering using the Canvas version of [rough.js](https://roughjs.com/), [example](/en/examples/plugins#rough).
+Hand-drawn style rendering using the Canvas version of [rough.js](https://roughjs.com/), [example](/en/examples/plugins/rough/#rough).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 

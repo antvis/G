@@ -60,7 +60,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 - 物理引擎
   - [g-plugin-box2d](/plugins/box2d) 基于 Box2D
   - [g-plugin-matterjs](/plugins/matterjs) 基于 matter.js
-  - [g-plugin-physx](/plugins/physx) 基于 PhysX
+  - [g-plugin-physx](/plugins/physics-engine) 基于 PhysX
 - 布局引擎
   - [g-plugin-yoga](/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
 - GPGPU
@@ -68,7 +68,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 - CSS 选择器
   - [g-plugin-css-select](/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
-完整 [API Spec](/api.html)。
+完整 [API Spec](/api)。
 
 ## 使用方式
 
@@ -93,7 +93,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
 ```
 
-然后就可以在 `window.G` 的命名空间下使用 [Canvas](/zh/api/canvas)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/api/renderer/canvas) 这样的渲染器：
+然后就可以在 `window.G` 的命名空间下使用 [Canvas](/api/canvas/intro)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Canvas2D.Renderer](/api/renderer/canvas) 这样的渲染器：
 
 ```js
 // 从核心包中引入画布、Circle 等对象
@@ -146,7 +146,7 @@ $ npm install @antv/g-svg --save
 $ npm install @antv/g-webgl --save
 ```
 
-然后就可以在核心包中使用 [Canvas](/zh/api/canvas)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Renderer](/api/renderer/canvas) 这样的渲染器：
+然后就可以在核心包中使用 [Canvas](/api/canvas/intro)、[Circle](/api/basic/circle) 这样的核心基础对象以及 [Renderer](/api/renderer/intro) 这样的渲染器：
 
 ```js
 import { Canvas, CanvasEvent, Circle } from '@antv/g';

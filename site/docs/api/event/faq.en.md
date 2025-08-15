@@ -28,7 +28,7 @@ mouseenter does not bubble, while mouseover does. Similarly mouseleave does not 
 
 ## Hit testing
 
-The event system only responds to events within the Canvas canvas. For example, when mousemove is listened to, moving outside of the canvas to other areas of the page does not trigger the event handler. The [target](/en/api/event#target) property of the event object returns [Document](/en/api/builtin-objects/document) when picking up a blank area of the canvas (without hitting any visible graphics).
+The event system only responds to events within the Canvas canvas. For example, when mousemove is listened to, moving outside of the canvas to other areas of the page does not trigger the event handler. The [target](/en/api/event/event-object#target) property of the event object returns [Document](/en/api/builtin-objects/document) when picking up a blank area of the canvas (without hitting any visible graphics).
 
 ```js
 canvas.addEventListener('mousemove', (e) => {
@@ -40,13 +40,13 @@ canvas.addEventListener('mousemove', (e) => {
 
 ## Event Trigger Sequence
 
-Some built-in events have an order of firing, for example, the click event will be fired after the pointerdown and pointerup events. In this process, it is possible that the target of the pointerdown and pointerup events may not match. For example, if you press the mouse on one graph, move to another graph and then lift the mouse, we will trigger the click event on an ancestor node that is common to both targets (e.g. the root of the scene graph [document.documentElement](/en/api/canvas#document-1)).
+Some built-in events have an order of firing, for example, the click event will be fired after the pointerdown and pointerup events. In this process, it is possible that the target of the pointerdown and pointerup events may not match. For example, if you press the mouse on one graph, move to another graph and then lift the mouse, we will trigger the click event on an ancestor node that is common to both targets (e.g. the root of the scene graph [document.documentElement](/en/api/canvas/intro#document-1)).
 
-This can be tried in [this example](/en/examples/event#delegate).
+This can be tried in [this example](/en/examples/event/picking/#delegate).
 
 ## Disable default page scrolling behavior in Chrome
 
-Sometimes we need to disable the default scrolling behavior of a page, for example when implementing a zoom class. Disabling the default behavior can be done with [preventDefault](/en/api/event#preventdefault), but the following code will not work in Chrome and the page will still scroll.
+Sometimes we need to disable the default scrolling behavior of a page, for example when implementing a zoom class. Disabling the default behavior can be done with [preventDefault](/en/api/event/event-object#preventdefault), but the following code will not work in Chrome and the page will still scroll.
 
 ```
 canvas.addEventListener('wheel', (e) => {
@@ -66,7 +66,7 @@ $el.addEventListener('wheel', onPointerWheel, {
 
 For more information about Passive event handlers, please refer to this article from <https://zhuanlan.zhihu.com/p/24555031>. The short answer is that this option improves the browser's scrolling smoothness by telling the browser in advance that "I won't block your default scrolling behavior".
 
-Now back to our question, if the user does need to disable the default scrolling behavior, a non-Passive event handler can be manually added to the DOM node of the canvas, [g-plugin-control](http://g-next.antv.vision/en/plugins/control) plugin does this. How to get the DOM node of the canvas can be done using [getDomElement](/en/api/renderer#getdomelement).
+Now back to our question, if the user does need to disable the default scrolling behavior, a non-Passive event handler can be manually added to the DOM node of the canvas, [g-plugin-control](http://g-next.antv.vision/en/plugins/control) plugin does this. How to get the DOM node of the canvas can be done using [getDomElement](/en/api/canvas/built-in-objects#getcontextservice).
 
 ```js
 canvas
@@ -87,7 +87,7 @@ Most of the other native events, especially keyboard and clipboard events that n
 
 ### Disable right-click menu
 
-Sometimes we want to disable the browser's default right-click menu, so we can disable the default behavior in the [contextmenu](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/contextmenu_event) event handler with the `preventDefault()` method to disable the default behavior. To get the DOM node of the canvas you can use [getDomElement](/en/api/renderer#getdomelement).
+Sometimes we want to disable the browser's default right-click menu, so we can disable the default behavior in the [contextmenu](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/contextmenu_event) event handler with the `preventDefault()` method to disable the default behavior. To get the DOM node of the canvas you can use [getDomElement](/en/api/canvas/built-in-objects#getcontextservice).
 
 ```js
 canvas
@@ -130,11 +130,11 @@ circle.addEventListener('focus', () => {});
 circle.addEventListener('blur', () => {});
 ```
 
-Focus-related functions can be implemented through events such as click/mouseenter/mouseleave. [example](/en/examples/event#circle)
+Focus-related functions can be implemented through events such as click/mouseenter/mouseleave. [example](/en/examples/event/picking/#circle)
 
 ### Doubleclick
 
-Due to the need to be as compatible as possible with PC and mobile events, we do not listen to the native [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) event, but to the [pointerdown](/en/api/event#detail) property by listening to pointerdown and pointerup, the number of clicks within a certain time interval (200ms) is recorded in the [detail](/en/api/event#detail) attribute, so that it is possible to distinguish between a click and a double click.
+Due to the need to be as compatible as possible with PC and mobile events, we do not listen to the native [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) event, but to the [pointerdown](/en/api/event/event-object#detail) property by listening to pointerdown and pointerup, the number of clicks within a certain time interval (200ms) is recorded in the [detail](/en/api/event/event-object#detail) attribute, so that it is possible to distinguish between a click and a double click.
 
 ```js
 canvas.addEventListener('click', (e) => {
@@ -148,7 +148,7 @@ canvas.addEventListener('click', (e) => {
 
 ## Compatible API
 
-The following way of writing delegates in event names is supported in older versions, in the format `[delegated-graphic name]:[event-name]`, [example](/en/examples/event#deprecated-delegate).
+The following way of writing delegates in event names is supported in older versions, in the format `[delegated-graphic name]:[event-name]`, [example](/en/examples/event/picking/#deprecated-delegate).
 
 ```js
 // Listen for click events bubbling up on all graphs with the name node

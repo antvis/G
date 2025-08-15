@@ -9,7 +9,7 @@ order: 3
 
 ## 继承自
 
-[Node](/zh/api/builtin-objects/node)
+[Node](/api/builtin-objects/node)
 
 ## 属性
 
@@ -73,13 +73,13 @@ circle.attributes.r; // 10;
 
 ### firstElementChild
 
-和 [Node.firstChild](/zh/api/builtin-objects/node#firstchild) 等价。
+和 [Node.firstChild](/api/builtin-objects/node#firstchild) 等价。
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild>
 
 ### lastElementChild
 
-和 [Node.lastChild](/zh/api/builtin-objects/node#lastchild) 等价。
+和 [Node.lastChild](/api/builtin-objects/node#lastchild) 等价。
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild>
 
@@ -123,7 +123,7 @@ circle.attributes.r; // 10;
 
 ### computedStyleMap
 
-获取[样式系统](/zh/api/css/intro)解析后的样式 Map，例如：
+获取[样式系统](/api/css/intro)解析后的样式 Map，例如：
 
 ```js
 const circle = new Circle({
@@ -302,12 +302,12 @@ replaceChildren(...nodes: Element[]): void
 
 ### getAnimations
 
-返回应用在当前元素上的动画对象列表，详见[动画系统](/zh/api/animation/waapi)
+返回应用在当前元素上的动画对象列表，详见[动画系统](/api/animation/waapi)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations>
 
 ### animate
 
-应用 Keyframe 动画，详见[动画系统](/zh/api/animation/waapi)
+应用 Keyframe 动画，详见[动画系统](/api/animation/waapi)
 
 <https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate> imate

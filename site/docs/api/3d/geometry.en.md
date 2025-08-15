@@ -7,13 +7,13 @@ order: 2
 
 我们内置了一些常用的几何，例如 Cube、Sphere 等，它们在运行时程序化生成。
 
-可以随时启用材质的 [wireframe](/zh/api/3d/material#wireframe) 属性查看几何中包含的三角面：
+可以随时启用材质的 [wireframe](/en/api/3d/material#wireframe) 属性查看几何中包含的三角面：
 
 ```js
 material.wireframe = true;
 ```
 
-在该[示例](/zh/examples/3d#sphere)中效果如下，可以看出一个 Sphere 球体是由不同经纬度上的众多三角面组成：
+在该[示例](/en/examples/3d/geometry/#sphere)中效果如下，可以看出一个 Sphere 球体是由不同经纬度上的众多三角面组成：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -58,7 +58,7 @@ cube.style.width = 300;
 
 ### CubeGeometry
 
-立方体，[示例](/zh/examples/3d#cube)
+立方体，[示例](/en/examples/3d/geometry/#cube)
 
 <img alt="cube" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sHGXQpeIYzoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -73,7 +73,7 @@ cube.style.width = 300;
 
 ### SphereGeometry
 
-球体，[示例](/zh/examples/3d#sphere)
+球体，[示例](/en/examples/3d/geometry/#sphere)
 
 <img alt="sphere" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -85,7 +85,7 @@ cube.style.width = 300;
 
 ### PlaneGeometry
 
-平面，默认躺在 XZ 平面上，[示例](/zh/examples/3d#plane)
+平面，默认躺在 XZ 平面上，[示例](/en/examples/3d/geometry/#plane)
 
 <img alt="plane" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jN9zQp3RflAAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -98,7 +98,7 @@ cube.style.width = 300;
 
 ### TorusGeometry
 
-圆环，[示例](/zh/examples/3d#torus)
+圆环，[示例](/en/examples/3d/geometry/#torus)
 
 <img alt="torus" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*So7oT4qDvLkAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -111,7 +111,7 @@ cube.style.width = 300;
 
 ### CylinderGeometry
 
-圆柱，[示例](/zh/examples/3d#cylinder)
+圆柱，[示例](/en/examples/3d/geometry/#cylinder)
 
 <img alt="cylinder" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Vx-bSZTGKrIAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
 
@@ -124,7 +124,7 @@ cube.style.width = 300;
 
 ### ConeGeometry
 
-圆锥，[示例](/zh/examples/3d#cone)
+圆锥，[示例](/en/examples/3d/geometry/#cone)
 
 <img alt="cone" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*4v4GQrGXA_UAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
 
@@ -138,7 +138,7 @@ cube.style.width = 300;
 
 ### CapsuleGeometry
 
-胶囊，[示例](/zh/examples/3d#capsule)
+胶囊，[示例](/en/examples/3d/geometry/#capsule)
 
 <img alt="capsule" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5czISLOqEeUAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
 
@@ -153,7 +153,7 @@ cube.style.width = 300;
 
 以上内置几何都继承自 BufferGeometry，因此需要自定义时也可以使用它。
 
-在[示例](/zh/examples/3d#buffer-geometry)中，我们创建了一个完全自定义的几何体，配合 [Mesh](/zh/api/3d/mesh) 和 [MeshBasicMaterial](/zh/api/3d/material#meshbasicmaterial)：
+在[示例](/en/examples/3d/geometry/#buffer-geometry)中，我们创建了一个完全自定义的几何体，配合 [Mesh](/en/api/3d/mesh) 和 [MeshBasicMaterial](/en/api/3d/material#meshbasicmaterial)：
 
 ```js
 import { BufferGeometry, MeshBasicMaterial, Mesh } from '@antv/g-plugin-3d';

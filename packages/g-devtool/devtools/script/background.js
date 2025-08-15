@@ -1,12 +1,12 @@
 chrome.runtime.onMessage.addListener((req, sender) => {
   if (req.isAntVG && sender && sender.tab) {
     if (req.disabled) {
-      chrome.browserAction.setIcon({ 
+      chrome.action.setIcon({ 
         tabId: sender.tab.id,
         path: 'icons/48-disabled.png'
        })
     } else {
-    chrome.browserAction.setIcon({
+    chrome.action.setIcon({
       tabId: sender.tab.id,
       path: {
         "16": "icons/16.png",

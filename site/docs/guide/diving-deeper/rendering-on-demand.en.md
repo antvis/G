@@ -14,7 +14,7 @@ const webglRenderer = new WebGLRenderer({
 });
 ```
 
-然后在合适的实际调用画布的[重绘方法](/zh/api/canvas#render)，例如手动在 `rAF` 中调用：
+然后在合适的实际调用画布的[重绘方法](/en/api/canvas/scenegraph-lifecycle#render)，例如手动在 `rAF` 中调用：
 
 ```javascript
 // create a main loop

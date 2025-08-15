@@ -9,10 +9,10 @@ redirect_from:
 
 目前我们支持基于 Keyframe 的动画，用户需要定义一系列关键帧，其中每一帧都可以包含变换属性、帧偏移量、缓动函数等参数，G 内部通过插值得到各个属性值在当前时间下的值并应用到目标图形上（如下图）。另外，对一些特殊属性变换会带来特别的动画效果，例如：
 
-- `offsetDistance` 属性可以实现[路径动画](/zh/api/animation/waapi#路径动画)
-- `lineDashOffset` 属性可以实现[蚂蚁线动画](/zh/api/animation/waapi#蚂蚁线)
-- `lineDash` 属性可以实现[笔迹动画](/zh/api/animation/waapi#笔迹动画)
-- Path 的 `path` 属性可以实现[形变动画（Morph）](/zh/api/animation/waapi#形变动画)
+- `offsetDistance` 属性可以实现[路径动画](/api/animation/waapi#路径动画)
+- `lineDashOffset` 属性可以实现[蚂蚁线动画](/api/animation/waapi#蚂蚁线)
+- `lineDash` 属性可以实现[笔迹动画](/api/animation/waapi#笔迹动画)
+- Path 的 `path` 属性可以实现[形变动画（Morph）](/api/animation/waapi#形变动画)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kF2uS4gpDh0AAAAAAAAAAAAAARQnAQ)
 
@@ -21,7 +21,7 @@ redirect_from:
 - Tween 缓动效果。内置例如 `linear` `cubic-bezier` 等，也支持自定义。
 - Spring，一种基于真实物理弹簧的效果。
 
-我们从一个 Keyframe 动画入手，实现一个 [ScaleIn](https://animista.net/play/entrances/scale-in) 的动画 [示例](/zh/examples/animation#lifecycle)：
+我们从一个 Keyframe 动画入手，实现一个 [ScaleIn](https://animista.net/play/entrances/scale-in) 的动画 [示例](/examples/animation/animation-basic/#lifecycle)：
 
 ```js
 const scaleInCenter = circle.animate(
@@ -107,13 +107,13 @@ circle.animate(
 );
 ```
 
-keyframes 数组中的元素为 [Keyframe](/zh/api/animation/waapi#keyframe)。
+keyframes 数组中的元素为 [Keyframe](/api/animation/waapi#keyframe)。
 
 #### options
 
 `options` 支持两种类型：
 
-- [EffectTiming](/zh/api/animation/waapi#effecttiming) 配置
+- [EffectTiming](/api/animation/waapi#effecttiming) 配置
 - `number` 等价于 `{ duration }`
 
 因此以下两种写法等价：
@@ -131,7 +131,7 @@ circle.animate(keyframes, 100);
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect>
 
-返回 [KeyframeEffect](/zh/api/animation/waapi#keyframeeffect) 对象。后续可以在运行时调整动画效果，例如修改缓动函数等：
+返回 [KeyframeEffect](/api/animation/waapi#keyframeeffect) 对象。后续可以在运行时调整动画效果，例如修改缓动函数等：
 
 ```js
 const effect = animation.effect;
@@ -159,7 +159,7 @@ const currentTime = animation.currentTime;
 animation.currentTime = newTime;
 ```
 
-在该[示例](/zh/examples/animation#offset-path)中，可以随时修改改属性，由于该动画单次执行时间为 3500ms，缓动函数又是线性，因此小圆形会回到路径对应的位置，再继续移动。
+在该[示例](/examples/animation/animation-effects/#offset-path)中，可以随时修改改属性，由于该动画单次执行时间为 3500ms，缓动函数又是线性，因此小圆形会回到路径对应的位置，再继续移动。
 
 #### playState
 
@@ -207,7 +207,7 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
 );
 ```
 
-或者完成一组连续动画，例如让一个圆先向右，再向下移动，[示例](/zh/examples/animation#sequence)：
+或者完成一组连续动画，例如让一个圆先向右，再向下移动，[示例](/examples/animation/animation-basic/#sequence)：
 
 ```js
 (async () => {
@@ -238,7 +238,7 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
 
 #### onfinish
 
-设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/zh/examples/animation#lifecycle)
+设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/examples/animation/animation-basic/#lifecycle)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish>
 
@@ -257,7 +257,7 @@ animation.onfinish = function (e) {
 
 #### onframe
 
-处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。[示例](/zh/examples/animation#onframe)
+处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。[示例](/examples/animation/animation-basic/#onframe)
 
 ```js
 animation.onframe = function (e) {
@@ -287,7 +287,7 @@ animation.playbackRate *= 1.1;
 
 ### 方法
 
-通过以下方法可以手动控制动画的运行状态，例如暂停、重启、结束等。[示例](/zh/examples/animation#lifecycle)
+通过以下方法可以手动控制动画的运行状态，例如暂停、重启、结束等。[示例](/examples/animation/animation-basic/#lifecycle)
 
 #### play()
 
@@ -334,7 +334,7 @@ animation.playState; // 'finished'
 
 #### updatePlaybackRate()
 
-控制动画运行速率，默认速率为 1，[示例](/zh/examples/animation#easing)：
+控制动画运行速率，默认速率为 1，[示例](/examples/animation/animation-basic/#easing)：
 
 ```js
 animation.updatePlaybackRate(2); // 加速
@@ -346,7 +346,7 @@ animation.updatePlaybackRate(-1); // 反向
 
 ## KeyframeEffect
 
-动画效果，可以通过 `getTiming()` 获取该效果对应的时间配置对象。由两部分组成：一组 Keyframe 和 [EffectTiming](/zh/api/animation/waapi#effecttiming)。
+动画效果，可以通过 `getTiming()` 获取该效果对应的时间配置对象。由两部分组成：一组 Keyframe 和 [EffectTiming](/api/animation/waapi#effecttiming)。
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect>
 
@@ -366,7 +366,7 @@ animation.effect.target; // circle
 
 ### getTiming()
 
-返回 [EffectTiming](/zh/api/animation/waapi#effecttiming) 对象
+返回 [EffectTiming](/api/animation/waapi#effecttiming) 对象
 
 <https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getTiming>
 
@@ -377,7 +377,7 @@ timing.ease = 'linear';
 
 ### getComputedTiming()
 
-返回 [ComputedEffectTiming](/zh/api/animation/waapi#effecttiming) 对象，它与 [EffectTiming](/zh/api/animation/waapi#effecttiming) 的区别在于前者会把后者的一些字面量计算后返回：
+返回 [ComputedEffectTiming](/api/animation/waapi#effecttiming) 对象，它与 [EffectTiming](/api/animation/waapi#effecttiming) 的区别在于前者会把后者的一些字面量计算后返回：
 
 - duration 为 'auto' 时返回 0
 - fill 为 'auto' 时返回 'none'
@@ -386,7 +386,7 @@ timing.ease = 'linear';
 
 ### updateTiming()
 
-更新 [EffectTiming](/zh/api/animation/waapi#effecttiming) 属性，例如以下两种写法等价：
+更新 [EffectTiming](/api/animation/waapi#effecttiming) 属性，例如以下两种写法等价：
 
 ```js
 const timing = animation.effect.getTiming();
@@ -414,7 +414,7 @@ animation.updateTiming({ ease: 'linear' });
 
 ### 支持变换的属性
 
-目前支持对以下属性进行变换 [示例](/zh/examples/animation#multiple-attributes)：
+目前支持对以下属性进行变换 [示例](/examples/animation/animation-basic/#multiple-attributes)：
 
 | 名称 | 类型 | 取值范围 | 备注 |
 | --- | --- | --- | --- |
@@ -429,12 +429,12 @@ animation.updateTiming({ ease: 'linear' });
 | width | `number` | 例如 `10` `20` | Rect/Image 的宽度 |
 | height | `number` | 例如 `10` `20` | Rect/Image 的高度 |
 | x1/y1/x2/y2 | `number` | 例如 `10` `20` | Line 的端点坐标 |
-| offsetDistance | `number` | `[0-1]` | 路径偏移，在[路径动画](/zh/api/animation/waapi#路径动画)中使用 |
-| lineDash | `[number, number]` | 例如 `[0, 100]` | 实线和间隔的长度，在[笔迹动画](/zh/api/animation/waapi#笔迹动画)中使用 |
-| lineDashOffset | `number` | 例如 `-20` `0` `20` | 设置虚线的偏移量，在[蚂蚁线效果](/zh/api/animation/waapi#蚂蚁线)中使用 |
-| path | `string` | 例如 `M 100,100 L 200,200` | Path 的定义，在[形变动画](/zh/api/animation/waapi#形变动画)中使用 |
+| offsetDistance | `number` | `[0-1]` | 路径偏移，在[路径动画](/api/animation/waapi#路径动画)中使用 |
+| lineDash | `[number, number]` | 例如 `[0, 100]` | 实线和间隔的长度，在[笔迹动画](/api/animation/waapi#笔迹动画)中使用 |
+| lineDashOffset | `number` | 例如 `-20` `0` `20` | 设置虚线的偏移量，在[蚂蚁线效果](/api/animation/waapi#蚂蚁线)中使用 |
+| path | `string` | 例如 `M 100,100 L 200,200` | Path 的定义，在[形变动画](/api/animation/waapi#形变动画)中使用 |
 
-对于自定义属性，可以[在样式系统中注册](/zh/api/css/css-properties-values-api#自定义属性)。在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
+对于自定义属性，可以[在样式系统中注册](/api/css/css-properties-values-api#自定义属性)。在该[示例](/examples/style/basic/#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
 
 其中 transform 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
 
@@ -499,7 +499,7 @@ circle.animate(
 );
 ```
 
-内置缓动函数详见 [easing](/zh/api/animation/waapi#easing-1)
+内置缓动函数详见 [easing](/api/animation/waapi#easing-1)
 
 ### 常见的动画效果
 
@@ -512,7 +512,7 @@ export default {
 };
 ```
 
-[示例](/zh/examples/animation#animations)
+[示例](/examples/animation/animation-effects/#animations)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ)
 
@@ -571,7 +571,7 @@ const timing = animation.effect.getTiming();
 
 ### easing
 
-缓动函数，默认为 `linear`，我们也内置了一系列常用函数。[示例](/zh/examples/animation#easing)
+缓动函数，默认为 `linear`，我们也内置了一系列常用函数。[示例](/examples/animation/animation-basic/#easing)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9y3_TIoOUPMAAAAAAAAAAAAAARQnAQ)
 
@@ -698,7 +698,7 @@ const animation = circle.animate(
 
 ## ComputedEffectTiming
 
-继承了 [EffectTiming](/zh/api/animation/waapi#effecttiming) 的所有属性，同时包含一些只读的、计算后的额外属性。
+继承了 [EffectTiming](/api/animation/waapi#effecttiming) 的所有属性，同时包含一些只读的、计算后的额外属性。
 
 ```js
 const computedTiming = animation.effect.getComputedTiming();
@@ -706,25 +706,25 @@ const computedTiming = animation.effect.getComputedTiming();
 
 ### endTime
 
-动画的预计结束时间，需要考虑前后延迟。计算方式为：[delay](/zh/api/animation/waapi#delay) + [activeDuration](/zh/api/animation/waapi#activeduration) + [endDelay](/zh/api/animation/waapi#enddelay)
+动画的预计结束时间，需要考虑前后延迟。计算方式为：[delay](/api/animation/waapi#delay) + [activeDuration](/api/animation/waapi#activeduration) + [endDelay](/api/animation/waapi#enddelay)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value>
 
 ### activeDuration
 
-动画效果运行的预计时长，单位毫秒。计算方式为 [duration](/zh/api/animation/waapi#duration) \* [iterations](/zh/api/animation/waapi#iterations)
+动画效果运行的预计时长，单位毫秒。计算方式为 [duration](/api/animation/waapi#duration) \* [iterations](/api/animation/waapi#iterations)
 
 <https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value>
 
 ### localTime
 
-同 [currentTime](/zh/api/animation/waapi#currenttime)，单位毫秒。
+同 [currentTime](/api/animation/waapi#currenttime)，单位毫秒。
 
 ### progress
 
 返回在当前 iteration 内的进度，取值范围为 `[0-1]`。当动画不在运行中时返回 null。
 
-在该[示例](/zh/examples/animation#lifecycle)中，我们在每一帧结束的 [onframe](/zh/api/animation/waapi#onframe) 回调函数中打印进度值：
+在该[示例](/examples/animation/animation-basic/#lifecycle)中，我们在每一帧结束的 [onframe](/api/animation/waapi#onframe) 回调函数中打印进度值：
 
 ```js
 animation.onframe = (e) => {
@@ -752,7 +752,7 @@ animation.onframe = (e) => {
 
 Spring 背后的原理：<https://blog.maximeheckel.com/posts/the-physics-behind-spring-animations>
 
-那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？关于这个问题在 W3C 中早已有过讨论：<https://github.com/w3c/csswg-drafts/issues/229。> 目前我们内置了 spring 系列的变换效果，但暂不提供弹簧参数的配置 [示例](/zh/examples/animation#easing)：
+那么对于这种非缓动的效果，如何使用 CSS Animation 或者 WAAPI 实现呢？关于这个问题在 W3C 中早已有过讨论：<https://github.com/w3c/csswg-drafts/issues/229。> 目前我们内置了 spring 系列的变换效果，但暂不提供弹簧参数的配置 [示例](/examples/animation/animation-basic/#easing)：
 
 ```js
 const animation = image.animate(
@@ -784,7 +784,7 @@ const animation = image.animate(
 }
 ```
 
-首先通过 offsetPath 创建一条运动轨迹，目前支持 [Line](/zh/api/basic/line) [Path](/zh/api/basic/path) 和 [Polyline](/zh/api/basic/polyline)。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果：
+首先通过 offsetPath 创建一条运动轨迹，目前支持 [Line](/api/basic/line) [Path](/api/basic/path) 和 [Polyline](/api/basic/polyline)。然后通过对 offsetDistance （取值范围 `[0-1]`）进行变换实现该效果：
 
 ```js
 const circle = new Circle({
@@ -816,13 +816,13 @@ circle.animate(
 );
 ```
 
-[完整示例](/zh/examples/animation#offset-path)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ)
+[完整示例](/examples/animation/animation-effects/#offset-path)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ)
 
 ## 蚂蚁线
 
 在 PS 中常见的套索工具就是一种“蚂蚁线”效果。
 
-[lineDashOffset](/zh/api/basic/display-object#linedashoffset) 属性用来设置虚线的偏移量，对它进行变换就可以实现该效果：
+[lineDashOffset](/api/basic/display-object#linedashoffset) 属性用来设置虚线的偏移量，对它进行变换就可以实现该效果：
 
 ```js
 const circle = new Circle({
@@ -837,11 +837,11 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 });
 ```
 
-[完整示例](/zh/examples/animation#marching-ants)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
+[完整示例](/examples/animation/animation-effects/#marching-ants)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
 
 ## 笔迹动画
 
-一种常见的动画效果是让描边的轨迹从无到有展现出来，[lineDash](/api/basic/display-object#linedash) 属性指定了描边实线和间隔的长度，笔迹初始状态“无”可以用 `[0, length]` 表示，而完整状态可以用 `[length, 0]` 表示。其中描边的长度可以通过图形上的方法取得，例如 Path 的 [getTotalLength](/zh/api/basic/path#gettotallength-number) 方法：
+一种常见的动画效果是让描边的轨迹从无到有展现出来，[lineDash](/api/basic/display-object#linedash) 属性指定了描边实线和间隔的长度，笔迹初始状态“无”可以用 `[0, length]` 表示，而完整状态可以用 `[length, 0]` 表示。其中描边的长度可以通过图形上的方法取得，例如 Path 的 [getTotalLength](/api/basic/path#gettotallength-number) 方法：
 
 ```js
 const length = path.getTotalLength();
@@ -853,7 +853,7 @@ path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
 });
 ```
 
-[完整示例](/zh/examples/animation#line-dash)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
+[完整示例](/examples/animation/animation-effects/#line-dash)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
 
 ## 形变动画
 
@@ -884,11 +884,11 @@ path.animate([{ path: path1 }, { path: path2 }], {
 });
 ```
 
-[完整示例](/zh/examples/animation#morph)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ)
+[完整示例](/examples/animation/morph/#morph)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ)
 
 ### 基础图形变换
 
-由于只能对 path 属性进行变换，对于其他基础图形例如 Circle、Rect、Line，我们提供了工具方法 [convertToPath](/zh/api/builtin-objects/utils#converttopath) 进行转换：
+由于只能对 path 属性进行变换，对于其他基础图形例如 Circle、Rect、Line，我们提供了工具方法 [convertToPath](/api/builtin-objects/utils#converttopath) 进行转换：
 
 ```js
 import { Circle, convertToPath } from '@antv/g';
@@ -907,7 +907,7 @@ path.animate([{ path: originalPath }, { path: circlePath }], {
 });
 ```
 
-目前支持转换路径的基础图形有：[Circle](/zh/api/basic/circle) [Ellipse](/zh/api/basic/ellipse) [Rect](/zh/api/basic/rect) [Line](/zh/api/basic/line) [Polyline](/zh/api/basic/polyline) [Polygon](/zh/api/basic/polygon) [Path](/zh/api/basic/path)。 [完整示例](/zh/examples/animation#morph)
+目前支持转换路径的基础图形有：[Circle](/api/basic/circle) [Ellipse](/api/basic/ellipse) [Rect](/api/basic/rect) [Line](/api/basic/line) [Polyline](/api/basic/polyline) [Polygon](/api/basic/polygon) [Path](/api/basic/path)。 [完整示例](/examples/animation/morph/#morph)
 
 需要注意的是，对这些基础图形的变换会影响到最终生成的 path 字符串。例如下面的五角星原始路径尺寸太大，我们可以缩放后进行动画：
 

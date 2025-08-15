@@ -7,7 +7,7 @@ order: -1
 
 ## 层次结构
 
-在[场景图](/zh/guide/diving-deeper/scenegraph)中我们了解到可以在图形之间构建父子关系，这种父子关系有时会与我们的直觉相悖，例如给一根直线（[Line](/zh/api/basic/line)）添加一个子节点文本（[Text](/zh/api/basic/text)）：
+在[场景图](/guide/diving-deeper/scenegraph)中我们了解到可以在图形之间构建父子关系，这种父子关系有时会与我们的直觉相悖，例如给一根直线（[Line](/api/basic/line)）添加一个子节点文本（[Text](/api/basic/text)）：
 
 ```js
 line.appendChild(text);
@@ -43,13 +43,13 @@ interface AABB {
 
 我们很容易根据不同类型的图形定义几何包围盒：
 
-- **Geometry Bounds**。仅由图形的几何定义决定（因此 [Group](/zh/api/basic/group) 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 [Circle](/zh/api/basic/circle) 的半径、[Rect](/zh/api/basic/rect) 的宽高、[Path](/zh/api/basic/path) 的路径定义等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/zh/api/basic/display-object#getgeometrybounds-aabb) 获取
+- **Geometry Bounds**。仅由图形的几何定义决定（因此 [Group](/api/basic/group) 会返回 null），不考虑绝大部分绘图属性（几何定义必须的除外，例如 [Circle](/api/basic/circle) 的半径、[Rect](/api/basic/rect) 的宽高、[Path](/api/basic/path) 的路径定义等），也不考虑变换（例如放大缩小并不会改变）。可通过 [getGeometryBounds](/api/basic/display-object#getgeometrybounds-aabb) 获取
 
 前面介绍过基于场景图的层次结构，一旦一个图形拥有了子节点，它在计算包围盒时也应当考虑，例如我们想对它做整体旋转时，需要找到这个包围盒的中心作为旋转中心。因此以下包围盒都是会考虑层次结构的：
 
-- **Bounds**。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/zh/api/basic/display-object#getbounds-aabb) 获取
-- **Local Bounds**。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/zh/api/basic/display-object#getlocalbounds-aabb) 获取
-- **Render Bounds**。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/zh/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
+- **Bounds**。在世界坐标系下计算，合并自身以及所有子节点的 Geometry Bounds 得到。用户通常最常用这个包围盒。可通过 [getBounds](/api/basic/display-object#getbounds-aabb) 获取
+- **Local Bounds**。和 Bounds 的唯一区别是在父节点的局部坐标系下计算。可通过 [getLocalBounds](/api/basic/display-object#getlocalbounds-aabb) 获取
+- **Render Bounds**。在世界坐标系下计算，在 Bounds 的基础上，受部分绘图属性影响，例如边框宽度，阴影，部分滤镜等，同时合并所有子节点的 Render Bounds。可通过 [getRenderBounds](/api/basic/display-object#getrenderbounds-aabb) 获取。用户通常不关心这个包围盒。
 
 在下图中，ul1 拥有两个字节点 li1 和 li2，在计算自身的 Geometry Bounds 时不会考虑它们，而在计算 Bounds 时需要。由于 ul1 还有阴影，因此它的 Render Bounds 要大一圈：
 
@@ -57,14 +57,14 @@ interface AABB {
 
 ## 锚点
 
-一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
+一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
 
-- [Circle](/zh/api/basic/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置 `[0.5, 0.5]`
-- [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/basic/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `[0, 0]`
-- [Text](/zh/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
-- [Group](/zh/api/basic/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
+- [Circle](/api/basic/circle)，[Ellipse](/api/basic/ellipse) 为圆心位置 `[0.5, 0.5]`
+- [Rect](/api/basic/rect)，[Image](/api/basic/image)，[Line](/api/basic/line)，[Polyline](/api/basic/polyline)，[Polygon](/api/basic/polygon)，[Path](/api/basic/path) 为包围盒左上角顶点位置 `[0, 0]`
+- [Text](/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+- [Group](/api/basic/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
 
-有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/zh/examples/shape#rect)：
+有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/examples/shape/rect/#rect)：
 
 ```js
 rect.style.anchor = [0.5, 0.5];
@@ -100,7 +100,7 @@ group.style.transformOrigin = 'center center';
 group.style.transformOrigin = '50% 50%';
 ```
 
-<!-- 在这个[示例](/zh/examples/scenegraph#origin)中，每次向 Group 添加子元素后，我们都会重新设置 transformOrigin，因此这个 Group 会始终绕中心旋转：
+<!-- 在这个[示例](/examples/scenegraph#origin)中，每次向 Group 添加子元素后，我们都会重新设置 transformOrigin，因此这个 Group 会始终绕中心旋转：
 
 ```js
 group.appendChild(cloned);

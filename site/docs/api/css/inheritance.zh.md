@@ -15,7 +15,7 @@ p { color: green; }
 <p>This paragraph has <em>emphasized text</em> in it.</p>
 ```
 
-我们在 G 中实现了一套样式系统，同样支持继承。例如我们创建一个 [Text](/zh/api/basic/text)，并未指定 `fontSize` 或者 `fontFamily` 这些属性，但它依然可以被渲染出来，因为它加入画布后继承了根节点上的默认样式：`fontSize: '16px'; fontFamily: 'sans-serif'`：
+我们在 G 中实现了一套样式系统，同样支持继承。例如我们创建一个 [Text](/api/basic/text)，并未指定 `fontSize` 或者 `fontFamily` 这些属性，但它依然可以被渲染出来，因为它加入画布后继承了根节点上的默认样式：`fontSize: '16px'; fontFamily: 'sans-serif'`：
 
 ```js
 const text = new Text({
@@ -29,7 +29,7 @@ const text = new Text({
 canvas.appendChild(text);
 ```
 
-在该[示例](/zh/examples/style#inheritance)中，修改根节点的字号同样会影响到子元素，配合 `rem` 这样的单位我们可以轻松实现“弹性布局”：
+在该[示例](/examples/style/basic/#inheritance)中，修改根节点的字号同样会影响到子元素，配合 `rem` 这样的单位我们可以轻松实现“弹性布局”：
 
 ```js
 canvas.document.documentElement.style.fontSize = `32px`;

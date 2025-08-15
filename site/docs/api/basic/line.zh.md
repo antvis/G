@@ -5,7 +5,7 @@ order: 6
 
 可以参考 SVG 的 [\<line\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/line) 元素。
 
-如下 [示例](/zh/examples/shape/line/#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
+如下 [示例](/examples/shape/line/#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
 
 ```javascript
 const line1 = new Line({
@@ -52,19 +52,19 @@ line.getLocalPosition(); // [200, 100]
 
 ## 继承自
 
-继承了 [DisplayObject](/zh/api/basic/display-object) 的 [样式属性](/zh/api/basic/display-object#绘图属性)。
+继承了 [DisplayObject](/api/basic/display-object) 的 [样式属性](/api/basic/display-object#绘图属性)。
 
 ### anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/api/basic/display-object#anchor)
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/api/basic/display-object#anchor)
 
 ### transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/api/basic/display-object#transformOrigin)
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/api/basic/display-object#transformOrigin)
 
 ### lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/api/basic/display-object#lineWidth)
+默认值为 `'1'`。详见 [DisplayObject lineWidth](/api/basic/display-object#lineWidth)
 
 ## 额外属性
 
@@ -74,9 +74,9 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### y1
 
@@ -84,17 +84,17 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### z1
 
 局部坐标系下，第一个端点的 z 轴坐标。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### x2
 
@@ -102,9 +102,9 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### y2
 
@@ -112,29 +112,29 @@ line.getLocalPosition(); // [200, 100]
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### z2
 
 局部坐标系下，第二个端点的 z 轴坐标。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### isBillboard
 
-3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。[示例](/zh/examples/3d#force-3d)
+3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。[示例](/examples/3d/3d-basic/#force-3d)
 
 ### markerStart
 
 可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)。
 
-在直线的 “起始点” 处添加一个标记图形，其中 “起始点” 为 [x1/y1](/zh/api/basic/line#x1) 定义的端点。
+在直线的 “起始点” 处添加一个标记图形，其中 “起始点” 为 [x1/y1](/api/basic/line#x1) 定义的端点。
 
-在下面的 [示例](/zh/examples/shape/line#line) 中，我们首先使用 [Path](/zh/api/basic/path) 创建了一个箭头，然后通过该属性把它添加到了直线的起点上：
+在下面的 [示例](/examples/shape/line#line) 中，我们首先使用 [Path](/api/basic/path) 创建了一个箭头，然后通过该属性把它添加到了直线的起点上：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
 
@@ -164,7 +164,7 @@ const arrowLine = new Line({
 
 标记图形可以是任意图形，我们会将它放置在合适的位置并调整好朝向。当直线的定义改变时，也会随之自动调整。
 
-当然你也可以手动调整它的 [anchor](/zh/api/basic/display-object#anchor), [transformOrigin](/zh/api/basic/display-object#transformorigin) 和 [transform](/zh/api/basic/display-object#transform)，例如在该 [示例](/zh/examples/shape/line#line) 中，我们将 [Image](/zh/api/basic/image) 作为标记图形，手动旋转了 90 度：
+当然你也可以手动调整它的 [anchor](/api/basic/display-object#anchor), [transformOrigin](/api/basic/display-object#transformorigin) 和 [transform](/api/basic/display-object#transform)，例如在该 [示例](/examples/shape/line#line) 中，我们将 [Image](/api/basic/image) 作为标记图形，手动旋转了 90 度：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
 
@@ -195,14 +195,14 @@ Line
   -> Path(#markerEnd)
 ```
 
-使用 [childNodes](/zh/api/builtin-objects/node#childnodes) 也能发现这一点：
+使用 [childNodes](/api/builtin-objects/node#childnodes) 也能发现这一点：
 
 ```js
 line.style.markerStart = arrowHead;
 line.childNodes; // [Path]
 ```
 
-“起始点” 和 “终止点” 可以设置为同一个标记图形，内部首先会使用 [cloneNode](/zh/api/builtin-objects/node#clonenode) 生成新的图形。因此一旦我们指定了标记图形，后续想修改它的属性就不能在原始图形上操作，需要通过 [childNodes](/zh/api/builtin-objects/node#childnodes) 获取：
+“起始点” 和 “终止点” 可以设置为同一个标记图形，内部首先会使用 [cloneNode](/api/builtin-objects/node#clonenode) 生成新的图形。因此一旦我们指定了标记图形，后续想修改它的属性就不能在原始图形上操作，需要通过 [childNodes](/api/builtin-objects/node#childnodes) 获取：
 
 ```js
 line.style.markerStart = arrowhead;
@@ -219,33 +219,33 @@ line.childNodes[0].style.stroke = 'red';
 
 可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)。
 
-在直线的 “终止点” 处添加一个标记图形，其中 “终止点” 为 [x2/y2](/zh/api/basic/line#x2) 定义的端点。
+在直线的 “终止点” 处添加一个标记图形，其中 “终止点” 为 [x2/y2](/api/basic/line#x2) 定义的端点。
 
 ### markerStartOffset
 
 有时我们想调整标记图形的位置，为此我们提供了该选项沿直线方向增加一定偏移量，正偏移量向内，负偏移量向外。
 
-在 [示例](/zh/examples/shape/line#line) 中，我们通过操作该属性让直线实现“伸缩效果”：
+在 [示例](/examples/shape/line#line) 中，我们通过操作该属性让直线实现“伸缩效果”：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
 
-值得注意的是，虽然偏移量会让直线在视觉效果上发生变化，但并不会影响 [x1/y1/x2/y2](/zh/api/basic/line#x1) 这些属性值。
+值得注意的是，虽然偏移量会让直线在视觉效果上发生变化，但并不会影响 [x1/y1/x2/y2](/api/basic/line#x1) 这些属性值。
 
-在 [示例](/zh/examples/shape/line#marker) 中，直线端点与两端的圆心重合，但为了避免箭头与两端的节点重合，需要向内缩进一定距离：
+在 [示例](/examples/shape/line#marker) 中，直线端点与两端的圆心重合，但为了避免箭头与两端的节点重合，需要向内缩进一定距离：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### markerEndOffset
 
 调整 “终止点” 处标记图形的位置，正偏移量向内，负偏移量向外。
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<length\>](/api/css/css-properties-values-api#length) |
 
 ## 方法
 
@@ -319,4 +319,4 @@ new Line({
 });
 ```
 
-2D 的线在正交投影下可以保证一致的宽度，但是在透视投影下就无法保证了。在某些需要时刻保持线宽一致的 3D 场景下，可以开启 [isBillboard](/zh/api/basic/line#isbillboard)，[示例](/zh/examples/3d#force-3d)
+2D 的线在正交投影下可以保证一致的宽度，但是在透视投影下就无法保证了。在某些需要时刻保持线宽一致的 3D 场景下，可以开启 [isBillboard](/api/basic/line#isbillboard)，[示例](/examples/3d/3d-basic/#force-3d)

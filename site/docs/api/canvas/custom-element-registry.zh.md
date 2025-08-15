@@ -3,7 +3,7 @@ title: CustomElementRegistry
 order: 10
 ---
 
-通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
+通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
 
 ```js
 import { Shape, Circle } from '@antv/g';

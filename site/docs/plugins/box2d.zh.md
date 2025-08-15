@@ -12,9 +12,9 @@ order: -1
 
 目前使用 Box2D 最新版 2.4，参考文档：<https://box2d.org/documentation/。>
 
-支持以下 2D 图形：[Circle](/zh/api/basic/circle)、[Rect](/zh/api/basic/rect)、[Line](/zh/api/basic/line)、[Image](/zh/api/basic/image)、[Polygon](/zh/api/basic/polygon)
+支持以下 2D 图形：[Circle](/api/basic/circle)、[Rect](/api/basic/rect)、[Line](/api/basic/line)、[Image](/api/basic/image)、[Polygon](/api/basic/polygon)
 
-在该[示例](/zh/examples/plugins#box2d)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
+在该[示例](/examples/plugins/physics-engine/#box2d)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 

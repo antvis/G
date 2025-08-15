@@ -38,7 +38,7 @@ canvas.addEventListener('click', (e) => {
 
 ### defaultView
 
-Point to the [canvas](/en/api/canvas), e.g.
+Point to the [canvas](/en/api/canvas/intro), e.g.
 
 ```js
 canvas.document.defaultView; // canvas
@@ -140,7 +140,7 @@ When we want to know how many shapes are stacked on a certain point in the canva
 
 This method accepts a set of `x, y` coordinates (under [Canvas coordinate system](/en/api/canvas/coordinates#canvas), if you want to use coordinates under other coordinate system, please use [conversion method](/en/api/canvas#conversion method)) as parameters and returns the pickup result.
 
-In the following [example](/en/examples/canvas#element-from-point), we place a [Circle](/en/api/canvas/coordinates#canvas) with radius `100, 100` under [Canvas coordinate system](/en/api/canvas/coordinates#canvas). en/docs/api/basic/circle), which will be returned when picked up at the red dot.
+In the following [example](/en/examples/canvas/container/#element-from-point), we place a [Circle](/en/api/canvas/coordinates#canvas) with radius `100, 100` under [Canvas coordinate system](/en/api/canvas/coordinates#canvas). en/docs/api/basic/circle), which will be returned when picked up at the red dot.
 
 ```js
 const topMostElement = await canvas.document.elementFromPoint(20, 100); // circle1
@@ -168,7 +168,7 @@ When there are multiple graphs stacked on the target point, this method returns 
 
 This method also accepts a set of `x, y` coordinates as arguments.
 
-In the following [example](/en/examples/canvas#element-from-point), circle2 is on top of circle1, so picking both in the overlapping region appears in the result array, and circle2 comes first.
+In the following [example](/en/examples/canvas/container/#element-from-point), circle2 is on top of circle1, so picking both in the overlapping region appears in the result array, and circle2 comes first.
 
 ```js
 const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]
@@ -178,7 +178,7 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 
 Caveats.
 
-1. The difference between this return result and [composedPath()](/en/api/event#composedpath) on the event object is that the latter appends [Document](/en/api/builtin-objects/document) and [Canvas](/en/api/canvas) objects, while the former only goes to [Canvas root](/en/api/canvas#getroot-group). 2.
+1. The difference between this return result and [composedPath()](/en/api/event/event-object#composedpath) on the event object is that the latter appends [Document](/en/api/builtin-objects/document) and [Canvas](/en/api/canvas/intro) objects, while the former only goes to [Canvas root](/en/api/canvas/intro#getroot-group). 2.
 2. Return an empty array beyond the canvas viewport range.
 
 <https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint>
@@ -206,7 +206,7 @@ Caveats.
 
 ### elementFromPointSync
 
-The synchronized version of [elementFromPoint](/en/api/builtin-objects/document#elementfrompoint), it is worth noting that not all [renderers](/en/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg) and [g-canvaskit](/en/api/renderer/canvaskit) provide the corresponding implementations.
+The synchronized version of [elementFromPoint](/en/api/builtin-objects/document#elementfrompoint), it is worth noting that not all [renderers](/en/api/renderer/intro) will implement this method, currently only [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg) and [g-canvaskit](/en/api/renderer/canvaskit) provide the corresponding implementations.
 
 ```js
 const element = canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
@@ -214,7 +214,7 @@ const element = canvas.document.elementFromPoint(0, 0); // canvas.document.docum
 
 ### elementsFromPointSync
 
-The synchronized version of [elementsFromPoint](/en/api/builtin-objects/document#elementsfrompoint), it is worth noting that not all [renderers](/en/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg) and [g-canvaskit](/en/api/renderer/ canvaskit) provide the corresponding implementations.
+The synchronized version of [elementsFromPoint](/en/api/builtin-objects/document#elementsfrompoint), it is worth noting that not all [renderers](/en/api/renderer/intro) will implement this method, currently only [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg) and [g-canvaskit](/en/api/renderer/ canvaskit) provide the corresponding implementations.
 
 ```js
 const elements = canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]

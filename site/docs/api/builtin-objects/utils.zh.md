@@ -83,7 +83,7 @@ createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
 
 ### convertToPath
 
-[Morph 形变动画](/zh/api/animation/waapi#形变动画)是通过对 [Path](/zh/api/basic/path) 的 [path/d](/zh/api/basic/path#d) 属性进行插值实现的。
+[Morph 形变动画](/api/animation/waapi#形变动画)是通过对 [Path](/api/basic/path) 的 [path/d](/api/basic/path#d) 属性进行插值实现的。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ">
 
@@ -96,19 +96,19 @@ convertToPath(
 ): string;
 ```
 
-该方法支持以下基础图形，不支持 [Group](/zh/api/basic/group) 或者其他自定义图形：
+该方法支持以下基础图形，不支持 [Group](/api/basic/group) 或者其他自定义图形：
 
-- [Circle](/zh/api/basic/circle)
-- [Ellipse](/zh/api/basic/ellipse)
-- [Rect](/zh/api/basic/rect)
-- [Line](/zh/api/basic/line)
-- [Polyline](/zh/api/basic/polyline)
-- [Polygon](/zh/api/basic/polygon)
-- [Path](/zh/api/basic/path)
+- [Circle](/api/basic/circle)
+- [Ellipse](/api/basic/ellipse)
+- [Rect](/api/basic/rect)
+- [Line](/api/basic/line)
+- [Polyline](/api/basic/polyline)
+- [Polygon](/api/basic/polygon)
+- [Path](/api/basic/path)
 
 转换结果为字符串形式的三阶贝塞尔曲线，利用它易于分割的特性，将变换前后的路径规范到相同数目的分段，最后对各个分段中的控制点进行插值实现动画效果。
 
-在转换过程中会考虑输入图形在局部坐标系下的变换（使用 [transform](/zh/api/basic/display-object#transform) 进行的声明式变换或者[命令式的变换方法](/zh/api/basic/display-object#变换操作)），因此生成的路径定义已经包含了变换信息，可以直接基于该路径定义创建 [Path](/zh/api/basic/path)。[示例](/zh/examples/animation#convert-to-path)：
+在转换过程中会考虑输入图形在局部坐标系下的变换（使用 [transform](/api/basic/display-object#transform) 进行的声明式变换或者[命令式的变换方法](/api/basic/display-object#变换操作)），因此生成的路径定义已经包含了变换信息，可以直接基于该路径定义创建 [Path](/api/basic/path)。[示例](/examples/animation/morph/#convert-to-path)：
 
 ```js
 const circle = new Circle({
