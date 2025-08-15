@@ -1,34 +1,13 @@
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-
 /*!
-  Copyright (c) 2018 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
+	Copyright (c) 2018 Jed Watson.
+	Licensed under the MIT License (MIT), see
+	http://jedwatson.github.io/classnames
 */
 
-/** @license React v0.20.2
- * scheduler.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
 
-/** @license React v16.13.1
- * react-is.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/** @license React v17.0.2
+/**
+ * @license React
  * react-dom.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -37,7 +16,28 @@ object-assign
  * LICENSE file in the root directory of this source tree.
  */
 
-/** @license React v17.0.2
+/**
+ * @license React
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
  * react.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -45,3 +45,21 @@ object-assign
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * @license React
+ * scheduler.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**![appstore](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTQ2NCAxNDRIMTYwYy04LjggMC0xNiA3LjItMTYgMTZ2MzA0YzAgOC44IDcuMiAxNiAxNiAxNmgzMDRjOC44IDAgMTYtNy4yIDE2LTE2VjE2MGMwLTguOC03LjItMTYtMTYtMTZ6bS01MiAyNjhIMjEyVjIxMmgyMDB2MjAwem00NTItMjY4SDU2MGMtOC44IDAtMTYgNy4yLTE2IDE2djMwNGMwIDguOCA3LjIgMTYgMTYgMTZoMzA0YzguOCAwIDE2LTcuMiAxNi0xNlYxNjBjMC04LjgtNy4yLTE2LTE2LTE2em0tNTIgMjY4SDYxMlYyMTJoMjAwdjIwMHpNNDY0IDU0NEgxNjBjLTguOCAwLTE2IDcuMi0xNiAxNnYzMDRjMCA4LjggNy4yIDE2IDE2IDE2aDMwNGM4LjggMCAxNi03LjIgMTYtMTZWNTYwYzAtOC44LTcuMi0xNi0xNi0xNnptLTUyIDI2OEgyMTJWNjEyaDIwMHYyMDB6bTQ1Mi0yNjhINTYwYy04LjggMC0xNiA3LjItMTYgMTZ2MzA0YzAgOC44IDcuMiAxNiAxNiAxNmgzMDRjOC44IDAgMTYtNy4yIDE2LTE2VjU2MGMwLTguOC03LjItMTYtMTYtMTZ6bS01MiAyNjhINjEyVjYxMmgyMDB2MjAweiIgLz48L3N2Zz4=) */
+
+/**![block](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTg1NiAzNzZINjQ4VjE2OGMwLTguOC03LjItMTYtMTYtMTZIMTY4Yy04LjggMC0xNiA3LjItMTYgMTZ2NDY0YzAgOC44IDcuMiAxNiAxNiAxNmgyMDh2MjA4YzAgOC44IDcuMiAxNiAxNiAxNmg0NjRjOC44IDAgMTYtNy4yIDE2LTE2VjM5MmMwLTguOC03LjItMTYtMTYtMTZ6bS00ODAgMTZ2MTg4SDIyMFYyMjBoMzYwdjE1NkgzOTJjLTguOCAwLTE2IDcuMi0xNiAxNnptMjA0IDUydjEzNkg0NDRWNDQ0aDEzNnptMjI0IDM2MEg0NDRWNjQ4aDE4OGM4LjggMCAxNi03LjIgMTYtMTZWNDQ0aDE1NnYzNjB6IiAvPjwvc3ZnPg==) */
+
+/**![code](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUxNiA2NzNjMCA0LjQgMy40IDggNy41IDhoMTg1YzQuMSAwIDcuNS0zLjYgNy41LTh2LTQ4YzAtNC40LTMuNC04LTcuNS04aC0xODVjLTQuMSAwLTcuNSAzLjYtNy41IDh2NDh6bS0xOTQuOSA2LjFsMTkyLTE2MWMzLjgtMy4yIDMuOC05LjEgMC0xMi4zbC0xOTItMTYwLjlBNy45NSA3Ljk1IDAgMDAzMDggMzUxdjYyLjdjMCAyLjQgMSA0LjYgMi45IDYuMUw0MjAuNyA1MTJsLTEwOS44IDkyLjJhOC4xIDguMSAwIDAwLTIuOSA2LjFWNjczYzAgNi44IDcuOSAxMC41IDEzLjEgNi4xek04ODAgMTEySDE0NGMtMTcuNyAwLTMyIDE0LjMtMzIgMzJ2NzM2YzAgMTcuNyAxNC4zIDMyIDMyIDMyaDczNmMxNy43IDAgMzItMTQuMyAzMi0zMlYxNDRjMC0xNy43LTE0LjMtMzItMzItMzJ6bS00MCA3MjhIMTg0VjE4NGg2NTZ2NjU2eiIgLz48L3N2Zz4=) */
+
+/**![printer](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTgyMCA0MzZoLTQwYy00LjQgMC04IDMuNi04IDh2NDBjMCA0LjQgMy42IDggOCA4aDQwYzQuNCAwIDgtMy42IDgtOHYtNDBjMC00LjQtMy42LTgtOC04em0zMi0xMDRINzMyVjEyMGMwLTQuNC0zLjYtOC04LThIMzAwYy00LjQgMC04IDMuNi04IDh2MjEySDE3MmMtNDQuMiAwLTgwIDM1LjgtODAgODB2MzI4YzAgMTcuNyAxNC4zIDMyIDMyIDMyaDE2OHYxMzJjMCA0LjQgMy42IDggOCA4aDQyNGM0LjQgMCA4LTMuNiA4LThWNzcyaDE2OGMxNy43IDAgMzItMTQuMyAzMi0zMlY0MTJjMC00NC4yLTM1LjgtODAtODAtODB6TTM2MCAxODBoMzA0djE1MkgzNjBWMTgwem0zMDQgNjY0SDM2MFY1NjhoMzA0djI3NnptMjAwLTE0MEg3MzJWNTAwSDI5MnYyMDRIMTYwVjQxMmMwLTYuNiA1LjQtMTIgMTItMTJoNjgwYzYuNiAwIDEyIDUuNCAxMiAxMnYyOTJ6IiAvPjwvc3ZnPg==) */
