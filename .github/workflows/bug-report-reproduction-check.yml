@@ -1,0 +1,53 @@
+name: Bug Report Reproduction Check
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  models: read
+
+jobs:
+  reproduction-steps-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Issue
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            })
+            core.setOutput('title', issue.data.title)
+            core.setOutput('body', issue.data.body)
+
+      - name: Analyze Issue For Reproduction
+        if: contains(join(github.event.issue.labels.*.name, ','), 'bug')
+        id: analyze-issue
+        uses: actions/ai-inference@v1
+        with:
+          model: mistral-ai/ministral-3b
+          system-prompt: |
+            Given a bug report title and text for an application, return 'pass' if there is enough information to reliably reproduce the issue, meaning the report clearly describes the steps to reproduce the problem, specifies the expected and actual behavior, and includes environment details such as browser and operating system; if any of these elements are missing or unclear, return a brief description of what is missing in a friendly response to the author instead of 'pass'. Consider the following title and body:
+          prompt: |
+            Title: ${{ steps.issue.outputs.title }}
+            Body: ${{ steps.issue.outputs.body }}
+
+      - name: Comment On Issue
+        if: contains(join(github.event.issue.labels.*.name, ','), 'bug') && steps.analyze-issue.outputs.response != 'pass'
+        uses: actions/github-script@v7
+        env:
+          AI_RESPONSE: steps.analyze-issue.outputs.response
+          with:
+            script: |
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: process.env.AI_RESPONSE
+              })
