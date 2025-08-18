@@ -13,14 +13,14 @@ permissions:
 jobs:
   create_weekly_summary:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install gh-models extension
         run: gh extension install https://github.com/github/gh-models
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - name: Get issues from the past week
         id: get_issues
