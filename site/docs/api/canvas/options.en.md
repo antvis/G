@@ -39,7 +39,7 @@ Optional, `string | HTMLElement`. The id or DOM element of the canvas container.
 
 Optional, `HTMLCanvasElement | OffscreenCanvas | NodeCanvas`. Using existed `<canvas>` or OffscreenCanvas.
 
-When this parameter is passed, the [container](/en/api/canvas#container) argument is ignored and we assume that `<canvas>` has been created and added to the document, e.g.
+When this parameter is passed, the [container](/en/api/canvas/options#container) argument is ignored and we assume that `<canvas>` has been created and added to the document, e.g.
 
 ```js
 // create a <canvas>
@@ -60,8 +60,8 @@ const canvas = new Canvas({
 
 In addition to the `HTMLCanvasElement` in the browser environment, you can also use:
 
-- [`OffscreenCanvas` in WebWorker](/en/api/canvas#在-webworker-中使用-offscreencanvas)
-- [`NodeCanvas` in server-side rendering](/en/api/canvas#服务端渲染)
+- [`OffscreenCanvas` in WebWorker](/en/api/canvas/intro#%E5%9C%A8-webworker-%E4%B8%AD%E4%BD%BF%E7%94%A8-offscreencanvas)
+- [`NodeCanvas` in server-side rendering](/en/api/canvas/intro#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93)
 
 Note that once this parameter is used, runtime switching of the renderer is no longer supported.
 

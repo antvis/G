@@ -135,7 +135,7 @@ In this [example](/en/examples/plugins/canvaskit/#skottie) we show how to play a
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -183,7 +183,7 @@ In this [example](/en/examples/plugins/canvaskit/#canvaskit-particles), we have 
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -414,7 +414,7 @@ We support specifying a set of shadows via the `shadows` property, where each sh
 - `blurRadius` The default is 0. The larger the value, the larger the blur radius and the lighter the shadows.
 - `offset` Specify the offset of the shadow relative to the text.
 
-In this [example](/en/examples/plugins#canvaskit-paragraph), we specify two shadows.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we specify two shadows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9zeYRbfP_6oAAAAAAAAAAAAAARQnAQ" width="160" alt="text shadows">
 
@@ -452,7 +452,7 @@ We will pass on the following attributes.
 - halfLeading
 - forceStrutHeight
 
-In this [example](/en/examples/plugins#canvaskit-paragraph) we use this to control line height and line spacing.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph) we use this to control line height and line spacing.
 
 ```js
 decoratedText.style.strutStyle = {
@@ -470,7 +470,7 @@ decoratedText.style.strutStyle = {
 
 The [font-feature-settings](https://developer.mozilla.org/zh-CN/Web/CSS/font-feature-settings) property in CSS can be consulted to control the advanced printing features in OpenType fonts.
 
-We provide control of the `fontFeatures` property, which accepts an array of features. In this [example](/en/examples/plugins#canvaskit-paragraph), we use the Roboto font and turn on the small-cap feature (note the initial D).
+We provide control of the `fontFeatures` property, which accepts an array of features. In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we use the Roboto font and turn on the small-cap feature (note the initial D).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g7gTKas4vYAAAAAAAAAAAAAARQnAQ" width="160" alt="text font-feature-settings">
 

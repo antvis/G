@@ -2,6 +2,10 @@
 
 > A devtool for @antv/g in chrome, it's still WIP, you can load it in unpack way;
 
+## Update Notice
+
+This extension has been updated to Manifest V3 to maintain compatibility with modern versions of Chrome. If you were previously using the Manifest V2 version, please reload the extension after updating.
+
 ## Quick Start
 
 ### Import unpacked plugin
@@ -50,21 +54,12 @@ window.__g_instances__.push(canvas);
 #### In S2
 
 ```javascript
+// init window hook
 window.__g_instances__ = [];
 
-// in native
-var canvas = spreadSheet.container;
+var canvas = s2.getCanvas();
 
 window.__g_instances__.push(canvas);
-
-// in S2 react
-<SpreadSheet
-    {...blablabla}
-    getSpreadSheet={(sp) => {
-        window.__g_instances__ = [sp.container];
-    }}
-/>;
-```
 
 ### Using devtool
 
@@ -85,3 +80,4 @@ After these steps, the tab 'AntV G' should show in devtools' tab, select it and 
 ### Using select element directly in canvas
 
 ![image](https://user-images.githubusercontent.com/15213473/150082485-46b5c750-de64-42f7-882b-a3ff4db95826.png)
+```

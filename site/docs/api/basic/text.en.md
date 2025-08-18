@@ -68,7 +68,7 @@ Turning it on doesn't change the position of the text, but it will always face t
 
 Rotation angle in billboard mode, clockwise in radians.
 
-In [example](/zh/examples/3d/3d-basic#billboard), we add a rotation angle to the text:
+In [example](/en/examples/3d/3d-basic#billboard), we add a rotation angle to the text:
 
 ```js
 label.style.isBillboard = true;

@@ -19,7 +19,7 @@ const image = new Image({
 });
 ```
 
-Usually we are used to centering on the image, which can be modified by the anchor [anchor](/en/api/display-object#anchor).
+Usually we are used to centering on the image, which can be modified by the anchor [anchor](/en/api/basic/display-object#anchor).
 
 ```javascript
 const image = new Image({
@@ -152,7 +152,7 @@ Turning it on doesn't change the position of the image, but it will always face 
 
 Rotation angle in billboard mode, clockwise in radians.
 
-In [example](/zh/examples/3d/3d-basic#billboard), we add a rotation angle to the image:
+In [example](/en/examples/3d/3d-basic#billboard), we add a rotation angle to the image:
 
 ```js
 image.style.isBillboard = true;

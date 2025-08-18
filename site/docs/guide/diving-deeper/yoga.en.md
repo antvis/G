@@ -5,9 +5,9 @@ order: 13
 
 [Yoga](https://yogalayout.com/) 是 Facebook 提供的跨平台布局引擎，基于 Flex，属性和 CSS Flex 完全一致，因此也可以阅读 [MDN flex 布局的基本概念](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) 获取更多概念知识。
 
-通过 [g-plugin-yoga](/zh/plugins/yoga) 插件的支持，我们可以给已有 2D 图形增加 Flex 属性。
+通过 [g-plugin-yoga](/en/plugins/yoga) 插件的支持，我们可以给已有 2D 图形增加 Flex 属性。
 
-在该[示例](/zh/examples/plugins#yoga-text)中，我们创建了一个常见的自适应布局效果：
+在该[示例](/en/examples/plugins/yoga/#yoga-text)中，我们创建了一个常见的自适应布局效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -34,13 +34,13 @@ const canvas = new Canvas({
 
 ## 创建 Flex 容器
 
-我们使用 [Rect](/zh/api/basic/rect) 创建一个淡蓝色背景容器。
+我们使用 [Rect](/en/api/basic/rect) 创建一个淡蓝色背景容器。
 
-首先通过 `display: 'flex'` 将它声明为一个 Flex 容器。目前我们仅支持 [Rect](/zh/api/basic/rect) 和 [Group](/zh/api/basic/group) 作为 Flex 容器，详见[声明 Flex 容器](/zh/plugins/yoga#声明-flex-容器)。
+首先通过 `display: 'flex'` 将它声明为一个 Flex 容器。目前我们仅支持 [Rect](/en/api/basic/rect) 和 [Group](/en/api/basic/group) 作为 Flex 容器，详见[声明 Flex 容器](/en/plugins/yoga#声明-flex-容器)。
 
-然后使用 [flexDirection](/zh/plugins/yoga#flexdirection) 属性让子元素竖向排列。
+然后使用 [flexDirection](/en/plugins/yoga#flexdirection) 属性让子元素竖向排列。
 
-最后使用 [padding](/zh/plugins/yoga#padding) 在四周留白：
+最后使用 [padding](/en/plugins/yoga#padding) 在四周留白：
 
 ```js
 const root = new Rect({
@@ -83,9 +83,9 @@ const topPanel = new Rect({
 
 固定 Header 之后，我们希望下方区域占满容器的剩余空间。
 
-这里我们创建了一个 [Group](/zh/api/basic/group)，没有继续使用 [Rect](/zh/api/basic/rect) 的原因是我们不希望它作为容器本身被渲染出来。
+这里我们创建了一个 [Group](/en/api/basic/group)，没有继续使用 [Rect](/en/api/basic/rect) 的原因是我们不希望它作为容器本身被渲染出来。
 
-使用 [flexGrow](/zh/plugins/yoga#flexgrow) 这样它的高度会根据父容器自适应，同时声明自身也是一个 Flex 容器，后续会添加更多子元素。
+使用 [flexGrow](/en/plugins/yoga#flexgrow) 这样它的高度会根据父容器自适应，同时声明自身也是一个 Flex 容器，后续会添加更多子元素。
 
 ```js
 const bottomPanel = new Group({
@@ -108,7 +108,7 @@ bottomPanel.appendChild(rightPanel);
 
 ## 元素居中
 
-居中也是一个常见的需求，例如顶部 Header 中使用 [justifyContent](/zh/plugins/yoga#justifycontent) 和 [alignItems](/zh/plugins/yoga#alignitems) 实现：
+居中也是一个常见的需求，例如顶部 Header 中使用 [justifyContent](/en/plugins/yoga#justifycontent) 和 [alignItems](/en/plugins/yoga#alignitems) 实现：
 
 ```js
 const topPanel = new Rect({

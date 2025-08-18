@@ -6,7 +6,7 @@ order: 9
 有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
 
 - 很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
-- 部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape/html#html)：
+- 部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/examples/shape/html#html)：
 
 ![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -52,12 +52,12 @@ canvas.appendChild(html);
 
 ## 继承自
 
-- [DisplayObject](/zh/api/basic/display-object)
+- [DisplayObject](/api/basic/display-object)
 
-其中的 [id](/zh/api/basic/display-object#id)，[name](/zh/api/basic/display-object#name)，[className](/zh/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
+其中的 [id](/api/basic/display-object#id)，[name](/api/basic/display-object#name)，[className](/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
 
 - 通过类似 `getElementById` 这样的 DOM API 获取
-- 使用 [getDomElement()](/zh/api/basic/html#getdomelement)
+- 使用 [getDomElement()](/api/basic/html#getdomelement)
 
 其他样式属性通过 CSS 应用。
 
@@ -91,7 +91,7 @@ canvas.appendChild(html);
 
 对应 CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) 属性。
 
-当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/zh/examples/shape/html#html)：
+当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/examples/shape/html#html)：
 
 ```js
 const tooltip = new HTML({
@@ -128,9 +128,9 @@ const tooltip = new HTML({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,9 +138,9 @@ const tooltip = new HTML({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
@@ -172,9 +172,9 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -182,13 +182,13 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| '0' | - | 否 | 是 | [\<percentage\>](/api/css/css-properties-values-api#percentage) [\<length\>](/api/css/css-properties-values-api#length) |
 
 ### 其他 CSS 属性
 
-CSS 属性将被透传并直接应用到 DOM 容器的 style 上，在下面的[示例](/zh/examples/shape/html/#override-css)中，`fontSize` `textAlign` `color` 等 CSS 属性将直接体现在样式上：
+CSS 属性将被透传并直接应用到 DOM 容器的 style 上，在下面的[示例](/examples/shape/html/#override-css)中，`fontSize` `textAlign` `color` 等 CSS 属性将直接体现在样式上：
 
 ```js
 const html = new HTML({
@@ -228,7 +228,7 @@ const $foreignObject = html.getDomElement(); // <foreignObject>
 
 #### 变换
 
-绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/zh/api/basic/display-object#变换操作)：
+绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/api/basic/display-object#变换操作)：
 
 ```js
 html.translate(100, 0); // 平移
@@ -240,7 +240,7 @@ html.rotate(30); // 旋转
 
 #### 节点操作
 
-对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/zh/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
+对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
 
 ```js
 const $div = document.createElement('div');
@@ -264,7 +264,7 @@ html.hide();
 html.style.visibility = 'hidden';
 ```
 
-但是在通过 [z-index](/zh/api/basic/display-object#zindex) 指定渲染顺序时，受限于具体实现，仅在各个 HTML 内容间生效。在下面的例子中，html1 无法在 circle1 和 circle2 之间展示：
+但是在通过 [z-index](/api/basic/display-object#zindex) 指定渲染顺序时，受限于具体实现，仅在各个 HTML 内容间生效。在下面的例子中，html1 无法在 circle1 和 circle2 之间展示：
 
 ```js
 // 在 <canvas> 中渲染的两个 circle

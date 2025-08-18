@@ -58,17 +58,17 @@ import '@antv/g-web-components';
 
 ### \<g-circle\>
 
-可参考 [Circle](/zh/api/basic/circle)。
+可参考 [Circle](/api/basic/circle)。
 
 ### \<g-ellipse\>
 
-可参考 [Ellipse](/zh/api/basic/ellipse)。
+可参考 [Ellipse](/api/basic/ellipse)。
 
 ### \<g-rect\>
 
-可参考 [Rect](/zh/api/basic/rect)。
+可参考 [Rect](/api/basic/rect)。
 
-需要注意 [radius](/zh/api/basic/rect#radius) 需要使用数组字符串形式：
+需要注意 [radius](/api/basic/rect#radius) 需要使用数组字符串形式：
 
 ```html
 <g-rect
@@ -82,11 +82,11 @@ import '@antv/g-web-components';
 
 ### \<g-line\>
 
-可参考 [Line](/zh/api/basic/line)。
+可参考 [Line](/api/basic/line)。
 
 ### \<g-path\>
 
-可参考 [Path](/zh/api/basic/path)。
+可参考 [Path](/api/basic/path)。
 
 需要注意路径定义一定要使用字符串形式。
 

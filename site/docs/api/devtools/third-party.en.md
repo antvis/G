@@ -7,7 +7,7 @@ order: 3
 
 ## stats.js
 
-[stats.js](https://github.com/mrdoob/stats.js/) 常用于展示 FPS。配合 G 使用时可以监听 [CanvasEvent 画布事件](/zh/api/canvas#画布特有事件)，在每一帧结束时更新：
+[stats.js](https://github.com/mrdoob/stats.js/) 常用于展示 FPS。配合 G 使用时可以监听 [CanvasEvent 画布事件](/en/api/canvas/event#画布特有事件)，在每一帧结束时更新：
 
 <img src="https://raw.githubusercontent.com/mrdoob/stats.js/master/files/fps.png" width="300px">
 
@@ -32,6 +32,6 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 
 ## Spector.js
 
-如果使用 `g-webgl` 作为[渲染器](/zh/api/renderer)，可以安装 Chrome 浏览器插件 [Spector.js](https://spector.babylonjs.com/)，捕获当前帧执行的所有 WebGL API：
+如果使用 `g-webgl` 作为[渲染器](/en/api/renderer/intro)，可以安装 Chrome 浏览器插件 [Spector.js](https://spector.babylonjs.com/)，捕获当前帧执行的所有 WebGL API：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TE8zT7vFq4gAAAAAAAAAAAAAARQnAQ" width="500px">

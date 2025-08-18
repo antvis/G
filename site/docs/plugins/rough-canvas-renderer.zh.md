@@ -3,13 +3,13 @@ title: g-plugin-rough-canvas-renderer
 order: 3
 ---
 
-使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染，[示例](/zh/examples/plugins#rough)。
+使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染，[示例](/examples/plugins/rough/#rough)。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 ## 安装方式
 
-首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
+首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
 
 ```js
 import { Canvas } from '@antv/g';
@@ -31,7 +31,7 @@ const canvas = new Canvas({
 
 需要注意的是一旦使用该插件，“脏矩形渲染”便无法使用，这意味着任何图形的任何样式属性改变，都会导致画布的全量重绘。
 
-另外，我们支持所有 2D 图形，其中 [Text](/zh/api/basic/text)、[Image](/zh/api/basic/image) 和 [HTML](/zh/api/basic/html) 无手绘风格。
+另外，我们支持所有 2D 图形，其中 [Text](/api/basic/text)、[Image](/api/basic/image) 和 [HTML](/api/basic/html) 无手绘风格。
 
 ## 样式属性
 
@@ -39,7 +39,7 @@ const canvas = new Canvas({
 
 ### opacity
 
-rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 一样。
+rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 一样。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -49,7 +49,7 @@ rough.js 并不支持 `shadow` 相关效果，但我们提供了相关效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
 
-配置项可以参考 [阴影](/zh/api/basic/display-object#阴影)：
+配置项可以参考 [阴影](/api/basic/display-object#阴影)：
 
 ```js
 circle.style.shadowColor = '#000';
@@ -60,7 +60,7 @@ circle.style.shadowOffsetY = 0;
 
 ### roughness
 
-rough.js 提供了很多影响手绘效果的[配置项](https://github.com/rough-stuff/rough/wiki#options)，都可以正常使用。[示例](/zh/examples/plugins/rough/#rough-options)
+rough.js 提供了很多影响手绘效果的[配置项](https://github.com/rough-stuff/rough/wiki#options)，都可以正常使用。[示例](/examples/plugins/rough/#rough-options)
 
 表示手绘风格程度，默认值为 `1`。`0` 代表无手绘效果，数字越大风格化效果越明显，但超过 `10` 会完全失去原本的形状也就没意义了。
 
@@ -72,7 +72,7 @@ circle.style.roughness = 2;
 
 ### bowing
 
-线条的弯曲程度，默认值为 `1`。`0` 代表直线。[示例](/zh/examples/plugins/rough/#rough-options)
+线条的弯曲程度，默认值为 `1`。`0` 代表直线。[示例](/examples/plugins/rough/#rough-options)
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668150135837/Nov-11-2022%25252015-01-56.gif" alt="bowing">
 
@@ -82,7 +82,7 @@ circle.style.bowing = 2;
 
 ### fillStyle
 
-填充风格，支持以下枚举值，[示例](/zh/examples/plugins/rough/#rough-options)：
+填充风格，支持以下枚举值，[示例](/examples/plugins/rough/#rough-options)：
 
 - `'hachure'`
 - `'solid'`
@@ -106,7 +106,7 @@ circle.style.fillStyle = 'zigzag';
 
 ### fillWeight
 
-代表填充的线宽，默认为 `strokeWidth` 的一半。当 [fillStyle](/zh/plugins/rough-canvas-renderer#fillstyle) 选择 `'dots'` 样式时，代表点的直径。
+代表填充的线宽，默认为 `strokeWidth` 的一半。当 [fillStyle](/plugins/rough-canvas-renderer#fillstyle) 选择 `'dots'` 样式时，代表点的直径。
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668150690054/Nov-11-2022%25252015-11-20.gif" alt="fillWeight">
 
@@ -208,19 +208,19 @@ circle.style.disableMultiStrokeFill = true;
 
 ### dashOffset
 
-当 [fillStyle](/zh/plugins/rough-canvas-renderer#fillstyle) 选择 `'dashed'` 时，表示每段虚线长度。未设置会使用 [hachureGap](/zh/plugins/rough-canvas-renderer#hachuregap) 的值。
+当 [fillStyle](/plugins/rough-canvas-renderer#fillstyle) 选择 `'dashed'` 时，表示每段虚线长度。未设置会使用 [hachureGap](/plugins/rough-canvas-renderer#hachuregap) 的值。
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668152931436/Nov-11-2022%25252015-48-38.gif" alt="dashOffset">
 
 ### dashGap
 
-当 [fillStyle](/zh/plugins/rough-canvas-renderer#fillstyle) 选择 `'dashed'` 时，表示虚线间隔。未设置会使用 [hachureGap](/zh/plugins/rough-canvas-renderer#hachuregap) 的值。
+当 [fillStyle](/plugins/rough-canvas-renderer#fillstyle) 选择 `'dashed'` 时，表示虚线间隔。未设置会使用 [hachureGap](/plugins/rough-canvas-renderer#hachuregap) 的值。
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668153031116/Nov-11-2022%25252015-49-51.gif" alt="dashGap">
 
 ### zigzagOffset
 
-当 [fillStyle](/zh/plugins/rough-canvas-renderer#fillstyle) 选择 `'zigzag-line'` 时，指定三角形的宽度。未设置会使用 [hachureGap](/zh/plugins/rough-canvas-renderer#hachuregap) 的值。
+当 [fillStyle](/plugins/rough-canvas-renderer#fillstyle) 选择 `'zigzag-line'` 时，指定三角形的宽度。未设置会使用 [hachureGap](/plugins/rough-canvas-renderer#hachuregap) 的值。
 
 <img src="https://gw.alipayobjects.com/zos/raptor/1668153049044/Nov-11-2022%25252015-50-20.gif" alt="zigzagOffset">
 
@@ -228,6 +228,6 @@ circle.style.disableMultiStrokeFill = true;
 
 ## 拾取
 
-在 [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
+在 [g-plugin-canvas-picker](/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
 
 但在手绘风格下，似乎无法也没必要做精确拾取，因此我们仍使用该插件。

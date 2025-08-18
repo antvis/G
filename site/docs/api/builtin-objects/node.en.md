@@ -184,7 +184,7 @@ Caveats.
 - Cloned new nodes do not retain the parent-child relationship of the original node, and need to be added to the canvas using `appendChild` before they will be rendered
 - Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original graph are not copied
 
-In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
+In this [example](/en/examples/scenegraph/basic/#clone), we demonstrate the above features.
 
 - The style properties of the original node can be changed at any time, the copy will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
 - However, since no event listeners are copied, only the original node can be dragged and dropped

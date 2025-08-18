@@ -33,7 +33,7 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 ### WebGL 实现
 
-从实现角度看，以上方案都使用 WebGL 图形 API 来模拟并不支持的 Compute Shader，具体来说都是通过常规渲染管线中可编程的 Vertex/Fragment Shader 完成，如果对我们的实现感兴趣，可以阅读[经典 GPGPU 的实现原理](/zh/api/implements)。下图来自 [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/)，简单展示了基本的实现过程：
+从实现角度看，以上方案都使用 WebGL 图形 API 来模拟并不支持的 Compute Shader，具体来说都是通过常规渲染管线中可编程的 Vertex/Fragment Shader 完成，如果对我们的实现感兴趣，可以阅读[经典 GPGPU 的实现原理](/api/gpgpu/implements)。下图来自 [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/)，简单展示了基本的实现过程：
 
 <img src="https://user-images.githubusercontent.com/3608471/83623503-fd97a100-a5c3-11ea-83d3-bf2c11836219.png" alt="GPGPU based on WebGL" width="300">
 

@@ -88,7 +88,7 @@ The height of the rectangle. Supports taking **negative numbers** with the effec
 
 ### radius
 
-Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/en/examples/shape#rect).
+Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/en/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_pegTqJKe54AAAAAAAAAAAAAARQnAQ" alt="rounded rect">
 

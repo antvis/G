@@ -5,13 +5,13 @@ order: 2
 
 在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
 
-在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/zh/api/renderer/intro)完成渲染。[本节示例](/zh/examples/guide/basic/#chapter2)
+在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/api/renderer/intro)完成渲染。[本节示例](/examples/guide/basic/#chapter2)
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
 ## 选择渲染器
 
-首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/zh/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
+首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
 
 ```javascript
 import { Renderer } from '@antv/g-canvas';
@@ -34,7 +34,7 @@ const canvas = new Canvas({
 
 ## 向画布中添加图形
 
-有了画布，我们可以把场景图中的两个节点和一条边加入画布，当然这一切要等待画布就绪之后。我们有两种方式获知画布何时就绪，一是监听 [就绪事件](/zh/api/canvas#ready-事件)，二是[等待就绪的 Promise 返回](/zh/api/canvas#ready)：
+有了画布，我们可以把场景图中的两个节点和一条边加入画布，当然这一切要等待画布就绪之后。我们有两种方式获知画布何时就绪，一是监听 [就绪事件](/api/canvas/intro#ready-%E4%BA%8B%E4%BB%B6)，二是[等待就绪的 Promise 返回](/api/canvas/scenegraph-lifecycle#ready)：
 
 ```javascript
 canvas.addEventListener(CanvasEvent.READY, () => {

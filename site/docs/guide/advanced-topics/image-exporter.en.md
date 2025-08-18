@@ -82,7 +82,7 @@ const canvas = await exporter.toCanvas({
 });
 ```
 
-Note that the crop area uses `Rectangle` instead of [Rect](/en/api/basic/rect) graphics. Its constructor contains four parameters `x/y/width/height`. It is relative to [viewport coordinate system](/en/api/canvas#viewport) under [viewport](/en/api/canvas#viewport), i.e. for a 400 x 400 canvas, the maximum width and height of the crop is 400.
+Note that the crop area uses `Rectangle` instead of [Rect](/en/api/basic/rect) graphics. Its constructor contains four parameters `x/y/width/height`. It is relative to [viewport coordinate system](/en/api/canvas/coordinates#viewport) under [viewport](/en/api/canvas/coordinates#viewport), i.e. for a 400 x 400 canvas, the maximum width and height of the crop is 400.
 
 When exporting [HTML](/en/api/basic/html), all HTMLElement in the container will be exported by default, but sometimes some elements are not the ones we want to export, so we can use `ignoreElements: (element: Element): boolean;` method to filter. For example, in this [example](/en/examples/ecosystem/image-exporter/#image-exporter) there are DOM elements added by stats.js and lil-gui in the container that we don't want to export, so we can.
 
@@ -108,7 +108,7 @@ Implemented internally using [XMLSerializer](https://developer.mozilla.org/en-US
 
 ### downloadImage
 
-To trigger browser download behavior, you can pass [exported dataURL](/en/plugins/image-exporter#export-dataurl) and specify the name of the saved file.
+To trigger browser download behavior, you can pass [exported dataURL](/en/examples/ecosystem/image-exporter/#image-exporter) and specify the name of the saved file.
 
 The full method signature is as follows.
 
@@ -138,7 +138,7 @@ The download behavior is achieved by creating an HTMLAnchorElement using `docume
 
 ## Export dataURL
 
-With [toCanvas](/en/plugins/image-exporter#tocanvas) we get the HTMLCanvasElement containing the canvas content, using its native method [toDataURL](<https://developer.mozilla>. org/en-cn/docs/Web/API/HTMLCanvasElement/toDataURL) to get the dataURL.
+With [toCanvas](/en/examples/ecosystem/image-exporter/#image-exporter) we get the HTMLCanvasElement containing the canvas content, using its native method [toDataURL](<https://developer.mozilla>. org/en-cn/docs/Web/API/HTMLCanvasElement/toDataURL) to get the dataURL.
 
 ```js
 const canvas = await exporter.toCanvas();
@@ -185,7 +185,7 @@ Also when exporting [HTML](/en/api/basic/html) content, using the export method 
 
 ### How do I export graphics outside of the canvas viewport?
 
-The export methods we provide are only for the canvas viewport range, even cropping is relative to [viewport coordinate system](/en/api/canvas#viewport). So if you want to export graphics outside the viewport, you can use [camera API](/en/api/camera) to change the viewport range without changing the scene structure, for example by [setZoom](http://localhost:8000/en/api/camera#setzoom) to zoom in and out to allow more graphics to fit inside the viewport.
+The export methods we provide are only for the canvas viewport range, even cropping is relative to [viewport coordinate system](/en/api/canvas/coordinates#viewport). So if you want to export graphics outside the viewport, you can use [camera API](/en/api/camera/intro) to change the viewport range without changing the scene structure, for example by [setZoom](http://localhost:8000/en/api/camera#setzoom) to zoom in and out to allow more graphics to fit inside the viewport.
 
 ### toDataURL polyfill
 

@@ -11,7 +11,7 @@ The following figure shows the composition of the bundle `@antv/g`.
 
 The full version `@antv/g` consists of the following parts.
 
-- `@antv/g-lite` Includes [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro) and other core functions
+- `@antv/g-lite` Includes [canvas](/en/api/canvas/intro), [basic graphics](/en/api/basic/concept), [event system](/en/api/event/intro), [plugins system](/en/plugins/intro) and other core functions
 - `@antv/g-camera-api` Provides full camera motion and animation capabilities
 - `@antv/g-web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)
 - `@antv/g-css-typed-om-api` Provides CSS Typed OM API
@@ -48,9 +48,9 @@ The following is a detailed description of the functions of each part after spli
 
 ### g-lite
 
-Contains core functions such as [canvas](/en/api/canvas), [basic graphics](/en/api/basic/concept), [event system](/en/api/event), [plugins system](/en/plugins/intro).
+Contains core functions such as [canvas](/en/api/canvas/intro), [basic graphics](/en/api/basic/concept), [event system](/en/api/event/intro), [plugins system](/en/plugins/intro).
 
-There is no change in the way the above functions are used, [example](/en/examples/ecosystem#lite).
+There is no change in the way the above functions are used, [example](/en/examples/ecosystem/lite/#lite).
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
@@ -70,7 +70,7 @@ const circle = new Circle({
 
 ### g-camera-api
 
-`@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/en/api/camera#actions) and [camera animation](/en/api/camera#animation).
+`@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/en/api/camera/action) and [camera animation](/en/api/camera/animation).
 
 ```js
 camera.pan(); // throw new Error('Method not implemented.');

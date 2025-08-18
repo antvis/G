@@ -42,7 +42,7 @@ const device = plugin.getDevice();
 
 ### Buffer
 
-Buffer 代表 GPU 操作中使用的一块内存，在创建时可以指定初始化数据，随后也可以对其中部分数据进行修改。数据以线性布局的方式存储。当需要在 CPU 侧（Host）读取其中的数据时，需要通过 [Readback](/zh/plugins/device-renderer#readback) 完成。
+Buffer 代表 GPU 操作中使用的一块内存，在创建时可以指定初始化数据，随后也可以对其中部分数据进行修改。数据以线性布局的方式存储。当需要在 CPU 侧（Host）读取其中的数据时，需要通过 [Readback](/plugins/device-renderer#readback) 完成。
 
 ```ts
 export interface Buffer {
@@ -95,7 +95,7 @@ export enum BufferFrequencyHint {
 }
 ```
 
-例如配合 [g-plugin-gpgpu](/zh/plugins/gpgpu) 使用时，用来分配输入和输出 Buffer：
+例如配合 [g-plugin-gpgpu](/plugins/gpgpu) 使用时，用来分配输入和输出 Buffer：
 
 ```js
 const buffer = device.createBuffer({
@@ -377,11 +377,11 @@ program.destroy();
 
 ## 基于 GPU 的拾取
 
-与 [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 和 [g-plugin-svg-picker](/zh/plugins/svg-picker) 这些基于 CPU 的拾取方案不同，我们使用使用一种基于 GPU 称作“颜色编码”的方式。
+与 [g-plugin-canvas-picker](/plugins/canvas-picker) 和 [g-plugin-svg-picker](/plugins/svg-picker) 这些基于 CPU 的拾取方案不同，我们使用使用一种基于 GPU 称作“颜色编码”的方式。
 
 该方式包含以下步骤：
 
 1. 为每个图形分配一个独立的用于拾取的“颜色”
-2. 当需要拾取时（触发[交互事件](/zh/api/event)或者通过 [element(s)FromPoint](/zh/api/builtin-objects/document#elementsfrompoint) API），使用上一步分配的“颜色”而非真实颜色渲染到 Framebuffer（大小无需全屏，通常只需要 1x1）中。同时使用 [setViewOffset](/zh/api/camera#setviewoffset) 为相机设置偏移量，这样只需要渲染拾取区域（通常是 1x1）而无需渲染全屏
+2. 当需要拾取时（触发[交互事件](/api/event/intro)或者通过 [element(s)FromPoint](/api/builtin-objects/document#elementsfrompoint) API），使用上一步分配的“颜色”而非真实颜色渲染到 Framebuffer（大小无需全屏，通常只需要 1x1）中。同时使用 [setViewOffset](/api/camera/params#setviewoffset) 为相机设置偏移量，这样只需要渲染拾取区域（通常是 1x1）而无需渲染全屏
 3. 读取 Framebuffer 中纹理像素值，映射回图形
-4. 如果需要获取目标点重叠在一起而非最顶部的全部图形（例如使用 [elementsFromPoint](/zh/api/builtin-objects/document#elementsfrompoint)），设置已拾取到图形的拾取“颜色”为空。重复 2/3 步，直至无法拾取到任何图形
+4. 如果需要获取目标点重叠在一起而非最顶部的全部图形（例如使用 [elementsFromPoint](/api/builtin-objects/document#elementsfrompoint)），设置已拾取到图形的拾取“颜色”为空。重复 2/3 步，直至无法拾取到任何图形
