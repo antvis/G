@@ -46,7 +46,8 @@
     "durationMs": "持续时间(毫秒)",
     "phase": "阶段",
     "invalidJson": "无效的JSON格式，请确保文件包含测试结果数组",
-    "parseError": "解析JSON文件时出错："
+    "parseError": "解析JSON文件时出错：",
+    "highestFailureRate": "{{engine}} 引擎的失败率最高，达到 {{rate}}% ({{failed}}/{{total}})。"
   },
   "performanceInsight": {
     "testSummary": "在 \"{suiteName}\" 测试套件中，共运行了 {totalTests} 个测试，成功 {successCount} 个，成功率 {successRate}%。",

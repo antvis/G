@@ -22,40 +22,42 @@ export interface TestRunnerEvents<T> {
   ];
   stopping: [];
   log: [message: string];
-  progress: [event: {
-    // 整体进度
-    current: number;      // 当前完成的测试用例数
-    total: number;        // 总测试用例数
-    progress: number;     // 进度百分比 (0-100)
-    
-    // 时间统计
-    time: {
-      elapsed: number;    // 已用时间（秒）
-      remaining: number;  // 预计剩余时间（秒）
-      avgPerCase: number; // 平均每个测试用例耗时（秒）
-    };
-    
-    // 引擎级别
-    engine: {
-      current: number;    // 当前是第几个引擎
-      total: number;      // 总共有多少个引擎
-      name: string;       // 当前引擎名称
-    };
-    
-    // 测试套件级别
-    suite: {
-      current: number;    // 当前是第几个测试套件
-      total: number;      // 当前引擎总共有多少个测试套件
-      name: string;       // 当前测试套件名称
-    };
-    
-    // 测试用例级别
-    testCase: {
-      current: number;    // 当前是第几个测试用例
-      total: number;      // 当前测试套件总共有多少个测试用例
-      name: string;       // 当前测试用例名称
-    };
-  }];
+  progress: [
+    event: {
+      // 整体进度
+      current: number; // 当前完成的测试用例数
+      total: number; // 总测试用例数
+      progress: number; // 进度百分比 (0-100)
+
+      // 时间统计
+      time: {
+        elapsed: number; // 已用时间（秒）
+        remaining: number; // 预计剩余时间（秒）
+        avgPerCase: number; // 平均每个测试用例耗时（秒）
+      };
+
+      // 引擎级别
+      engine: {
+        current: number; // 当前是第几个引擎
+        total: number; // 总共有多少个引擎
+        name: string; // 当前引擎名称
+      };
+
+      // 测试套件级别
+      suite: {
+        current: number; // 当前是第几个测试套件
+        total: number; // 当前引擎总共有多少个测试套件
+        name: string; // 当前测试套件名称
+      };
+
+      // 测试用例级别
+      testCase: {
+        current: number; // 当前是第几个测试用例
+        total: number; // 当前测试套件总共有多少个测试用例
+        name: string; // 当前测试用例名称
+      };
+    },
+  ];
 }
 
 export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
@@ -95,27 +97,31 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
 
   private async getTestSuiteCaseCounts(): Promise<number[]> {
     const counts: number[] = [];
-    console.log('Getting test suite case counts for:', this.currentCaseGroupNames);
-    
+    console.log(
+      'Getting test suite case counts for:',
+      this.currentCaseGroupNames,
+    );
+
     for (const suiteName of this.currentCaseGroupNames) {
       // 查找第一个包含该测试套件的引擎
       let caseCount = 0;
       for (const engine of this.engines) {
-        // @ts-ignore - 访问受保护的属性
-        const suite = engine.testSuiteMap?.get(suiteName);
+        const suite = engine.getTestSuite(suiteName);
         if (suite) {
-          console.log(`Suite ${suiteName} found in engine ${engine.name} with ${suite.cases.length} cases`);
+          console.log(
+            `Suite ${suiteName} found in engine ${engine.name} with ${suite.cases.length} cases`,
+          );
           caseCount = suite.cases.length;
           break;
         }
       }
-      
+
       if (caseCount === 0) {
         console.warn(`Suite ${suiteName} not found in any engine`);
       }
       counts.push(caseCount);
     }
-    
+
     console.log('Final case counts:', counts);
     return counts;
   }
@@ -124,64 +130,68 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
     console.log('emitProgress called, totalTestCases:', this.totalTestCases);
     if (this.totalTestCases > 0) {
       const now = Date.now();
-      const progress = Math.min(100, Math.round((this.completedTestCases / this.totalTestCases) * 100));
+      const progress = Math.min(
+        100,
+        Math.round((this.completedTestCases / this.totalTestCases) * 100),
+      );
       const currentEngine = this.engines[this.currentEngineIndex];
-      const currentSuiteName = this.currentCaseGroupNames[this.currentSuiteIndex];
-      
+      const currentSuiteName =
+        this.currentCaseGroupNames[this.currentSuiteIndex];
+
       // 获取当前测试套件
       let currentSuite = null;
       if (currentEngine && currentSuiteName) {
-        // @ts-ignore - 访问受保护的属性
-        currentSuite = currentEngine.testSuiteMap?.get(currentSuiteName);
+        currentSuite = currentEngine.getTestSuite(currentSuiteName);
       }
-      
+
       // 计算时间统计
       const elapsed = (now - this.startTime) / 1000; // 转换为秒
       const remainingCases = this.totalTestCases - this.completedTestCases;
-      const avgTimePerCase = this.completedTestCases > 0 ? elapsed / this.completedTestCases : 0;
+      const avgTimePerCase =
+        this.completedTestCases > 0 ? elapsed / this.completedTestCases : 0;
       const estimatedRemaining = remainingCases * avgTimePerCase;
-      
+
       // 限制进度更新频率（最多每秒更新一次）
       if (now - this.lastEmitTime < 1000 && progress < 100) {
         return;
       }
       this.lastEmitTime = now;
-      
+
       const progressEvent = {
         // 整体进度
         current: this.completedTestCases,
         total: this.totalTestCases,
         progress,
-        
+
         // 时间统计
         time: {
           elapsed: Math.round(elapsed * 10) / 10, // 保留一位小数
           remaining: Math.round(estimatedRemaining * 10) / 10,
           avgPerCase: Math.round(avgTimePerCase * 1000) / 1000, // 保留三位小数
         },
-        
+
         // 引擎级别
         engine: {
           current: this.currentEngineIndex + 1,
           total: this.engines.length,
-          name: currentEngine?.name || 'unknown'
+          name: currentEngine?.name || 'unknown',
         },
-        
+
         // 测试套件级别
         suite: {
           current: this.currentSuiteIndex + 1,
           total: this.currentCaseGroupNames.length,
-          name: currentSuiteName || 'unknown'
+          name: currentSuiteName || 'unknown',
         },
-        
+
         // 测试用例级别
         testCase: {
           current: this.currentCaseIndex + 1,
           total: currentSuite?.cases.length || 0,
-          name: currentSuite?.cases[this.currentCaseIndex]?.name || 'unknown'
-        }
+          name: currentSuite?.cases[this.currentCaseIndex]?.name || 'unknown',
+        },
       };
-      
+
       console.log('Emitting progress event:', progressEvent);
       this.emit(TestRunner.Events.PROGRESS, progressEvent);
     }
@@ -191,7 +201,7 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
   private currentCaseGroupNames: string[] = [];
   private startTime: number = 0;
   private lastEmitTime: number = 0;
-  
+
   async runTests(
     caseGroupNames: string[],
     root: HTMLElement,
@@ -203,19 +213,28 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
     if (this.isRunning) {
       throw new Error('Test is already running');
     }
-    
+
     // 初始化进度相关状态
     this.completedTestCases = 0;
     this.currentEngineIndex = 0;
     this.currentSuiteIndex = 0;
     this.currentCaseIndex = 0;
-    
+
     // 计算总测试用例数
     this.totalTestCases = 0;
     const suiteCounts = await this.getTestSuiteCaseCounts();
-    this.totalTestCases = suiteCounts.reduce((sum, count) => sum + count, 0) * this.engines.length;
-    console.log('Total test cases calculated:', this.totalTestCases, 'from', suiteCounts, 'suites across', this.engines.length, 'engines');
-    
+    this.totalTestCases =
+      suiteCounts.reduce((sum, count) => sum + count, 0) * this.engines.length;
+    console.log(
+      'Total test cases calculated:',
+      this.totalTestCases,
+      'from',
+      suiteCounts,
+      'suites across',
+      this.engines.length,
+      'engines',
+    );
+
     this.emitProgress();
 
     this.isRunning = true;
@@ -231,7 +250,7 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
     try {
       for (let i = 0; i < this.engines.length; i++) {
         if (this.stopRequested) break;
-        
+
         this.currentEngineIndex = i;
         const engine = this.engines[i];
         if (!engine) continue;
@@ -252,7 +271,7 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
 
           for (let j = 0; j < caseGroupNames.length; j++) {
             if (this.stopRequested) break;
-            
+
             this.currentSuiteIndex = j;
             const testSuiteName = caseGroupNames[j];
             if (!testSuiteName) continue;
@@ -273,15 +292,15 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
                 onTestComplete: (result) => {
                   this.emit(TestRunner.Events.TEST_COMPLETE, { result });
                   this.logTestResult(result);
-                  
+
                   // 更新进度
                   this.completedTestCases++;
                   this.emitProgress();
-                  
+
                   if (options.onTestComplete) {
                     options.onTestComplete(result);
                   }
-                  
+
                   // 更新当前测试套件中的 case 索引
                   this.currentCaseIndex++;
                 },
@@ -403,15 +422,17 @@ export class TestRunner<T = unknown> extends EventEmitter<TestRunnerEvents<T>> {
   private log(message: string, indent = 0) {
     const now = new Date();
     // 使用本地时间格式，不指定特定区域
-    const timestamp = now.toLocaleString([], {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/\//g, '-');
+    const timestamp = now
+      .toLocaleString([], {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      })
+      .replace(/\//g, '-');
     const indentStr = '  '.repeat(indent);
     this.emit(TestRunner.Events.LOG, `[${timestamp}] ${indentStr}${message}`);
   }

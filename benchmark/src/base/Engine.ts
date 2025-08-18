@@ -12,6 +12,10 @@ export abstract class Engine<T> {
     this.testSuiteMap.set(testSuite.name, testSuite);
   }
 
+  getTestSuite(testSuiteName: string): TestSuite<T> | undefined {
+    return this.testSuiteMap.get(testSuiteName);
+  }
+
   getTestSuiteNames(): string[] {
     return Array.from(this.testSuiteMap.keys());
   }

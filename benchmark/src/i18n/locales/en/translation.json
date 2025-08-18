@@ -46,7 +46,8 @@
     "durationMs": "Duration (ms)",
     "phase": "Phase",
     "invalidJson": "Invalid JSON format, please ensure the file contains a test results array",
-    "parseError": "Error parsing JSON file: "
+    "parseError": "Error parsing JSON file: ",
+    "highestFailureRate": "{{engine}} has the highest failure rate of {{rate}}% ({{failed}}/{{total}})."
   },
   "performanceInsight": {
     "testSummary": "In test suite \"{suiteName}\", a total of {totalTests} tests were run, {successCount} succeeded, success rate {successRate}%.",

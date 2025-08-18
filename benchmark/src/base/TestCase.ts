@@ -19,6 +19,8 @@ export abstract class TestCase<T> {
     const caseName = this.constructor.name;
 
     try {
+      await this.setup(app, options);
+
       // 记录执行前内存
       this.recordMemory('beforeExecute');
 
@@ -26,7 +28,6 @@ export abstract class TestCase<T> {
       const executeMark = `${engineName}-${testSuiteName}-${caseName}-execute-start`;
       performance.mark(executeMark);
       const executeStartTime = performance.now();
-      await this.setup(app, options);
       await this.execute(app, options);
       this.metrics.execute.duration = performance.now() - executeStartTime;
       performance.measure(
@@ -68,15 +69,11 @@ export abstract class TestCase<T> {
     };
   }
 
+  protected async setup(_app: T, _options: TestOptions): Promise<void> {}
+
   protected abstract execute(app: T, options: TestOptions): Promise<void>;
 
-  private async setup(_app: T, _options: TestOptions): Promise<void> {
-    this.recordMemory('beforeExecute');
-  }
-
-  protected async cleanup(_app: T): Promise<void> {
-    this.recordMemory('afterCleanup');
-  }
+  protected async cleanup(_app: T): Promise<void> {}
 
   private recordMemory(
     phase: 'beforeExecute' | 'afterExecute' | 'beforeCleanup' | 'afterCleanup',

@@ -5,11 +5,14 @@ import { testRunner } from '../benchmarks';
 import type { TestResult } from '../base/types';
 
 // Simple template formatter that replaces {{key}} with values from data object
-const formatTemplate = (template: string, data: Record<string, any>): string => {
+const formatTemplate = (
+  template: string,
+  data: Record<string, any>,
+): string => {
   return Object.entries(data).reduce(
-    (str, [key, value]) => 
+    (str, [key, value]) =>
       str.replace(new RegExp(`\\{\\s*${key}\\s*\\}`, 'g'), String(value)),
-    template
+    template,
   );
 };
 
@@ -108,7 +111,11 @@ export function PerformanceChart() {
   };
 
   // 生成洞察文本
-  const generateInsight = (results: TestResult[], suite: string, t: any): string => {
+  const generateInsight = (
+    results: TestResult[],
+    suite: string,
+    t: any,
+  ): string => {
     if (!suite || results.length === 0) {
       return '';
     }
@@ -272,13 +279,15 @@ export function PerformanceChart() {
       totalTests,
       successCount: totalTests - failedTests,
       successRate,
-      failedTests
+      failedTests,
     });
 
     if (failedTests > 0) {
-      insightText += ' ' + formatTemplate(t('performanceInsight.failureWarning'), {
-        count: failedTests
-      });
+      insightText +=
+        ' ' +
+        formatTemplate(t('performanceInsight.failureWarning'), {
+          count: failedTests,
+        });
     }
 
     // 添加失败率信息
@@ -288,7 +297,7 @@ export function PerformanceChart() {
 
     if (highestFailureRateEngine) {
       const [engine, stats] = highestFailureRateEngine;
-      insightText += ` ${engine} 引擎的失败率最高，达到 ${stats!.failureRate.toFixed(1)}% (${stats!.failedTests}/${stats!.totalTests})。`;
+      insightText += ` ${t('performanceChart.highestFailureRate', { engine, rate: stats!.failureRate.toFixed(1), failed: stats!.failedTests, total: stats!.totalTests })}`;
     }
 
     // 添加格式化的性能分析详情
@@ -509,7 +518,9 @@ export function PerformanceChart() {
   return (
     <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
       <div class="border-b border-gray-200 py-3 px-4">
-        <h2 class="text-base font-semibold text-gray-800">{t('performanceChart.title')}</h2>
+        <h2 class="text-base font-semibold text-gray-800">
+          {t('performanceChart.title')}
+        </h2>
       </div>
       <div class="p-4">
         <div class="flex flex-wrap gap-3 mb-3">
@@ -551,28 +562,39 @@ export function PerformanceChart() {
         <div>
           {insight && (
             <div class="mb-4 border border-gray-200 rounded-lg overflow-hidden">
-              <div 
+              <div
                 class="flex items-center justify-between px-4 py-2 bg-blue-50 border-b border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors duration-150"
                 onClick={() => setIsInsightExpanded(!isInsightExpanded)}
               >
-                <h3 class="text-sm font-medium text-blue-800">{t('performanceChart.insightsTitle')}</h3>
+                <h3 class="text-sm font-medium text-blue-800">
+                  {t('performanceChart.insightsTitle')}
+                </h3>
                 <div class="flex items-center">
                   <span class="text-xs text-blue-600 mr-2">
-                    {isInsightExpanded ? t('performanceChart.collapse') : t('performanceChart.expand')}
+                    {isInsightExpanded
+                      ? t('performanceChart.collapse')
+                      : t('performanceChart.expand')}
                   </span>
-                <svg 
-                  class={`w-4 h-4 text-gray-500 transform transition-transform ${isInsightExpanded ? 'rotate-180' : ''}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
+                  <svg
+                    class={`w-4 h-4 text-gray-500 transform transition-transform ${isInsightExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </div>
               </div>
               {isInsightExpanded && (
                 <div class="p-4 bg-blue-50">
-                  <div class="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">{insight}</div>
+                  <div class="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
+                    {insight}
+                  </div>
                 </div>
               )}
             </div>
