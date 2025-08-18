@@ -21,6 +21,7 @@ export function PerformanceChart() {
   const [selectedSuite, setSelectedSuite] = useState<string>('');
   const lastResultsRef = useRef<TestResult[]>([]);
   const [insight, setInsight] = useState<string>(''); // 添加洞察状态
+  const [isInsightExpanded, setIsInsightExpanded] = useState<boolean>(true); // 控制洞察区域是否展开
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -549,8 +550,31 @@ export function PerformanceChart() {
         </div>
         <div>
           {insight && (
-            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-              <div class="whitespace-pre-wrap text-sm">{insight}</div>
+            <div class="mb-4 border border-gray-200 rounded-lg overflow-hidden">
+              <div 
+                class="flex items-center justify-between px-4 py-2 bg-blue-50 border-b border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors duration-150"
+                onClick={() => setIsInsightExpanded(!isInsightExpanded)}
+              >
+                <h3 class="text-sm font-medium text-blue-800">{t('performanceChart.insightsTitle')}</h3>
+                <div class="flex items-center">
+                  <span class="text-xs text-blue-600 mr-2">
+                    {isInsightExpanded ? t('performanceChart.collapse') : t('performanceChart.expand')}
+                  </span>
+                <svg 
+                  class={`w-4 h-4 text-gray-500 transform transition-transform ${isInsightExpanded ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </div>
+              </div>
+              {isInsightExpanded && (
+                <div class="p-4 bg-blue-50">
+                  <div class="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">{insight}</div>
+                </div>
+              )}
             </div>
           )}
         </div>
