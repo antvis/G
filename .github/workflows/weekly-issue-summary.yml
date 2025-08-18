@@ -1,0 +1,46 @@
+name: Weekly Issue Summary
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 1'
+
+permissions:
+  issues: write
+  contents: read
+  models: read
+
+jobs:
+  create_weekly_summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install gh-models extension
+        run: gh extension install https://github.com/github/gh-models
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Get issues from the past week
+        id: get_issues
+        run: |-
+          LAST_WEEK=$(date -d "7 days ago" +"%Y-%m-%d")
+          gh search issues "created:>$LAST_WEEK" --state=open --json title,body,url --repo ${{ github.repository }} > issues.json
+
+      - name: Generate summary using gh models
+        id: summary
+        run: |
+          summary=$(cat issues.json | gh models run --file prompts/issue-summary.prompt.yml)
+          echo "summary_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$summary" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create issue with summary
+        if: steps.summary.outputs.summary_output
+        run: |
+          gh issue create \
+            --title "Weekly Issue Summary - $(date +%F)" \
+            --body "$summary_output"
+        env:
+          summary_output: ${{ steps.summary.outputs.summary_output }}
