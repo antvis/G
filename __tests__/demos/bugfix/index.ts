@@ -16,3 +16,4 @@ export { issue_1911 } from './1911';
 export { textWordWrap } from './textWordWrap';
 export { group_with_stroke } from './group-with-stroke';
 export { switchRenderer } from './switch-renderer';
+export { imageRerender } from './image-rerender';
