@@ -1,0 +1,650 @@
+[
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "RectCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 147.09999990463257,
+        "memory": {
+          "beforeJSHeapSize": 149417378,
+          "afterJSHeapSize": 173091181,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1113.7000000476837,
+        "memory": {
+          "beforeJSHeapSize": 173091181,
+          "afterJSHeapSize": 170382613,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "TextCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 171.40000009536743,
+        "memory": {
+          "beforeJSHeapSize": 170382613,
+          "afterJSHeapSize": 182821910,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1116.0999999046326,
+        "memory": {
+          "beforeJSHeapSize": 182821910,
+          "afterJSHeapSize": 187944566,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "CircleCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 61.5,
+        "memory": {
+          "beforeJSHeapSize": 187944566,
+          "afterJSHeapSize": 206911560,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1066.7000000476837,
+        "memory": {
+          "beforeJSHeapSize": 206911560,
+          "afterJSHeapSize": 212026801,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "EllipseCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 85.30000007152557,
+        "memory": {
+          "beforeJSHeapSize": 212026801,
+          "afterJSHeapSize": 226718362,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1068.1000000238419,
+        "memory": {
+          "beforeJSHeapSize": 226718362,
+          "afterJSHeapSize": 231808994,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "LineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 82.80000007152557,
+        "memory": {
+          "beforeJSHeapSize": 231808994,
+          "afterJSHeapSize": 254564371,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1045.8999999761581,
+        "memory": {
+          "beforeJSHeapSize": 254564371,
+          "afterJSHeapSize": 238975161,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "PolylineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 83.60000002384186,
+        "memory": {
+          "beforeJSHeapSize": 238975161,
+          "afterJSHeapSize": 190216410,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1073.6000000238419,
+        "memory": {
+          "beforeJSHeapSize": 190216410,
+          "afterJSHeapSize": 195309186,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "PolygonCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 56.60000002384186,
+        "memory": {
+          "beforeJSHeapSize": 195309186,
+          "afterJSHeapSize": 211655584,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1047.5,
+        "memory": {
+          "beforeJSHeapSize": 211655584,
+          "afterJSHeapSize": 216801481,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "ImageCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 63.800000071525574,
+        "memory": {
+          "beforeJSHeapSize": 216801481,
+          "afterJSHeapSize": 248820191,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1064.6000000238419,
+        "memory": {
+          "beforeJSHeapSize": 248820191,
+          "afterJSHeapSize": 253910675,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas",
+    "testSuite": "basic-shapes",
+    "case": "PathCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 154.89999997615814,
+        "memory": {
+          "beforeJSHeapSize": 253910675,
+          "afterJSHeapSize": 273683199,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1090.2999999523163,
+        "memory": {
+          "beforeJSHeapSize": 273683199,
+          "afterJSHeapSize": 283787233,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "RectCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 19.100000023841858,
+        "memory": {
+          "beforeJSHeapSize": 283787233,
+          "afterJSHeapSize": 283787233,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1050.8999999761581,
+        "memory": {
+          "beforeJSHeapSize": 283787233,
+          "afterJSHeapSize": 277426086,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "TextCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 29,
+        "memory": {
+          "beforeJSHeapSize": 277426086,
+          "afterJSHeapSize": 277426086,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1064.8999999761581,
+        "memory": {
+          "beforeJSHeapSize": 277426086,
+          "afterJSHeapSize": 301335257,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "CircleCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 62.200000047683716,
+        "memory": {
+          "beforeJSHeapSize": 301335257,
+          "afterJSHeapSize": 292888011,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1073.4000000953674,
+        "memory": {
+          "beforeJSHeapSize": 292888011,
+          "afterJSHeapSize": 163468796,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "EllipseCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 50.39999997615814,
+        "memory": {
+          "beforeJSHeapSize": 163468796,
+          "afterJSHeapSize": 191200976,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1021.3999999761581,
+        "memory": {
+          "beforeJSHeapSize": 191200976,
+          "afterJSHeapSize": 192523760,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "LineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 33.10000002384186,
+        "memory": {
+          "beforeJSHeapSize": 192523760,
+          "afterJSHeapSize": 192523760,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 985.1999999284744,
+        "memory": {
+          "beforeJSHeapSize": 192523760,
+          "afterJSHeapSize": 183137959,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "PolylineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 18.800000071525574,
+        "memory": {
+          "beforeJSHeapSize": 183137959,
+          "afterJSHeapSize": 183137959,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1019.3000000715256,
+        "memory": {
+          "beforeJSHeapSize": 183137959,
+          "afterJSHeapSize": 206156119,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "PolygonCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 28.199999928474426,
+        "memory": {
+          "beforeJSHeapSize": 206156119,
+          "afterJSHeapSize": 206156119,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1002.6000000238419,
+        "memory": {
+          "beforeJSHeapSize": 206156119,
+          "afterJSHeapSize": 197835684,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "ImageCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 136.79999995231628,
+        "memory": {
+          "beforeJSHeapSize": 197835684,
+          "afterJSHeapSize": 170630576,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1054.3999999761581,
+        "memory": {
+          "beforeJSHeapSize": 170630576,
+          "afterJSHeapSize": 171953336,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "g-canvas-v4",
+    "testSuite": "basic-shapes",
+    "case": "PathCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 91.30000007152557,
+        "memory": {
+          "beforeJSHeapSize": 171953336,
+          "afterJSHeapSize": 191208432,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1039.8999999761581,
+        "memory": {
+          "beforeJSHeapSize": 191208432,
+          "afterJSHeapSize": 178766100,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "RectCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 27.700000047683716,
+        "memory": {
+          "beforeJSHeapSize": 178766100,
+          "afterJSHeapSize": 178766100,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1030.1000000238419,
+        "memory": {
+          "beforeJSHeapSize": 178766100,
+          "afterJSHeapSize": 189147141,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "TextCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 77,
+        "memory": {
+          "beforeJSHeapSize": 189147141,
+          "afterJSHeapSize": 195665246,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1088.4000000953674,
+        "memory": {
+          "beforeJSHeapSize": 195665246,
+          "afterJSHeapSize": 162611636,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "CircleCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 31.300000071525574,
+        "memory": {
+          "beforeJSHeapSize": 162611636,
+          "afterJSHeapSize": 162611636,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 999.5,
+        "memory": {
+          "beforeJSHeapSize": 162611636,
+          "afterJSHeapSize": 175289625,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "EllipseCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 38.89999997615814,
+        "memory": {
+          "beforeJSHeapSize": 175289625,
+          "afterJSHeapSize": 175289625,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 995,
+        "memory": {
+          "beforeJSHeapSize": 175289625,
+          "afterJSHeapSize": 178179732,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "LineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 21.100000023841858,
+        "memory": {
+          "beforeJSHeapSize": 178179732,
+          "afterJSHeapSize": 178179732,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1009.2999999523163,
+        "memory": {
+          "beforeJSHeapSize": 178179732,
+          "afterJSHeapSize": 190168250,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "PolylineCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 56.89999997615814,
+        "memory": {
+          "beforeJSHeapSize": 190168250,
+          "afterJSHeapSize": 201002150,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1125.8999999761581,
+        "memory": {
+          "beforeJSHeapSize": 201002150,
+          "afterJSHeapSize": 174629635,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "PolygonCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 35.39999997615814,
+        "memory": {
+          "beforeJSHeapSize": 174629635,
+          "afterJSHeapSize": 174629635,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1020.5,
+        "memory": {
+          "beforeJSHeapSize": 174629635,
+          "afterJSHeapSize": 189539747,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "ImageCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 38.299999952316284,
+        "memory": {
+          "beforeJSHeapSize": 189539747,
+          "afterJSHeapSize": 189539747,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 987.1000000238419,
+        "memory": {
+          "beforeJSHeapSize": 189539747,
+          "afterJSHeapSize": 201827775,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  },
+  {
+    "engine": "zrender",
+    "testSuite": "basic-shapes",
+    "case": "PathCase",
+    "success": true,
+    "metrics": {
+      "execute": {
+        "duration": 21.5,
+        "memory": {
+          "beforeJSHeapSize": 201827775,
+          "afterJSHeapSize": 201827775,
+          "jsHeapSizeLimit": 4294705152
+        }
+      },
+      "cleanup": {
+        "duration": 1030.2999999523163,
+        "memory": {
+          "beforeJSHeapSize": 201827775,
+          "afterJSHeapSize": 190249236,
+          "jsHeapSizeLimit": 4294705152
+        }
+      }
+    }
+  }
+]

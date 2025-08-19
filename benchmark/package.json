@@ -1,0 +1,35 @@
+{
+  "name": "engine-benchmark",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "benchmark": "vite",
+    "lint": "eslint src --ext ts,tsx --fix"
+  },
+  "dependencies": {
+    "@antv/g": "6.1.28",
+    "@antv/g-base-v4": "npm:@antv/g-base@^0.5.16",
+    "@antv/g-canvas": "2.0.48",
+    "@antv/g-canvas-v4": "npm:@antv/g-canvas@^0.5.17",
+    "@antv/g2": "^5.3.5",
+    "eventemitter3": "^5.0.1",
+    "i18next": "^25.3.6",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "preact-i18next": "^11.8.5",
+    "stats.js": "^0.17.0",
+    "zrender": "^6.0.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "@tailwindcss/vite": "^4.1.12",
+    "@types/node": "^22.0.0",
+    "preact": "^10.27.0",
+    "tailwindcss": "^4.1.12",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.2"
+  }
+}
