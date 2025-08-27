@@ -1,5 +1,4 @@
 import { Circle, Group } from '@antv/g';
-import type { ICanvas } from '@antv/g';
 
 export async function nativePanZoom(context) {
   const { canvas } = context;
@@ -32,8 +31,7 @@ export async function nativePanZoom(context) {
   group.appendChild(circle2);
 
   const camera = canvas.getCamera();
-
-  const container = await canvas.getContainer();
+  const container = canvas.getContextService().getDomElement();
 
   let dragging = false;
   let lastPosition = { x: 0, y: 0 };
