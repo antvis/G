@@ -7,6 +7,7 @@
     "jsx": "react",
     "moduleResolution": "Node",
     "esModuleInterop": true,
+    "isolatedModules": true,
 
     "skipLibCheck": true,
 
