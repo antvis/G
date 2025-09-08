@@ -276,6 +276,25 @@ export class DisplayObject<
   }
 
   /**
+   * batch update attributes without attributeChangedCallback, for performance
+   * use with caution
+   * @param attributes
+   * @param parseOptions
+   */
+  setAttributes(
+    attributes: Partial<StyleProps>,
+    parseOptions: Partial<PropertyParseOptions> = {},
+  ) {
+    runtime.styleValueRegistry.processProperties(
+      this as unknown as DisplayObject,
+      attributes,
+      parseOptions,
+    );
+    // redraw at next frame
+    this.dirty();
+  }
+
+  /**
    * called when attributes get changed or initialized
    */
   internalSetAttribute<Key extends keyof StyleProps>(
