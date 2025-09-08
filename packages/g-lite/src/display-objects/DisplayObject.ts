@@ -285,6 +285,13 @@ export class DisplayObject<
     attributes: Partial<StyleProps>,
     parseOptions: Partial<PropertyParseOptions> = {},
   ) {
+    const { skipDispatchAttrModifiedEvent = false } = parseOptions;
+    let oldAttributes;
+    let oldParsedValues;
+    if (!skipDispatchAttrModifiedEvent) {
+      oldAttributes = { ...this.attributes };
+      oldParsedValues = { ...this.parsedStyle };
+    }
     runtime.styleValueRegistry.processProperties(
       this as unknown as DisplayObject,
       attributes,
@@ -292,6 +299,16 @@ export class DisplayObject<
     );
     // redraw at next frame
     this.dirty();
+    if (!skipDispatchAttrModifiedEvent) {
+      for (const key in attributes) {
+        this.dispatchAttrModifiedEvent(
+          key,
+          oldAttributes[key],
+          attributes[key],
+          oldParsedValues[key as string],
+        );
+      }
+    }
   }
 
   /**
@@ -318,6 +335,15 @@ export class DisplayObject<
 
     // return;
 
+    this.dispatchAttrModifiedEvent(name, oldValue, value, oldParsedValue);
+  }
+
+  private dispatchAttrModifiedEvent<Key extends keyof StyleProps>(
+    name: Key,
+    oldValue: StyleProps[Key],
+    value: StyleProps[Key],
+    oldParsedValue: ParsedStyleProps[keyof ParsedStyleProps],
+  ) {
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {
       attrModifiedEvent.relatedNode = this as IElement;
