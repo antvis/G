@@ -131,6 +131,7 @@ export interface PropertyParseOptions {
   forceUpdateGeometry: boolean;
   usedAttributes: string[];
   memoize: boolean;
+  skipDispatchAttrModifiedEvent?: boolean;
 }
 
 export interface StyleValueRegistry {
