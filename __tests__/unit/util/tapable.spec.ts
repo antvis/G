@@ -1,4 +1,9 @@
-import { SyncHook, SyncWaterfallHook, AsyncParallelHook, AsyncSeriesWaterfallHook } from '../../../packages/g-lite/src/utils/tapable';
+import {
+  SyncHook,
+  SyncWaterfallHook,
+  AsyncParallelHook,
+  AsyncSeriesWaterfallHook,
+} from '../../../packages/g-lite/src/utils/tapable';
 
 describe('Tapable', () => {
   describe('SyncHook', () => {
@@ -67,21 +72,18 @@ describe('Tapable', () => {
 
     it('should return array of results from all callbacks', async () => {
       const hook = new AsyncParallelHook<string>();
-      
+
       hook.tapPromise('test1', async (arg) => {
         return `result1-${arg}`;
       });
-      
+
       hook.tapPromise('test2', async (arg) => {
         return `result2-${arg}`;
       });
 
       const results = await hook.promise('test');
-      
-      expect(results).toEqual([
-        'result1-test',
-        'result2-test'
-      ]);
+
+      expect(results).toEqual(['result1-test', 'result2-test']);
     });
   });
 
