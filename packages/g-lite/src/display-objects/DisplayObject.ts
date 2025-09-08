@@ -278,7 +278,7 @@ export class DisplayObject<
   /**
    * called when attributes get changed or initialized
    */
-  internalSetAttribute<Key extends keyof StyleProps>(
+  private internalSetAttribute<Key extends keyof StyleProps>(
     name: Key,
     value: StyleProps[Key],
     parseOptions: Partial<PropertyParseOptions> = {},
@@ -296,8 +296,6 @@ export class DisplayObject<
 
     // redraw at next frame
     this.dirty();
-
-    // return;
 
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {

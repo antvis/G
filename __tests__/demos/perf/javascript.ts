@@ -13,7 +13,7 @@ export async function javascript(context: { canvas: Canvas; gui: lil.GUI }) {
   // ----------
   const bench = new tinybench.Bench({
     name: 'javascript benchmark',
-    time: 1e2,
+    time: 1e3,
   });
   const array = [
     'stroke',
@@ -98,6 +98,64 @@ export async function javascript(context: { canvas: Canvas; gui: lil.GUI }) {
   // bench.add('typeof - isNil', async () => {
   //   !(typeof value === 'undefined' || value === null);
   // });
+
+  // region attr assign ---------------------------------------
+  // Performance comparison: direct property access vs method calls
+  class TestClass {
+    public prop1: number = 0;
+    private _prop2: number = 0;
+
+    setProp2(value: number) {
+      this._prop2 = value;
+    }
+
+    getProp2() {
+      return this._prop2;
+    }
+  }
+
+  const testObj = new TestClass();
+  const iterations = 1000000;
+
+  bench.add('attr assign - Direct property assignment', () => {
+    for (let i = 0; i < iterations; i++) {
+      testObj.prop1 = i;
+    }
+  });
+
+  bench.add('attr assign - Method call assignment', () => {
+    for (let i = 0; i < iterations; i++) {
+      testObj.setProp2(i);
+    }
+  });
+
+  bench.add('attr assign - Direct property access', () => {
+    let sum = 0;
+    for (let i = 0; i < iterations; i++) {
+      sum += testObj.prop1;
+    }
+    return sum;
+  });
+
+  bench.add('attr assign - Method call access', () => {
+    let sum = 0;
+    for (let i = 0; i < iterations; i++) {
+      sum += testObj.getProp2();
+    }
+    return sum;
+  });
+  // endregion ---------------------------------------
+
+  // region typeof ---------------------------------------
+  const testTypeof = undefined;
+  bench.add('typeof - typeof', async () => {
+    typeof testTypeof !== 'undefined';
+  });
+  bench.add('typeof - !==', async () => {
+    testTypeof !== undefined;
+  });
+  // endregion ---------------------------------------
+
   // bench.add('@antv/util - isNil', async () => {
   //   !isNil(value);
   // });
@@ -114,10 +172,7 @@ export async function javascript(context: { canvas: Canvas; gui: lil.GUI }) {
 
   await bench.run();
 
-  console.log(bench.name);
   console.table(bench.table());
-  console.log(bench.results);
-  console.log(bench.tasks);
 
   // ----------
 }

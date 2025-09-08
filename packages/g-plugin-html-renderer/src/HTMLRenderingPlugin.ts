@@ -1,10 +1,12 @@
 import {
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   GlobalRuntime,
   HTML,
   ICamera,
   MutationEvent,
+  MutationRecord,
   RenderingPlugin,
   RenderingPluginContext,
   CanvasEvent,
@@ -101,17 +103,23 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
-    const handleBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as HTML;
-      const nodes =
-        object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      for (let i = 0; i < records.length; i++) {
+        const record = records[i];
+        const object = record.target as DisplayObject;
+        const nodes =
+          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
 
-      nodes.forEach((node: HTML) => {
-        if (node.nodeName === Shape.HTML) {
-          const $el = this.getOrCreateEl(node);
-          setTransform(node, $el);
-        }
-      });
+        nodes.forEach((node: DisplayObject) => {
+          if (node.nodeName === Shape.HTML) {
+            const $el = this.getOrCreateEl(node);
+            setTransform(node as HTML, $el);
+          }
+        });
+      }
     };
 
     const handleCanvasResize = () => {

@@ -18,6 +18,7 @@ import {
 } from '../utils';
 import type { RenderingContext } from './RenderingContext';
 import { RenderReason } from './RenderingContext';
+import type { Canvas } from '../Canvas';
 
 export type RenderingPluginContext = CanvasContext & GlobalRuntime;
 
@@ -167,19 +168,16 @@ export class RenderingService {
     );
   }
 
-  render(
-    canvasConfig: Partial<CanvasConfig>,
-    frame: XRFrame,
-    rerenderCallback: () => void,
-  ) {
+  render(canvas: Canvas, frame: XRFrame, rerenderCallback: () => void) {
+    const canvasConfig = canvas.getConfig();
+    const { renderingContext } = this.context;
+
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
 
-    const { renderingContext } = this.context;
-
     this.globalRuntime.sceneGraphService.syncHierarchy(renderingContext.root);
-    this.globalRuntime.sceneGraphService.triggerPendingEvents();
+    this.globalRuntime.sceneGraphService.notifyMutationObservers(canvas);
 
     if (renderingContext.renderReasons.size && this.inited) {
       // @ts-ignore
@@ -330,10 +328,10 @@ export class RenderingService {
   destroy() {
     this.inited = false;
     this.hooks.destroy.call();
-    this.globalRuntime.sceneGraphService.clearPendingEvents();
+    this.globalRuntime.sceneGraphService.clearMutationObserverData();
   }
 
-  dirtify() {
+  dirty() {
     // need re-render
     this.context.renderingContext.renderReasons.add(
       RenderReason.DISPLAY_OBJECT_CHANGED,

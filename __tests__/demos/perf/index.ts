@@ -7,3 +7,4 @@ export { canvasApi } from './canvas-api';
 export { javascript } from './javascript';
 export { event } from './event';
 export { destroyEvent } from './destroy-event';
+export { customEvent } from './custom-event';

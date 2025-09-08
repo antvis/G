@@ -183,7 +183,7 @@ export abstract class Instanced {
       this.geometry.meshes.forEach((mesh) => {
         mesh.renderable.dirty = true;
       });
-      this.context.renderingService.dirtify();
+      this.context.renderingService.dirty();
     });
   }
 
@@ -192,7 +192,7 @@ export abstract class Instanced {
       this.material.meshes.forEach((mesh) => {
         mesh.renderable.dirty = true;
       });
-      this.context.renderingService.dirtify();
+      this.context.renderingService.dirty();
     });
   }
 
