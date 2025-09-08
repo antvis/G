@@ -13,7 +13,7 @@ export class SyncWaterfallHook<T, R> {
       const argsArr = arguments;
       /* eslint-disable-next-line prefer-spread */
       let result: R = this.callbacks[0].apply(undefined, argsArr);
-      for (let i = 0; i < this.callbacks.length - 1; i++) {
+      for (let i = 1; i < this.callbacks.length; i++) {
         const callback = this.callbacks[i];
         // @ts-ignore
         result = callback(result);

@@ -10,7 +10,7 @@ export class AsyncSeriesWaterfallHook<T, R> {
   async promise(...args: AsArray<T>): Promise<R> {
     if (this.callbacks.length) {
       let result: R = await this.callbacks[0](...args);
-      for (let i = 0; i < this.callbacks.length - 1; i++) {
+      for (let i = 1; i < this.callbacks.length; i++) {
         const callback = this.callbacks[i];
         // @ts-ignore
         // eslint-disable-next-line no-await-in-loop
