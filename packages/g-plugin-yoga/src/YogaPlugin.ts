@@ -2,7 +2,9 @@ import type {
   CSSUnitValue,
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   MutationEvent,
+  MutationRecord,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -140,13 +142,19 @@ export class YogaPlugin implements RenderingPlugin {
       }
     };
 
-    const handleBoundsChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      // skip if this object mounted on another scenegraph root
-      if (object.ownerDocument?.documentElement !== renderingContext.root) {
-        return;
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      for (let i = 0; i < records.length; i++) {
+        const record = records[i];
+        const object = record.target as DisplayObject;
+        // skip if this object mounted on another scenegraph root
+        if (object.ownerDocument?.documentElement !== renderingContext.root) {
+          return;
+        }
+        this.needRecalculateLayout = true;
       }
-      this.needRecalculateLayout = true;
     };
 
     renderingService.hooks.init.tap(YogaPlugin.tag, () => {

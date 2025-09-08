@@ -496,7 +496,6 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render(frame?: XRFrame) {
-    // console.log('render ----------------------');
     if (frame) {
       beforeRenderEvent.detail = frame;
       afterRenderEvent.detail = frame;
@@ -512,7 +511,7 @@ export class Canvas extends EventTarget implements ICanvas {
     );
 
     const renderingService = this.getRenderingService();
-    renderingService.render(this.getConfig(), frame, () => {
+    renderingService.render(this, frame, () => {
       // trigger actual rerender event
       // @see https://github.com/antvis/G/issues/1268
       this.dispatchEvent(

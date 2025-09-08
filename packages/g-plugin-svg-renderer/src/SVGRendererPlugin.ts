@@ -1,8 +1,10 @@
 import {
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   LinearGradient,
   MutationEvent,
+  MutationRecord,
   RadialGradient,
   RenderingPlugin,
   RenderingPluginContext,
@@ -230,49 +232,55 @@ export class SVGRendererPlugin implements RenderingPlugin {
       attribtues.push(attrName);
     };
 
-    const handleGeometryBoundsChanged = (e: MutationEvent) => {
-      const target = e.target as DisplayObject;
+    const handleGeometryBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      for (let i = 0; i < records.length; i++) {
+        const record = records[i];
+        const object = record.target as DisplayObject;
+        const nodes =
+          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
 
-      const nodes =
-        target.nodeName === Shape.FRAGMENT ? target.childNodes : [target];
-      nodes.forEach((object: DisplayObject) => {
-        // @ts-ignore
-        const $el = object.elementSVG?.$el;
+        nodes.forEach((node: DisplayObject) => {
+          // @ts-ignore
+          const $el = object.elementSVG?.$el;
 
-        const { fill, stroke, clipPath } = object.parsedStyle;
+          const { fill, stroke, clipPath } = object.parsedStyle;
 
-        if (fill && !isCSSRGB(fill)) {
-          this.defElementManager.createOrUpdateGradientAndPattern(
-            object,
-            $el,
-            fill,
-            'fill',
-            this,
-          );
-        }
-        if (stroke && !isCSSRGB(stroke)) {
-          this.defElementManager.createOrUpdateGradientAndPattern(
-            object,
-            $el,
-            stroke,
-            'stroke',
-            this,
-          );
-        }
-        if (clipPath) {
-          const parentInvert = mat4.invert(
-            mat4.create(),
-            object.getWorldTransform(),
-          );
-
-          const clipPathId = `${CLIP_PATH_PREFIX + clipPath.entity}-${object.entity}`;
-          const $def = this.defElementManager.getDefElement();
-          const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
-          if ($existed) {
-            this.applyTransform($existed, parentInvert);
+          if (fill && !isCSSRGB(fill)) {
+            this.defElementManager.createOrUpdateGradientAndPattern(
+              object,
+              $el,
+              fill,
+              'fill',
+              this,
+            );
           }
-        }
-      });
+          if (stroke && !isCSSRGB(stroke)) {
+            this.defElementManager.createOrUpdateGradientAndPattern(
+              object,
+              $el,
+              stroke,
+              'stroke',
+              this,
+            );
+          }
+          if (clipPath) {
+            const parentInvert = mat4.invert(
+              mat4.create(),
+              object.getWorldTransform(),
+            );
+
+            const clipPathId = `${CLIP_PATH_PREFIX + clipPath.entity}-${object.entity}`;
+            const $def = this.defElementManager.getDefElement();
+            const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
+            if ($existed) {
+              this.applyTransform($existed, parentInvert);
+            }
+          }
+        });
+      }
     };
 
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {

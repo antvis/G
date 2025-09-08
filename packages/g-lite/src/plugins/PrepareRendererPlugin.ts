@@ -2,8 +2,12 @@ import type RBush from 'rbush';
 import { runtime } from '../global-runtime';
 import type { RBushNodeAABB } from '../components';
 import { DisplayObject } from '../display-objects';
-import type { FederatedEvent } from '../dom';
-import { ElementEvent } from '../dom';
+import {
+  type FederatedEvent,
+  type CustomEvent,
+  type MutationRecord,
+  ElementEvent,
+} from '../dom';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
 import { raf } from '../utils';
 import { AABB } from '../shapes';
@@ -12,7 +16,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
   private rBush: RBush<RBushNodeAABB>;
 
-  private syncTasks = new Map<DisplayObject, boolean>();
+  private mutationRecords: MutationRecord[] = [];
   private ricSyncRTreeId: number;
   private isFirstTimeRendering = true;
   private syncing = false;
@@ -26,13 +30,17 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     this.rBush = rBushRoot;
 
     const handleAttributeChanged = (e: FederatedEvent) => {
-      renderingService.dirtify();
+      renderingService.dirty();
     };
 
-    const handleBoundsChanged = (e: FederatedEvent) => {
-      this.syncTasks.set(e.target as DisplayObject, e.detail.affectChildren);
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      // ! WARN: push is used instead of direct assignment because syncTasks are processed asynchronously.
+      this.mutationRecords.push(...records);
 
-      renderingService.dirtify();
+      renderingService.dirty();
     };
 
     const handleMounted = (e: FederatedEvent) => {
@@ -54,10 +62,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         this.rBush.remove(rBushNode.aabb);
       }
 
-      this.syncTasks.delete(object);
-
       runtime.sceneGraphService.dirtyToRoot(object);
-      renderingService.dirtify();
+      renderingService.dirty();
     };
 
     renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {
@@ -81,7 +87,16 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
-      this.syncTasks.clear();
+
+      this.mutationRecords = [];
+
+      if (
+        this.ricSyncRTreeId &&
+        runtime.globalThis.requestIdleCallback &&
+        runtime.globalThis.cancelIdleCallback
+      ) {
+        runtime.globalThis.cancelIdleCallback(this.ricSyncRTreeId);
+      }
     });
 
     const ric =
@@ -112,8 +127,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   }
 
   private syncNode(node: DisplayObject, force = false) {
-    if (!node.isConnected) return;
-
     const rBushNode = node.rBushNode;
 
     // clear dirty node
@@ -161,7 +174,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   }
 
   private syncRTree(force = false) {
-    if (!force && (this.syncing || this.syncTasks.size === 0)) {
+    if (!force && (this.syncing || this.mutationRecords.length === 0)) {
       return;
     }
 
@@ -172,7 +185,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const synced = new Set<DisplayObject>();
 
     const sync = (node: DisplayObject) => {
-      if (!synced.has(node) && node.renderable) {
+      if (node.isConnected && !synced.has(node) && node.renderable) {
         const aabb = this.syncNode(node, force);
         if (aabb) {
           bulk.push(aabb);
@@ -181,17 +194,26 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       }
     };
 
-    this.syncTasks.forEach((affectChildren, node) => {
-      if (affectChildren) {
-        node.forEach(sync);
+    // TODO: Logical redundancy, repeated traversal
+    const recordCount = this.mutationRecords.length;
+    for (let i = 0; i < recordCount; i++) {
+      const record = this.mutationRecords[i];
+      const { _boundsChangeData, target } = record;
+      if (!target.isConnected) {
+        continue;
       }
 
-      let parent = node;
+      if (_boundsChangeData?.affectChildren) {
+        target.forEach(sync);
+      }
+
+      let parent = target;
       while (parent) {
-        sync(parent);
+        sync(parent as DisplayObject);
         parent = parent.parentElement as DisplayObject;
       }
-    });
+    }
+    this.mutationRecords = [];
 
     // use bulk inserting, which is ~2-3 times faster
     // @see https://github.com/mourner/rbush#bulk-inserting-data
