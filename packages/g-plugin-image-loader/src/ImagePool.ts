@@ -75,7 +75,9 @@ export class ImagePool {
       const imageCache = IMAGE_CACHE.get(imageSource, ref);
 
       if (imageCache.img.complete) {
-        callback?.(imageCache);
+        ref.ownerDocument.defaultView.requestAnimationFrame(() => {
+          callback?.(imageCache);
+        });
 
         return imageCache;
       }
@@ -112,7 +114,12 @@ export class ImagePool {
       const imageCache = IMAGE_CACHE.get(imageSource, ref);
 
       if (imageCache.img.complete) {
-        return Promise.resolve(imageCache);
+        // Resolve in next frame to match async behavior of onload.
+        return new Promise((resolve) => {
+          ref.ownerDocument.defaultView.requestAnimationFrame(() => {
+            resolve(imageCache);
+          });
+        });
       }
 
       return new Promise((resolve, reject) => {
