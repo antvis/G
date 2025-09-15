@@ -40,15 +40,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-              // 1. 从 context 中获取 discussion 对象
+              // 1. Get discussion object from context
               let discussion = context.payload.discussion;
 
-              // 2. 处理手动触发的情况
+              // 2. Handle manual trigger case
               if (context.eventName === 'workflow_dispatch') {
-              console.log('手动触发模式，正在通过 GraphQL 获取 Discussion 详情...');
+              console.log('Manual trigger mode, fetching Discussion details via GraphQL...');
               const discussionNumber = parseInt(context.payload.inputs.discussion_number, 10);
 
-              // 使用 GraphQL 查询代替 REST API
+              // Use GraphQL query instead of REST API
               const { repository } = await github.graphql(
               `query($owner: String!, $repo: String!, $number: Int!) {
                                              repository(owner: $owner, name: $repo) {
@@ -70,26 +70,26 @@ jobs:
               }
               );
 
-              // 将返回的数据结构调整为与 webhook payload 一致，以兼容后续脚本
+              // Adjust the returned data structure to match webhook payload for compatibility with subsequent scripts
               discussion = {
                 ...repository.discussion,
-                node_id: repository.discussion.id, // GraphQL 返回 `id`，即 `node_id`
-                user: repository.discussion.author // GraphQL 返回 `author`，将其映射为 `user`
+                node_id: repository.discussion.id, // GraphQL returns `id`, which is `node_id`
+                user: repository.discussion.author // GraphQL returns `author`, map it to `user`
               };
 
               if (!discussion) {
-                throw new Error(`无法找到 Discussion #${discussionNumber}`);
+                throw new Error(`Could not find Discussion #${discussionNumber}`);
               }
-                console.log(`成功获取 Discussion #${discussionNumber} 的数据。`);
+                console.log(`Successfully retrieved data for Discussion #${discussionNumber}.`);
               }
 
-              console.log('将处理的 Discussion 对象:', discussion);
+              console.log('Discussion object to be processed:', discussion);
 
-              // 3. 调用外部 JS 脚本，并传递 discussion 对象 (此部分不变)
+              // 3. Call external JS script and pass the discussion object (this part remains unchanged)
               const script = require('./.github/workflows/scripts/discussion-automated.js');
               await script({
                 github,
                 core,
                 context,
-                discussion // 传递 discussion 对象
+                discussion // Pass discussion object
               });
