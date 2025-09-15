@@ -120,7 +120,7 @@ async function getAIResponse(core, userQuestion) {
     - Version information
 
     Thank you for your understanding and support!`
-`;
+    ;
   }
 }
 
