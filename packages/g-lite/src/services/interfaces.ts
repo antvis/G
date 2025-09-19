@@ -1,12 +1,12 @@
 import type { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
-import type { IElement, INode, IParentNode } from '../dom';
+import type { ICanvas, IElement, INode, IParentNode } from '../dom';
 import type { AABB, Rectangle } from '../shapes';
 import type { DisplayObject } from '../display-objects';
 
 export interface SceneGraphService {
-  triggerPendingEvents: () => void;
-  clearPendingEvents: () => void;
+  notifyMutationObservers: (canvas: ICanvas) => void;
+  clearMutationObserverData: () => void;
   updateDisplayObjectDependency: (
     name: string,
     oldPath: DisplayObject,
