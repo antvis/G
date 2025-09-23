@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.3.3
+
+### Patch Changes
+
+- f08291e: fix: fix loop index in SyncWaterfallHook and AsyncSeriesWaterfallHook
+
 ## 2.3.2
 
 ### Patch Changes
