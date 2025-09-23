@@ -139,6 +139,10 @@ export class Element<
     dirtyReason: undefined,
   };
 
+  /**
+   * @deprecated Legacy property for RBush spatial indexing.
+   * Will be removed in future versions.
+   */
   rBushNode: RBushNode = {
     aabb: undefined,
   };
