@@ -1,7 +1,9 @@
 import type {
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   MutationEvent,
+  MutationRecord,
   RenderingPlugin,
   RenderingPluginContext,
   Text,
@@ -59,17 +61,23 @@ export class A11yPlugin implements RenderingPlugin {
       }
     };
 
-    const handleBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      if (enableExtractingText && !this.isSVG()) {
-        const nodes =
-          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      for (let i = 0; i < records.length; i++) {
+        const record = records[i];
+        const object = record.target as DisplayObject;
+        if (enableExtractingText && !this.isSVG()) {
+          const nodes =
+            object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
 
-        nodes.forEach((node: DisplayObject) => {
-          if (node.nodeName === Shape.TEXT) {
-            this.textExtractor.updateAttribute('modelMatrix', node as Text);
-          }
-        });
+          nodes.forEach((node: DisplayObject) => {
+            if (node.nodeName === Shape.TEXT) {
+              this.textExtractor.updateAttribute('modelMatrix', node as Text);
+            }
+          });
+        }
       }
     };
 

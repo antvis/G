@@ -55,7 +55,7 @@ export class ImageRenderer extends DefaultRenderer {
 
           // rerender
           object.dirty();
-          object.ownerDocument.defaultView.context.renderingService.dirtify();
+          object.ownerDocument.defaultView.context.renderingService.dirty();
         })
         .catch((reason) => {
           console.error(reason);
@@ -103,7 +103,7 @@ export class ImageRenderer extends DefaultRenderer {
 
             // rerender
             object.dirty();
-            object.ownerDocument.defaultView.context.renderingService.dirtify();
+            object.ownerDocument.defaultView.context.renderingService.dirty();
           },
           object,
         )

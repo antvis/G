@@ -240,6 +240,7 @@ describe('CSSPropertyTransform', () => {
         cy: 10,
         r: 50,
         transform: 'scale(0)',
+        transformOrigin: 'center',
       },
     });
 
