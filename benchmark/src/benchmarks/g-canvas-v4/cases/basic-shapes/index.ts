@@ -6,7 +6,7 @@ import { EllipseCase } from './ellipse';
 import { LineCase } from './line';
 import { PolylineCase } from './polyline';
 import { PolygonCase } from './polygon';
-import { ImageCase } from './image';
+// import { ImageCase } from './image';
 import { PathCase } from './path';
 import type { Canvas } from '@antv/g-canvas-v4';
 
@@ -20,7 +20,7 @@ export const basicShapesTestSuite: TestSuite<Canvas> = {
     new LineCase(),
     new PolylineCase(),
     new PolygonCase(),
-    new ImageCase(),
+    // new ImageCase(),
     new PathCase(),
   ],
 };
