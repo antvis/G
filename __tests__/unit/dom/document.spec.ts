@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   Canvas,
@@ -10,21 +14,27 @@ import {
 } from '../../../packages/g/src';
 import { sleep } from '../utils';
 
-const $container = document.createElement('div');
-$container.id = 'container';
-document.body.prepend($container);
-
-const renderer = new CanvasRenderer();
-
-// create a canvas
-const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer,
-});
+let $container: HTMLDivElement;
+let renderer: CanvasRenderer;
+let canvas: Canvas;
 
 describe('Document', () => {
+  beforeAll(() => {
+    $container = document.createElement('div');
+    $container.id = 'container';
+    document.body.prepend($container);
+
+    renderer = new CanvasRenderer();
+
+    // create a canvas
+    canvas = new Canvas({
+      container: 'container',
+      width: 600,
+      height: 500,
+      renderer,
+    });
+  });
+
   afterAll(() => {
     canvas.destroy();
   });
@@ -167,7 +177,7 @@ describe('Document', () => {
     ).toStrictEqual([]);
   });
 
-  it.skip('should picking with element(s)FromPoint', async () => {
+  it('should picking with element(s)FromPoint', async () => {
     let target = await canvas.document.elementFromPoint(0, 0);
     let targets = await canvas.document.elementsFromPoint(0, 0);
     expect(target).toBe(canvas.document.documentElement);
@@ -226,7 +236,7 @@ describe('Document', () => {
     expect(targets).toStrictEqual([canvas.document.documentElement]);
   });
 
-  it.skip('should get element(s)FromPoint correctly, account for some style props such as `interactive`.', async () => {
+  it('should get element(s)FromPoint correctly, account for some style props such as `interactive`.', async () => {
     // 2 overlap circles
     const circle1 = new Circle({
       style: {
@@ -317,7 +327,7 @@ describe('Document', () => {
     expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
   });
 
-  it.skip('should execute region query with elementsFromBBox', async () => {
+  it('should execute region query with elementsFromBBox', async () => {
     let targets = canvas.document.elementsFromBBox(0, 0, 1, 1);
     expect(targets).toStrictEqual([canvas.document.documentElement]);
 
