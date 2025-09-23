@@ -8,7 +8,7 @@ import { PolylineCase } from './polyline';
 import { PolygonCase } from './polygon';
 // import { ImageCase } from './image';
 import { PathCase } from './path';
-import type { Canvas } from '@antv/g';
+import type { Canvas } from '@antv/g-local';
 
 export const basicShapesTestSuite: TestSuite<Canvas> = {
   name: 'basic-shapes',
