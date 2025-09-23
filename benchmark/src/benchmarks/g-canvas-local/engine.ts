@@ -1,5 +1,5 @@
 import { Engine } from '../../base';
-// 使用路径别名引用本地源码
+// Use path alias to reference local source code
 import { Canvas } from '@antv/g-local';
 import { Renderer } from '@antv/g-canvas-local';
 
