@@ -42,7 +42,7 @@ jobs:
         if: contains(join(github.event.issue.labels.*.name, ','), 'bug') && steps.analyze-issue.outputs.response != 'pass'
         uses: actions/github-script@v7
         env:
-          AI_RESPONSE: steps.analyze-issue.outputs.response
+          AI_RESPONSE: ${{ steps.analyze-issue.outputs.response }}
         with:
           script: |
             await github.rest.issues.createComment({
