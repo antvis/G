@@ -264,6 +264,72 @@ Corresponds to the [CSS line-height](https://developer.mozilla.org/en-US/docs/We
 | --- | --- | --- | --- | --- |
 | '0' | - | no | no | [\<length\>](/en/api/css/css-properties-values-api#length) |
 
+## Text Decoration <Badge>6.1.28</Badge>
+
+Text decoration is controlled by the following four properties, consistent with CSS [text-decoration](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration).
+
+### textDecorationLine
+
+Decoration line type, consistent with [CSS text-decoration-line](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-line).
+
+The following values are supported:
+
+- `'none'` No decoration line, default value
+- `'underline'` Underline
+- `'overline'` Overline
+- `'line-through'` Line through
+- `'underline overline'` Both underline and overline
+
+The following properties can be adjusted in this [example](/en/examples/shape/text/#text).
+
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'none' | - | no | no | [\<keywords\>](/en/api/css/css-properties-values-api#keywords) |
+
+### textDecorationStyle
+
+Decoration line style, consistent with [CSS text-decoration-style](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-style).
+
+The following values are supported:
+
+- `'solid'` Solid line, default value
+- `'double'` Double line
+- `'dotted'` Dotted line
+- `'dashed'` Dashed line
+- `'wavy'` Wavy line
+
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'solid' | - | no | no | [\<keywords\>](/en/api/css/css-properties-values-api#keywords) |
+
+### textDecorationColor
+
+Decoration line color, consistent with [CSS text-decoration-color](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-color).
+
+Supports all color formats supported by CSS, for example:
+
+- Keywords: `'red'` `'blue'`
+- Hex: `'#FF0000'`
+- RGB: `'rgb(255, 0, 0)'`
+- RGBA: `'rgba(255, 0, 0, 1)'`
+
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'currentcolor' | - | no | no | [\<color\>](/en/api/css/css-properties-values-api#color) |
+
+### textDecorationThickness
+
+Decoration line thickness, consistent with [CSS text-decoration-thickness](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-thickness).
+
+Supports number type, representing pixel value. For example:
+
+- `1` 1 pixel thickness
+- `3` 3 pixel thickness
+
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 1 | - | no | no | [\<length\>](/en/api/css/css-properties-values-api#length) |
+
 ## Methods
 
 ### getLineBoundingRects

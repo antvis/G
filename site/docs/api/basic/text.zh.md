@@ -176,7 +176,7 @@ label.style.isSizeAttenuation = true;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ" alt="text baseline" width="400">
 
-| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算값](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 'alphabetic' | - | 是 | 否 | [\<keywords\>](/api/css/css-properties-values-api#keywords) |
 
@@ -286,6 +286,72 @@ label.style.isSizeAttenuation = true;
 | [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 否 | [\<length\>](/api/css/css-properties-values-api#length) |
+
+## 文本装饰线 <Badge>6.1.28</Badge>
+
+文本装饰线通过以下四个属性控制，与 CSS [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 一致。
+
+### textDecorationLine
+
+装饰线类型，与 [CSS text-decoration-line](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-line) 一致。
+
+支持以下取值：
+
+- `'none'` 无装饰线，默认值
+- `'underline'` 下划线
+- `'overline'` 上划线
+- `'line-through'` 删除线
+- `'underline overline'` 同时包含上下划线
+
+可以在该[示例](/examples/shape/text/#text)中调整以下属性。
+
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'none' | - | 否 | 否 | [\<keywords\>](/api/css/css-properties-values-api#keywords) |
+
+### textDecorationStyle
+
+装饰线样式，与 [CSS text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) 一致。
+
+支持以下取值：
+
+- `'solid'` 实线，默认值
+- `'double'` 双线
+- `'dotted'` 点线
+- `'dashed'` 虚线
+- `'wavy'` 波浪线
+
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'solid' | - | 否 | 否 | [\<keywords\>](/api/css/css-properties-values-api#keywords) |
+
+### textDecorationColor
+
+装饰线颜色，与 [CSS text-decoration-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-color) 一致。
+
+支持 CSS 支持的所有颜色格式，例如：
+
+- 关键词：`'red'` `'blue'`
+- 十六进制：`'#FF0000'`
+- RGB：`'rgb(255, 0, 0)'`
+- RGBA：`'rgba(255, 0, 0, 1)'`
+
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'currentcolor' | - | 否 | 否 | [\<color\>](/api/css/css-properties-values-api#color) |
+
+### textDecorationThickness
+
+装饰线粗细，与 [CSS text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness) 一致。
+
+支持数字类型，表示像素值。例如：
+
+- `1` 1像素粗细
+- `3` 3像素粗细
+
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 1 | - | 否 | 否 | [\<length\>](/api/css/css-properties-values-api#length) |
 
 ## [WIP] 阴影
 
