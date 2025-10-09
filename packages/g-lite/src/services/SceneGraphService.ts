@@ -994,7 +994,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   notifyMutationObservers(canvas: Canvas) {
     const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
-      detail: this.mutationsMap.values().toArray(),
+      detail: Array.from(this.mutationsMap.values()),
     });
 
     canvas.dispatchEvent(event, true, true);
