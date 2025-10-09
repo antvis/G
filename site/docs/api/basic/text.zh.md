@@ -176,7 +176,7 @@ label.style.isSizeAttenuation = true;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ" alt="text baseline" width="400">
 
-| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算값](/api/css/css-properties-values-api#computed-value) |
+| [初始值](/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/api/css/inheritance) | 是否支持动画 | [计算值](/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 'alphabetic' | - | 是 | 否 | [\<keywords\>](/api/css/css-properties-values-api#keywords) |
 
