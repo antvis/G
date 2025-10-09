@@ -75,7 +75,7 @@ export function getPattern(
     () => {
       // set dirty rectangle flag
       object.dirty();
-      canvasContext.renderingService.dirtify();
+      canvasContext.renderingService.dirty();
     },
   );
 

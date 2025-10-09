@@ -13,7 +13,7 @@ import type {
 /**
  * Objects that can receive events and may have listeners for them.
  * eg. Element, Canvas, DisplayObject
- * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
+ * @docs https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
  */
 export class EventTarget implements IEventTarget {
   /**
@@ -102,10 +102,10 @@ export class EventTarget implements IEventTarget {
    * @alias dispatchEvent
    */
   emit(eventName: string, object: object) {
-    this.dispatchEvent(new CustomEvent(eventName, object));
+    this.dispatchEvent(new CustomEvent(eventName, { detail: object }));
   }
 
-  dispatchEventToSelf<T extends FederatedEvent>(e: T) {
+  private dispatchEventToSelf<T extends FederatedEvent>(e: T) {
     e.target ||= this;
     e.currentTarget = this;
     this.emitter.emit(e.type, e);

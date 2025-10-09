@@ -6,8 +6,15 @@ import {
   updateLocalTransform,
   updateWorldTransform,
 } from '../components';
-import type { CustomElement, DisplayObject } from '../display-objects';
-import type { Element, IChildNode, IElement, INode, IParentNode } from '../dom';
+import { CustomElement, DisplayObject } from '../display-objects';
+import type {
+  Element,
+  IChildNode,
+  IElement,
+  INode,
+  IParentNode,
+  MutationRecord,
+} from '../dom';
 import { CustomEvent } from '../dom/CustomEvent';
 import { ElementEvent } from '../dom/interfaces';
 import { MutationEvent } from '../dom/MutationEvent';
@@ -16,6 +23,7 @@ import { AABB, Rectangle } from '../shapes';
 import { Shape } from '../types';
 import { findClosestClipPathTarget, isInFragment } from '../utils';
 import type { SceneGraphService } from './interfaces';
+import type { Canvas } from '../Canvas';
 
 const reparentEvent = new MutationEvent(
   ElementEvent.REPARENT,
@@ -57,17 +65,13 @@ const $setEulerAngles_InvParentRot = quat.create();
 const $rotateLocal = quat.create();
 const $rotate_ParentInvertRotation = quat.create();
 
-const $triggerPendingEvents_detail = { affectChildren: true };
-
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  // target -> affectChildren
-  private pendingEvents = new Map<DisplayObject, boolean>();
-  private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
+  private mutationsMap: Map<DisplayObject, MutationRecord> = new Map();
 
   constructor(private runtime: GlobalRuntime) {}
 
@@ -141,7 +145,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     if (isAttachToFragment) return;
 
     if (isChildFragment) {
-      this.dirtifyFragment(child);
+      this.dirtyFragment(child);
     } else {
       const transform = (child as unknown as Element).transformable;
       if (transform) {
@@ -909,11 +913,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   dirtyWorldTransform(element: INode, transform: Transform) {
-    this.dirtifyWorldInternal(element, transform);
+    this.dirtyWorldInternal(element, transform);
     this.dirtyToRoot(element, true);
   }
 
-  private dirtifyWorldInternal(element: INode, transform: Transform) {
+  private dirtyWorldInternal(element: INode, transform: Transform) {
     const enableAttributeUpdateOptimization =
       element.ownerDocument?.defaultView?.getConfig()?.future
         ?.experimentalAttributeUpdateOptimization === true;
@@ -926,7 +930,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         element.childNodes.forEach((child) => {
           const childTransform = (child as Element).transformable;
 
-          this.dirtifyWorldInternal(child as IElement, childTransform);
+          this.dirtyWorldInternal(child as IElement, childTransform);
         });
       }
     }
@@ -956,10 +960,25 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     this.informDependentDisplayObjects(element as DisplayObject);
 
-    this.pendingEvents.set(element as DisplayObject, affectChildren);
+    let mutation = this.mutationsMap.get(element as DisplayObject);
+    if (!mutation) {
+      mutation = {
+        type: 'attributes',
+        target: element as DisplayObject,
+        _boundsChangeData: {
+          affectChildren,
+        },
+      };
+      this.mutationsMap.set(element as DisplayObject, mutation);
+    } else {
+      mutation._boundsChangeData = {
+        affectChildren:
+          mutation._boundsChangeData.affectChildren || affectChildren,
+      };
+    }
   }
 
-  dirtifyFragment(element: INode) {
+  dirtyFragment(element: INode) {
     const transform = (element as Element).transformable;
     if (transform) {
       transform.dirtyFlag = true;
@@ -969,81 +988,22 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     const length = element.childNodes.length;
     for (let i = 0; i < length; i++) {
-      this.dirtifyFragment(element.childNodes[i]);
-    }
-
-    if (element.nodeName === Shape.FRAGMENT) {
-      this.pendingEvents.set(element as DisplayObject, false);
+      this.dirtyFragment(element.childNodes[i]);
     }
   }
 
-  triggerPendingEvents() {
-    const triggered = new Set<DisplayObject>();
-    let enableCancelEventPropagation: boolean;
-    let enableAttributeUpdateOptimization: boolean;
-
-    const trigger = (element: DisplayObject, detail) => {
-      if (
-        !element.isConnected ||
-        triggered.has(element) ||
-        (element.nodeName as Shape) === Shape.FRAGMENT
-      ) {
-        return;
-      }
-
-      this.boundsChangedEvent.detail = detail;
-      this.boundsChangedEvent.target = element;
-      if (element.isMutationObserved) {
-        element.dispatchEvent(this.boundsChangedEvent);
-      } else {
-        if (enableCancelEventPropagation === undefined) {
-          enableCancelEventPropagation =
-            element.ownerDocument.defaultView?.getConfig()?.future
-              ?.experimentalCancelEventPropagation === true;
-        }
-
-        element.ownerDocument.defaultView.dispatchEvent(
-          this.boundsChangedEvent,
-          true,
-          enableCancelEventPropagation,
-        );
-      }
-
-      triggered.add(element);
-    };
-
-    this.pendingEvents.forEach((affectChildren, element) => {
-      if ((element.nodeName as Shape) === Shape.FRAGMENT) {
-        return;
-      }
-
-      if (enableAttributeUpdateOptimization === undefined) {
-        enableAttributeUpdateOptimization =
-          element.ownerDocument?.defaultView?.getConfig()?.future
-            ?.experimentalAttributeUpdateOptimization === true;
-      }
-
-      $triggerPendingEvents_detail.affectChildren = affectChildren;
-      if (enableAttributeUpdateOptimization) {
-        trigger(element, $triggerPendingEvents_detail);
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (affectChildren) {
-          element.forEach((e: DisplayObject) => {
-            trigger(e, $triggerPendingEvents_detail);
-          });
-        } else {
-          trigger(element, $triggerPendingEvents_detail);
-        }
-      }
+  notifyMutationObservers(canvas: Canvas) {
+    const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
+      detail: Array.from(this.mutationsMap.values()),
     });
 
-    triggered.clear();
-    this.clearPendingEvents();
+    canvas.dispatchEvent(event, true, true);
+
+    this.clearMutationObserverData();
   }
 
-  clearPendingEvents() {
-    this.pendingEvents.clear();
+  clearMutationObserverData() {
+    this.mutationsMap.clear();
   }
 
   private displayObjectDependencyMap: WeakMap<
