@@ -22,7 +22,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   isFirstTimeRenderingFinished = false;
 
   apply(context: RenderingPluginContext) {
-    const { config, renderingService, renderingContext } = context;
+    const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const handleAttributeChanged = (e: FederatedEvent) => {
