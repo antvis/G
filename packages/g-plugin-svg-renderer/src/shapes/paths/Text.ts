@@ -33,6 +33,7 @@ export function updateTextElementAttribute(
     textDecorationLine = '',
     textDecorationColor = '',
     textDecorationStyle = '',
+    textDecorationThickness = 1,
     metrics,
   } = parsedStyle;
   let { textBaseline = 'alphabetic' } = parsedStyle;
@@ -51,9 +52,10 @@ export function updateTextElementAttribute(
 
   let styleCSSText = `transform:translate(${dx}px, ${dy}px);`;
   if (textDecorationLine && textDecorationLine !== 'none') {
-    // use CSS text-decoration since the implementation in SVG is not good enough
-    styleCSSText += `text-decoration:${textDecorationLine} ${textDecorationStyle} ${textDecorationColor};`;
+    // Use CSS text-decoration for basic support
+    styleCSSText += `text-decoration:${textDecorationLine} ${textDecorationStyle} ${textDecorationColor};text-decoration-thickness:${textDecorationThickness};`;
   }
+
   if (styleCSSText) {
     $el.setAttribute('style', styleCSSText);
   }
