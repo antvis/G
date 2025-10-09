@@ -16,7 +16,7 @@ export async function customEvent(context: { canvas: Canvas; gui: lil.GUI }) {
   const { width, height } = canvas.getConfig();
   const root = new Group();
   let count = 1e4;
-  let rects = [];
+  let rects: { x: number; y: number; size: number; el: Rect }[] = [];
 
   // Shared event instance
   const sharedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
