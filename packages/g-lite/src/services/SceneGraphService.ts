@@ -642,22 +642,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   // #endregion transform
   // #region bbox ----------------------------------------------------------------
 
-  private getTransformedGeometryBounds(
-    element: INode,
-    render = false,
-    existedAABB?: AABB,
-  ): AABB | null {
-    const bounds = this.getGeometryBounds(element, render);
-    if (!AABB.isEmpty(bounds)) {
-      const aabb = existedAABB || new AABB();
-      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
-      return aabb;
-    }
-    return null;
-  }
-
   /**
-   * won't account for children
+   * Get the geometry bounds of the element itself, excluding children.
+   *
+   * @param element - The element to get geometry bounds for
+   * @param render - If true, returns render bounds (including strokes, etc.); otherwise returns content bounds
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const { geometry } = element as Element;
@@ -671,6 +660,27 @@ export class DefaultSceneGraphService implements SceneGraphService {
       : geometry.contentBounds || null;
     // return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
     return bounds || new AABB();
+  }
+
+  /**
+   * Get the geometry bounds of the element itself in world space, excluding children.
+   *
+   * @param element - The element to get transformed geometry bounds for
+   * @param render - If true, returns render bounds (including strokes, etc.); otherwise returns content bounds
+   * @param existedAABB - Optional existing AABB to reuse
+   */
+  getTransformedGeometryBounds(
+    element: INode,
+    render = false,
+    existedAABB?: AABB,
+  ): AABB | null {
+    const bounds = this.getGeometryBounds(element, render);
+    if (!AABB.isEmpty(bounds)) {
+      const aabb = existedAABB || new AABB();
+      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
+      return aabb;
+    }
+    return null;
   }
 
   /**

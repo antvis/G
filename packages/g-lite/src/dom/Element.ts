@@ -506,12 +506,15 @@ export class Element<
     this.destroyed = true;
   }
 
-  getGeometryBounds(): AABB {
-    return runtime.sceneGraphService.getGeometryBounds(this);
+  getGeometryBounds(render = false): AABB {
+    return runtime.sceneGraphService.getGeometryBounds(this, render);
   }
 
-  getRenderBounds(): AABB {
-    return runtime.sceneGraphService.getBounds(this, true);
+  /**
+   * get geometry bounds in world space, not accounting for children
+   */
+  getTransformedGeometryBounds(render = false): AABB | null {
+    return runtime.sceneGraphService.getTransformedGeometryBounds(this, render);
   }
 
   /**
@@ -519,6 +522,10 @@ export class Element<
    */
   getBounds(): AABB {
     return runtime.sceneGraphService.getBounds(this);
+  }
+
+  getRenderBounds(): AABB {
+    return runtime.sceneGraphService.getBounds(this, true);
   }
 
   /**

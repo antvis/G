@@ -50,7 +50,6 @@ describe('Element Picking Tests', () => {
       // Test elementsFromBBox functionality
       const elements = canvas.document.elementsFromBBox(50, 50, 150, 150);
       expect(elements).toContain(circle);
-      expect(elements).toContain(canvas.document.documentElement);
 
       // Test that picking works correctly
       expect(elements.length).toBeGreaterThan(0);
@@ -80,10 +79,41 @@ describe('Element Picking Tests', () => {
 
       const elements = canvas.document.elementsFromBBox(50, 50, 150, 150);
 
-      // Both circles should be found
-      expect(elements).toContain(circle1);
-      expect(elements).toContain(circle2);
-      expect(elements).toContain(canvas.document.documentElement);
+      // The last added element should be first in the result (z-index ordering)
+      expect(elements[0] === circle2).toBe(true);
+      expect(elements[1] === circle1).toBe(true);
+    });
+
+    it('should handle overlapping elements with zIndex correctly', async () => {
+      const circle1 = new Circle({
+        style: {
+          r: 50,
+          cx: 100,
+          cy: 100,
+          fill: 'red',
+          zIndex: 2,
+        },
+      });
+      const circle2 = new Circle({
+        style: {
+          r: 50,
+          cx: 100,
+          cy: 100,
+          fill: 'blue',
+          zIndex: 1,
+        },
+      });
+
+      // Even though circle2 is added last, circle1 should be on top due to higher zIndex
+      canvas.appendChild(circle1);
+      canvas.appendChild(circle2);
+      await sleep(100);
+
+      const elements = canvas.document.elementsFromBBox(50, 50, 150, 150);
+
+      // The element with higher zIndex should be first in the result
+      expect(elements[0] === circle1).toBe(true);
+      expect(elements[1] === circle2).toBe(true);
     });
 
     it('should respect pointer-events style', async () => {
@@ -102,7 +132,6 @@ describe('Element Picking Tests', () => {
       // Should not pick non-interactive elements
       const elements = canvas.document.elementsFromBBox(50, 50, 150, 150);
       expect(elements).not.toContain(circle);
-      expect(elements).toContain(canvas.document.documentElement);
     });
 
     it('should respect visibility style', async () => {
@@ -175,7 +204,6 @@ describe('Element Picking Tests', () => {
 
       const elements = canvas.document.elementsFromBBox(50, 50, 150, 150);
       expect(elements).toContain(circle);
-      expect(elements).toContain(canvas.document.documentElement);
     });
 
     it('should handle region queries correctly', async () => {
@@ -217,6 +245,45 @@ describe('Element Picking Tests', () => {
       foundElements = canvas.document.elementsFromBBox(0, 0, 350, 350);
       expect(foundElements).toContain(rect1);
       expect(foundElements).toContain(rect2);
+
+      // The last added element should be first in the result (z-index ordering)
+      expect(foundElements[0] === rect2).toBe(true);
+      expect(foundElements[1] === rect1).toBe(true);
+    });
+
+    it('should handle region queries with zIndex correctly', async () => {
+      const rect1 = new Rect({
+        style: {
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          fill: 'red',
+          zIndex: 2,
+        },
+      });
+
+      const rect2 = new Rect({
+        style: {
+          x: 50,
+          y: 50,
+          width: 100,
+          height: 100,
+          fill: 'blue',
+          zIndex: 1,
+        },
+      });
+
+      // rect1 has higher zIndex, so it should be on top despite rect2 being added last
+      canvas.appendChild(rect1);
+      canvas.appendChild(rect2);
+      await sleep(100);
+
+      const foundElements = canvas.document.elementsFromBBox(0, 0, 150, 150);
+
+      // Query that should hit both, the element with higher zIndex should be first in the result
+      expect(foundElements[0] === rect1).toBe(true);
+      expect(foundElements[1] === rect2).toBe(true);
     });
 
     it('should demonstrate good performance scaling', async () => {

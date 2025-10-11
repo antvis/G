@@ -122,6 +122,11 @@ export interface SceneGraphService {
   getBounds: (element: INode, render?: boolean) => AABB;
   getLocalBounds: (element: INode, render?: boolean) => AABB;
   getGeometryBounds: (element: INode, render?: boolean) => AABB;
+  getTransformedGeometryBounds: (
+    element: INode,
+    render?: boolean,
+    existedAABB?: AABB,
+  ) => AABB | null;
   getBoundingClientRect: (element: INode) => Rectangle;
   syncHierarchy: (element: INode) => void;
 }

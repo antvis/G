@@ -4,6 +4,7 @@ import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text, DisplayObject } from '../display-objects';
 import type { BaseStyleProps } from '../types';
 import { Shape } from '../types';
+import { AABB } from '../shapes';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   ERROR_MSG_USE_DOCUMENT_ELEMENT,
@@ -147,13 +148,7 @@ export class Document extends Node implements IDocument {
 
     // Traverse all elements in the document
     const traverse = (node: DisplayObject) => {
-      // Skip if node is not interactive
-      if (!node.isInteractive()) {
-        return;
-      }
-
-      // Skip if node is culled
-      if (node.isCulled()) {
+      if (!node.isInteractive() || node.isCulled()) {
         return;
       }
 
@@ -169,16 +164,17 @@ export class Document extends Node implements IDocument {
         'visible',
       ].includes(pointerEvents);
 
-      if (!isVisibilityAffected || (isVisibilityAffected && node.isVisible())) {
-        // Check if node's bounding box intersects with the given box
-        const bounds = node.getGeometryBounds();
-        if (
-          bounds.max[0] >= minX &&
-          bounds.min[0] <= maxX &&
-          bounds.max[1] >= minY &&
-          bounds.min[1] <= maxY
-        ) {
-          hitTestList.push(node);
+      if (!isVisibilityAffected || node.isVisible()) {
+        const bounds = node.getTransformedGeometryBounds();
+        if (bounds && !AABB.isEmpty(bounds)) {
+          if (
+            bounds.max[0] >= minX &&
+            bounds.min[0] <= maxX &&
+            bounds.max[1] >= minY &&
+            bounds.min[1] <= maxY
+          ) {
+            hitTestList.push(node);
+          }
         }
       }
 
