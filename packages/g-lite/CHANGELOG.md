@@ -1,5 +1,17 @@
 # @antv/g-lite
 
+## 2.4.0
+
+### Minor Changes
+
+- 7fbf52f: perf: remove rBush logic from element picking mechanism
+- 6a7c5bc: perf: element event batch triggering
+- c14ba7b: feat(text): add text-decoration support for text elements
+
+### Patch Changes
+
+- f08291e: fix: fix loop index in SyncWaterfallHook and AsyncSeriesWaterfallHook
+
 ## 2.3.2
 
 ### Patch Changes

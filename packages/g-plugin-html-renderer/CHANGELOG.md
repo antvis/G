@@ -1,5 +1,19 @@
 # @antv/g-plugin-html-renderer
 
+## 2.2.0
+
+### Minor Changes
+
+- 6a7c5bc: perf: element event batch triggering
+
+### Patch Changes
+
+- Updated dependencies [7fbf52f]
+- Updated dependencies [f08291e]
+- Updated dependencies [6a7c5bc]
+- Updated dependencies [c14ba7b]
+    - @antv/g-lite@2.4.0
+
 ## 2.1.27
 
 ### Patch Changes

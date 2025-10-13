@@ -1,5 +1,22 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.4.0
+
+### Minor Changes
+
+- 6a7c5bc: perf: element event batch triggering
+- c14ba7b: feat(text): add text-decoration support for text elements
+
+### Patch Changes
+
+- Updated dependencies [7fbf52f]
+- Updated dependencies [f08291e]
+- Updated dependencies [6a7c5bc]
+- Updated dependencies [c14ba7b]
+    - @antv/g-lite@2.4.0
+    - @antv/g-plugin-image-loader@2.2.0
+    - @antv/g-plugin-canvas-path-generator@2.1.23
+
 ## 2.3.3
 
 ### Patch Changes
