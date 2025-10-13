@@ -1,10 +1,10 @@
 import { isFunction } from '@antv/util';
 import { runtime } from '../global-runtime';
 import { BUILT_IN_PROPERTIES } from '../css';
-import { Group, Text } from '../display-objects';
-import type { DisplayObject } from '../display-objects';
+import { Group, Text, DisplayObject } from '../display-objects';
 import type { BaseStyleProps } from '../types';
 import { Shape } from '../types';
+import { AABB } from '../shapes';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   ERROR_MSG_USE_DOCUMENT_ELEMENT,
@@ -136,7 +136,7 @@ export class Document extends Node implements IDocument {
   }
 
   /**
-   * Picking 2D graphics with RBush based on BBox, fast but inaccurate.
+   * Picking 2D graphics by traversing elements and checking bounding boxes.
    */
   elementsFromBBox(
     minX: number,
@@ -144,14 +144,17 @@ export class Document extends Node implements IDocument {
     maxX: number,
     maxY: number,
   ): DisplayObject[] {
-    const rBush = this.defaultView.context.rBushRoot;
-    const rBushNodes = rBush.search({ minX, minY, maxX, maxY });
-
     const hitTestList: DisplayObject[] = [];
-    rBushNodes.forEach(({ displayObject }) => {
-      const { pointerEvents = 'auto' } = displayObject.parsedStyle;
 
-      // account for `visibility`
+    // Traverse all elements in the document
+    const traverse = (node: DisplayObject) => {
+      if (!node.isInteractive() || node.isCulled()) {
+        return;
+      }
+
+      const { pointerEvents = 'auto' } = node.parsedStyle;
+
+      // Account for `visibility`
       // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
       const isVisibilityAffected = [
         'auto',
@@ -161,16 +164,34 @@ export class Document extends Node implements IDocument {
         'visible',
       ].includes(pointerEvents);
 
-      if (
-        (!isVisibilityAffected ||
-          (isVisibilityAffected && displayObject.isVisible())) &&
-        !displayObject.isCulled() &&
-        displayObject.isInteractive()
-      ) {
-        hitTestList.push(displayObject);
+      if (!isVisibilityAffected || node.isVisible()) {
+        const bounds = node.getTransformedGeometryBounds(true);
+        if (bounds && !AABB.isEmpty(bounds)) {
+          if (
+            bounds.max[0] >= minX &&
+            bounds.min[0] <= maxX &&
+            bounds.max[1] >= minY &&
+            bounds.min[1] <= maxY
+          ) {
+            hitTestList.push(node);
+          }
+        }
       }
-    });
-    // find group with max z-index
+
+      // Traverse children if it's a container
+      if (node.childNodes) {
+        node.childNodes.forEach((child) => {
+          if (child instanceof DisplayObject) {
+            traverse(child);
+          }
+        });
+      }
+    };
+
+    // Start traversal from documentElement
+    traverse(this.documentElement);
+
+    // Sort by render order (z-index)
     hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
 
     return hitTestList;

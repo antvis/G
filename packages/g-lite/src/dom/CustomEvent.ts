@@ -1,7 +1,8 @@
 import { FederatedEvent } from './FederatedEvent';
 
 /**
- * @see https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events
+ * @link https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+ * @link https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events
  *
  * @example
   const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
@@ -12,14 +13,16 @@ import { FederatedEvent } from './FederatedEvent';
 
   circle.dispatchEvent(event);
  */
-export class CustomEvent extends FederatedEvent {
-  constructor(eventName: string, object?: object) {
+export class CustomEvent<
+  O extends { detail?: any } = any,
+> extends FederatedEvent<null, O['detail']> {
+  constructor(eventName: string, options?: O) {
     super(null);
 
     this.type = eventName;
-    this.detail = object;
+    this.detail = options?.detail;
 
     // compatible with G 3.0
-    Object.assign(this, object);
+    Object.assign(this, options);
   }
 }

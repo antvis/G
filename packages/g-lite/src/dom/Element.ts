@@ -99,23 +99,30 @@ export class Element<
     dirty: false,
   };
 
-  /**
-   * @param flag - default `true`, whether the object needs to be updated
-   * @param updateShape - default `false`, whether the bounding box of the object is updated
-   */
-  dirty(flag = true, updateShape = false) {
-    this.renderable.dirty = flag;
-    if (updateShape) {
-      this.renderable.boundsDirty = flag;
-      this.renderable.renderBoundsDirty = flag;
-    }
-  }
-
   geometry: Geometry = {
     contentBounds: undefined,
     renderBounds: undefined,
     dirty: true,
   };
+
+  /**
+   * Marks the element as dirty, indicating it needs re-rendering or relayout.
+   *
+   * @param styleFlag - Whether to update style state (default: true).
+   *                   When true, sets `renderable.dirty` to true.
+   * @param layoutFlag - Optional. When provided, updates layout-related dirty flags:
+   *                    - `renderable.boundsDirty`
+   *                    - `renderable.renderBoundsDirty`
+   *                    - `geometry.dirty`
+   */
+  dirty(styleFlag = true, layoutFlag?: boolean) {
+    this.renderable.dirty = styleFlag;
+    if (layoutFlag !== undefined) {
+      this.renderable.boundsDirty = layoutFlag;
+      this.renderable.renderBoundsDirty = layoutFlag;
+      this.geometry.dirty = layoutFlag;
+    }
+  }
 
   cullable: Cullable = {
     strategy: Strategy.Standard,
@@ -132,6 +139,10 @@ export class Element<
     dirtyReason: undefined,
   };
 
+  /**
+   * @deprecated Legacy property for RBush spatial indexing.
+   * Will be removed in future versions.
+   */
   rBushNode: RBushNode = {
     aabb: undefined,
   };
@@ -495,12 +506,15 @@ export class Element<
     this.destroyed = true;
   }
 
-  getGeometryBounds(): AABB {
-    return runtime.sceneGraphService.getGeometryBounds(this);
+  getGeometryBounds(render = false): AABB {
+    return runtime.sceneGraphService.getGeometryBounds(this, render);
   }
 
-  getRenderBounds(): AABB {
-    return runtime.sceneGraphService.getBounds(this, true);
+  /**
+   * get geometry bounds in world space, not accounting for children
+   */
+  getTransformedGeometryBounds(render = false): AABB | null {
+    return runtime.sceneGraphService.getTransformedGeometryBounds(this, render);
   }
 
   /**
@@ -508,6 +522,10 @@ export class Element<
    */
   getBounds(): AABB {
     return runtime.sceneGraphService.getBounds(this);
+  }
+
+  getRenderBounds(): AABB {
+    return runtime.sceneGraphService.getBounds(this, true);
   }
 
   /**
@@ -632,8 +650,6 @@ export class Element<
   setAttribute<Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
-    force?: boolean,
-    memoize?: boolean,
   ) {
     this.attributes[attributeName] = value;
   }

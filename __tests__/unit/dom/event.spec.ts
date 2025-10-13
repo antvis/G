@@ -220,6 +220,7 @@ describe('Event API', () => {
     ul.appendChild(li2);
 
     const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
+
     // delegate to parent
     ul.addEventListener('build', (e) => {
       expect(e.target).toBe(li1);

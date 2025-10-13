@@ -8,6 +8,7 @@ export { polyline } from './polyline';
 export { polygon } from './polygon';
 export { path } from './path';
 export { text } from './text';
+export { textDecoration } from './text-decoration';
 export { gradient } from './gradient';
 export { transform } from './transform';
 export { transformText } from './transform-text';

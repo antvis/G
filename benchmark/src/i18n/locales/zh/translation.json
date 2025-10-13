@@ -1,0 +1,69 @@
+{
+  "header": {
+    "title": "引擎性能测试",
+    "subtitle": "渲染引擎性能测试与对比"
+  },
+  "footer": {
+    "copyright": "© {{year}} 引擎性能测试工具。保留所有权利。"
+  },
+  "controlPanel": {
+    "title": "性能测试",
+    "testGroup": "测试组",
+    "selected": "已选",
+    "selectGroup": "请选择测试组",
+    "noneSelected": "无",
+    "elementCount": "元素数量:",
+    "iterations": "迭代次数:",
+    "otherOptions": "其他选项:",
+    "continueOnError": "出错时继续",
+    "startTest": "开始测试",
+    "stopTest": "停止",
+    "reset": "重置"
+  },
+  "logs": {
+    "title": "测试日志",
+    "totalResults": "共 {{count}} 条测试结果",
+    "exportResults": "导出结果",
+    "exportLogs": "导出日志",
+    "noLogsMessage": "暂无日志，点击\"开始测试\"按钮运行基准测试",
+    "progress": {
+      "overall": "整体进度",
+      "elapsedRemaining": "已用/剩余",
+      "engineProgress": "引擎进度",
+      "testSuite": "测试套件",
+      "testCase": "测试用例",
+      "current": "当前"
+    }
+  },
+  "performanceChart": {
+    "title": "引擎性能对比",
+    "selectSuite": "选择测试套件：",
+    "uploadResults": "上传测试结果文件",
+    "insightsTitle": "性能分析洞察",
+    "expand": "展开",
+    "collapse": "收起",
+    "testCase": "测试用例",
+    "durationMs": "持续时间(毫秒)",
+    "phase": "阶段",
+    "invalidJson": "无效的JSON格式，请确保文件包含测试结果数组",
+    "parseError": "解析JSON文件时出错：",
+    "highestFailureRate": "{{engine}} 引擎的失败率最高，达到 {{rate}}% ({{failed}}/{{total}})。"
+  },
+  "performanceInsight": {
+    "testSummary": "在 \"{suiteName}\" 测试套件中，共运行了 {totalTests} 个测试，成功 {successCount} 个，成功率 {successRate}%。",
+    "failureWarning": "个测试失败，请检查相关实现。",
+    "performanceAnalysis": "性能差异分析:",
+    "analyzedCount": "共分析了 {{count}} 个测试用例:",
+    "fasterThan": "比",
+    "timesFaster": "快 {{ratio}} 倍",
+    "caseComparison": "  - \"{{caseName}}\": {{fastestEngine}} 比 {{slowestEngine}} 快 {{ratio}} 倍",
+    "performanceGap": {
+      "high": "差异较大的用例 (≥2倍):",
+      "medium": "差异中等的用例 (1.5-2倍):",
+      "low": "差异较小的用例 (<1.5倍): {{count}} 个"
+    }
+  },
+  "sceneViewer": {
+    "title": "渲染效果预览"
+  }
+}

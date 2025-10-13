@@ -72,7 +72,7 @@ export class ImageDrawcall extends Instanced {
       //       this.calculateWithAspectRatio(object, width, height);
       //       // set dirty rectangle flag
       //       object.renderable.dirty = true;
-      //       this.context.renderingService.dirtify();
+      //       this.context.renderingService.dirty();
       //     }
       //   });
       // },

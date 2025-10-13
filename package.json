@@ -21,6 +21,7 @@
     "test:unit": "jest --config jest.unit.config.js",
     "test:visual": "jest --config jest.visual.config.js",
     "coverage": "jest --config jest.unit.config.js --coverage",
+    "benchmark": "cd benchmark && npm run dev",
     "---code-quality---": "",
     "eslint": "eslint ./packages --config=.eslintrc.cjs --ext=.ts,.js --quiet --cache --cache-location=node_modules/.cache/.eslintcache",
     "eslint-fix": "eslint ./packages --config=.eslintrc.cjs --fix --ext=.ts,.js",

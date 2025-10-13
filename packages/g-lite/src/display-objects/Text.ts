@@ -105,6 +105,11 @@ export interface TextStyleProps extends BaseStyleProps {
   textDecorationStyle?: TextDecorationStyle;
 
   /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-thickness
+   */
+  textDecorationThickness?: number;
+
+  /**
    * The font-style property sets whether a font should be styled with a normal, italic, or oblique face from its font-family.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-style
    */
@@ -193,6 +198,7 @@ export interface TextStyleProps extends BaseStyleProps {
    */
   dy?: number | string;
 }
+
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   x: number;
   y: number;
@@ -226,6 +232,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   textDecorationLine?: TextDecorationLine;
   textDecorationColor?: CSSRGB;
   textDecorationStyle?: TextDecorationStyle | string;
+  textDecorationThickness?: number;
   textPathSide?: 'left' | 'right';
   textPathStartOffset?: number;
   metrics?: TextMetrics;
@@ -265,6 +272,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     'textDecorationLine',
     'textDecorationColor',
     'textDecorationStyle',
+    'textDecorationThickness',
     'textPathSide',
     'textPathStartOffset',
     'metrics',

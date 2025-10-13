@@ -1,38 +1,41 @@
-import type RBush from 'rbush';
 import { runtime } from '../global-runtime';
-import type { RBushNodeAABB } from '../components';
 import { DisplayObject } from '../display-objects';
-import type { FederatedEvent } from '../dom';
-import { ElementEvent } from '../dom';
+import {
+  type FederatedEvent,
+  type CustomEvent,
+  type MutationRecord,
+  ElementEvent,
+} from '../dom';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
 import { raf } from '../utils';
-import { AABB } from '../shapes';
 
+/**
+ * PrepareRendererPlugin handles rendering preparation tasks
+ * Simplified implementation focused on core rendering needs
+ */
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
-  private rBush: RBush<RBushNodeAABB>;
 
-  private syncTasks = new Map<DisplayObject, boolean>();
-  private ricSyncRTreeId: number;
+  private mutationRecords: MutationRecord[] = [];
   private isFirstTimeRendering = true;
-  private syncing = false;
 
   isFirstTimeRenderingFinished = false;
 
   apply(context: RenderingPluginContext) {
-    const { config, renderingService, renderingContext, rBushRoot } = context;
+    const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
-    this.rBush = rBushRoot;
-
     const handleAttributeChanged = (e: FederatedEvent) => {
-      renderingService.dirtify();
+      renderingService.dirty();
     };
 
-    const handleBoundsChanged = (e: FederatedEvent) => {
-      this.syncTasks.set(e.target as DisplayObject, e.detail.affectChildren);
-
-      renderingService.dirtify();
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
+      const records = e.detail;
+      // Store mutation records for potential future processing
+      this.mutationRecords.push(...records);
+      renderingService.dirty();
     };
 
     const handleMounted = (e: FederatedEvent) => {
@@ -48,16 +51,10 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      const { rBushNode } = object;
 
-      if (rBushNode?.aabb) {
-        this.rBush.remove(rBushNode.aabb);
-      }
-
-      this.syncTasks.delete(object);
-
+      // No spatial index cleanup needed
       runtime.sceneGraphService.dirtyToRoot(object);
-      renderingService.dirtify();
+      renderingService.dirty();
     };
 
     renderingService.hooks.init.tap(PrepareRendererPlugin.tag, () => {
@@ -81,123 +78,23 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
-      this.syncTasks.clear();
+
+      this.mutationRecords = [];
     });
 
     const ric =
       runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
-    const enableRICSyncRTree = config.future?.experimentalRICSyncRTree === true;
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       if (this.isFirstTimeRendering) {
         this.isFirstTimeRendering = false;
-        this.syncing = true;
         ric(() => {
-          this.syncRTree(true);
           this.isFirstTimeRenderingFinished = true;
         });
-      } else if (
-        enableRICSyncRTree &&
-        runtime.globalThis.requestIdleCallback &&
-        runtime.globalThis.cancelIdleCallback
-      ) {
-        runtime.globalThis.cancelIdleCallback(this.ricSyncRTreeId);
-        this.ricSyncRTreeId = runtime.globalThis.requestIdleCallback(() =>
-          this.syncRTree(),
-        );
-      } else {
-        this.syncRTree();
       }
+
+      // Clear mutation records after each frame
+      this.mutationRecords = [];
     });
-  }
-
-  private syncNode(node: DisplayObject, force = false) {
-    if (!node.isConnected) return;
-
-    const rBushNode = node.rBushNode;
-
-    // clear dirty node
-    if (rBushNode.aabb) this.rBush.remove(rBushNode.aabb);
-
-    const renderBounds = node.getRenderBounds();
-    if (renderBounds) {
-      const renderable = node.renderable;
-
-      if (force) {
-        if (!renderable.dirtyRenderBounds) {
-          renderable.dirtyRenderBounds = new AABB();
-        }
-        // save last dirty aabb
-        renderable.dirtyRenderBounds.update(
-          renderBounds.center,
-          renderBounds.halfExtents,
-        );
-      }
-
-      const [minX, minY] = renderBounds.getMin();
-      const [maxX, maxY] = renderBounds.getMax();
-
-      if (!rBushNode.aabb) {
-        rBushNode.aabb = {} as RBushNodeAABB;
-      }
-      rBushNode.aabb.displayObject = node;
-      rBushNode.aabb.minX = minX;
-      rBushNode.aabb.minY = minY;
-      rBushNode.aabb.maxX = maxX;
-      rBushNode.aabb.maxY = maxY;
-    }
-
-    if (rBushNode.aabb) {
-      // TODO: NaN occurs when width/height of Rect is 0
-      if (
-        !isNaN(rBushNode.aabb.maxX) &&
-        !isNaN(rBushNode.aabb.maxX) &&
-        !isNaN(rBushNode.aabb.minX) &&
-        !isNaN(rBushNode.aabb.minY)
-      ) {
-        return rBushNode.aabb;
-      }
-    }
-  }
-
-  private syncRTree(force = false) {
-    if (!force && (this.syncing || this.syncTasks.size === 0)) {
-      return;
-    }
-
-    this.syncing = true;
-
-    // bounds changed, need re-inserting its children
-    const bulk: RBushNodeAABB[] = [];
-    const synced = new Set<DisplayObject>();
-
-    const sync = (node: DisplayObject) => {
-      if (!synced.has(node) && node.renderable) {
-        const aabb = this.syncNode(node, force);
-        if (aabb) {
-          bulk.push(aabb);
-          synced.add(node);
-        }
-      }
-    };
-
-    this.syncTasks.forEach((affectChildren, node) => {
-      if (affectChildren) {
-        node.forEach(sync);
-      }
-
-      let parent = node;
-      while (parent) {
-        sync(parent);
-        parent = parent.parentElement as DisplayObject;
-      }
-    });
-
-    // use bulk inserting, which is ~2-3 times faster
-    // @see https://github.com/mourner/rbush#bulk-inserting-data
-    this.rBush.load(bulk);
-
-    bulk.length = 0;
-    this.syncing = false;
   }
 }

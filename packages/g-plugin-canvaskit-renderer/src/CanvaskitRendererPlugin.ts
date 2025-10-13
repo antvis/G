@@ -328,7 +328,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         () => {
           // set dirty rectangle flag
           object.renderable.dirty = true;
-          this.context.renderingService.dirtify();
+          this.context.renderingService.dirty();
         },
       );
 

@@ -44,9 +44,8 @@ export class LoadImagePlugin implements RenderingPlugin {
               calculateWithAspectRatio(object, width, height);
             }
 
-            // set dirty rectangle flag
-            object.renderable.dirty = true;
-            renderingService.dirtify();
+            object.dirty();
+            renderingService.dirty();
           },
         );
       }
@@ -75,9 +74,8 @@ export class LoadImagePlugin implements RenderingPlugin {
               calculateWithAspectRatio(object, width, height);
             }
 
-            // set dirty rectangle flag
-            object.renderable.dirty = true;
-            renderingService.dirtify();
+            object.dirty();
+            renderingService.dirty();
           })
           .catch(() => {
             //

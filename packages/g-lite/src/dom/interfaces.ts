@@ -1,8 +1,7 @@
-import type RBush from 'rbush';
 import EventEmitter from 'eventemitter3';
 import type { GlobalRuntime } from '..';
 import type { ICamera } from '../camera';
-import type { RBushNodeAABB } from '../components';
+
 import type { DisplayObject } from '../display-objects';
 import type {
   ContextService,
@@ -567,7 +566,6 @@ export interface CanvasContext {
   contextService: ContextService<unknown>;
   renderingService: RenderingService;
   eventService: EventService;
-  rBushRoot: RBush<RBushNodeAABB>;
   renderingContext: RenderingContext;
   renderingPlugins: RenderingPlugin[];
 }

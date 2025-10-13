@@ -3,7 +3,9 @@ import type {
   DataURLOptions,
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   MutationEvent,
+  MutationRecord,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -205,15 +207,21 @@ export class RenderGraphPlugin implements RenderingPlugin {
       }
     };
 
-    const handleBoundsChanged = (e: MutationEvent) => {
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
       if (this.swapChain) {
-        const object = e.target as DisplayObject;
-        const nodes =
-          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+        const records = e.detail;
+        for (let i = 0; i < records.length; i++) {
+          const record = records[i];
+          const object = record.target as DisplayObject;
+          const nodes =
+            object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
 
-        nodes.forEach((node: DisplayObject) => {
-          this.batchManager.updateAttribute(node, 'modelMatrix', null);
-        });
+          nodes.forEach((node: DisplayObject) => {
+            this.batchManager.updateAttribute(node, 'modelMatrix', null);
+          });
+        }
       }
     };
 

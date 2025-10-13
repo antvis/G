@@ -1,6 +1,9 @@
 import { FederatedEvent } from './FederatedEvent';
 import type { ElementEvent, IElement } from './interfaces';
 
+/**
+ * @deprecated https://developer.chrome.com/blog/mutation-events-deprecation
+ */
 export class MutationEvent extends FederatedEvent {
   static readonly ADDITION: number = 2;
   static readonly MODIFICATION: number = 1;

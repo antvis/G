@@ -1,3 +1,5 @@
+// https://jestjs.io/docs/configuration
+
 const path = require('path');
 const { lstatSync, readdirSync } = require('fs');
 // get listing of packages in the mono repo
@@ -17,23 +19,37 @@ const moduleNameMapper = {
   ...packages.reduce(
     (acc, name) => ({
       ...acc,
-      [`@antv/${name}$`]: `<rootDir>/packages/./${name}/src/`,
+      [`@antv/${name}$`]: `<rootDir>/packages/${name}/src/`,
     }),
     {},
   ),
 };
 
+/** @type {import('jest').Config} */
 module.exports = {
   testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
-  collectCoverageFrom: ['<rootDir>/packages/g-lite/src/**/*.{ts,tsx}'],
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/__tests__/',
-    '/__node__tests__/',
+  collectCoverageFrom: [
+    '<rootDir>/packages/g/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-lite/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-canvas-path-generator/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-image-loader/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-dom-interaction/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-web-animations-api/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-camera-api/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-html-renderer/src/**/*.{ts,tsx}',
+    //
+    '<rootDir>/packages/g-canvas/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-canvas-renderer/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-canvas-picker/src/**/*.{ts,tsx}',
+    //
+    '<rootDir>/packages/g-svg/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-svg-renderer/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-plugin-svg-picker/src/**/*.{ts,tsx}',
   ],
+  coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'clover', 'lcov'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text'],
   // coverageThreshold: {
   //   global: {
   //     branches: 80,
@@ -55,7 +71,6 @@ module.exports = {
     '^.+\\.[tj]s$': [
       'ts-jest',
       {
-        isolatedModules: true,
         tsconfig: {
           allowJs: true,
           target: 'esnext',
