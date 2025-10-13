@@ -50,7 +50,7 @@
       "markdownlint --fix"
     ],
     "*.{js,jsx,tsx,ts,vue}": [
-      "eslint --fix"
+      "eslint --cache --cache-location node_modules/.cache/.eslintcache --fix"
     ]
   },
   "devDependencies": {

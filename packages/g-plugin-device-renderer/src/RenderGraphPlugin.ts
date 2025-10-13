@@ -1,3 +1,5 @@
+/// <reference types="webxr" />
+
 import type {
   CSSRGB,
   DataURLOptions,
@@ -300,7 +302,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           // Assumed to be a XRWebGLLayer for now.
           let layer = session.renderState.baseLayer;
           if (!layer) {
-            layer = session.renderState.layers![0] as XRWebGLLayer;
+            layer = session.renderState.layers[0] as XRWebGLLayer;
           } else {
             // Bind the graphics framebuffer to the baseLayer's framebuffer.
             // Only baseLayer has framebuffer and we need to bind it, even if it is null (for inline sessions).
@@ -321,8 +323,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           if (pose) {
             // In mobile AR, we only have one view.
             pose.views.forEach((view, i) => {
-              const viewport =
-                session.renderState.baseLayer!.getViewport(view)!;
+              const viewport = session.renderState.baseLayer.getViewport(view);
 
               // @ts-ignore
               const cameraMatrix = mat4.fromValues(...view.transform.matrix);

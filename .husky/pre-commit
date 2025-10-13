@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# 增加 Node.js 内存限制到 8GB
+export NODE_OPTIONS="--max-old-space-size=8192"
 npx lint-staged
