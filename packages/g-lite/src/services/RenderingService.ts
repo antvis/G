@@ -1,3 +1,5 @@
+/// <reference types="webxr" />
+
 import type { ICamera } from '../camera';
 import { SortReason, Sortable } from '../components';
 import type { DisplayObject } from '../display-objects';
