@@ -491,15 +491,25 @@ export class TextRenderer extends DefaultRenderer {
     endX: number,
     y: number,
   ) {
-    const amplitude = 1; // Height of the wave
-    const frequency = 0.1; // Frequency of the wave
+    const amplitude = 2; // Height of the wave
+    const wavelength = 10; // Length of one wave cycle
+    const numWaves = Math.floor((endX - startX) / wavelength);
 
     context.beginPath();
     context.moveTo(startX, y);
 
-    for (let x = startX; x <= endX; x += 1) {
-      const waveY = y + amplitude * Math.sin(frequency * (x - startX));
-      context.lineTo(x, waveY);
+    for (let i = 0; i < numWaves; i++) {
+      const x1 = startX + i * wavelength + wavelength / 4;
+      const y1 = y + amplitude;
+      const x2 = startX + i * wavelength + wavelength / 2;
+      const y2 = y;
+      context.quadraticCurveTo(x1, y1, x2, y2);
+
+      const x3 = startX + i * wavelength + (wavelength * 3) / 4;
+      const y3 = y - amplitude;
+      const x4 = startX + (i + 1) * wavelength;
+      const y4 = y;
+      context.quadraticCurveTo(x3, y3, x4, y4);
     }
 
     context.stroke();
