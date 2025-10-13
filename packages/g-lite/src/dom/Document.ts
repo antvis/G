@@ -165,7 +165,7 @@ export class Document extends Node implements IDocument {
       ].includes(pointerEvents);
 
       if (!isVisibilityAffected || node.isVisible()) {
-        const bounds = node.getTransformedGeometryBounds();
+        const bounds = node.getTransformedGeometryBounds(true);
         if (bounds && !AABB.isEmpty(bounds)) {
           if (
             bounds.max[0] >= minX &&
