@@ -74,7 +74,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     // position in world space
     const position = vec3.set(tmpVec3a, x, y, 0);
 
-    // query by AABB first with spatial index(r-tree)
+    // query by AABB
     const hitTestList = document.elementsFromBBox(
       position[0],
       position[1],

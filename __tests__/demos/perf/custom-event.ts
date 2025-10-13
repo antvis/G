@@ -1,7 +1,7 @@
 import { Canvas, ElementEvent, Rect, Group, CustomEvent } from '@antv/g';
 import * as tinybench from 'tinybench';
 import * as lil from 'lil-gui';
-import { BenchmarkPanel, BenchmarkResult } from './benchmark-panel';
+import { BenchmarkPanel, BenchmarkResult } from '../_helper/benchmark-panel';
 
 /**
  * Custom Event Performance Test
