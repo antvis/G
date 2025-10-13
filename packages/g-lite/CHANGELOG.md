@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.4.1
+
+### Patch Changes
+
+- 3cc63ef: fix: type definition
+
 ## 2.4.0
 
 ### Minor Changes

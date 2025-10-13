@@ -1,5 +1,15 @@
 # @antv/g-svg
 
+## 2.0.44
+
+### Patch Changes
+
+- Updated dependencies [3cc63ef]
+    - @antv/g-lite@2.4.1
+    - @antv/g-plugin-dom-interaction@2.1.29
+    - @antv/g-plugin-svg-picker@2.0.44
+    - @antv/g-plugin-svg-renderer@2.3.1
+
 ## 2.0.43
 
 ### Patch Changes
