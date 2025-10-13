@@ -185,19 +185,19 @@ export async function hitTest(context: { canvas: Canvas }) {
   canvas.appendChild(label3);
 
   rect1.addEventListener('mouseenter', () => {
-    rect1.attr('fill', 'violet');
+    rect1.attr('fill', 'orangered');
   });
 
   rect1.addEventListener('mouseleave', () => {
-    rect1.attr('fill', 'purple');
+    rect1.attr('fill', 'orange');
   });
 
   rect2.addEventListener('mouseenter', () => {
-    rect2.attr('fill', 'orangered');
+    rect2.attr('fill', 'violet');
   });
 
   rect2.addEventListener('mouseleave', () => {
-    rect2.attr('fill', 'orange');
+    rect2.attr('fill', 'purple');
   });
 
   // Example 4: pointer-events property effect
