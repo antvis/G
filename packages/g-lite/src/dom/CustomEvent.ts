@@ -14,8 +14,8 @@ import { FederatedEvent } from './FederatedEvent';
   circle.dispatchEvent(event);
  */
 export class CustomEvent<
-  O extends { detail?: any } = any,
-> extends FederatedEvent<null, O['detail']> {
+  O extends { detail?: any; [key: string | number]: any } = any,
+> extends FederatedEvent<Event, O['detail']> {
   constructor(eventName: string, options?: O) {
     super(null);
 

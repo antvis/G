@@ -1,3 +1,5 @@
+/// <reference types="webxr" />
+
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
