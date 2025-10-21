@@ -22,6 +22,11 @@ export class CustomEvent<
     this.type = eventName;
     this.detail = options?.detail;
 
+    // compatible
+    if (options && !('detail' in options)) {
+      this.detail = options;
+    }
+
     // compatible with G 3.0
     Object.assign(this, options);
   }
