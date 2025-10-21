@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.4.2
+
+### Patch Changes
+
+- ca228f9: fix(g-lite): fix CustomEvent constructor compatibility
+
 ## 2.4.1
 
 ### Patch Changes
