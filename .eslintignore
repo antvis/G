@@ -4,6 +4,7 @@ build/
 lib/
 esm/
 coverage/
+types/
 
 # 依赖目录
 node_modules/
