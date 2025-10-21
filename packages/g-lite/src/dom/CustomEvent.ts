@@ -23,7 +23,7 @@ export class CustomEvent<
     this.detail = options?.detail;
 
     // compatible
-    if (options && options.detail === undefined) {
+    if (options && !('detail' in options)) {
       this.detail = options;
     }
 
