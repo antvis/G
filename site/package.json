@@ -93,5 +93,8 @@
     "@antv/dumi-theme-antv": "^0.7.10",
     "dumi": "2.4.18",
     "workerize-loader": "^2.0.2"
+  },
+  "resolutions": {
+    "@monaco-editor/loader": "1.5.0"
   }
 }
