@@ -1,6 +1,6 @@
 import { Renderer } from '@antv/g-canvas';
 
-export async function switchRenderer(context) {
+export async function bugfixSwitchRenderer(context) {
   const { canvas } = context;
 
   await canvas.ready;

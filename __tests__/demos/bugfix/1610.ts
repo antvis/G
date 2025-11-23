@@ -1,7 +1,7 @@
 import { Canvas, Circle, HTML } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
-export async function html(context) {
+export async function issue_1610_html(context) {
   const { canvas, container } = context;
   await canvas.ready;
   canvas.resize(320, 320);

@@ -1,6 +1,6 @@
 import { Circle, Group } from '@antv/g';
 
-export async function circle(context) {
+export async function event_circle(context) {
   const { canvas } = context;
   await canvas.ready;
 

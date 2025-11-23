@@ -1,8 +1,8 @@
-export { html } from './1610';
+export { issue_1610_html } from './1610';
 export { transform_path } from './1624';
 export { scale0 } from './scale0';
 export { dirty } from './dirty';
-export { image } from './1636';
+export { issue_1636_image } from './1636';
 export { shadowroot_offset } from './1677';
 export { gradient_text } from './1572';
 export { zoom } from './1667';
@@ -15,4 +15,4 @@ export { issue_1910 } from './1910';
 export { issue_1911 } from './1911';
 export { textWordWrap } from './textWordWrap';
 export { group_with_stroke } from './group-with-stroke';
-export { switchRenderer } from './switch-renderer';
+export { bugfixSwitchRenderer } from './switch-renderer';
