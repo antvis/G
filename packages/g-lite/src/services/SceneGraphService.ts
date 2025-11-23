@@ -1012,9 +1012,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const mutations: MutationRecord[] = [];
 
     canvas.getRoot().forEach((item: Node) => {
-      (item.mutations || []).forEach((item) => {
-        if (item.type === 'attributes' && item._boundsChangeData) {
-          mutations.push(item);
+      (item.mutations || []).forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation._boundsChangeData) {
+          mutations.push(mutation);
         }
       });
 
