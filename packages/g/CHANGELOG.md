@@ -1,5 +1,20 @@
 # @antv/g
 
+## 6.2.0
+
+### Minor Changes
+
+- 697a47f: fix: multiple canvas rendering errors
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+    - @antv/g-camera-api@2.0.44
+    - @antv/g-dom-mutation-observer-api@2.0.41
+    - @antv/g-web-animations-api@2.1.31
+
 ## 6.1.30
 
 ### Patch Changes
