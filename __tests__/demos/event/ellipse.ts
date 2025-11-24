@@ -1,6 +1,6 @@
 import { Ellipse } from '@antv/g';
 
-export async function ellipse(context) {
+export async function event_ellipse(context) {
   const { canvas } = context;
   await canvas.ready;
 

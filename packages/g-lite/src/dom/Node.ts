@@ -10,6 +10,7 @@ import type {
   INode,
   IParentNode,
 } from './interfaces';
+import { type MutationRecord } from './MutationObserver';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Node
@@ -92,6 +93,8 @@ export abstract class Node extends EventTarget implements INode {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
    */
   nodeValue: string | null = null;
+
+  mutations: MutationRecord[] | undefined = undefined;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent

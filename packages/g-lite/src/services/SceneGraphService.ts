@@ -13,6 +13,7 @@ import type {
   IElement,
   INode,
   IParentNode,
+  Node,
   MutationRecord,
 } from '../dom';
 import { CustomEvent } from '../dom/CustomEvent';
@@ -71,8 +72,6 @@ const $rotate_ParentInvertRotation = quat.create();
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  private mutationsMap: Map<DisplayObject, MutationRecord> = new Map();
-
   constructor(private runtime: GlobalRuntime) {}
 
   matches<T extends IElement>(query: string, root: T) {
@@ -867,7 +866,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   syncHierarchy(rootNode: INode) {
-    // console.log('syncHierarchy');
     const stack: INode[] = [rootNode];
     const ancestors: {
       node: INode;
@@ -970,22 +968,30 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     this.informDependentDisplayObjects(element as DisplayObject);
 
-    let mutation = this.mutationsMap.get(element as DisplayObject);
-    if (!mutation) {
-      mutation = {
-        type: 'attributes',
+    const mutations = (element as Node).mutations || [];
+    let boundChangeMutation = mutations.find(
+      (item) => item.type === 'attributes' && item._boundsChangeData,
+    );
+
+    if (!boundChangeMutation) {
+      boundChangeMutation = {
+        type: 'attributes' as const,
         target: element as DisplayObject,
         _boundsChangeData: {
           affectChildren,
         },
       };
-      this.mutationsMap.set(element as DisplayObject, mutation);
+
+      mutations.push(boundChangeMutation);
     } else {
-      mutation._boundsChangeData = {
+      boundChangeMutation._boundsChangeData = {
         affectChildren:
-          mutation._boundsChangeData.affectChildren || affectChildren,
+          boundChangeMutation._boundsChangeData.affectChildren ||
+          affectChildren,
       };
     }
+
+    (element as Node).mutations = mutations;
   }
 
   dirtyFragment(element: INode) {
@@ -1003,17 +1009,25 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   notifyMutationObservers(canvas: Canvas) {
-    const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
-      detail: Array.from(this.mutationsMap.values()),
+    const mutations: MutationRecord[] = [];
+
+    canvas.getRoot().forEach((item: Node) => {
+      (item.mutations || []).forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation._boundsChangeData) {
+          mutations.push(mutation);
+        }
+      });
+
+      item.mutations = undefined;
     });
 
-    canvas.dispatchEvent(event, true, true);
+    if (mutations.length > 0) {
+      const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
+        detail: mutations,
+      });
 
-    this.clearMutationObserverData();
-  }
-
-  clearMutationObserverData() {
-    this.mutationsMap.clear();
+      canvas.dispatchEvent(event, true, true);
+    }
   }
 
   private displayObjectDependencyMap: WeakMap<

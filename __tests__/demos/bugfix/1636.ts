@@ -1,6 +1,6 @@
 import { Image, Group, Rect } from '@antv/g';
 
-export async function image(context) {
+export async function issue_1636_image(context) {
   const { canvas } = context;
   await canvas.ready;
 
