@@ -1,21 +1,14 @@
 import type { RendererConfig } from '@antv/g-lite';
 import { AbstractRenderer } from '@antv/g-lite';
-import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
 import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
+import * as CanvasPicker from './plugins/picker';
 import * as CanvasPathGenerator from './plugins/path-generator';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
-export {
-  CanvasPathGenerator,
-  CanvasPicker,
-  CanvasRenderer,
-  DomInteraction,
-  HTMLRenderer,
-  ImageLoader,
-};
+export { CanvasRenderer, DomInteraction, HTMLRenderer, ImageLoader };
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<RendererConfig>) {
@@ -37,4 +30,4 @@ export class Renderer extends AbstractRenderer {
 }
 
 // plugins
-export * from './plugins/path-generator';
+export { CanvasPathGenerator, CanvasPicker };

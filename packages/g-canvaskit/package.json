@@ -36,16 +36,15 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-picker": "workspace:*",
     "@antv/g-plugin-canvaskit-renderer": "workspace:*",
     "@antv/g-plugin-dom-interaction": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",

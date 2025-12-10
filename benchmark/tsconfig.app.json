@@ -64,9 +64,6 @@
         "../packages/g-plugin-svg-renderer/src"
       ],
       "@antv/g-devtool-local": ["../packages/g-devtool/src"],
-      "@antv/g-plugin-canvas-picker-local": [
-        "../packages/g-plugin-canvas-picker/src"
-      ],
       "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
       "@antv/g-plugin-canvas-renderer-local": [
         "../packages/g-plugin-canvas-renderer/src"

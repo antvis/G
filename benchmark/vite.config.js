@@ -87,10 +87,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-devtool/src',
       ),
-      '@antv/g-plugin-canvas-picker-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-canvas-picker/src',
-      ),
       '@antv/g-plugin-yoga-local': path.resolve(
         __dirname,
         '../packages/g-plugin-yoga/src',
