@@ -35,8 +35,6 @@ module.exports = {
     '<rootDir>/packages/g-plugin-canvas-path-generator/src/**/*.{ts,tsx}',
     '<rootDir>/packages/g-plugin-image-loader/src/**/*.{ts,tsx}',
     '<rootDir>/packages/g-plugin-dom-interaction/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-web-animations-api/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-camera-api/src/**/*.{ts,tsx}',
     '<rootDir>/packages/g-plugin-html-renderer/src/**/*.{ts,tsx}',
     //
     '<rootDir>/packages/g-canvas/src/**/*.{ts,tsx}',

@@ -62,3 +62,6 @@ export {
   translatePathToString,
   turn2deg,
 } from './utils';
+
+// plugins
+export * from './plugins/MutationObserver';

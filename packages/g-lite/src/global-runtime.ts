@@ -147,12 +147,12 @@ const getGlobalThis = () => {
 
 /**
  * Camera
- * `g-camera-api` will provide an advanced implementation
+ * `camera-api` will provide an advanced implementation
  */
 runtime.CameraContribution = Camera;
 
 /**
- * `g-web-animations-api` will provide an AnimationTimeline
+ * `web-animations-api` will provide an AnimationTimeline
  */
 runtime.AnimationTimeline = null;
 

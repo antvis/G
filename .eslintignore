@@ -16,6 +16,7 @@ node_modules/
 babel.config.mjs
 rollup.config.mjs
 vite.config.mjs
+vite.config.js
 jest.unit.config.js
 jest.visual.config.js
 

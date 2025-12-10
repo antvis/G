@@ -47,7 +47,6 @@ export default defineConfig({
       '@antv/g': resolve('g'),
       '@antv/g-mobile-webgl': resolve('g-mobile-webgl'),
       '@antv/g-plugin-matterjs': resolve('g-plugin-matterjs'),
-      '@antv/g-camera-api': resolve('g-camera-api'),
       '@antv/g-pattern': resolve('g-pattern'),
       '@antv/g-plugin-mobile-interaction': resolve(
         'g-plugin-mobile-interaction',
@@ -76,9 +75,6 @@ export default defineConfig({
       '@antv/g-devtool': resolve('g-devtool'),
       '@antv/g-plugin-canvas-picker': resolve('g-plugin-canvas-picker'),
       '@antv/g-plugin-yoga': resolve('g-plugin-yoga'),
-      '@antv/g-dom-mutation-observer-api': resolve(
-        'g-dom-mutation-observer-api',
-      ),
       '@antv/g-plugin-canvas-renderer': resolve('g-plugin-canvas-renderer'),
       '@antv/g-plugin-zdog-canvas-renderer': resolve(
         'g-plugin-zdog-canvas-renderer',
@@ -96,7 +92,6 @@ export default defineConfig({
       '@antv/g-svg': resolve('g-svg'),
       '@antv/g-lite': resolve('g-lite'),
       '@antv/g-plugin-device-renderer': resolve('g-plugin-device-renderer'),
-      '@antv/g-web-animations-api': resolve('g-web-animations-api'),
       '@antv/g-lottie-player': resolve('g-lottie-player'),
       '@antv/g-plugin-dom-interaction': resolve('g-plugin-dom-interaction'),
       '@antv/g-web-components': resolve('g-web-components'),

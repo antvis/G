@@ -19,10 +19,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-matterjs/src',
       ),
-      '@antv/g-camera-api-local': path.resolve(
-        __dirname,
-        '../packages/g-camera-api/src',
-      ),
       '@antv/g-pattern-local': path.resolve(
         __dirname,
         '../packages/g-pattern/src',
@@ -103,10 +99,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-yoga/src',
       ),
-      '@antv/g-dom-mutation-observer-api-local': path.resolve(
-        __dirname,
-        '../packages/g-dom-mutation-observer-api/src',
-      ),
       '@antv/g-plugin-canvas-renderer-local': path.resolve(
         __dirname,
         '../packages/g-plugin-canvas-renderer/src',
@@ -152,10 +144,6 @@ export default defineConfig({
       '@antv/g-plugin-device-renderer-local': path.resolve(
         __dirname,
         '../packages/g-plugin-device-renderer/src',
-      ),
-      '@antv/g-web-animations-api-local': path.resolve(
-        __dirname,
-        '../packages/g-web-animations-api/src',
       ),
       '@antv/g-lottie-player-local': path.resolve(
         __dirname,

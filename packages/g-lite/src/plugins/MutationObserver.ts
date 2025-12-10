@@ -1,10 +1,36 @@
 /* eslint-disable max-classes-per-file */
-import type { DisplayObject, IElement } from '@antv/g-lite';
-import { ElementEvent, MutationEvent, runtime } from '@antv/g-lite';
-import { MutationRecord } from './MutationRecord';
+import type { DisplayObject, IElement } from '..';
+import { ElementEvent, MutationEvent, runtime } from '..';
+import type { MutationRecord as IMutationRecord } from '../dom/MutationObserver';
 
 let uidCounter = 0;
 const registrationsTable = new WeakMap<IElement, Registration[]>();
+
+export class MutationRecord implements IMutationRecord {
+  static copy(original: MutationRecord) {
+    const record = new MutationRecord(original.type, original.target);
+    record.addedNodes = original.addedNodes.slice();
+    record.removedNodes = original.removedNodes.slice();
+    record.previousSibling = original.previousSibling;
+    record.nextSibling = original.nextSibling;
+    record.attributeName = original.attributeName;
+    record.attributeNamespace = original.attributeNamespace;
+    record.oldValue = original.oldValue;
+    return record;
+  }
+
+  addedNodes: IElement[] = [];
+  attributeName: string = null;
+  attributeNamespace: string = null;
+  nextSibling: IElement = null;
+  oldValue: string = null;
+  previousSibling: IElement = null;
+  removedNodes: IElement[] = [];
+  constructor(
+    public type: MutationRecordType,
+    public target: IElement,
+  ) {}
+}
 
 export class Registration {
   private transientObservedNodes = [];

@@ -12,11 +12,11 @@ order: 6
 完整版 `@antv/g` 由以下几部分组成：
 
 - `@antv/g-lite` 包含 [画布](/api/canvas/intro)，[基础图形](/api/basic/concept)，[事件系统](/api/event/intro)，[插件系统](/plugins/intro) 等核心功能
-- `@antv/g-camera-api` 提供完整相机动作和动画功能
-- `@antv/g-web-animations-api` 提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的动画系统
 - `@antv/g-css-typed-om-api` 提供 [CSS Typed OM API]()
 - `@antv/g-css-layout-api` 提供 [CSS Layout API]()
-- `@antv/g-dom-mutation-observer-api` 提供 DOM Mutation Observer API
+- 提供 DOM Mutation Observer API
+- `web-animations-api` 提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的动画系统
+- `camera-api` 提供完整相机动作和动画功能
 
 ## 使用方式
 
@@ -33,11 +33,11 @@ import { Renderer } from '@antv/g-canvas';
 circle.animate([], {});
 ```
 
-需要手动引入 `@antv/g-web-animations-api` 后方可生效：
+需要手动引入 `web-animations-api` 后方可生效：
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
-import '@antv/g-web-animations-api';
+import '@antv/g';
 ```
 
 其他渐进式功能可使用类似方式按需引入。
@@ -68,7 +68,7 @@ const circle = new Circle({
 });
 ```
 
-### g-camera-api
+### camera-api
 
 `@antv/g-lite` 中包含了一个简单的相机实现，但无法使用[相机动作](/api/camera/action)和[相机动画](/api/camera/animation)：
 
@@ -79,7 +79,7 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 引入后方可正常使用。
 
-### g-web-animations-api
+### web-animations-api
 
 为基础图形提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的[动画能力](/api/animation/waapi)。缺少该功能仍可以调用 `object.animate()` 方法，但无任何效果。
 

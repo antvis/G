@@ -149,7 +149,7 @@ export class Animation implements IAnimation {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime
    */
-  private _currentTime = 0;
+  private _currentTime: number | null = 0;
   get currentTime(): number | null {
     this.updatePromises();
     return this._idle || this.currentTimePending ? null : this._currentTime;
@@ -266,6 +266,7 @@ export class Animation implements IAnimation {
       this.finishedPromise = undefined;
       return false;
     }
+
     const { oldPlayState } = this;
     const newPlayState = this.pending ? 'pending' : this.playState;
     if (this.readyPromise && newPlayState !== oldPlayState) {
@@ -288,6 +289,7 @@ export class Animation implements IAnimation {
         this.finishedPromise = undefined;
       }
     }
+
     this.oldPlayState = newPlayState;
     return this.readyPromise || this.finishedPromise;
   }
@@ -343,11 +345,12 @@ export class Animation implements IAnimation {
   cancel() {
     this.updatePromises();
     if (!this._inEffect) return;
+
     this._inEffect = false;
     this._idle = true;
     this._paused = false;
     this._finishedFlag = true;
-    this._currentTime = 0;
+    this._currentTime = null;
     this._startTime = null;
     this.effect.update(null);
     // effects are invalid after cancellation as the animation state

@@ -35,7 +35,6 @@
       "@antv/g-local": ["../packages/g/src"],
       "@antv/g-mobile-webgl-local": ["../packages/g-mobile-webgl/src"],
       "@antv/g-plugin-matterjs-local": ["../packages/g-plugin-matterjs/src"],
-      "@antv/g-camera-api-local": ["../packages/g-camera-api/src"],
       "@antv/g-pattern-local": ["../packages/g-pattern/src"],
       "@antv/g-plugin-mobile-interaction-local": [
         "../packages/g-plugin-mobile-interaction/src"
@@ -72,9 +71,6 @@
         "../packages/g-plugin-canvas-picker/src"
       ],
       "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
-      "@antv/g-dom-mutation-observer-api-local": [
-        "../packages/g-dom-mutation-observer-api/src"
-      ],
       "@antv/g-plugin-canvas-renderer-local": [
         "../packages/g-plugin-canvas-renderer/src"
       ],
@@ -101,9 +97,6 @@
       "@antv/g-lite-local": ["../packages/g-lite/src"],
       "@antv/g-plugin-device-renderer-local": [
         "../packages/g-plugin-device-renderer/src"
-      ],
-      "@antv/g-web-animations-api-local": [
-        "../packages/g-web-animations-api/src"
       ],
       "@antv/g-lottie-player-local": ["../packages/g-lottie-player/src"],
       "@antv/g-plugin-dom-interaction-local": [
