@@ -43,8 +43,8 @@
     "watch": "rollup -c -w"
   },
   "dependencies": {
+    "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-path-generator": "workspace:*",
     "@antv/g-plugin-canvas-picker": "workspace:*",
     "@antv/g-plugin-canvaskit-renderer": "workspace:*",
     "@antv/g-plugin-dom-interaction": "workspace:*",
