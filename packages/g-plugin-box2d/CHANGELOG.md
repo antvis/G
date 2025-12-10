@@ -1,5 +1,13 @@
 # @antv/g-plugin-box2d
 
+## 2.0.42
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+
 ## 2.0.41
 
 ### Patch Changes

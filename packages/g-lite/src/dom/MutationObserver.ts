@@ -1,18 +1,18 @@
-import type { IElement } from './interfaces';
+import type { Node } from './Node';
 
 /**
  * @link https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord
  */
 export interface MutationRecord {
   type: MutationRecordType;
-  target: IElement;
-  addedNodes?: IElement[];
+  target: Node;
+  addedNodes?: Node[];
   attributeName?: string;
   attributeNamespace?: string;
-  nextSibling?: IElement;
+  nextSibling?: Node;
   oldValue?: string;
-  previousSibling?: IElement;
-  removedNodes?: IElement[];
+  previousSibling?: Node;
+  removedNodes?: Node[];
 
   // HACK
   _boundsChangeData?: { affectChildren: boolean };

@@ -102,7 +102,7 @@ export class EventTarget implements IEventTarget {
    * @alias dispatchEvent
    */
   emit(eventName: string, object: object) {
-    this.dispatchEvent(new CustomEvent(eventName, { detail: object }));
+    this.dispatchEvent(new CustomEvent(eventName, object));
   }
 
   private dispatchEventToSelf<T extends FederatedEvent>(e: T) {

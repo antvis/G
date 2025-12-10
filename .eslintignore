@@ -1,0 +1,33 @@
+# 构建产物
+dist/
+build/
+lib/
+esm/
+coverage/
+types/
+
+# 依赖目录
+node_modules/
+
+# 配置文件
+.commitlintrc.cjs
+.eslintrc.cjs
+.lintstagedrc.mjs
+babel.config.mjs
+rollup.config.mjs
+vite.config.mjs
+jest.unit.config.js
+jest.visual.config.js
+
+# 大型包目录（可选择性排除）
+packages/g-devtool/
+packages/g-webgpu-compiler/
+packages/site/
+
+# 测试文件
+__tests__/
+scripts/
+
+# 其他
+*.min.js
+gui.min.js

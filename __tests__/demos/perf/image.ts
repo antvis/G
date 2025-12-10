@@ -1,7 +1,7 @@
 import { Canvas, Group, Image as GImage } from '@antv/g';
 import * as lil from 'lil-gui';
 
-export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
+export async function imagePerf(context: { canvas: Canvas; gui: lil.GUI }) {
   const { canvas, gui } = context;
   await canvas.ready;
   console.log(canvas);

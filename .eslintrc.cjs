@@ -1,34 +1,6 @@
 // see docs: https://eslint.org/docs/user-guide/configuring
 
 module.exports = {
-  ignorePatterns: [
-    'node_modules',
-    //
-    '.commitlintrc.cjs',
-    '.eslintrc.cjs',
-    '.lintstagedrc.mjs',
-    'babel.config.mjs',
-    'rollup.config.mjs',
-    'vite.config.mjs',
-    'jest.unit.config.js',
-    'jest.visual.config.js',
-    //
-    'packages/g-devtool',
-    'packages/g-webgpu-compiler',
-    'packages/site',
-    //
-    'build',
-    'coverage',
-    'esm',
-    'lib',
-    'dist',
-    'rust',
-    '__tests__',
-    'scripts',
-    'types',
-    //
-    'gui.min.js',
-  ],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -86,6 +58,7 @@ module.exports = {
     //
     '@typescript-eslint/naming-convention': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/no-unsafe-assignment': 'warn',
     '@typescript-eslint/no-unsafe-return': 'warn',

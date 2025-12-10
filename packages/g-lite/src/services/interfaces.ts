@@ -6,7 +6,6 @@ import type { DisplayObject } from '../display-objects';
 
 export interface SceneGraphService {
   notifyMutationObservers: (canvas: ICanvas) => void;
-  clearMutationObserverData: () => void;
   updateDisplayObjectDependency: (
     name: string,
     oldPath: DisplayObject,

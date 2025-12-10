@@ -1,5 +1,13 @@
 # @antv/g-plugin-dom-interaction
 
+## 2.1.30
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+
 ## 2.1.29
 
 ### Patch Changes
