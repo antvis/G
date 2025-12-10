@@ -35,7 +35,7 @@
   "scripts": {
     "build:types": "tsc --emitDeclarationOnly --noCheck",
     "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
