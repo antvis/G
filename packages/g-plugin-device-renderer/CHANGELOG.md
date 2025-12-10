@@ -1,5 +1,18 @@
 # @antv/g-plugin-device-renderer
 
+## 2.5.0
+
+### Minor Changes
+
+- 697a47f: fix: multiple canvas rendering errors
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+    - @antv/g-plugin-image-loader@2.3.0
+
 ## 2.4.1
 
 ### Patch Changes

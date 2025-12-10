@@ -1,5 +1,17 @@
 # @antv/g-plugin-svg-renderer
 
+## 2.4.0
+
+### Minor Changes
+
+- 697a47f: fix: multiple canvas rendering errors
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+
 ## 2.3.1
 
 ### Patch Changes
