@@ -36,9 +36,6 @@
       "@antv/g-plugin-box2d": ["./packages/g-plugin-box2d/src"],
       "@antv/g-plugin-svg-picker": ["./packages/g-plugin-svg-picker/src"],
       "@antv/g-css-typed-om-api": ["./packages/g-css-typed-om-api/src"],
-      "@antv/g-plugin-canvas-path-generator": [
-        "./packages/g-plugin-canvas-path-generator/src"
-      ],
       "@antv/g-plugin-svg-renderer": ["./packages/g-plugin-svg-renderer/src"],
       "@antv/g-devtool": ["./packages/g-devtool/src"],
       "@antv/g-plugin-canvas-picker": ["./packages/g-plugin-canvas-picker/src"],

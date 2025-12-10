@@ -68,9 +68,6 @@ export default defineConfig({
       '@antv/g-plugin-box2d': resolve('g-plugin-box2d'),
       '@antv/g-plugin-svg-picker': resolve('g-plugin-svg-picker'),
       '@antv/g-css-typed-om-api': resolve('g-css-typed-om-api'),
-      '@antv/g-plugin-canvas-path-generator': resolve(
-        'g-plugin-canvas-path-generator',
-      ),
       '@antv/g-plugin-svg-renderer': resolve('g-plugin-svg-renderer'),
       '@antv/g-devtool': resolve('g-devtool'),
       '@antv/g-plugin-canvas-picker': resolve('g-plugin-canvas-picker'),

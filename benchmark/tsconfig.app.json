@@ -60,9 +60,6 @@
         "../packages/g-plugin-svg-picker/src"
       ],
       "@antv/g-css-typed-om-api-local": ["../packages/g-css-typed-om-api/src"],
-      "@antv/g-plugin-canvas-path-generator-local": [
-        "../packages/g-plugin-canvas-path-generator/src"
-      ],
       "@antv/g-plugin-svg-renderer-local": [
         "../packages/g-plugin-svg-renderer/src"
       ],

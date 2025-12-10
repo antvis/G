@@ -22,7 +22,7 @@ After inheriting `AbstractRenderer`, you can select a set of existing plugins in
 ```js
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as CanvasPathGenerator from '@antv/g-plugin-canvas-path-generator';
+import { CanvasPathGenerator } from '@antv/g-canvas';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
 import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
