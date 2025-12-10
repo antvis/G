@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import type { DisplayObject, IElement } from '..';
+import type { DisplayObject, Node } from '..';
 import { ElementEvent, MutationEvent, runtime } from '..';
 import type { MutationRecord as IMutationRecord } from '../dom/MutationObserver';
 
 let uidCounter = 0;
-const registrationsTable = new WeakMap<IElement, Registration[]>();
+const registrationsTable = new WeakMap<Node, Registration[]>();
 
 export class MutationRecord implements IMutationRecord {
   static copy(original: MutationRecord) {
@@ -19,16 +19,16 @@ export class MutationRecord implements IMutationRecord {
     return record;
   }
 
-  addedNodes: IElement[] = [];
+  addedNodes: Node[] = [];
   attributeName: string = null;
   attributeNamespace: string = null;
-  nextSibling: IElement = null;
+  nextSibling: Node = null;
   oldValue: string = null;
-  previousSibling: IElement = null;
-  removedNodes: IElement[] = [];
+  previousSibling: Node = null;
+  removedNodes: Node[] = [];
   constructor(
     public type: MutationRecordType,
-    public target: IElement,
+    public target: Node,
   ) {}
 }
 
@@ -37,7 +37,7 @@ export class Registration {
 
   constructor(
     public observer: MutationObserver,
-    public target: IElement,
+    public target: Node,
     public options?: MutationObserverInit,
   ) {}
 
@@ -67,7 +67,7 @@ export class Registration {
     this.addListeners_(this.target);
   }
 
-  private addListeners_(node: IElement) {
+  private addListeners_(node: Node) {
     const { options } = this;
     if (options.attributes)
       node.addEventListener(ElementEvent.ATTR_MODIFIED, this, true);
@@ -85,7 +85,7 @@ export class Registration {
     this.removeListeners_(this.target);
   }
 
-  removeListeners_(node: IElement) {
+  removeListeners_(node: Node) {
     const { options } = this;
     if (options.attributes)
       node.removeEventListener(ElementEvent.ATTR_MODIFIED, this, true);
@@ -103,7 +103,7 @@ export class Registration {
    * Adds a transient observer on node. The transient observer gets removed
    * next time we deliver the change records.
    */
-  // addTransientObserver(node: IElement) {
+  // addTransientObserver(node: Node) {
   //   // Don't add transient observers on the target itself. We already have all
   //   // the required listeners set up on the target.
   //   if (node === this.target) return;
@@ -145,7 +145,7 @@ export class Registration {
     e.stopImmediatePropagation();
 
     let record: MutationRecord;
-    let target: IElement;
+    let target: Node;
 
     switch (e.type) {
       case ElementEvent.ATTR_MODIFIED:
@@ -154,7 +154,7 @@ export class Registration {
         const name = e.attrName;
         // @ts-ignore
         const namespace = e.relatedNode.namespaceURI;
-        target = e.target as IElement;
+        target = e.target as Node;
 
         // 1.
         record = getRecord('attributes', target);
@@ -213,14 +213,14 @@ export class Registration {
       //   break;
 
       case ElementEvent.REMOVED:
-      // this.addTransientObserver(e.target as IElement);
+      // this.addTransientObserver(e.target as Node);
       // Fall through.
       case ElementEvent.INSERTED:
         // http://dom.spec.whatwg.org/#concept-mo-queue-childlist
         target = e.relatedNode;
-        const changedNode = e.target as IElement;
-        let addedNodes: IElement[];
-        let removedNodes: IElement[];
+        const changedNode = e.target as Node;
+        let addedNodes: Node[];
+        let removedNodes: Node[];
         if (e.type === ElementEvent.INSERTED) {
           addedNodes = [changedNode];
           removedNodes = [];
@@ -235,8 +235,8 @@ export class Registration {
         record = getRecord('childList', target);
         record.addedNodes = addedNodes;
         record.removedNodes = removedNodes;
-        record.previousSibling = previousSibling as IElement;
-        record.nextSibling = nextSibling as IElement;
+        record.previousSibling = previousSibling as unknown as Node;
+        record.nextSibling = nextSibling as unknown as Node;
 
         forEachAncestorAndObserverEnqueueRecord(target, function (options) {
           // 2.1, 3.2
@@ -256,7 +256,7 @@ export class Registration {
  * @see https://github.com/googlearchive/MutationObservers/blob/master/MutationObserver.js
  */
 export class MutationObserver {
-  nodes: IElement[] = [];
+  nodes: Node[] = [];
   records: MutationRecord[] = [];
   uid = uidCounter++;
 
@@ -341,7 +341,7 @@ let recordWithOldValue;
  * Creates a record without |oldValue| and caches it as |currentRecord| for
  * later use.
  */
-function getRecord(type: MutationRecordType, target: IElement) {
+function getRecord(type: MutationRecordType, target: Node) {
   return (currentRecord = new MutationRecord(type, target));
 }
 
@@ -405,8 +405,8 @@ function removeTransientObserversFor(observer: MutationObserver) {
  * @param {Node} target
  * @param {function(MutationObserverInit):MutationRecord} callback
  */
-function forEachAncestorAndObserverEnqueueRecord(target: IElement, callback) {
-  for (let node = target; node; node = node.parentNode as IElement) {
+function forEachAncestorAndObserverEnqueueRecord(target: Node, callback) {
+  for (let node = target; node; node = node.parentNode as unknown as Node) {
     const registrations = registrationsTable.get(node);
 
     if (registrations) {
