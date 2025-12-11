@@ -1,3 +1,5 @@
+import { isNil, isNumber, isString } from '@antv/util';
+import type { mat4, vec3 } from 'gl-matrix';
 import {
   DisplayObject,
   FederatedEvent,
@@ -15,9 +17,7 @@ import {
   ElementEvent,
   isPattern,
   Shape,
-} from '@antv/g-lite';
-import { isNil, isNumber, isString } from '@antv/util';
-import type { mat4, vec3 } from 'gl-matrix';
+} from '../..';
 
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
 

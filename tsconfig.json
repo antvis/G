@@ -76,7 +76,6 @@
       "@antv/g-mobile-canvas-element": [
         "./packages/g-mobile-canvas-element/src"
       ],
-      "@antv/g-plugin-html-renderer": ["./packages/g-plugin-html-renderer/src"],
       "@antv/react-g": ["./packages/react-g/src"],
       "@antv/g-mobile-svg": ["./packages/g-mobile-svg/src"]
     }

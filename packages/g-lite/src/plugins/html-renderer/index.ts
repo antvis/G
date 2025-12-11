@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '../..';
 import { HTMLRenderingPlugin } from './HTMLRenderingPlugin';
 
 export class Plugin extends AbstractRendererPlugin {

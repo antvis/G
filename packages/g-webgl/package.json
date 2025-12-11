@@ -44,7 +44,6 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-plugin-dom-interaction": "workspace:*",
-    "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
     "gl-matrix": "^3.4.3",

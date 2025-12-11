@@ -98,7 +98,6 @@ export default defineConfig({
       '@antv/g-plugin-gesture': resolve('g-plugin-gesture'),
       '@antv/g-webgpu': resolve('g-webgpu'),
       '@antv/g-mobile-canvas-element': resolve('g-mobile-canvas-element'),
-      '@antv/g-plugin-html-renderer': resolve('g-plugin-html-renderer'),
       '@antv/react-g': resolve('react-g'),
       '@antv/g-mobile-svg': resolve('g-mobile-svg'),
     },
