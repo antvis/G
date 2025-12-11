@@ -3,7 +3,7 @@ import type {
   InteractivePointerEvent,
   RenderingPlugin,
   RenderingPluginContext,
-} from '@antv/g-lite';
+} from '../..';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 

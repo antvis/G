@@ -141,10 +141,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-lottie-player/src',
       ),
-      '@antv/g-plugin-dom-interaction-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-dom-interaction/src',
-      ),
       '@antv/g-web-components-local': path.resolve(
         __dirname,
         '../packages/g-web-components/src',

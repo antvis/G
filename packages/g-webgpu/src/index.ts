@@ -4,9 +4,9 @@ import {
   RendererConfig,
   ImageLoader,
   HTMLRenderer,
+  DomInteraction,
 } from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, HTMLRenderer };

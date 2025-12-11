@@ -1,7 +1,11 @@
 import type { RendererConfig } from '@antv/g-lite';
-import { AbstractRenderer, ImageLoader, HTMLRenderer } from '@antv/g-lite';
+import {
+  AbstractRenderer,
+  ImageLoader,
+  HTMLRenderer,
+  DomInteraction,
+} from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 import { WebXRManager } from './WebXRManager';
 

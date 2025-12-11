@@ -89,7 +89,6 @@ export default defineConfig({
       '@antv/g-lite': resolve('g-lite'),
       '@antv/g-plugin-device-renderer': resolve('g-plugin-device-renderer'),
       '@antv/g-lottie-player': resolve('g-lottie-player'),
-      '@antv/g-plugin-dom-interaction': resolve('g-plugin-dom-interaction'),
       '@antv/g-web-components': resolve('g-web-components'),
       '@antv/g-math': resolve('g-math'),
       '@antv/g-plugin-dragndrop': resolve('g-plugin-dragndrop'),

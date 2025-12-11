@@ -63,9 +63,6 @@
         "./packages/g-plugin-device-renderer/src"
       ],
       "@antv/g-lottie-player": ["./packages/g-lottie-player/src"],
-      "@antv/g-plugin-dom-interaction": [
-        "./packages/g-plugin-dom-interaction/src"
-      ],
       "@antv/g-web-components": ["./packages/g-web-components/src"],
       "@antv/g-math": ["./packages/g-math/src"],
       "@antv/g-plugin-dragndrop": ["./packages/g-plugin-dragndrop/src"],

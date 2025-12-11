@@ -1,6 +1,5 @@
 import type { RendererConfig } from '@antv/g-lite';
-import { AbstractRenderer } from '@antv/g-lite';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
+import { AbstractRenderer, DomInteraction } from '@antv/g-lite';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';
 import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
