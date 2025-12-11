@@ -1,4 +1,4 @@
-import { DisplayObject } from '@antv/g-lite';
+import { DisplayObject } from '../..';
 
 export class RefCountCache<CacheValue> {
   private cacheStore = new Map<

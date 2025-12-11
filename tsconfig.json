@@ -78,8 +78,7 @@
       ],
       "@antv/g-plugin-html-renderer": ["./packages/g-plugin-html-renderer/src"],
       "@antv/react-g": ["./packages/react-g/src"],
-      "@antv/g-mobile-svg": ["./packages/g-mobile-svg/src"],
-      "@antv/g-plugin-image-loader": ["./packages/g-plugin-image-loader/src"]
+      "@antv/g-mobile-svg": ["./packages/g-mobile-svg/src"]
     }
   },
   "include": ["packages/*/src/**/*", "__tests__/**/*", "site/**/*"],

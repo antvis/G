@@ -2,8 +2,9 @@ import type {
   DisplayObject,
   ParsedImageStyleProps,
   GlobalRuntime,
+  ImagePool,
+  ImageCache,
 } from '@antv/g-lite';
-import { ImagePool, type ImageCache } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
 import { transformRect, calculateOverlapRect } from '../../utils/math';

@@ -1,3 +1,5 @@
+import { isString } from '@antv/util';
+import { mat4 } from 'gl-matrix';
 import {
   DisplayObject,
   GradientType,
@@ -16,9 +18,7 @@ import {
   ElementEvent,
   type CanvasContext,
   type GlobalRuntime,
-} from '@antv/g-lite';
-import { isString } from '@antv/util';
-import { mat4 } from 'gl-matrix';
+} from '../..';
 import { RefCountCache } from './RefCountCache';
 import { type SliceResult, ImageSlicer } from './ImageSlicer';
 

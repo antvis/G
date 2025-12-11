@@ -8,8 +8,8 @@ import {
   parseTransform,
   Pattern,
   RadialGradient,
+  type ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from '@antv/g-device-api';
 import {

@@ -44,7 +44,6 @@
     "@antv/g-plugin-dragndrop": "latest",
     "@antv/g-plugin-gesture": "latest",
     "@antv/g-plugin-gpgpu": "latest",
-    "@antv/g-plugin-image-loader": "latest",
     "@antv/g-plugin-matterjs": "latest",
     "@antv/g-plugin-physx": "latest",
     "@antv/g-plugin-rough-canvas-renderer": "latest",

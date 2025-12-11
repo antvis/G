@@ -8,8 +8,8 @@ import {
   RadialGradient,
   Rect,
   GradientType,
+  ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import {
   CanvasRendererPlugin,
   type RenderState,

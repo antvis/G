@@ -1,3 +1,4 @@
+import { isString } from '@antv/util';
 import type {
   FederatedEvent,
   Image,
@@ -5,9 +6,8 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
   DisplayObject,
-} from '@antv/g-lite';
-import { ElementEvent, Shape } from '@antv/g-lite';
-import { isString } from '@antv/util';
+} from '../..';
+import { ElementEvent, Shape } from '../..';
 import { ImagePool } from './ImagePool';
 
 export class LoadImagePlugin implements RenderingPlugin {

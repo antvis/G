@@ -101,7 +101,6 @@ export default defineConfig({
       '@antv/g-plugin-html-renderer': resolve('g-plugin-html-renderer'),
       '@antv/react-g': resolve('react-g'),
       '@antv/g-mobile-svg': resolve('g-mobile-svg'),
-      '@antv/g-plugin-image-loader': resolve('g-plugin-image-loader'),
     },
   },
 });

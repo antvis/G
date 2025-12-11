@@ -8,8 +8,8 @@ import {
   Pattern,
   isPattern,
   Shape,
+  ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
 import { OptimizedDefaultRenderer, DEFAULT_STYLE } from './OptimizedDefault';

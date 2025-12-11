@@ -6,8 +6,8 @@ import {
   ParsedBaseStyleProps,
   isPattern,
   Shape,
+  type ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import {
   CanvasRendererPlugin,

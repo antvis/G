@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, type GlobalRuntime } from '@antv/g-lite';
+import { AbstractRendererPlugin, type GlobalRuntime } from '../..';
 import { ImagePool, type ImageCache } from './ImagePool';
 import { LoadImagePlugin } from './LoadImagePlugin';
 

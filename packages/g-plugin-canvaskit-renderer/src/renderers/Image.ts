@@ -3,8 +3,8 @@ import type {
   DisplayObject,
   ParsedImageStyleProps,
   ContextService,
+  ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import type {
   CanvasKitContext,
   RendererContribution,

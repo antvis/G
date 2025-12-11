@@ -180,10 +180,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-mobile-svg/src',
       ),
-      '@antv/g-plugin-image-loader-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-image-loader/src',
-      ),
     },
   },
 });

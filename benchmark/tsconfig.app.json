@@ -110,10 +110,7 @@
         "../packages/g-plugin-html-renderer/src"
       ],
       "@antv/react-g-local": ["../packages/react-g/src"],
-      "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"],
-      "@antv/g-plugin-image-loader-local": [
-        "../packages/g-plugin-image-loader/src"
-      ]
+      "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"]
     }
   },
   "include": ["src", "../packages/*/src"]

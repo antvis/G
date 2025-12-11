@@ -1,8 +1,12 @@
-import { AbstractRenderer, ClipSpaceNearZ, RendererConfig } from '@antv/g-lite';
+import {
+  AbstractRenderer,
+  ClipSpaceNearZ,
+  RendererConfig,
+  ImageLoader,
+} from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
-import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, HTMLRenderer };

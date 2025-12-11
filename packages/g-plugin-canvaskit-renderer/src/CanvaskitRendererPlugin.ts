@@ -28,8 +28,8 @@ import {
   parsedTransformToMat4,
   rad2deg,
   Node,
+  type ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil, isString } from '@antv/util';
 import type {
   Canvas,

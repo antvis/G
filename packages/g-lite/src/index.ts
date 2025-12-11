@@ -65,3 +65,5 @@ export {
 
 // plugins
 export * from './plugins/MutationObserver';
+export * as ImageLoader from './plugins/image-loader';
+export { ImagePool, type ImageCache } from './plugins/image-loader';

@@ -9,8 +9,8 @@ import type {
   GlobalRuntime,
 } from '@antv/g-lite';
 import { findClosestClipPathTarget, Point } from '@antv/g-lite';
-import type { PathGenerator } from '@antv/g-canvas';
 import { mat4, vec3 } from 'gl-matrix';
+import type { PathGenerator } from '../..';
 
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,

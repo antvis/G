@@ -42,7 +42,6 @@
   "dependencies": {
     "@antv/g-lite": "workspace:*",
     "@antv/g-math": "workspace:*",
-    "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
     "canvaskit-wasm": "^0.34.0",

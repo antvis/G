@@ -6,9 +6,8 @@ export default createConfig({
     readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
   ),
   umdName: 'G.CanvaskitRenderer',
-  external: ['@antv/g-lite', '@antv/g-plugin-image-loader'],
+  external: ['@antv/g-lite'],
   globals: {
     '@antv/g-lite': 'window.G',
-    '@antv/g-plugin-image-loader': 'window.G.ImageLoader',
   },
 });

@@ -1,10 +1,9 @@
 import type { RendererConfig } from '@antv/g-lite';
-import { AbstractRenderer } from '@antv/g-lite';
+import { AbstractRenderer, ImageLoader } from '@antv/g-lite';
 import { CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
 import * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
-import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export * from './CanvasKitContextService';
