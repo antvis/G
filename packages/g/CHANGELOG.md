@@ -1,5 +1,15 @@
 # @antv/g
 
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [a0b1656]
+    - @antv/g-lite@2.5.1
+    - @antv/g-camera-api@2.0.45
+    - @antv/g-dom-mutation-observer-api@2.0.42
+    - @antv/g-web-animations-api@2.1.32
+
 ## 6.2.0
 
 ### Minor Changes

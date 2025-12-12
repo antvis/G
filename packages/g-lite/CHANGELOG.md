@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.5.1
+
+### Patch Changes
+
+- a0b1656: fix: child element update error
+
 ## 2.5.0
 
 ### Minor Changes
