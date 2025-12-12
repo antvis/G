@@ -1,0 +1,1153 @@
+{
+  "v": "5.5.5",
+  "fr": 25,
+  "ip": 0,
+  "op": 250,
+  "w": 500,
+  "h": 500,
+  "nm": "初始化空层",
+  "ddd": 0,
+  "assets": [
+    {
+      "id": "0",
+      "w": 17,
+      "h": 17,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAMAAAAMs7fIAAAAOVBMVEVHcEyTxv+Vx/6VyPyVyP6Vx/2Vx/2Wx/+Vx/2Vx/2Wyf+Ywf+Wyf2Zu/+VyP2Vx/2VyP2TyPyVx/0x7c5/AAAAEnRSTlMAFbdYqX/2KN9kGgw/B++Mb1M53DqLAAAAZ0lEQVQY02XQ2RKAIAhAUVzBLYv//9g0mly6j2ccBgSQEiqYipWYmeqHxrPkjUDgUeiAfhKPTTTP6TaV1yJcm5hlbu/8SYC8SYZyLHAUALeI6zfSBJSepQcRymHKvmDHj6Cz2jp5cAMEjQ3U237klAAAAABJRU5ErkJggg==",
+      "e": 1
+    },
+    {
+      "id": "1",
+      "w": 7,
+      "h": 8,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAIBAMAAADHKvg1AAAAJ1BMVEX/76hHcEz/76j/7az/76r/8Kf/76r/76n/76j/76f/76n/7qn/76km7cbuAAAADXRSTlP/AIENJVUw6e5gumi9o0CbsgAAAC1JREFUCNdjEDQzFGAQbWASYEhgYNjAoMDAcABELGBwYGCYwCBaAJQQFDEUAAB0vwWtBZVZpwAAAABJRU5ErkJggg==",
+      "e": 1
+    },
+    {
+      "id": "2",
+      "w": 12,
+      "h": 12,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAQlBMVEVHcEy42/+42v+52v+y4f+52/+42/+y4f+42v+52v+62/+52/+42v+42v+52v+42/+42v+62v+42v+42v+04f+42v+lXdQ7AAAAFXRSTlMAT7SSC2FrBPyeJX/Sy6q/iBjh3xFuoXq7AAAAYElEQVQI1y2OiQ6AMAhDO93GDo959P9/1aI2IbTkQQBcZvhlaS1lyW+2ia/2qDC7K6oKHOojxq5BQxLgtOCMTM4eBtkRyMUPrWTCrZ3aWtXOAXT+ctrq57fvi7Bd5xRkHqJ+BdXQkiPmAAAAAElFTkSuQmCC",
+      "e": 1
+    },
+    {
+      "id": "3",
+      "w": 13,
+      "h": 13,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANBAMAAACAxflPAAAAMFBMVEVHcEz/npj/npn/npj/npj/n5//n5n/npj/npj/npn/n5n/n5j/npn/n5n/npj/nphQ+5DtAAAAD3RSTlMADzytfQgc+ZngOryjkVSJW8ODAAAAQklEQVQI12NgYGBVZAAD7p8CYDr+/wIwLf9fAYmWNbb/v/kcA4P/fyD4ngClBRhCOs7/t7iEqZ6BgROoCgTYvIAEAGXnG5hFdNgpAAAAAElFTkSuQmCC",
+      "e": 1
+    },
+    {
+      "id": "4",
+      "w": 19,
+      "h": 20,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAUCAMAAABYi/ZGAAAAPFBMVEVHcEyu78iv78iu78mu8Miu8Miu78iw8Miu78iv7siy78eu78mu8ciu78iu8Miu78mv7seu78iu78iu78gqk3o2AAAAE3RSTlMA1D3ntoR1CfIpFWk0qcRgSU2SzGdrjwAAAINJREFUGNNdkFkOxSAIAHEF49Jnuf9dn1jbSueDxAmLAPCAOSbQoGGmol3mQdXOi/PakbiwHqngiFYU26v1qCEfUxBFON3BG6td2F3rM/HHmpaHjPSxMhttaLuj+z+bc8td06uTGJer8jAAJZ79XmwmnPpOs7TrA5h3sYdk2Fn4siX9ATNFC6oMzs4OAAAAAElFTkSuQmCC",
+      "e": 1
+    },
+    {
+      "id": "5",
+      "w": 19,
+      "h": 23,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAXCAMAAADeH4ToAAAAP1BMVEVHcEz+1tj+19f/19f/1NT+19j/1tf/39/+1tf+1tf/2dn+19f/19f/1tf/19j+1tf+1tf91tj919j/1tf+1tdDUHdhAAAAFHRSTlMAgboJEuU0A/D1IqxYRyvayY+dZi5aNrAAAACQSURBVBjTZZFJFsQgCESdEYdoEu5/1sbeNNDu+K+oAnTOvDSjqACYvHtdPxTHSDMgbaEruT6VqE7ROrgmIg+CTWRSvUyIHhFDkcgNpNoV4QSi3PSkX3uFIDDKSaGbrAz86VzJ+lO+5LDtmGFRAf2Ydaly10FmtJOJrz7sYvaA3oDRTlrW2KyYP4mhW8Rb/JEPqgIHJIu+mxIAAAAASUVORK5CYII=",
+      "e": 1
+    },
+    {
+      "id": "6",
+      "w": 50,
+      "h": 68,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAABECAMAAAD0mpZfAAAAulBMVEVHcEz/0Cb/oSL/0BT/uyD/0h7/uiD/txv/oiP/uRL/uR//1Y//oSP/oSP/oSP/oSP/0R3/0h//0h3/0Rr/0Bj/oSL/oiL/zxL/0h3/0h3/oCP/oiP/zAD/xAr/zQT/vy7/zAD/0iD/oSP/0h3/0Rnzchn/zgr/zQT/0Bb/0BL/zw7/zQb/20//1zn/6a7/1Cv/4XL/777/3l7/rjr/5Yn/uU/+pyj/4p//xBj/0mb/wmP0exn/yoD/sStlkMz4AAAAIHRSTlMA19S/He5KEeoDOf74pnZbj/rlq1vCj3F6obb87tzR+NNqH/MAAAK9SURBVEjH7ZbZdqowGIUDiEQGZ61De0qCHfQwWBCc2vd/rZMwSIAE27tz0X2jLPe39h8w2QBQU2e6WCqSqm42qiopy8W0A9qkTSdjJ9WG6J1qu92OJ1ON7+91JyPklMQmJ7a73W476faawFRCRFUiB3avRE/TGqQTwOEQBUD094/ORgwRamTkEbmf6m14C9IUDvFeEpmfyFby+6BJiEHKjCIi91PE/pMyvTyDQdKMMiK3p1LobA93CBYgeiBjqai2kmIdZYTN6FHjhlQJu6oHoPyQsBWg8pBsIY2hsslAWwiPsO0ipfJIWolHIAnGEhH2E5ACDpKH2HwEugGD3FYiDLEhwDFlWKQ95GsNID67QWMuYcgJQzDDyTn0EGcubgjGM9DHBVOZixvydkow7gPNxBhf9q7n1OZqAuiZWE2yY0gMxtF+HxKoBXkN3Ig6+3SLreg3HB8OezcQIMQfxqltlW5/TcYZZPhHQm131aW8Ol64P0eZRy42/yy7xsnF8D98kuYFdMgN8txwfzic4yQ3zG7HZm+Ob4oun8bR/yDy/ePRuMRR+ducPf10Gd+VrNcO2MEdSB5wTuXuyhT5zRXnGM/uw8CCTT+0Blprx3QGfWsmpySUZ1Z/0F5JjF6IwM/0i/wi/xeiLybSmCLSZKF/w98ZjtOOogj9HA/v7JfOcpR3Z4EgNFq2Qd2inlkEIbUrJkaIi6CRiOmUGTUEqYLzYoiECBryEamOnMrJxnwkDBjk+vJyZS5HfMR3S4uTXK8Jg6h8xDgwMc7pRF9pCz3zkegjRAI5az4iX46uAPmC/Bf4OY6PpM1rCoLA+8JzwaOEODL8g1uuKPC8kPRkgqHo6O+SfomMrCyJaE/6vkGKz2z5k6UdEX/euvIzbW4oJkBPs9aNRlpb93bMvNpjcP6dStL7lgxNbELZ6vM28j8lcwnyIGYGaAAAAABJRU5ErkJggg==",
+      "e": 1
+    },
+    {
+      "id": "7",
+      "w": 31,
+      "h": 118,
+      "u": "",
+      "p": "data:image/png;base64,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",
+      "e": 1
+    },
+    {
+      "id": "8",
+      "w": 14,
+      "h": 22,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAWCAMAAADHE10VAAAAS1BMVEX+1tf/2tr/19f+19j+1tf/09P/19hHcEz/7u7/1tj91tj/19f+1tf/1NT+19j/1tb+19f/1tb91tf/1tb+1tf/1tf/1dj+1tf+1tcmEagrAAAAGXRSTlP+CULj+QUlAAIXnl7wD7MrqnaMcdwwZ7/B3YyBXwAAAIpJREFUGNNl0FkOwzAIBNDBGxA7+9b7n7RJg5NI5e9pACHAosR3QdKQHyM63/XypK6EIZE1gFePMk0bGXUHfPDXADjmAIQlGVk7AMVVyvo58k6NLKk58kaNR76Yf7zWYVIj03iuz2RkmsvZXsnR7X5sb3JM4/YiR+3pRRbhN+sZfxRq5aGkuXHnA76nYwjCsxJ3rgAAAABJRU5ErkJggg==",
+      "e": 1
+    },
+    {
+      "id": "9",
+      "w": 93,
+      "h": 114,
+      "u": "",
+      "p": "data:image/png;base64,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",
+      "e": 1
+    },
+    {
+      "id": "a",
+      "w": 92,
+      "h": 98,
+      "u": "",
+      "p": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFwAAABiCAMAAADqQUS3AAAAe1BMVEVHcExpuv1svP6a0P6d0v6Gx/1+xP+Py/5+w/2Exv1/xv+Fxv+Aw/yIyP6Dxv+Tzf6Bxf1qu/6e0v6e0v7a7vtxvf12v/2BxPyJyf97wf1tvP5+w/2ExfuFx/9muf2l1v5it/5quv3J5vy43v2v2v3S6vzX7fu/4v2Xz/7rVOHRAAAAE3RSTlMAzurX7UQwxsm+ChzpXnWeiaa1fiKMUwAABLxJREFUaN612nl7ojAQBnDwArxbGhBQ8ahuv/8n3JlchJAQDhna/cf1t/Mwr4O4ep5SyyhaetPUMjqfz5dwt56Ihjqdt/v1NDSr7XEzFU3rsJqMPqdpGq0mogGHn/HRmQdno47Nj45OHM+jBo0y/qbpuOjEUItoa+wcqxgTnZhVsNU653iRFkUxODqxqCBsTBRx0LMsGxgdicflPKw6VxsvMvDD5Sg8lrNNq4ECn6WIA98/OnG9cLZK55mCZ1nv6Gh4XC5gtmnaPC9QSdIzOrGhglAmMaONcxv55Gs1DoeTH3Ia/5Cdo5314WNLzSOlc4YneNDqGh0q/Zp4mK1IS5rxzhlOSOJ3ig513q+nkQ+2alhE3wnBY9YhOgz/+Xk/S/NsaVg0ntCaOaNDiR+s97/SPFuFzljjTM9z4pgtBV4/rCx8pJ8YIvT83sqz5z8F/7DNVtCZapM7+P7SGcXfDjx7FVU68Pf8fr9bo1M9//fB+ZeRh9kqaZGd37GulujU9orkjcksg1AEXXaeU/16vRmjoz3/35vxlmTOQ9W+i85Bv96uzdk22pO8OTqLaKacGCJbR/6m84bnP9uTCbPleK1zqt/q0THOzpHMv8Anhs7hzCCvRMeyFGV0HrboKFFE/c5bh6qiY92Kv+3Rgdnqrd9Y61g8Oi1bUSTTsjNxtrL3q5ipKDrb1q3YITq8cxGYOu/Yii4+jvy8al21b77fYSuK6Lwfpfl166txvEqakE5b0ZFMmK3euu/nROKurehK5jyaiZnCvwA02qTzVnQlE2bLR+rjkCGjNdy1FR07M45DH3Cg8QpCtM7dW9EZnSCiNKF9N3AX4ODLEF9TsNCMnXfYilV0ShOOlydukyFb0f4oxfk5ga08bCvaHkVctA360K1oeTTMCZGdJ8O3ojGZoewbr7VyK5qBvtEJBY1Hom7F/tFuPKrgsvNXW3jbt6J49KnizE60rfh2RNueTAVPuJ01t6KRdydT4IloG96cmbbioxyQTAUXduZ178+5FRFX7cyzAGbetRXjUKEbuAK8hvChpBMT7uJbt2IcKXRWtG9F89lt24oVbcVdvH0rShrvL6235zL473/dk1kGsmuwC2/5becfrZc0Aw+4lBH3vM1hKN+IDsXhnrWQOPDHhY0vW1+2Og+46Brqwt+lr3dzKy8A81vF2lYsg6Kieee0doGbbwl+Hb/gkdY+M7bP9sl5+2jYVAPZNdhp/dZutbDzLztebcWANV1caOvaXam9dxb82FFBWp2USx8c+3PjiKJtwA/xuILOWdPw08D3o/ELOy7oa/huLC7ki6Hz5WicVmHEV/Vbke1ff7xqXMc3tb8JNzfF35DOzfhaaZu+187z7DQQP+m4J1+i81kuKjn1xU/saPy3kbjS5mqRy1+/zqndwL/5LXHNzv2vvX3lazjvGsuIB0SyM/+4W7HPZuwrX+/8xEvHj9UkZ9FxV/84b/ntxk+SbuJ7GsDZ135p/IR55Vg+wUkt/dm7A7htH4xvWk9+O96h1vv5dHjbbD+BW2f7Gdwy20/hxtl+DsfZLqbDG7NV8Y98tUKdbYVHH/rigDJbgX/qOwm12Qafp+VsS8QPG2+CgtkGE9F0tvsa/R9CzBVXpDRA4QAAAABJRU5ErkJggg==",
+      "e": 1
+    },
+    {
+      "id": "b",
+      "w": 121,
+      "h": 131,
+      "u": "",
+      "p": "data:image/png;base64,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",
+      "e": 1
+    },
+    {
+      "id": "c",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 2,
+          "nm": "椭圆 1348.png",
+          "cl": "png",
+          "refId": "0",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 30,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 40 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [104, 276, 0], "ix": 2 },
+            "a": { "a": 0, "k": [8.5, 8.5, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 20,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 35 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 20,
+          "op": 46,
+          "st": 20,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 2,
+          "nm": "椭圆 1348 拷贝 2.png",
+          "cl": "png",
+          "refId": "1",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 25,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 35 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [128, 300, 0], "ix": 2 },
+            "a": { "a": 0, "k": [3.5, 4, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 15,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 30 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 15,
+          "op": 41,
+          "st": 15,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 3,
+          "ty": 2,
+          "nm": "椭圆 1 拷贝.png",
+          "cl": "png",
+          "refId": "2",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 20,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 30 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [362, 158, 0], "ix": 2 },
+            "a": { "a": 0, "k": [6, 6, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 10,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 25 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 10,
+          "op": 36,
+          "st": 10,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 4,
+          "ty": 2,
+          "nm": "圆角矩形 3 拷贝 2.png",
+          "cl": "png",
+          "refId": "3",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 15,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 25 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [402, 318, 0], "ix": 2 },
+            "a": { "a": 0, "k": [6.5, 6.5, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 5,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 20 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 5,
+          "op": 31,
+          "st": 5,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 5,
+          "ty": 2,
+          "nm": "圆角矩形 3 拷贝.png",
+          "cl": "png",
+          "refId": "4",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 10,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 20 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [172, 124, 0], "ix": 2 },
+            "a": { "a": 0, "k": [9.5, 10, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 0,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 15 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 26,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "d",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 0,
+          "nm": "背景元素",
+          "refId": "c",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [260, 260, 0], "ix": 2 },
+            "a": { "a": 0, "k": [260, 260, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "w": 520,
+          "h": 520,
+          "ip": 200,
+          "op": 246,
+          "st": 200,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 0,
+          "nm": "背景元素",
+          "refId": "c",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [260, 260, 0], "ix": 2 },
+            "a": { "a": 0, "k": [260, 260, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "w": 520,
+          "h": 520,
+          "ip": 150,
+          "op": 196,
+          "st": 150,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 3,
+          "ty": 0,
+          "nm": "背景元素",
+          "refId": "c",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [260, 260, 0], "ix": 2 },
+            "a": { "a": 0, "k": [260, 260, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "w": 520,
+          "h": 520,
+          "ip": 100,
+          "op": 146,
+          "st": 100,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 4,
+          "ty": 0,
+          "nm": "背景元素",
+          "refId": "c",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [260, 260, 0], "ix": 2 },
+            "a": { "a": 0, "k": [260, 260, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "w": 520,
+          "h": 520,
+          "ip": 50,
+          "op": 96,
+          "st": 50,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 5,
+          "ty": 2,
+          "nm": "圆角矩形 3 拷贝.png",
+          "cl": "png",
+          "refId": "4",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 10,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 20 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [172, 124, 0], "ix": 2 },
+            "a": { "a": 0, "k": [9.5, 10, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 0,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 15 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 26,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 6,
+          "ty": 2,
+          "nm": "圆角矩形 3 拷贝 2.png",
+          "cl": "png",
+          "refId": "3",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 15,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 25 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [402, 318, 0], "ix": 2 },
+            "a": { "a": 0, "k": [6.5, 6.5, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 5,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 20 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 5,
+          "op": 31,
+          "st": 5,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 7,
+          "ty": 2,
+          "nm": "椭圆 1 拷贝.png",
+          "cl": "png",
+          "refId": "2",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 20,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 30 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [362, 158, 0], "ix": 2 },
+            "a": { "a": 0, "k": [6, 6, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 10,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 25 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 10,
+          "op": 36,
+          "st": 10,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 8,
+          "ty": 2,
+          "nm": "椭圆 1348 拷贝 2.png",
+          "cl": "png",
+          "refId": "1",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 25,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 35 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [128, 300, 0], "ix": 2 },
+            "a": { "a": 0, "k": [3.5, 4, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 15,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 30 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 15,
+          "op": 41,
+          "st": 15,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 9,
+          "ty": 2,
+          "nm": "椭圆 1348.png",
+          "cl": "png",
+          "refId": "0",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 30,
+                  "s": [100],
+                  "e": [0]
+                },
+                { "t": 40 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [104, 276, 0], "ix": 2 },
+            "a": { "a": 0, "k": [8.5, 8.5, 0], "ix": 1 },
+            "s": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] },
+                  "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] },
+                  "t": 20,
+                  "s": [0, 0, 100],
+                  "e": [100, 100, 100]
+                },
+                { "t": 35 }
+              ],
+              "ix": 6
+            }
+          },
+          "ao": 0,
+          "ip": 20,
+          "op": 46,
+          "st": 20,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 10,
+          "ty": 2,
+          "nm": "男手.png",
+          "cl": "png",
+          "refId": "5",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 0,
+                  "s": [0],
+                  "e": [30]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 50,
+                  "s": [30],
+                  "e": [0]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 100,
+                  "s": [0],
+                  "e": [30]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 150,
+                  "s": [30],
+                  "e": [0]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 200,
+                  "s": [0],
+                  "e": [0]
+                },
+                { "t": 249 }
+              ],
+              "ix": 10
+            },
+            "p": { "a": 0, "k": [235.5, 287.75, 0], "ix": 2 },
+            "a": { "a": 0, "k": [2, 19, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 11,
+          "ty": 2,
+          "nm": "zhuozi.png",
+          "cl": "png",
+          "refId": "6",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [270, 347, 0], "ix": 2 },
+            "a": { "a": 0, "k": [25, 34, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 12,
+          "ty": 2,
+          "nm": "女.png",
+          "cl": "png",
+          "refId": "7",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [317, 349, 0], "ix": 2 },
+            "a": { "a": 0, "k": [15.5, 59, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 13,
+          "ty": 2,
+          "nm": "女手.png",
+          "cl": "png",
+          "refId": "8",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 0,
+                  "s": [-18],
+                  "e": [0]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 50,
+                  "s": [0],
+                  "e": [-18]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 100,
+                  "s": [-18],
+                  "e": [0]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 150,
+                  "s": [0],
+                  "e": [-18]
+                },
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 200,
+                  "s": [-18],
+                  "e": [0]
+                },
+                { "t": 249 }
+              ],
+              "ix": 10
+            },
+            "p": { "a": 0, "k": [310, 321, 0], "ix": 2 },
+            "a": { "a": 0, "k": [12.75, 15, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 14,
+          "ty": 2,
+          "nm": "男.png",
+          "cl": "png",
+          "refId": "9",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [251, 309, 0], "ix": 2 },
+            "a": { "a": 0, "k": [46.5, 57, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 15,
+          "ty": 2,
+          "nm": "组 3.png",
+          "cl": "png",
+          "refId": "a",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 0,
+                  "s": [0],
+                  "e": [100]
+                },
+                { "t": 20 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 0,
+                  "s": [359, 207, 0],
+                  "e": [359, 217, 0],
+                  "to": [0, 1.667, 0],
+                  "ti": [0, -3.333, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 20,
+                  "s": [359, 217, 0],
+                  "e": [359, 227, 0],
+                  "to": [0, 3.333, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 45,
+                  "s": [359, 227, 0],
+                  "e": [359, 217, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 70,
+                  "s": [359, 217, 0],
+                  "e": [359, 227, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 95,
+                  "s": [359, 227, 0],
+                  "e": [359, 217, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 120,
+                  "s": [359, 217, 0],
+                  "e": [359, 227, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 145,
+                  "s": [359, 227, 0],
+                  "e": [359, 217, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 170,
+                  "s": [359, 217, 0],
+                  "e": [359, 227, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 195,
+                  "s": [359, 227, 0],
+                  "e": [359, 217, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 220,
+                  "s": [359, 217, 0],
+                  "e": [359, 227, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, -1.667, 0]
+                },
+                { "t": 245 }
+              ],
+              "ix": 2
+            },
+            "a": { "a": 0, "k": [46, 49, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 16,
+          "ty": 2,
+          "nm": "组 5 副本.png",
+          "cl": "png",
+          "refId": "b",
+          "sr": 1,
+          "ks": {
+            "o": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": [0.833], "y": [0.833] },
+                  "o": { "x": [0.167], "y": [0.167] },
+                  "t": 0,
+                  "s": [0],
+                  "e": [100]
+                },
+                { "t": 20 }
+              ],
+              "ix": 11
+            },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": {
+              "a": 1,
+              "k": [
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 0,
+                  "s": [169, 169, 0],
+                  "e": [169, 189, 0],
+                  "to": [0, 3.333, 0],
+                  "ti": [0, -1.667, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 20,
+                  "s": [169, 189, 0],
+                  "e": [169, 179, 0],
+                  "to": [0, 1.667, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 45,
+                  "s": [169, 179, 0],
+                  "e": [169, 189, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 70,
+                  "s": [169, 189, 0],
+                  "e": [169, 179, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 95,
+                  "s": [169, 179, 0],
+                  "e": [169, 189, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 120,
+                  "s": [169, 189, 0],
+                  "e": [169, 179, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 145,
+                  "s": [169, 179, 0],
+                  "e": [169, 189, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 170,
+                  "s": [169, 189, 0],
+                  "e": [169, 179, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 195,
+                  "s": [169, 179, 0],
+                  "e": [169, 189, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 0, 0]
+                },
+                {
+                  "i": { "x": 0.833, "y": 0.833 },
+                  "o": { "x": 0.167, "y": 0.167 },
+                  "t": 220,
+                  "s": [169, 189, 0],
+                  "e": [169, 179, 0],
+                  "to": [0, 0, 0],
+                  "ti": [0, 1.667, 0]
+                },
+                { "t": 245 }
+              ],
+              "ix": 2
+            },
+            "a": { "a": 0, "k": [60.5, 65.5, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 250,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "ddd": 0,
+      "ind": 1,
+      "ty": 0,
+      "nm": "precomp_1666920970465",
+      "refId": "d",
+      "sr": 1,
+      "ks": {
+        "o": { "a": 0, "k": 100, "ix": 11 },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [250, 250, 0], "ix": 2 },
+        "a": { "a": 0, "k": [260, 260, 0], "ix": 1 },
+        "s": { "a": 0, "k": [96.154, 96.154, 0], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 520,
+      "h": 520,
+      "ip": 0,
+      "op": 250,
+      "st": 0,
+      "bm": 0
+    }
+  ],
+  "markers": [],
+  "players": {
+    "defaultFrame": 30,
+    "frameControl": [{ "start": 0, "end": 250, "repeatCount": -1 }]
+  },
+  "tiny": 0.75
+}

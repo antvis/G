@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://g.antv.antgroup.com/sitemap.xml
