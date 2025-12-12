@@ -1009,21 +1009,29 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   notifyMutationObservers(canvas: Canvas) {
-    const mutations: MutationRecord[] = [];
+    const mutations: Set<MutationRecord> = new Set();
 
     canvas.getRoot().forEach((item: Node) => {
       (item.mutations || []).forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation._boundsChangeData) {
-          mutations.push(mutation);
+          if (mutation._boundsChangeData.affectChildren) {
+            item.forEach((node: Node) => {
+              const newMutation = { ...mutation };
+              newMutation.target = node;
+              mutations.add(newMutation);
+            });
+          } else {
+            mutations.add(mutation);
+          }
         }
       });
 
       item.mutations = undefined;
     });
 
-    if (mutations.length > 0) {
+    if (mutations.size > 0) {
       const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
-        detail: mutations,
+        detail: Array.from(mutations),
       });
 
       canvas.dispatchEvent(event, true, true);
