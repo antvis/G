@@ -43,10 +43,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-rough-canvas-renderer/src',
       ),
-      '@antv/g-components-local': path.resolve(
-        __dirname,
-        '../packages/g-components/src',
-      ),
       '@antv/g-plugin-annotation-local': path.resolve(
         __dirname,
         '../packages/g-plugin-annotation/src',

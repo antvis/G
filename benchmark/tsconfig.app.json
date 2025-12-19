@@ -43,7 +43,6 @@
       "@antv/g-plugin-rough-canvas-renderer-local": [
         "../packages/g-plugin-rough-canvas-renderer/src"
       ],
-      "@antv/g-components-local": ["../packages/g-components/src"],
       "@antv/g-plugin-annotation-local": [
         "../packages/g-plugin-annotation/src"
       ],

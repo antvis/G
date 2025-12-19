@@ -28,7 +28,6 @@
     "@antv/g": "latest",
     "@antv/g-canvas": "latest",
     "@antv/g-canvaskit": "latest",
-    "@antv/g-components": "latest",
     "@antv/g-device-api": "latest",
     "@antv/g-lite": "latest",
     "@antv/g-lottie-player": "latest",

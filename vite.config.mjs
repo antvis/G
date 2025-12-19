@@ -55,7 +55,6 @@ export default defineConfig({
       '@antv/g-plugin-rough-canvas-renderer': resolve(
         'g-plugin-rough-canvas-renderer',
       ),
-      '@antv/g-components': resolve('g-components'),
       '@antv/g-plugin-annotation': resolve('g-plugin-annotation'),
       '@antv/g-plugin-rough-svg-renderer': resolve(
         'g-plugin-rough-svg-renderer',

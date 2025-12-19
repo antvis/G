@@ -23,7 +23,6 @@
       "@antv/g-plugin-rough-canvas-renderer": [
         "./packages/g-plugin-rough-canvas-renderer/src"
       ],
-      "@antv/g-components": ["./packages/g-components/src"],
       "@antv/g-plugin-annotation": ["./packages/g-plugin-annotation/src"],
       "@antv/g-plugin-rough-svg-renderer": [
         "./packages/g-plugin-rough-svg-renderer/src"

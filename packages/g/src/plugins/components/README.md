@@ -6,9 +6,9 @@ Composite basic shapes provided in G into advanced components.
 import { LineWithArrow } from '@antv/g-components';
 
 const arrow = new LineWithArrow({
-  style: {
-    x1: 0,
-    // ...
-  },
+    style: {
+        x1: 0,
+        // ...
+    },
 });
 ```

@@ -1,5 +1,4 @@
-import { Path, Polyline, Line } from '@antv/g';
-import { Arrow } from '@antv/g-components';
+import { Path, Polyline, Line, Arrow } from '@antv/g';
 
 export async function customElement(context) {
   const { canvas } = context;
