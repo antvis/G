@@ -79,10 +79,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-gesture/src',
       ),
-      '@antv/g-plugin-canvaskit-renderer-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-canvaskit-renderer/src',
-      ),
       '@antv/g-plugin-zdog-svg-renderer-local': path.resolve(
         __dirname,
         '../packages/g-plugin-zdog-svg-renderer/src',

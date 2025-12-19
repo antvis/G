@@ -45,10 +45,11 @@
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvaskit-renderer": "workspace:*",
+    "@antv/g-math": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
     "canvaskit-wasm": "^0.34.0",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

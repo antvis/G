@@ -6,7 +6,7 @@ import {
   DomInteraction,
 } from '@antv/g-lite';
 import { CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
-import * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
+import * as CanvaskitRenderer from './plugins/canvaskit-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export * from './CanvasKitContextService';
