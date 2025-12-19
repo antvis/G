@@ -195,7 +195,7 @@ The effect is as follows:
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8kA4QZ8xU88AAAAAAAAAAAAADmJ7AQ/original" alt="rect as pattern" width="300">
 
-Finally, the [g-pattern](/en/api/css/pattern#g-pattern) mentioned below is also defined in this way.
+Finally, the [pattern](/en/api/css/pattern#pattern) mentioned below is also defined in this way.
 
 ## repetition
 
@@ -224,7 +224,7 @@ rect.style.fill = {
 
 It should be noted that the value of [patternTransform](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternTransform) in SVG is slightly different from that of CSS Transform, and there is no value in vector graphics. unit, only supports [transform_functions](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform#transform_functions), so for example `rotate(20deg)` needs to remove the unit and rewrite it as`rotate(20)`, `transform(20px, 30px)` are the same. But we have unified it internally, so the value of CSS Transform can be fully used.
 
-## g-pattern
+## pattern
 
 Refer to [nivo patterns](https://nivo.rocks/guides/patterns/), we provide some built-in patterns, and you can adjust the appearance through more friendly parameters. Currently we support the following three patterns:
 

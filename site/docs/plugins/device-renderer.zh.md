@@ -377,7 +377,7 @@ program.destroy();
 
 ## 基于 GPU 的拾取
 
-与 [g-plugin-canvas-picker](/plugins/canvas-picker) 和 [g-plugin-svg-picker](/plugins/svg-picker) 这些基于 CPU 的拾取方案不同，我们使用使用一种基于 GPU 称作“颜色编码”的方式。
+与 [canvas-picker](/plugins/canvas-picker) 和 [svg-picker](/plugins/svg-picker) 这些基于 CPU 的拾取方案不同，我们使用使用一种基于 GPU 称作“颜色编码”的方式。
 
 该方式包含以下步骤：
 

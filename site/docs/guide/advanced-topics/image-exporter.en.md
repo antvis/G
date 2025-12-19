@@ -7,7 +7,7 @@ Some chart libraries offer the ability to save content to an image, the image be
 
 <img src="https://user-images.githubusercontent.com/3608471/174998577-df1c54e9-d981-4d82-a4aa-7f0bedfb11a1.png" width="200" alt="exporter in highcharts">
 
-For this purpose, we provide `g-image-exporter`, which supports functions such as selecting canvas area, exporting dataURL in specified format or saving it as image, [example](/en/examples/ecosystem/image-exporter/#image-exporter). Some of the functions depend on DOM API, for non-browser environment, please refer to [special platform adaptation of canvas](/en/api/canvas#special platform adaptation). For example, the download function needs to be implemented by `document.createElement('a')`, non-browser environment needs to pass `document` object by itself.
+For this purpose, we provide `image-exporter`, which supports functions such as selecting canvas area, exporting dataURL in specified format or saving it as image, [example](/en/examples/ecosystem/image-exporter/#image-exporter). Some of the functions depend on DOM API, for non-browser environment, please refer to [special platform adaptation of canvas](/en/api/canvas#special platform adaptation). For example, the download function needs to be implemented by `document.createElement('a')`, non-browser environment needs to pass `document` object by itself.
 
 ## Configuration
 

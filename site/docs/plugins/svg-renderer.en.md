@@ -1,5 +1,5 @@
 ---
-title: g-plugin-svg-renderer
+title: svg-renderer
 order: 5
 ---
 
@@ -38,7 +38,7 @@ export interface ElementLifeCycleContribution {
 Different renderer plugins can implement the above interface to manage the lifecycle of each graphic using a custom approach. For example, the following code shows two SVG-based renderer plugins, the former built for [g-svg](/en/api/renderer/svg), which provides rendering capabilities for default SVG elements, and the latter which implements hand-drawn style rendering with rough.js on top of that.
 
 ```js
-// g-plugin-svg-renderer
+// svg-renderer
 @singleton({ token: ElementLifeCycleContribution })
 export class DefaultElementLifeCycleContribution
     implements ElementLifeCycleContribution {}

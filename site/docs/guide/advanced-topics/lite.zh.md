@@ -81,17 +81,7 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 为基础图形提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的[动画能力](/api/animation/waapi)。缺少该功能仍可以调用 `object.animate()` 方法，但无任何效果。
 
-### g-css-typed-om-api
-
-[CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) 允许使用 JS 操作解析后的属性值，它也是 CSS Houdini 的基础。以 `width: '50%'` 为例，字符串形式的属性值会被解析成 `CSS.percent(50)`，方便进行下一步的计算。
-
-我们提供了[类似能力](/api/css/css-typed-om)。
-
-### g-css-layout-api
-
-参考 [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) 提供[布局能力](/api/css/css-layout-api)。
-
-### g-dom-mutation-observer-api
+### dom-mutation-observer-api
 
 在 DOM API 中，当我们想感知 DOM 树节点的修改，例如新节点加入、属性值变更，可以使用 [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)。
 

@@ -15,7 +15,7 @@ Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how 
 
 ## Implementing a custom renderer
 
-After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/intro#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/ plugins/canvas-picker).
+After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/intro#registerplugin), for example using the Canvas2D API canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [canvas-picker](/ plugins/canvas-picker).
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 

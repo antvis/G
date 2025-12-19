@@ -1,5 +1,5 @@
 ---
-title: g-plugin-dom-interaction
+title: dom-interaction
 order: 7
 ---
 

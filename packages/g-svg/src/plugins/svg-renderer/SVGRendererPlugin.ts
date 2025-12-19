@@ -127,7 +127,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   ) {}
 
   /**
-   * Will be used in g-plugin-svg-picker for finding relative SVG element of current DisplayObject.
+   * Will be used in svg-picker for finding relative SVG element of current DisplayObject.
    */
   private svgElementMap: WeakMap<SVGElement, DisplayObject> = new WeakMap();
 
@@ -713,7 +713,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $groupEl.appendChild($hitTestingEl);
         svgElement.$hitTestingEl = $hitTestingEl;
 
-        // g-plugin-svg-picker will use this map to find target object
+        // svg-picker will use this map to find target object
         this.svgElementMap.set($hitTestingEl, object);
       }
 

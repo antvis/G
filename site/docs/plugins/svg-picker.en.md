@@ -1,5 +1,5 @@
 ---
-title: g-plugin-svg-picker
+title: svg-picker
 order: 6
 ---
 

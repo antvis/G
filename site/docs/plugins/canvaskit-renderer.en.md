@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvaskit-renderer
+title: canvaskit-renderer
 order: 3
 ---
 
@@ -39,7 +39,7 @@ Returns a `ManagedSkottieAnimation` object
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/en/api/renderer/intro#getplugin).
+First create the renderer and get the canvaskit-renderer via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -85,7 +85,7 @@ In this [example](/en/examples/plugins/canvaskit/#canvaskit-particles), we have 
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/plugins/canvaskit-renderer).
+First create the renderer and get the [canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/plugins/canvaskit-renderer).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';

@@ -1,4 +1,4 @@
-# @antv/g-plugin-html-renderer
+# html-renderer
 
 Render HTML for g-canvas/svg/webgl.
 

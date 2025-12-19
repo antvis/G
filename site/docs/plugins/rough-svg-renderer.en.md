@@ -9,7 +9,7 @@ Hand-drawn style rendering using the SVG version of [rough.js](https://roughjs.c
 
 ## Usage
 
-First you need to use the [g-svg](/en/api/renderer/svg) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-svg-renderer](/en/plugins/svg-renderer).
+First you need to use the [g-svg](/en/api/renderer/svg) renderer, register the plugin and it will replace the rendering of 2D graphics in [svg-renderer](/en/plugins/svg-renderer).
 
 ```js
 import { Canvas } from '@antv/g';
@@ -37,4 +37,4 @@ In addition to the style properties of 2D graphics, the configuration items prov
 
 ## Picking
 
-Non-`solid` fill styles leave a lot of white space, and these blank areas do not trigger interaction events. This is inconsistent with [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
+Non-`solid` fill styles leave a lot of white space, and these blank areas do not trigger interaction events. This is inconsistent with [canvas-renderer](/en/plugins/canvas-renderer).

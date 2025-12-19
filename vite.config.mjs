@@ -65,7 +65,6 @@ export default defineConfig({
       '@antv/g-plugin-zdog-canvas-renderer': resolve(
         'g-plugin-zdog-canvas-renderer',
       ),
-      '@antv/g-gesture': resolve('g-gesture'),
       '@antv/g-plugin-zdog-svg-renderer': resolve('g-plugin-zdog-svg-renderer'),
       '@antv/g-plugin-control': resolve('g-plugin-control'),
       '@antv/g-shader-components': resolve('g-shader-components'),

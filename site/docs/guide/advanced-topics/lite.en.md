@@ -79,17 +79,7 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 Provides [animation capabilities](/en/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
 
-### g-css-typed-om-api
-
-The [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) allows parsed property values to be manipulated using JS, which is also the basis of CSS Houdini. In the case of `width: '50%'`, the property value in string form is parsed to `CSS.percent(50)`, facilitating the next calculation.
-
-We provide [similar capabilities](/en/api/css/css-typed-om).
-
-### g-css-layout-api
-
-Reference [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) provides [layout capabilities](/en/api/css/css-layout-api).
-
-### g-dom-mutation-observer-api
+### dom-mutation-observer-api
 
 In the DOM API, we can use [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) when we want to sense modifications in the DOM tree nodes, such as new nodes added, attribute values changed.
 

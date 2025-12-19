@@ -3,7 +3,7 @@
 Composite basic shapes provided in G into advanced components.
 
 ```js
-import { LineWithArrow } from '@antv/g-components';
+import { LineWithArrow } from '@antv/g';
 
 const arrow = new LineWithArrow({
     style: {

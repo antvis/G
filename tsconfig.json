@@ -33,7 +33,6 @@
       "@antv/g-plugin-zdog-canvas-renderer": [
         "./packages/g-plugin-zdog-canvas-renderer/src"
       ],
-      "@antv/g-gesture": ["./packages/g-gesture/src"],
       "@antv/g-plugin-zdog-svg-renderer": [
         "./packages/g-plugin-zdog-svg-renderer/src"
       ],
