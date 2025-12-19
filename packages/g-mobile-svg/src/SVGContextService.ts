@@ -5,7 +5,7 @@ import type {
   CanvasConfig,
   GlobalRuntime,
 } from '@antv/g-lite';
-import { createSVGElement } from '@antv/g-plugin-svg-renderer';
+import { createSVGElement } from '@antv/g-svg';
 import { isString } from '@antv/util';
 
 export class SVGContextService implements ContextService<SVGElement> {

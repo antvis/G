@@ -1,5 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
-import { Sector } from '@antv/g-components';
+import { Canvas, CanvasEvent, Circle, Group, Sector } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';

@@ -1,4 +1,4 @@
-import { createMobileCanvasElement } from '../../../packages/g-mobile-canvas-element/src';
+import { createMobileCanvasElement } from '../../../packages/g-mobile-canvas/src';
 import { Renderer as CanvasRenderer } from '../../../packages/g-mobile-canvas/src';
 import { Canvas, Circle } from '../../../packages/g/src';
 import { createContext } from './util';

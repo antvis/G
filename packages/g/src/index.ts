@@ -1,6 +1,8 @@
-export * from '@antv/g-camera-api';
-// export * from '@antv/g-css-layout-api';
-// export * from '@antv/g-css-typed-om-api';
-export * from '@antv/g-dom-mutation-observer-api';
 export * from '@antv/g-lite';
-export * from '@antv/g-web-animations-api';
+
+// plugins
+export * from './plugins/web-animations-api';
+export * from './plugins/camera-api';
+export * from './plugins/image-exporter';
+export * from './plugins/pattern';
+export * from './plugins/components';

@@ -15,19 +15,14 @@ Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how 
 
 ## Implementing a custom renderer
 
-After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/intro#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/ plugins/canvas-picker).
+After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/intro#registerplugin), for example using the Canvas2D API canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [canvas-picker](/ plugins/canvas-picker).
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
 ```js
 import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer } from '@antv/g';
-import * as CanvasPathGenerator from '@antv/g-plugin-canvas-path-generator';
-import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
-import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
-import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
-import * as ImageLoader from '@antv/g-plugin-image-loader';
+import { AbstractRenderer, ImageLoader, HTMLRenderer, DomInteraction } from '@antv/g';
+import { CanvasRenderer, CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {

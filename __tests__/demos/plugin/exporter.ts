@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
-import { HTML, Rectangle } from '@antv/g';
-import { ImageExporter } from '@antv/g-image-exporter';
+import { HTML, Rectangle, ImageExporter } from '@antv/g';
 
 export async function exporter(context) {
   const { canvas, gui } = context;
@@ -13,7 +12,9 @@ export async function exporter(context) {
 
   const drawBars = async () => {
     // 1. Access data
-    const dataset = await d3.json('https://gw.alipayobjects.com/os/bmw-prod/8e7cfeb6-28e5-4e78-8d16-c08468360f5f.json');
+    const dataset = await d3.json(
+      'https://gw.alipayobjects.com/os/bmw-prod/8e7cfeb6-28e5-4e78-8d16-c08468360f5f.json',
+    );
     const metricAccessor = (d) => d.humidity;
     const yAccessor = (d) => d.length;
 
@@ -31,8 +32,10 @@ export async function exporter(context) {
       boundedWidth: 0,
       boundedHeight: 0,
     };
-    dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
-    dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+    dimensions.boundedWidth =
+      dimensions.width - dimensions.margin.left - dimensions.margin.right;
+    dimensions.boundedHeight =
+      dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
     // 3. Draw canvas
     const wrapper = d3.select(
@@ -41,7 +44,10 @@ export async function exporter(context) {
 
     const bounds = wrapper
       .append('g')
-      .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`);
+      .style(
+        'transform',
+        `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`,
+      );
 
     // 4. Create scales
 
@@ -51,7 +57,11 @@ export async function exporter(context) {
       .range([0, dimensions.boundedWidth])
       .nice();
 
-    const binsGenerator = d3.bin().domain(xScale.domain()).value(metricAccessor).thresholds(12);
+    const binsGenerator = d3
+      .bin()
+      .domain(xScale.domain())
+      .value(metricAccessor)
+      .thresholds(12);
 
     const bins = binsGenerator(dataset);
 
@@ -63,14 +73,20 @@ export async function exporter(context) {
 
     // 5. Draw data
     const binsGroup = bounds.append('g');
-    const binGroups = binsGroup.selectAll('g').data(bins).join('g').attr('class', 'bin');
+    const binGroups = binsGroup
+      .selectAll('g')
+      .data(bins)
+      .join('g')
+      .attr('class', 'bin');
 
     const barPadding = 1;
     const barRects = binGroups
       .append('rect')
       .attr('x', (d) => xScale(d.x0) + barPadding / 2)
       .attr('y', (d) => yScale(yAccessor(d)))
-      .attr('width', (d) => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
+      .attr('width', (d) =>
+        d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]),
+      )
       .attr('height', (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
       .attr('fill', 'cornflowerblue')
       .on('mouseenter', function (e) {
@@ -174,7 +190,12 @@ export async function exporter(context) {
         ignoreElements: (element) => {
           return [gui.domElement].indexOf(element) > -1;
         },
-        clippingRegion: new Rectangle(clippingRegionX, clippingRegionY, clippingRegionWidth, clippingRegionHeight),
+        clippingRegion: new Rectangle(
+          clippingRegionX,
+          clippingRegionY,
+          clippingRegionWidth,
+          clippingRegionHeight,
+        ),
         beforeDrawImage: (context) => {
           if (enableBackgroundColor) {
             context.fillStyle = backgroundColor;
@@ -207,7 +228,12 @@ export async function exporter(context) {
         ignoreElements: (element) => {
           return [gui.domElement].indexOf(element) > -1;
         },
-        clippingRegion: new Rectangle(clippingRegionX, clippingRegionY, clippingRegionWidth, clippingRegionHeight),
+        clippingRegion: new Rectangle(
+          clippingRegionX,
+          clippingRegionY,
+          clippingRegionWidth,
+          clippingRegionHeight,
+        ),
         beforeDrawImage: (context) => {
           if (enableBackgroundColor) {
             context.fillStyle = backgroundColor;
@@ -255,7 +281,12 @@ export async function exporter(context) {
   exporterFolder.add(exporterConfig, 'enableBackgroundColor');
   exporterFolder.addColor(exporterConfig, 'backgroundColor');
   exporterFolder.add(exporterConfig, 'enableWatermark');
-  exporterFolder.add(exporterConfig, 'type', ['image/png', 'image/jpeg', 'image/webp', 'image/bmp']);
+  exporterFolder.add(exporterConfig, 'type', [
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+    'image/bmp',
+  ]);
   exporterFolder.add(exporterConfig, 'encoderOptions', 0, 1);
   exporterFolder.add(exporterConfig, 'toDataURL');
   exporterFolder.add(exporterConfig, 'downloadImage');

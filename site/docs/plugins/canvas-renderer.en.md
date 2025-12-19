@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvas-renderer
+title: canvas-renderer
 order: 3
 ---
 

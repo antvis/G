@@ -1,11 +1,10 @@
-import { HTML } from '@antv/g';
-import { Plugin as HTMLRenderingPlugin } from '@antv/g-plugin-html-renderer';
+import { HTML, HTMLRenderer } from '@antv/g';
 import { ExampleLayoutManager } from '../_helper/example-layout-manager';
 
 export async function htmlRenderer(context) {
   const { canvas, renderer } = context;
 
-  renderer.registerPlugin(new HTMLRenderingPlugin());
+  renderer.registerPlugin(new HTMLRenderer.Plugin());
 
   await canvas.ready;
 

@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvas-path-generator
+title: canvas-path-generator
 order: 4
 ---
 
@@ -18,7 +18,7 @@ export const PathGenerator = Syringe.defineToken('PathGenerator');
 
 ### PathGeneratorFactory
 
-例如目前在 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 和 [g-plugin-canvas-picker](/plugins/canvas-picker) 这两个插件中都能看到通过 `PathGeneratorFactory` 这个 token 将工厂方法注入，传入 [nodeName](/api/builtin-objects/node#nodename) 就能得到对应图形路径的绘制方法：
+例如目前在 [canvas-renderer](/plugins/canvas-renderer) 和 [canvas-picker](/plugins/canvas-picker) 这两个插件中都能看到通过 `PathGeneratorFactory` 这个 token 将工厂方法注入，传入 [nodeName](/api/builtin-objects/node#nodename) 就能得到对应图形路径的绘制方法：
 
 ```js
 @inject(PathGeneratorFactory)

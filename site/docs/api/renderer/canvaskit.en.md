@@ -115,9 +115,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 The renderer has the following plug-ins built in.
 
-- [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
-- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
-- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
+- [canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
+- [dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Enhanced Features
 
@@ -135,7 +135,7 @@ In this [example](/en/examples/plugins/canvaskit/#skottie) we show how to play a
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
+First create the renderer and get the [canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -183,7 +183,7 @@ In this [example](/en/examples/plugins/canvaskit/#canvaskit-particles), we have 
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
+First create the renderer and get the [canvaskit-renderer](/en/api/renderer/intro#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';

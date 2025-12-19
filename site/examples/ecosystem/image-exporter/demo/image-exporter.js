@@ -1,7 +1,6 @@
-import { Canvas, CanvasEvent, HTML, Rectangle } from '@antv/g';
+import { Canvas, CanvasEvent, HTML, Rectangle, ImageExporter } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { ImageExporter } from '@antv/g-image-exporter';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';

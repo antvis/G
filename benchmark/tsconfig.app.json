@@ -35,11 +35,6 @@
       "@antv/g-local": ["../packages/g/src"],
       "@antv/g-mobile-webgl-local": ["../packages/g-mobile-webgl/src"],
       "@antv/g-plugin-matterjs-local": ["../packages/g-plugin-matterjs/src"],
-      "@antv/g-camera-api-local": ["../packages/g-camera-api/src"],
-      "@antv/g-pattern-local": ["../packages/g-pattern/src"],
-      "@antv/g-plugin-mobile-interaction-local": [
-        "../packages/g-plugin-mobile-interaction/src"
-      ],
       "@antv/g-canvas-local": ["../packages/g-canvas/src"],
       "@antv/g-plugin-3d-local": ["../packages/g-plugin-3d/src"],
       "@antv/g-plugin-physx-local": ["../packages/g-plugin-physx/src"],
@@ -48,52 +43,25 @@
       "@antv/g-plugin-rough-canvas-renderer-local": [
         "../packages/g-plugin-rough-canvas-renderer/src"
       ],
-      "@antv/g-components-local": ["../packages/g-components/src"],
       "@antv/g-plugin-annotation-local": [
         "../packages/g-plugin-annotation/src"
       ],
       "@antv/g-plugin-rough-svg-renderer-local": [
         "../packages/g-plugin-rough-svg-renderer/src"
       ],
-      "@antv/g-css-layout-api-local": ["../packages/g-css-layout-api/src"],
       "@antv/g-plugin-box2d-local": ["../packages/g-plugin-box2d/src"],
-      "@antv/g-plugin-svg-picker-local": [
-        "../packages/g-plugin-svg-picker/src"
-      ],
-      "@antv/g-css-typed-om-api-local": ["../packages/g-css-typed-om-api/src"],
-      "@antv/g-plugin-canvas-path-generator-local": [
-        "../packages/g-plugin-canvas-path-generator/src"
-      ],
-      "@antv/g-plugin-svg-renderer-local": [
-        "../packages/g-plugin-svg-renderer/src"
-      ],
       "@antv/g-devtool-local": ["../packages/g-devtool/src"],
-      "@antv/g-plugin-canvas-picker-local": [
-        "../packages/g-plugin-canvas-picker/src"
-      ],
       "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
-      "@antv/g-dom-mutation-observer-api-local": [
-        "../packages/g-dom-mutation-observer-api/src"
-      ],
-      "@antv/g-plugin-canvas-renderer-local": [
-        "../packages/g-plugin-canvas-renderer/src"
-      ],
       "@antv/g-plugin-zdog-canvas-renderer-local": [
         "../packages/g-plugin-zdog-canvas-renderer/src"
-      ],
-      "@antv/g-gesture-local": ["../packages/g-gesture/src"],
-      "@antv/g-plugin-canvaskit-renderer-local": [
-        "../packages/g-plugin-canvaskit-renderer/src"
       ],
       "@antv/g-plugin-zdog-svg-renderer-local": [
         "../packages/g-plugin-zdog-svg-renderer/src"
       ],
-      "@antv/g-image-exporter-local": ["../packages/g-image-exporter/src"],
       "@antv/g-plugin-control-local": ["../packages/g-plugin-control/src"],
       "@antv/g-shader-components-local": [
         "../packages/g-shader-components/src"
       ],
-      "@antv/g-layout-blocklike-local": ["../packages/g-layout-blocklike/src"],
       "@antv/g-plugin-css-select-local": [
         "../packages/g-plugin-css-select/src"
       ],
@@ -102,13 +70,7 @@
       "@antv/g-plugin-device-renderer-local": [
         "../packages/g-plugin-device-renderer/src"
       ],
-      "@antv/g-web-animations-api-local": [
-        "../packages/g-web-animations-api/src"
-      ],
       "@antv/g-lottie-player-local": ["../packages/g-lottie-player/src"],
-      "@antv/g-plugin-dom-interaction-local": [
-        "../packages/g-plugin-dom-interaction/src"
-      ],
       "@antv/g-web-components-local": ["../packages/g-web-components/src"],
       "@antv/g-math-local": ["../packages/g-math/src"],
       "@antv/g-plugin-dragndrop-local": ["../packages/g-plugin-dragndrop/src"],
@@ -116,17 +78,8 @@
       "@antv/g-mobile-canvas-local": ["../packages/g-mobile-canvas/src"],
       "@antv/g-plugin-gesture-local": ["../packages/g-plugin-gesture/src"],
       "@antv/g-webgpu-local": ["../packages/g-webgpu/src"],
-      "@antv/g-mobile-canvas-element-local": [
-        "../packages/g-mobile-canvas-element/src"
-      ],
-      "@antv/g-plugin-html-renderer-local": [
-        "../packages/g-plugin-html-renderer/src"
-      ],
       "@antv/react-g-local": ["../packages/react-g/src"],
-      "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"],
-      "@antv/g-plugin-image-loader-local": [
-        "../packages/g-plugin-image-loader/src"
-      ]
+      "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"]
     }
   },
   "include": ["src", "../packages/*/src"]

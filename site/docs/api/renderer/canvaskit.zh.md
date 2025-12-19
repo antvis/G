@@ -115,9 +115,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 该渲染器内置了以下插件：
 
-- [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
-- [g-plugin-canvas-picker](/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
-- [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [canvaskit-renderer](/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
+- [canvas-picker](/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+- [dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 增强功能
 
@@ -135,7 +135,7 @@ CanvasKit（完整版本）相较于我们熟悉的 Canvas 2D API，提供了以
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -185,7 +185,7 @@ CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)]
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';

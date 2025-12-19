@@ -17,21 +17,21 @@ redirect_from:
 ## 插件集
 
 - 渲染相关
-  - [g-plugin-canvas-renderer](/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-  - [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 基于 CanvasKit / Skia 渲染 2D 图形
-  - [g-plugin-svg-renderer](/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+  - [canvas-renderer](/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+  - [canvaskit-renderer](/plugins/canvaskit-renderer) 基于 CanvasKit / Skia 渲染 2D 图形
+  - [svg-renderer](/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
   - [g-plugin-device-renderer](/plugins/device-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
-  - [g-plugin-html-renderer](/plugins/html-renderer) 渲染 DOM 元素
+  - [html-renderer](/plugins/html-renderer) 渲染 DOM 元素
   - [g-plugin-3d](/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
   - [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 基于 rough.js 和 Canvas2D 渲染手绘风格图形
   - [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 基于 rough.js 和 SVG 渲染手绘风格图形
 - 拾取
-  - [g-plugin-canvas-picker](/plugins/canvas-picker) 基于 Canvas2D
-  - [g-plugin-svg-picker](/plugins/svg-picker) 基于 SVG
+  - [canvas-picker](/plugins/canvas-picker) 基于 Canvas2D
+  - [svg-picker](/plugins/svg-picker) 基于 SVG
 - 无障碍
   - [g-plugin-a11y](/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
 - 交互
-  - [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+  - [dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
   - [g-plugin-dragndrop](/plugins/dragndrop) 基于 PointerEvents 实现拖放功能
   - [g-plugin-control](/plugins/control) 为 3D 场景提供相机交互
   - [g-plugin-annotation](/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 [Fabric.js](http://fabricjs.com/) 和 [Konva.js](https://konvajs.org/)

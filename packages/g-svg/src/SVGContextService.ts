@@ -7,8 +7,8 @@ import type {
   DisplayObject,
 } from '@antv/g-lite';
 import { propertyMetadataCache } from '@antv/g-lite';
-import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 import { isString } from '@antv/util';
+import { createSVGElement } from './plugins/svg-renderer';
 
 export class SVGContextService implements ContextService<SVGElement> {
   private $container: HTMLElement | null;

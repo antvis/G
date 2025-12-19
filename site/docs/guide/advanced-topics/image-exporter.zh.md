@@ -7,14 +7,14 @@ order: 6
 
 <img src="https://user-images.githubusercontent.com/3608471/174998577-df1c54e9-d981-4d82-a4aa-7f0bedfb11a1.png" width="200" alt="exporter in highcharts">
 
-为此我们提供了 `g-image-exporter`，它支持选定画布区域，导出指定格式的 dataURL 或保存成图片等功能，[示例](/examples/ecosystem/image-exporter/#image-exporter)。其中部分功能依赖 DOM API，对于非浏览器运行环境，请参考 [画布的特殊运行平台适配](/api/canvas/intro#%E7%89%B9%E6%AE%8A%E8%BF%90%E8%A1%8C%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D)。例如下载功能需要通过 `document.createElement('a')` 实现，非浏览器环境需要自行传入 `document` 对象。
+为此我们提供了 `image-exporter`，它支持选定画布区域，导出指定格式的 dataURL 或保存成图片等功能，[示例](/examples/ecosystem/image-exporter/#image-exporter)。其中部分功能依赖 DOM API，对于非浏览器运行环境，请参考 [画布的特殊运行平台适配](/api/canvas/intro#%E7%89%B9%E6%AE%8A%E8%BF%90%E8%A1%8C%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D)。例如下载功能需要通过 `document.createElement('a')` 实现，非浏览器环境需要自行传入 `document` 对象。
 
 ## 配置项
 
 创建时可以指定以下配置项，其中 `canvas` 为必填项，将画布传入：
 
 ```js
-import { ImageExporter } from '@antv/g-image-exporter';
+import { ImageExporter } from '@antv/g';
 
 const exporter = new ImageExporter({
     canvas, // 传入画布

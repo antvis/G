@@ -165,12 +165,12 @@ graph.addEventListener('click', (e) => {
 
 ### Event Binding/Unbinding Plugin
 
-As mentioned before, event binding is not done in the core event system, it should be left to the corresponding rendering environment plugins. For example, [g-plugin-dom-interaction](/en/plugins/dom-interaction) which uses DOM API to bind/unbind, other environments such as applets should write their own plugins.
+As mentioned before, event binding is not done in the core event system, it should be left to the corresponding rendering environment plugins. For example, [dom-interaction](/en/plugins/dom-interaction) which uses DOM API to bind/unbind, other environments such as applets should write their own plugins.
 
 In this class of plugins, we need to complete the binding in `init` and the unbinding in `destroy`. When implementing the binding, multiple (if any) native events in that rendering environment need to be mapped to G's standard event handlers.
 
 ```js
-// g-plugin-dom-interaction
+// dom-interaction
 
 const onPointerDown = (ev: InteractivePointerEvent) => {
     renderingService.hooks.pointerDown.call(ev);
@@ -198,8 +198,8 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {});
 
 Different rendering environments use different pickup plugins for determining the EventTarget of native events.
 
-- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Use mainly mathematical operations.
-- [g-plugin-svg-picker](/en/plugins/svg-picker) Use SVG API.
+- [canvas-picker](/en/plugins/canvas-picker) Use mainly mathematical operations.
+- [svg-picker](/en/plugins/svg-picker) Use SVG API.
 - [g-plugin-device-renderer](/en/plugins/device-renderer) Use GPU-based methods.
 
 ### A11y Plugin

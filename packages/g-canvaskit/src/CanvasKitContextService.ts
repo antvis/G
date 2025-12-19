@@ -7,12 +7,12 @@ import type {
   ContextService,
 } from '@antv/g-lite';
 import { setDOMSize } from '@antv/g-lite';
-import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
-import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import { isString } from '@antv/util';
 import type { CanvasKit } from 'canvaskit-wasm';
 // eslint-disable-next-line import/extensions
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
+import type { CanvasKitContext } from './plugins/canvaskit-renderer';
+import type * as CanvaskitRenderer from './plugins/canvaskit-renderer';
 
 export interface ContextRegisterPluginOptions {
   wasmDir: string;

@@ -9,5 +9,5 @@ export * from './FederatedPointerEvent';
 export * from './FederatedWheelEvent';
 export * from './interfaces';
 export * from './MutationEvent';
-export * from './MutationObserver';
+// export * from './MutationObserver';
 export * from './Node';

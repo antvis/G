@@ -72,7 +72,7 @@ circle.style.shadowOffsetY = 0;
 
 ### Text & Image
 
-Text & Image should be the same in `g-plugin-canvas-renderer`.
+Text & Image should be the same in `canvas-renderer`.
 
 ### Picking
 
