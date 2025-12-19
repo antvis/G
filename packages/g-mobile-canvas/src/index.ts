@@ -1,12 +1,11 @@
 import type { RendererConfig } from '@antv/g-lite';
-import { AbstractRenderer, ImageLoader } from '@antv/g-lite';
+import { AbstractRenderer, ImageLoader, MobileInteraction } from '@antv/g-lite';
 import {
   CanvasRenderer,
   CanvasPathGenerator,
   CanvasPicker,
 } from '@antv/g-canvas';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
-import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
 import * as GesturePlugin from '@antv/g-plugin-gesture';
 
 import { isNil } from '@antv/util';

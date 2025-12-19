@@ -2,7 +2,7 @@ import type {
   InteractivePointerEvent,
   RenderingPlugin,
   RenderingPluginContext,
-} from '@antv/g-lite';
+} from '../..';
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */

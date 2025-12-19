@@ -23,10 +23,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-pattern/src',
       ),
-      '@antv/g-plugin-mobile-interaction-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-mobile-interaction/src',
-      ),
       '@antv/g-canvas-local': path.resolve(
         __dirname,
         '../packages/g-canvas/src',

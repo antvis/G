@@ -16,9 +16,6 @@
       "@antv/g-mobile-webgl": ["./packages/g-mobile-webgl/src"],
       "@antv/g-plugin-matterjs": ["./packages/g-plugin-matterjs/src"],
       "@antv/g-pattern": ["./packages/g-pattern/src"],
-      "@antv/g-plugin-mobile-interaction": [
-        "./packages/g-plugin-mobile-interaction/src"
-      ],
       "@antv/g-canvas": ["./packages/g-canvas/src"],
       "@antv/g-plugin-3d": ["./packages/g-plugin-3d/src"],
       "@antv/g-plugin-physx": ["./packages/g-plugin-physx/src"],

@@ -48,9 +48,6 @@ export default defineConfig({
       '@antv/g-mobile-webgl': resolve('g-mobile-webgl'),
       '@antv/g-plugin-matterjs': resolve('g-plugin-matterjs'),
       '@antv/g-pattern': resolve('g-pattern'),
-      '@antv/g-plugin-mobile-interaction': resolve(
-        'g-plugin-mobile-interaction',
-      ),
       '@antv/g-canvas': resolve('g-canvas'),
       '@antv/g-plugin-3d': resolve('g-plugin-3d'),
       '@antv/g-plugin-physx': resolve('g-plugin-physx'),

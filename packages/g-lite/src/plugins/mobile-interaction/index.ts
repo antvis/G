@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '../..';
 import { MobileInteractionPlugin } from './MobileInteractionPlugin';
 
 export class Plugin extends AbstractRendererPlugin {
