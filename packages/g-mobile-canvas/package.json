@@ -46,6 +46,7 @@
     "@antv/g-plugin-gesture": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
+    "eventemitter3": "^5.0.1",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

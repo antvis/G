@@ -11,8 +11,7 @@
 
 ```js
 import { Canvas } from '@antv/g';
-import { createMobileCanvasElement } from '@antv/g-mobile-canvas-element';
-import { Renderer } from '@antv/g-mobile-canvas';
+import { Renderer， createMobileCanvasElement } from '@antv/g-mobile-canvas';
 
 const renderer = new Renderer();
 // use existed context

@@ -127,10 +127,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-webgpu/src',
       ),
-      '@antv/g-mobile-canvas-element-local': path.resolve(
-        __dirname,
-        '../packages/g-mobile-canvas-element/src',
-      ),
       '@antv/react-g-local': path.resolve(__dirname, '../packages/react-g/src'),
       '@antv/g-mobile-svg-local': path.resolve(
         __dirname,

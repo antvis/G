@@ -81,9 +81,6 @@
       "@antv/g-mobile-canvas-local": ["../packages/g-mobile-canvas/src"],
       "@antv/g-plugin-gesture-local": ["../packages/g-plugin-gesture/src"],
       "@antv/g-webgpu-local": ["../packages/g-webgpu/src"],
-      "@antv/g-mobile-canvas-element-local": [
-        "../packages/g-mobile-canvas-element/src"
-      ],
       "@antv/react-g-local": ["../packages/react-g/src"],
       "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"]
     }

@@ -55,9 +55,6 @@
       "@antv/g-mobile-canvas": ["./packages/g-mobile-canvas/src"],
       "@antv/g-plugin-gesture": ["./packages/g-plugin-gesture/src"],
       "@antv/g-webgpu": ["./packages/g-webgpu/src"],
-      "@antv/g-mobile-canvas-element": [
-        "./packages/g-mobile-canvas-element/src"
-      ],
       "@antv/react-g": ["./packages/react-g/src"],
       "@antv/g-mobile-svg": ["./packages/g-mobile-svg/src"]
     }

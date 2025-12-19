@@ -83,7 +83,6 @@ export default defineConfig({
       '@antv/g-mobile-canvas': resolve('g-mobile-canvas'),
       '@antv/g-plugin-gesture': resolve('g-plugin-gesture'),
       '@antv/g-webgpu': resolve('g-webgpu'),
-      '@antv/g-mobile-canvas-element': resolve('g-mobile-canvas-element'),
       '@antv/react-g': resolve('react-g'),
       '@antv/g-mobile-svg': resolve('g-mobile-svg'),
     },

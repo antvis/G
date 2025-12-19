@@ -60,3 +60,6 @@ export class Renderer extends AbstractRenderer {
     );
   }
 }
+
+// plugins
+export * from './plugins/mobile-canvas-element';
