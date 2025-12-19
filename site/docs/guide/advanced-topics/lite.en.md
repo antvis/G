@@ -12,7 +12,6 @@ The following figure shows the composition of the bundle `@antv/g`.
 The full version `@antv/g` consists of the following parts.
 
 - `@antv/g-lite` Includes [canvas](/en/api/canvas/intro), [basic graphics](/en/api/basic/concept), [event system](/en/api/event/intro), [plugins system](/en/plugins/intro) and other core functions
-- `@antv/g-css-typed-om-api` Provides CSS Typed OM API
 - `@antv/g-css-layout-api` Provides CSS Layout API]
 - Provides DOM Mutation Observer API
 - `web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)

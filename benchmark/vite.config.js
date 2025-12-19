@@ -67,10 +67,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-box2d/src',
       ),
-      '@antv/g-css-typed-om-api-local': path.resolve(
-        __dirname,
-        '../packages/g-css-typed-om-api/src',
-      ),
       '@antv/g-devtool-local': path.resolve(
         __dirname,
         '../packages/g-devtool/src',

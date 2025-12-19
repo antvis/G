@@ -12,7 +12,6 @@ order: 6
 完整版 `@antv/g` 由以下几部分组成：
 
 - `@antv/g-lite` 包含 [画布](/api/canvas/intro)，[基础图形](/api/basic/concept)，[事件系统](/api/event/intro)，[插件系统](/plugins/intro) 等核心功能
-- `@antv/g-css-typed-om-api` 提供 [CSS Typed OM API]()
 - `@antv/g-css-layout-api` 提供 [CSS Layout API]()
 - 提供 DOM Mutation Observer API
 - `web-animations-api` 提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的动画系统

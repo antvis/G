@@ -53,7 +53,6 @@
       ],
       "@antv/g-css-layout-api-local": ["../packages/g-css-layout-api/src"],
       "@antv/g-plugin-box2d-local": ["../packages/g-plugin-box2d/src"],
-      "@antv/g-css-typed-om-api-local": ["../packages/g-css-typed-om-api/src"],
       "@antv/g-devtool-local": ["../packages/g-devtool/src"],
       "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
       "@antv/g-plugin-zdog-canvas-renderer-local": [
