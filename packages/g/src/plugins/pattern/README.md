@@ -1,4 +1,4 @@
-# g-pattern
+# pattern
 
 Refer to [nivo patterns](https://nivo.rocks/guides/patterns/), we provide some built-in patterns, and you can adjust the appearance through more friendly parameters. Currently we support the following three patterns:
 
@@ -17,7 +17,7 @@ squares(canvas: Canvas, cfg?: SquarePatternCfg): HTMLCanvasElement;
 In the following [example](/en/examples/ecosystem/pattern/#dots), we choose `dots` and use [transform](/api/css/css-properties-values-api#transform) to rotate and scale it:
 
 ```js
-import { dots } from '@antv/g-pattern';
+import { dots } from '@antv/g';
 
 rect.style.fill = {
     image: dots(canvas, {

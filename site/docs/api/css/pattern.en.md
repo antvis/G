@@ -243,7 +243,7 @@ squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 In the following [example](/en/examples/style/pattern/#dots), we choose `dots` and use [transform](/en/api/css/css-properties-values-api#transform) to rotate and scale it:
 
 ```js
-import { dots } from '@antv/g-pattern';
+import { dots } from '@antv/g';
 
 rect.style.fill = {
     image: dots(canvas, {

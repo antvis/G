@@ -19,10 +19,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-matterjs/src',
       ),
-      '@antv/g-pattern-local': path.resolve(
-        __dirname,
-        '../packages/g-pattern/src',
-      ),
       '@antv/g-canvas-local': path.resolve(
         __dirname,
         '../packages/g-canvas/src',

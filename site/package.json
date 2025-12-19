@@ -32,7 +32,6 @@
     "@antv/g-device-api": "latest",
     "@antv/g-lite": "latest",
     "@antv/g-lottie-player": "latest",
-    "@antv/g-pattern": "latest",
     "@antv/g-plugin-3d": "latest",
     "@antv/g-plugin-a11y": "latest",
     "@antv/g-plugin-annotation": "latest",

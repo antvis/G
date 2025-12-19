@@ -243,7 +243,7 @@ squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 在该[示例](/examples/style/pattern/#dots)中，我们使用了圆点模式，并通过 [transform](/api/css/css-properties-values-api#transform) 对其进行了一些变换：
 
 ```js
-import { dots } from '@antv/g-pattern';
+import { dots } from '@antv/g';
 
 rect.style.fill = {
     image: dots({

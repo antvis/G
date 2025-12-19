@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, squares } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -6,7 +6,6 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import { squares } from '@antv/g-pattern';
 
 /**
  * inspired by https://nivo.rocks/guides/patterns/
