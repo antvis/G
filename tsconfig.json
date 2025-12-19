@@ -29,7 +29,6 @@
       "@antv/g-plugin-rough-svg-renderer": [
         "./packages/g-plugin-rough-svg-renderer/src"
       ],
-      "@antv/g-css-layout-api": ["./packages/g-css-layout-api/src"],
       "@antv/g-plugin-box2d": ["./packages/g-plugin-box2d/src"],
       "@antv/g-devtool": ["./packages/g-devtool/src"],
       "@antv/g-plugin-yoga": ["./packages/g-plugin-yoga/src"],

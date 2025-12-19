@@ -1,4 +1,3 @@
-// export * from '@antv/g-css-layout-api';
 export * from '@antv/g-lite';
 
 // plugins

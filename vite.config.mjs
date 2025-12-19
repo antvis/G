@@ -61,7 +61,6 @@ export default defineConfig({
       '@antv/g-plugin-rough-svg-renderer': resolve(
         'g-plugin-rough-svg-renderer',
       ),
-      '@antv/g-css-layout-api': resolve('g-css-layout-api'),
       '@antv/g-plugin-box2d': resolve('g-plugin-box2d'),
       '@antv/g-devtool': resolve('g-devtool'),
       '@antv/g-plugin-yoga': resolve('g-plugin-yoga'),

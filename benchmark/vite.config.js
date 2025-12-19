@@ -59,10 +59,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-rough-svg-renderer/src',
       ),
-      '@antv/g-css-layout-api-local': path.resolve(
-        __dirname,
-        '../packages/g-css-layout-api/src',
-      ),
       '@antv/g-plugin-box2d-local': path.resolve(
         __dirname,
         '../packages/g-plugin-box2d/src',
