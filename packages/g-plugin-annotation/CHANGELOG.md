@@ -1,5 +1,17 @@
 # @antv/g-plugin-annotation
 
+## 1.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-lite@2.6.0
+
 ## 1.0.42
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @antv/g-web-components
 
+## 2.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-canvas@2.1.0
+    - @antv/g-webgl@2.1.0
+    - @antv/g-lite@2.6.0
+
 ## 2.0.58
 
 ### Patch Changes
