@@ -39,7 +39,6 @@
       "@antv/g-plugin-zdog-svg-renderer": [
         "./packages/g-plugin-zdog-svg-renderer/src"
       ],
-      "@antv/g-image-exporter": ["./packages/g-image-exporter/src"],
       "@antv/g-plugin-control": ["./packages/g-plugin-control/src"],
       "@antv/g-shader-components": ["./packages/g-shader-components/src"],
       "@antv/g-plugin-css-select": ["./packages/g-plugin-css-select/src"],

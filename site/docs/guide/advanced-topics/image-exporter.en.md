@@ -14,7 +14,7 @@ For this purpose, we provide `g-image-exporter`, which supports functions such a
 When creating, you can specify the following configuration items, where `canvas` is required, to pass the canvas into.
 
 ```js
-import { ImageExporter } from '@antv/g-image-exporter';
+import { ImageExporter } from '@antv/g';
 
 const exporter = new ImageExporter({
     canvas, // pass canvas in

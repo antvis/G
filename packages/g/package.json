@@ -45,6 +45,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
+    "html2canvas": "^1.4.1",
     "gl-matrix": "^3.4.3"
   },
   "publishConfig": {

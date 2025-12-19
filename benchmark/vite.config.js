@@ -83,10 +83,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-zdog-svg-renderer/src',
       ),
-      '@antv/g-image-exporter-local': path.resolve(
-        __dirname,
-        '../packages/g-image-exporter/src',
-      ),
       '@antv/g-plugin-control-local': path.resolve(
         __dirname,
         '../packages/g-plugin-control/src',

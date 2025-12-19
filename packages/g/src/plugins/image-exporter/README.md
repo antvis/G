@@ -1,4 +1,4 @@
-# g-plugin-image-exporter
+# image-exporter
 
 一些图表库提供了保存内容到图片的功能，下图来自 [Highcharts](https://www.highcharts.com/)：
 
@@ -11,7 +11,7 @@
 创建时可以指定以下配置项，其中 `canvas` 为必填项，将画布传入：
 
 ```js
-import { ImageExporter } from '@antv/g-image-exporter';
+import { ImageExporter } from '@antv/g';
 
 const exporter = new ImageExporter({
     canvas, // 传入画布

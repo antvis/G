@@ -69,7 +69,6 @@ export default defineConfig({
       ),
       '@antv/g-gesture': resolve('g-gesture'),
       '@antv/g-plugin-zdog-svg-renderer': resolve('g-plugin-zdog-svg-renderer'),
-      '@antv/g-image-exporter': resolve('g-image-exporter'),
       '@antv/g-plugin-control': resolve('g-plugin-control'),
       '@antv/g-shader-components': resolve('g-shader-components'),
       '@antv/g-plugin-css-select': resolve('g-plugin-css-select'),

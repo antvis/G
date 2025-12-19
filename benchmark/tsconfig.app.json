@@ -61,7 +61,6 @@
       "@antv/g-plugin-zdog-svg-renderer-local": [
         "../packages/g-plugin-zdog-svg-renderer/src"
       ],
-      "@antv/g-image-exporter-local": ["../packages/g-image-exporter/src"],
       "@antv/g-plugin-control-local": ["../packages/g-plugin-control/src"],
       "@antv/g-shader-components-local": [
         "../packages/g-shader-components/src"

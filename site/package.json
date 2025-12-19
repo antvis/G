@@ -30,7 +30,6 @@
     "@antv/g-canvaskit": "latest",
     "@antv/g-components": "latest",
     "@antv/g-device-api": "latest",
-    "@antv/g-image-exporter": "latest",
     "@antv/g-lite": "latest",
     "@antv/g-lottie-player": "latest",
     "@antv/g-pattern": "latest",
