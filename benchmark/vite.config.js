@@ -71,10 +71,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-box2d/src',
       ),
-      '@antv/g-plugin-svg-picker-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-svg-picker/src',
-      ),
       '@antv/g-css-typed-om-api-local': path.resolve(
         __dirname,
         '../packages/g-css-typed-om-api/src',

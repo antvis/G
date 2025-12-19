@@ -66,7 +66,6 @@ export default defineConfig({
       ),
       '@antv/g-css-layout-api': resolve('g-css-layout-api'),
       '@antv/g-plugin-box2d': resolve('g-plugin-box2d'),
-      '@antv/g-plugin-svg-picker': resolve('g-plugin-svg-picker'),
       '@antv/g-css-typed-om-api': resolve('g-css-typed-om-api'),
       '@antv/g-plugin-svg-renderer': resolve('g-plugin-svg-renderer'),
       '@antv/g-devtool': resolve('g-devtool'),

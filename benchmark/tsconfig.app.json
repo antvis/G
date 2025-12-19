@@ -56,9 +56,6 @@
       ],
       "@antv/g-css-layout-api-local": ["../packages/g-css-layout-api/src"],
       "@antv/g-plugin-box2d-local": ["../packages/g-plugin-box2d/src"],
-      "@antv/g-plugin-svg-picker-local": [
-        "../packages/g-plugin-svg-picker/src"
-      ],
       "@antv/g-css-typed-om-api-local": ["../packages/g-css-typed-om-api/src"],
       "@antv/g-plugin-svg-renderer-local": [
         "../packages/g-plugin-svg-renderer/src"
