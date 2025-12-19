@@ -77,7 +77,6 @@ export default defineConfig({
       '@antv/g-image-exporter': resolve('g-image-exporter'),
       '@antv/g-plugin-control': resolve('g-plugin-control'),
       '@antv/g-shader-components': resolve('g-shader-components'),
-      '@antv/g-layout-blocklike': resolve('g-layout-blocklike'),
       '@antv/g-plugin-css-select': resolve('g-plugin-css-select'),
       '@antv/g-svg': resolve('g-svg'),
       '@antv/g-lite': resolve('g-lite'),

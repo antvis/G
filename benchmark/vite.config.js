@@ -107,10 +107,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-shader-components/src',
       ),
-      '@antv/g-layout-blocklike-local': path.resolve(
-        __dirname,
-        '../packages/g-layout-blocklike/src',
-      ),
       '@antv/g-plugin-css-select-local': path.resolve(
         __dirname,
         '../packages/g-plugin-css-select/src',

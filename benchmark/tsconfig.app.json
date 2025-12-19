@@ -71,7 +71,6 @@
       "@antv/g-shader-components-local": [
         "../packages/g-shader-components/src"
       ],
-      "@antv/g-layout-blocklike-local": ["../packages/g-layout-blocklike/src"],
       "@antv/g-plugin-css-select-local": [
         "../packages/g-plugin-css-select/src"
       ],
