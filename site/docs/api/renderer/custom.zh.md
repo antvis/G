@@ -22,8 +22,7 @@ order: 4
 ```js
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer, ImageLoader, HTMLRenderer, DomInteraction } from '@antv/g';
-import { CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
-import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
+import { CanvasRenderer, CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {

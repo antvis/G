@@ -42,7 +42,6 @@
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-renderer": "workspace:*",
     "@antv/g-plugin-dragndrop": "workspace:*",
     "@antv/g-plugin-gesture": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",

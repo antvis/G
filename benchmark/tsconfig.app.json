@@ -65,9 +65,6 @@
       ],
       "@antv/g-devtool-local": ["../packages/g-devtool/src"],
       "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
-      "@antv/g-plugin-canvas-renderer-local": [
-        "../packages/g-plugin-canvas-renderer/src"
-      ],
       "@antv/g-plugin-zdog-canvas-renderer-local": [
         "../packages/g-plugin-zdog-canvas-renderer/src"
       ],

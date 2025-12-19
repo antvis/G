@@ -44,7 +44,6 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-renderer": "workspace:*",
     "@antv/g-math": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",

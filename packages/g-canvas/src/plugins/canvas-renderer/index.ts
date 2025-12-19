@@ -1,5 +1,5 @@
 import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
-import type { PathGenerator } from '@antv/g-canvas';
+import type { PathGenerator } from '../..';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import {
   type StyleRenderer,

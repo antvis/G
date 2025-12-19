@@ -7,7 +7,7 @@ import {
   RenderingPluginContext,
   GlobalRuntime,
 } from '@antv/g-lite';
-import { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
+import { StyleRenderer } from '../canvas-renderer';
 
 export function isPointInPath(
   displayObject: DisplayObject<ImageStyleProps>,

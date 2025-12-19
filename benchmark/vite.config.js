@@ -91,10 +91,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-plugin-yoga/src',
       ),
-      '@antv/g-plugin-canvas-renderer-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-canvas-renderer/src',
-      ),
       '@antv/g-plugin-zdog-canvas-renderer-local': path.resolve(
         __dirname,
         '../packages/g-plugin-zdog-canvas-renderer/src',

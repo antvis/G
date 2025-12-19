@@ -9,7 +9,6 @@ order: 1
 
 - `@antv/g` 核心包，依赖注入使用 mana-syringe
 - `@antv/g-canvas/svg/webgl` 渲染器包，依赖 `@antv/g`，内部注册了一系列插件：
-  - 例如 `@antv/g-canvas` 依赖 `@antv/g-plugin-canvas-renderer` 等四个插件
 - `@antv/g-plugin-xxx` 插件包，依赖 `@antv/g`，部分插件也会依赖其他插件
 
 特别的，`g-webgl` 使用 wasm 转译 GLSL 到 WGSL。

@@ -71,7 +71,6 @@ export default defineConfig({
       '@antv/g-plugin-svg-renderer': resolve('g-plugin-svg-renderer'),
       '@antv/g-devtool': resolve('g-devtool'),
       '@antv/g-plugin-yoga': resolve('g-plugin-yoga'),
-      '@antv/g-plugin-canvas-renderer': resolve('g-plugin-canvas-renderer'),
       '@antv/g-plugin-zdog-canvas-renderer': resolve(
         'g-plugin-zdog-canvas-renderer',
       ),
