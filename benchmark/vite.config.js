@@ -75,10 +75,6 @@ export default defineConfig({
         __dirname,
         '../packages/g-css-typed-om-api/src',
       ),
-      '@antv/g-plugin-svg-renderer-local': path.resolve(
-        __dirname,
-        '../packages/g-plugin-svg-renderer/src',
-      ),
       '@antv/g-devtool-local': path.resolve(
         __dirname,
         '../packages/g-devtool/src',

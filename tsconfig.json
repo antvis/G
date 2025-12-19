@@ -35,7 +35,6 @@
       "@antv/g-css-layout-api": ["./packages/g-css-layout-api/src"],
       "@antv/g-plugin-box2d": ["./packages/g-plugin-box2d/src"],
       "@antv/g-css-typed-om-api": ["./packages/g-css-typed-om-api/src"],
-      "@antv/g-plugin-svg-renderer": ["./packages/g-plugin-svg-renderer/src"],
       "@antv/g-devtool": ["./packages/g-devtool/src"],
       "@antv/g-plugin-yoga": ["./packages/g-plugin-yoga/src"],
       "@antv/g-plugin-zdog-canvas-renderer": [

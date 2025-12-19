@@ -1,4 +1,4 @@
-# @antv/g-plugin-svg-renderer
+# svg-renderer
 
 使用 SVG 绘制各类图形。
 
@@ -10,7 +10,7 @@
 ## 使用方式
 
 ```javascript
-import { Plugin } from '@antv/g-plugin-svg-renderer';
+import { Plugin } from '.';
 
 // create a renderer
 const svgRenderer = new SVGRenderer();

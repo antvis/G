@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/g-svg": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",

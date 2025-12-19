@@ -48,7 +48,6 @@
     "@antv/g-plugin-physx": "latest",
     "@antv/g-plugin-rough-canvas-renderer": "latest",
     "@antv/g-plugin-rough-svg-renderer": "latest",
-    "@antv/g-plugin-svg-renderer": "latest",
     "@antv/g-plugin-yoga": "latest",
     "@antv/g-plugin-zdog-canvas-renderer": "latest",
     "@antv/g-plugin-zdog-svg-renderer": "latest",

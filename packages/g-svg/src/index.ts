@@ -1,10 +1,8 @@
 import type { RendererConfig } from '@antv/g-lite';
 import { AbstractRenderer, DomInteraction } from '@antv/g-lite';
-import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
+import * as SVGRenderer from './plugins/svg-renderer';
 import * as SVGPicker from './plugins/picker';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
-
-export { DomInteraction, SVGRenderer };
 
 export interface SVGRendererConfig extends RendererConfig {
   /**
@@ -29,4 +27,6 @@ export class Renderer extends AbstractRenderer {
 }
 
 // plugins
-export { SVGPicker };
+export { createSVGElement, G_SVG_PREFIX } from './plugins/svg-renderer';
+export { SVGRenderer, SVGPicker };
+export { DomInteraction };
