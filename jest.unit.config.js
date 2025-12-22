@@ -32,20 +32,10 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/g/src/**/*.{ts,tsx}',
     '<rootDir>/packages/g-lite/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-canvas-path-generator/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-image-loader/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-dom-interaction/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-web-animations-api/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-camera-api/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-html-renderer/src/**/*.{ts,tsx}',
     //
     '<rootDir>/packages/g-canvas/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-canvas-renderer/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-canvas-picker/src/**/*.{ts,tsx}',
     //
     '<rootDir>/packages/g-svg/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-svg-renderer/src/**/*.{ts,tsx}',
-    '<rootDir>/packages/g-plugin-svg-picker/src/**/*.{ts,tsx}',
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
   coverageDirectory: 'coverage',
@@ -63,9 +53,7 @@ module.exports = {
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
   ],
-  testPathIgnorePatterns: process.env.CI
-    ? ['<rootDir>/__tests__/unit/g-gesture', '<rootDir>/__tests__/main.ts']
-    : ['<rootDir>/__tests__/unit/g-gesture'],
+  testPathIgnorePatterns: process.env.CI ? ['<rootDir>/__tests__/main.ts'] : [],
   preset: 'ts-jest',
   transform: {
     '^.+\\.[tj]s$': [

@@ -1,6 +1,5 @@
 import Stats from 'stats.js';
 import * as lil from 'lil-gui';
-import '@antv/g-camera-api';
 import { Canvas, CanvasEvent, runtime } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';

@@ -1,5 +1,20 @@
 # @antv/g-mobile-canvas
 
+## 1.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-plugin-dragndrop@2.1.0
+    - @antv/g-plugin-gesture@2.1.0
+    - @antv/g-canvas@2.1.0
+    - @antv/g-lite@2.6.0
+
 ## 1.0.49
 
 ### Patch Changes

@@ -62,3 +62,11 @@ export {
   translatePathToString,
   turn2deg,
 } from './utils';
+
+// plugins
+export * from './plugins/MutationObserver';
+export * as ImageLoader from './plugins/image-loader';
+export { ImagePool, type ImageCache } from './plugins/image-loader';
+export * as HTMLRenderer from './plugins/html-renderer';
+export * as DomInteraction from './plugins/dom-interaction';
+export * as MobileInteraction from './plugins/mobile-interaction';

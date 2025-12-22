@@ -9,7 +9,7 @@ order: 3
 
 ## 安装方式
 
-首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
+首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [canvas-renderer](/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
 
 ```js
 import { Canvas } from '@antv/g';
@@ -39,7 +39,7 @@ const canvas = new Canvas({
 
 ### opacity
 
-rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 一样。
+rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [canvas-renderer](/plugins/canvas-renderer) 一样。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -228,6 +228,6 @@ circle.style.disableMultiStrokeFill = true;
 
 ## 拾取
 
-在 [g-plugin-canvas-picker](/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
+在 [canvas-picker](/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
 
 但在手绘风格下，似乎无法也没必要做精确拾取，因此我们仍使用该插件。

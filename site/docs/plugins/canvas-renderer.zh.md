@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvas-renderer
+title: canvas-renderer
 order: 3
 ---
 
@@ -19,7 +19,7 @@ const canvasRenderer = new CanvasRenderer();
 
 ### StyleRenderer
 
-在使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染基础图形时，在使用 [g-plugin-canvas-path-generator](/plugins/canvas-path-generator) 生成图形路径之后，实现该接口即可完成绘制样式。
+在使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染基础图形时，在使用 [canvas-path-generator](/plugins/canvas-path-generator) 生成图形路径之后，实现该接口即可完成绘制样式。
 
 ```js
 export interface StyleRenderer {

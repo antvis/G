@@ -13,6 +13,7 @@
     "doc": "dumi dev",
     "start": "cd ./site && npm run start",
     "---build---": "",
+    "build:js": "pnpm --recursive --sequential --if-present run build:js",
     "build:types": "pnpm --recursive --sequential --if-present run build:types",
     "build": "pnpm --recursive --sequential --if-present run build",
     "bundle-viz": "cross-env BUNDLE_VIS=1 PACKAGE=g npm run build",

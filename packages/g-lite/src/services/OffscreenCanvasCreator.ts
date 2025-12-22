@@ -4,7 +4,7 @@ import { runtime } from '../global-runtime';
 /**
  * used in following scenes:
  * - g `ctx.measureText`
- * - g-plugin-canvas-picker `ctx.isPointInPath`
+ * - canvas-picker `ctx.isPointInPath`
  * - g-plugin-device-renderer `ctx.createLinearGradient` and generate texture
  *
  * @see https://blog.scottlogic.com/2020/03/19/offscreen-canvas.html

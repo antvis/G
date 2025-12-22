@@ -1,6 +1,3 @@
 packages:
   - 'packages/*'
   - '!packages/g-devtool'
-  - '!packages/g-css-layout-api'
-  - '!packages/g-layout-blocklike'
-  - '!packages/g-css-typed-om-api'

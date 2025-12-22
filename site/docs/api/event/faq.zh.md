@@ -165,12 +165,12 @@ graph.addEventListener('click', (e) => {
 
 ### 事件绑定/解绑插件
 
-前面提到过，事件绑定不在核心事件系统中完成，应当交给对应渲染环境插件。例如使用 DOM API 绑定/解绑的 [g-plugin-dom-interaction](/plugins/dom-interaction)，其他环境例如小程序应当自行编写插件。
+前面提到过，事件绑定不在核心事件系统中完成，应当交给对应渲染环境插件。例如使用 DOM API 绑定/解绑的 [dom-interaction](/plugins/dom-interaction)，其他环境例如小程序应当自行编写插件。
 
 在这一类插件中，我们需要在 `init` 中完成绑定，在 `destroy` 中完成解绑。在实现绑定时，需要将该渲染环境下的多个（如有）原生事件映射到 G 的标准事件处理器上。
 
 ```js
-// g-plugin-dom-interaction
+// dom-interaction
 
 const onPointerDown = (ev: InteractivePointerEvent) => {
     renderingService.hooks.pointerDown.call(ev);
@@ -200,8 +200,8 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 
 不同渲染环境使用不同的拾取插件，用于判定原生事件的 EventTarget：
 
-- [g-plugin-canvas-picker](/plugins/canvas-picker) 主要使用数学运算
-- [g-plugin-svg-picker](/plugins/svg-picker) 使用现成 SVG API
+- [canvas-picker](/plugins/canvas-picker) 主要使用数学运算
+- [svg-picker](/plugins/svg-picker) 使用现成 SVG API
 - [g-plugin-device-renderer](/plugins/device-renderer) 使用 GPU 颜色编码
 
 ### A11y 无障碍插件

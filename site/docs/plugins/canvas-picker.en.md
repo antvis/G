@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvas-picker
+title: canvas-picker
 order: 4
 ---
 

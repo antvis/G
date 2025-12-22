@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-zdog-svg-renderer",
-  "version": "2.0.46",
+  "version": "2.1.0",
   "description": "A G plugin of renderer implementation with Zdog",
   "keywords": [
     "antv",
@@ -33,15 +33,14 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/g-svg": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",

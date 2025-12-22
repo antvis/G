@@ -26,7 +26,7 @@ order: 3
 过程中会涉及[场景图](/guide/diving-deeper/scenegraph)、[动画系统](/api/animation/waapi)、[事件系统](/api/event/intro)等。在开始前我们推荐先阅读以上各个系统的文档。
 
 - [完整 DEMO](/examples/shape/custom-element/#arrow)
-- [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
+- [源码](https://github.com/antvis/g/blob/next/packages/g/src/plugins/components/Arrow.ts)
 
 ## 问题背景
 

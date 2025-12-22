@@ -3,11 +3,11 @@ title: 插件结构
 order: -99
 ---
 
-In terms of naming convention, all plugin names start with `g-plugin-`. Let's take a deeper look into the structure of the plugin by analyzing `g-plugin-canvas-renderer`, which uses Canvas2D rendering and is one of the core plugins of `g-canvas`.
+In terms of naming convention, all plugin names start with `g-plugin-`. Let's take a deeper look into the structure of the plugin by analyzing `canvas-renderer`, which uses Canvas2D rendering and is one of the core plugins of `g-canvas`.
 
 ## Basic Structure
 
-<https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer>
+<https://github.com/antvis/G/tree/next/packages/canvas-renderer>
 
 ### package.json
 

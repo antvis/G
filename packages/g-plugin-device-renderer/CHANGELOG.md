@@ -1,5 +1,18 @@
 # @antv/g-plugin-device-renderer
 
+## 2.6.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-lite@2.6.0
+    - @antv/g-math@3.1.0
+
 ## 2.5.1
 
 ### Patch Changes

@@ -9,7 +9,7 @@ Hand-drawn style rendering using the Canvas version of [rough.js](https://roughj
 
 ## Usage
 
-First you need to use the [g-canvas](/en/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
+First you need to use the [g-canvas](/en/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [canvas-renderer](/en/plugins/canvas-renderer).
 
 ```js
 import { Canvas } from '@antv/g';
@@ -39,7 +39,7 @@ In addition to the style properties of 2D graphics, the configuration items prov
 
 ### opacity
 
-rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
+rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [canvas-renderer](/en/plugins/canvas-renderer).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -236,6 +236,6 @@ When filling a shape using the zigzag-line style, this property indicates the no
 
 ## Picking
 
-In [g-plugin-canvas-picker](/en/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
+In [canvas-picker](/en/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
 
 However, in the hand-drawn style, it seems impossible and unnecessary to do exact picking, so we still use this plugin.

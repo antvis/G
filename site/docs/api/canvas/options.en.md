@@ -217,7 +217,7 @@ Optional, default is 200ms. Numeric type, determines whether two consecutive cli
 Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.
 
 - The core service calls `ctx.measureText` to measure the text.
-- [g-plugin-canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
+- [canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
 - [g-plugin-device-renderer](/en/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
 
 When not passed in by default, it will try to create an `OffscreenCanvas` and then use the DOM API to create an `HTMLCanvasElement` when it fails. However, in non-dom environments like applets, you need to manually pass in.

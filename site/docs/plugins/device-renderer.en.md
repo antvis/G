@@ -376,7 +376,7 @@ program.destroy();
 
 ## GPU-based pickup
 
-Unlike [g-plugin-canvas-picker](/en/plugins/canvas-picker) and [g-plugin-svg-picker](/en/plugins/svg-picker), which are CPU-based picking schemes, we use A GPU-based approach called "color coding".
+Unlike [canvas-picker](/en/plugins/canvas-picker) and [svg-picker](/en/plugins/svg-picker), which are CPU-based picking schemes, we use A GPU-based approach called "color coding".
 
 This approach consists of the following steps.
 

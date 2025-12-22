@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "2.0.56",
+  "version": "2.1.0",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",
@@ -33,9 +33,9 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
@@ -43,9 +43,6 @@
     "@antv/g-device-api": "^1.6.10",
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
-    "@antv/g-plugin-dom-interaction": "workspace:*",
-    "@antv/g-plugin-html-renderer": "workspace:*",
-    "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
     "@webgpu/types": "^0.1.6",
