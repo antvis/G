@@ -1,20 +1,20 @@
 ---
-title: Rendering on demand
+title: Rendering on Demand
 order: 100
 ---
 
-在大多数场景下，渲染引擎会自动在每一帧重绘，但在部分场景下，我们需要自己决定重绘的时机。
+In most scenarios, the rendering engine will automatically redraw every frame. However, in some scenarios, we need to decide when to redraw ourselves.
 
-首先我们需要关闭渲染器的“自动渲染”：
+First, we need to disable the renderer's "automatic rendering":
 
 ```javascript
 const webglRenderer = new WebGLRenderer({
-    // 关闭自动渲染
+    // Disable automatic rendering
     enableAutoRendering: false,
 });
 ```
 
-然后在合适的实际调用画布的[重绘方法](/en/api/canvas/scenegraph-lifecycle#render)，例如手动在 `rAF` 中调用：
+Then, call the canvas's [redraw method](/en/api/canvas/scenegraph-lifecycle#render) at the appropriate time. For example, you can manually call it in a `rAF` callback:
 
 ```javascript
 // create a main loop

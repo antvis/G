@@ -1,26 +1,26 @@
 ---
-title: GPGPU 初体验
+title: GPGPU First Look
 order: 10
 ---
 
-⚠️ GPGPU 相关能力需要支持 WebGPU 的浏览器环境（例如 Chrome 94+）。
+⚠️ GPGPU-related capabilities require a browser environment that supports WebGPU (e.g., Chrome 94+).
 
-在本教程中，我们将尝试使用 GPU 的并行计算能力，实现两个矩阵相乘，相较 CPU 获得 10 倍以上的性能提升。最终效果可以参考这个[示例](/en/examples/gpgpu/basic-algorithm/#matrix-multiplication)，矩阵尺寸越大性能提升效果越明显。
+In this tutorial, we will try to use the parallel computing power of the GPU to implement the multiplication of two matrices, achieving a performance improvement of more than 10 times compared to the CPU. For the final effect, you can refer to this [example](/examples/gpgpu/basic-algorithm/#matrix-multiplication). The larger the matrix size, the more obvious the performance improvement.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4332Qb6F9McAAAAAAAAAAAAAARQnAQ" width="400"/>
 
-我们很容易写出一个能在 CPU 侧运行的算法，串行计算结果矩阵中每一个元素的值。但仔细想想第二个元素的计算并不依赖第一个元素的计算结果对吗？现在让我们从线程并行的角度来考虑这个问题，我们让每一个线程负责处理一个元素。如果对网格、线程组这些概念还不熟悉，可以参考[线程、共享内存与同步](/en/api/gpgpu/programing-model#workgroup)。
+It is easy to write an algorithm that can run on the CPU side and calculate the value of each element in the result matrix serially. But if you think about it, the calculation of the second element does not depend on the calculation result of the first element, right? Now let's consider this problem from the perspective of thread parallelism. We let each thread be responsible for processing one element. If you are not familiar with concepts such as grids and thread groups, you can refer to [Threads, Shared Memory, and Synchronization](/api/gpgpu/programing-model#workgroup).
 
-下面我们通过两步完成该计算任务的创建：
+Below we will complete the creation of this computing task in two steps:
 
-1. 创建画布，使用 WebGPU 渲染器，注册 GPGPU 插件
-2. 获取 Device
-3. 创建 Kernel，编写 Compute Shader
-4. 传入输入数据，获取计算结果
+1. Create a canvas, use the WebGPU renderer, and register the GPGPU plugin.
+2. Get the Device.
+3. Create a Kernel and write a Compute Shader.
+4. Pass in the input data and get the calculation result.
 
-## 创建画布、渲染器与 GPGPU 插件
+## Creating the Canvas, Renderer, and GPGPU Plugin
 
-创建画布，使用渲染器的方式和之前渲染相关的教程并无差别，只是在创建渲染器时，需要确认在支持 WebGPU 的浏览器环境下运行。另外由于不涉及渲染，画布大小我们选择长宽为 1 即可。
+The way to create a canvas and use a renderer is no different from the previous rendering-related tutorials, except that when creating the renderer, you need to make sure that it is running in a browser environment that supports WebGPU. In addition, since no rendering is involved, we can choose a canvas size of 1x1.
 
 ```js
 import { Canvas, CanvasEvent } from '@antv/g';
@@ -29,12 +29,12 @@ import { Plugin, Kernel } from '@antv/g-plugin-gpgpu';
 
 const { BufferUsage } = DeviceRenderer;
 
-// 选择目标平台为 WebGPU
+// Select the target platform as WebGPU
 const renderer = new Renderer();
-// 注册 GPGPU 插件
+// Register the GPGPU plugin
 renderer.registerPlugin(new Plugin());
 
-// 创建画布
+// Create a canvas
 const $wrapper = document.getElementById('container');
 const canvas = new Canvas({
     container: $wrapper,
@@ -44,38 +44,38 @@ const canvas = new Canvas({
 });
 ```
 
-## 获取 Device
+## Getting the Device
 
-在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在执行这些操作前，需要确保画布的初始化工作（特别是渲染服务）准备就绪，有两种方式：
+When creating a computing task, we need to get the GPU device (Device) and use it to create underlying objects such as Buffers. Before performing these operations, you need to make sure that the initialization work of the canvas (especially the rendering service) is ready. There are two ways:
 
-- 监听画布的 [READY](/en/api/canvas/event#画布特有事件) 事件
-- 等待 `canvas.ready` 这个 Promise
+- Listen for the canvas's [READY](/api/canvas/event#canvas-specific-events) event.
+- Wait for the `canvas.ready` Promise.
 
-随后就可以通过渲染器获取 Device：
+Then you can get the Device through the renderer:
 
 ```js
 import { CanvasEvent } from '@antv/g';
 
-// 等待画布准备就绪
+// Wait for the canvas to be ready
 canvas.addEventListener(CanvasEvent.READY, () => {
-    // 通过渲染器获取 Device
+    // Get the Device through the renderer
     const plugin = renderer.getPlugin('device-renderer');
     const device = plugin.getDevice();
 
-    // 使用 Device 创建 GPU 相关对象，见下节
+    // Use the Device to create GPU-related objects, see the next section
 });
 
-// 或者
+// or
 await canvas.ready;
 const plugin = renderer.getPlugin('device-renderer');
 const device = plugin.getDevice();
 ```
 
-## 创建 Kernel
+## Creating a Kernel
 
-不同于 CUDA 中的 "single source"（Host 和 Device 代码都用 C++）编写，WebGPU 的 Device 代码需要通过 Compute Shader 使用 [WGSL](https://www.w3.org/TR/WGSL) 语言编写。
+Unlike the "single source" (both Host and Device code are written in C++) in CUDA, the Device code of WebGPU needs to be written in the [WGSL](https://www.w3.org/TR/WGSL) language through a Compute Shader.
 
-因此 `g-plugin-gpgpu` 插件提供了 Kernel 用于描述计算任务，除了传入上一节获取的 `device`，还需要通过 `computeShader` 使用字符串描述：
+Therefore, the `g-plugin-gpgpu` plugin provides a Kernel to describe the computing task. In addition to passing in the `device` obtained in the previous section, it also needs to be described as a string through `computeShader`:
 
 ```js
 import { Kernel } from '@antv/g-plugin-gpgpu';
@@ -85,48 +85,48 @@ const kernel = new Kernel(device, {
 });
 ```
 
-回到我们的计算任务：两个矩阵相乘，我们让每一个线程负责最终结果矩阵中一个元素的计算，这样多个线程间就可以完全并行。
+Back to our computing task: multiplying two matrices. We let each thread be responsible for the calculation of one element in the final result matrix, so that multiple threads can be completely parallel.
 
-首先我们需要使用线性结构（一个数组）描述一个矩阵，前两个元素表示矩阵尺寸（行和列），后面跟着具体每一个元素。我们使用 WGSL 的 [struct](https://www.w3.org/TR/WGSL/#struct-types) 定义矩阵这个数据类型（类似 TS 中的 interface），其中的 [f32](https://www.w3.org/TR/WGSL/#floating-point-types) 是 WGSL（强类型语言）中的一种基础数据类型，当我们后续尝试从 Host 侧分配内存时，也要使用与之匹配的类型数组（Float32Array）：
+First, we need to use a linear structure (an array) to describe a matrix. The first two elements represent the matrix size (rows and columns), followed by the specific elements. We use WGSL's [struct](https://www.w3.org/TR/WGSL/#struct-types) to define the data type of the matrix (similar to an interface in TS), where [f32](https://www.w3.org/TR/WGSL/#floating-point-types) is a basic data type in WGSL (a strongly typed language). When we later try to allocate memory from the Host side, we also need to use a matching typed array (Float32Array):
 
 ```wgsl
 // WGSL
 struct Matrix {
-  size : vec2<f32>; // 矩阵尺寸（长度为 2 的向量）
-  numbers: array<f32>; // 矩阵元素（长度不固定的数组）
+  size : vec2<f32>; // matrix size (a vector of length 2)
+  numbers: array<f32>; // matrix elements (an array of indefinite length)
 };
 
-// 如果用 TS 描述
+// If described in TS
 interface Matrix {
   size : [number, number];
   numbers: number[];
 }
 ```
 
-然后我们需要定义输入和输出数据结构。我们声明了两个输入矩阵和一个保存计算结果的矩阵，从后往前看通过 `Matrix` 声明了它们的类型（类似 TS），`<storage, read>` 分别定义了内存的用途和访问模式，其中 [storage](https://www.w3.org/TR/WGSL/#address-spaces-storage) 描述了内存的用途，而不同的用途又有对应的访问模式（读写）。例如这里三个矩阵都用于存储数据（可以从 Host 侧分配），其中两个输入矩阵为只读，结果矩阵可写：
+Then we need to define the input and output data structures. We declare two input matrices and one matrix to store the calculation results. Looking from back to front, we declare their types through `Matrix` (similar to TS). `<storage, read>` defines the memory usage and access mode, where [storage](https://www.w3.org/TR/WGSL/#address-spaces-storage) describes the memory usage, and different usages have corresponding access modes (read/write). For example, here, all three matrices are used to store data (which can be allocated from the Host side), of which the two input matrices are read-only, and the result matrix is writable:
 
 ```wgsl
-// 第一个矩阵
+// first matrix
 @group(0) @binding(0) var<storage, read> firstMatrix : Matrix;
-// 第二个矩阵
+// second matrix
 @group(0) @binding(1) var<storage, read> secondMatrix : Matrix;
-// 结果矩阵
+// result matrix
 @group(0) @binding(2) var<storage, read_write> resultMatrix : Matrix;
 ```
 
-接下来就需要定义具体的算法了，每个线程都会执行相同的 Compute Shader 处理不同的数据（SIMD），这就要求每个线程知道自己的 ID，才能从全局数据中获取自己感兴趣的部分数据。在 WGSL 中通过 main 函数的入参获取，这里我们使用内置变量 [`global_invocation_id`](https://www.w3.org/TR/WGSL/#builtin-values)，它的类型是 `vec3<u32>` ，`xyz` 分量都从 0 开始，三者相乘不能超过 256。
+Next, we need to define the specific algorithm. Each thread will execute the same Compute Shader to process different data (SIMD), which requires each thread to know its own ID in order to get the part of the global data that it is interested in. In WGSL, this is obtained through the input parameters of the main function. Here we use the built-in variable [`global_invocation_id`](https://www.w3.org/TR/WGSL/#builtin-values), whose type is `vec3<u32>`. The `x`, `y`, and `z` components all start from 0, and the product of the three cannot exceed 256.
 
 ```wgsl
 @compute @workgroup_size(${WORKGROUP_SIZE_X}, ${WORKGROUP_SIZE_Y})
 fn main(
-  @builtin(global_invocation_id) global_id : vec3<u32> // 当前线程全局 ID
+  @builtin(global_invocation_id) global_id : vec3<u32> // current thread's global ID
 ) {
-  // 超出结果矩阵的线程直接返回
+  // Threads that exceed the result matrix should return directly
   if (global_id.x >= u32(firstMatrix.size.x) || global_id.y >= u32(secondMatrix.size.y)) {
     return;
   }
 
-  // 写回结果矩阵尺寸
+  // Write back the size of the result matrix
   resultMatrix.size = vec2<f32>(firstMatrix.size.x, secondMatrix.size.y);
 
   let resultCell = vec2<u32>(global_id.x, global_id.y);
@@ -137,16 +137,16 @@ fn main(
     result = result + firstMatrix.numbers[a] * secondMatrix.numbers[b];
   }
 
-  // 结果矩阵中元素位置
+  // Position of the element in the result matrix
   let index = resultCell.y + resultCell.x * u32(secondMatrix.size.y);
-  // 计算结果写回结果矩阵
+  // Write the calculation result back to the result matrix
   resultMatrix.numbers[index] = result;
 }
 ```
 
-## 输入与输出
+## Input and Output
 
-定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/en/plugins/device-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
+After defining the Kernel, we need to pass input to it and get the output after it is finished. The work of allocating memory is performed on the Host side. We create a Buffer through the Device ([createBuffer](/plugins/device-renderer#createbuffer)), where the `usage` needs to correspond to the memory usage defined in the Compute Shader, and the initial data of the memory is written at the same time.
 
 ```js
 const firstMatrixBuffer = device.createBuffer({
@@ -163,7 +163,7 @@ const resultBuffer = device.createBuffer({
 });
 ```
 
-创建完 Buffer 之后，需要绑定到 Kernel 的指定位置（与 Compute Shader 中的 binding 对应）：
+After creating the Buffers, you need to bind them to the specified positions of the Kernel (corresponding to the `binding` in the Compute Shader):
 
 ```js
 kernel.setBinding(0, firstMatrixBuffer);
@@ -171,7 +171,7 @@ kernel.setBinding(1, secondMatrixBuffer);
 kernel.setBinding(2, resultBuffer);
 ```
 
-使用 [dispatch](https://www.w3.org/TR/WGSL/#dispatch-command) 可以分配线程网格大小，执行计算管线。在矩阵乘法的例子中，如果线程组的大小为 `1 * 1`，网格大小就是 `M * N`：
+You can use [dispatch](https://www.w3.org/TR/WGSL/#dispatch-command) to allocate the size of the thread grid and execute the compute pipeline. In the example of matrix multiplication, if the size of the thread group is `1 * 1`, the size of the grid is `M * N`:
 
 ```js
 const x = Math.ceil(firstMatrix[0] / WORKGROUP_SIZE_X);
@@ -179,19 +179,19 @@ const y = Math.ceil(secondMatrix[1] / WORKGROUP_SIZE_Y);
 kernel.dispatch(x, y);
 ```
 
-在计算完成后，我们需要读取结果矩阵中的数据，这是一次 GPU 到 CPU 的异步读取操作：
+After the calculation is complete, we need to read the data in the result matrix. This is an asynchronous read operation from the GPU to the CPU:
 
 ```js
 const readback = device.createReadback();
 const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 ```
 
-## 更多算法实现
+## More Algorithm Implementations
 
-上述矩阵乘法更多用于演示目的，在图场景中有非常多适合并行的布局和分析算法，我们可以从 CUDA 实现中进行移植，例如：
+The above matrix multiplication is more for demonstration purposes. There are many parallel layout and analysis algorithms suitable for graph scenes, which we can port from CUDA implementations, such as:
 
-- [Fruchterman 布局算法](/en/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
-- [Pagerank](/en/examples/gpgpu/graph-analysis-algorithm/#pagerank)
-- [SSSP 单源最短路径](/en/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
+- [Fruchterman layout algorithm](/examples/gpgpu/graph-analysis-algorithm/#fruchterman)
+- [Pagerank](/examples/gpgpu/graph-analysis-algorithm/#pagerank)
+- [SSSP single-source shortest path](/examples/gpgpu/graph-analysis-algorithm/#bellman-ford)
 
-在图中节点/边数目达到一定规模时会带来非常可观的性能提升效果。以 pagerank 为例，在 1k 节点和 50w 条边的测试数据中，GPU 版本相较 CPU 版本有 100 倍以上的提升（300ms vs 30s）。
+When the number of nodes/edges in the graph reaches a certain scale, it will bring very considerable performance improvement. Taking pagerank as an example, in the test data of 1k nodes and 50w edges, the GPU version is more than 100 times faster than the CPU version (300ms vs 30s).

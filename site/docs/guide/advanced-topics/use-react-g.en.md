@@ -1,13 +1,13 @@
 ---
-title: Using react-g
+title: Using React to Define Graphics
 order: 5
 ---
 
-# react-g
+React provides the ability to create custom renderers through `react-reconciler`, and `react-g` is a renderer from React to G.
 
-react render for @antv/g
+`react-g` is currently in an experimental state. We welcome you to try it out and provide feedback.
 
-## Install
+## Installation
 
 ```sh
 npm i @antv/react-g
@@ -15,17 +15,17 @@ npm i @antv/react-g
 
 ## Usage
 
-react-g provide host-component:
+`react-g` provides the following built-in components that can be directly imported and used. Their properties are consistent with the native G objects:
 
 - Container: `Canvas` and `Group`.
-- Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon` and `Polyline`.
+- Shape: `Text`, `Circle`, `Ellipse`, `Image`, `Line`, `Marker`, `Path`, `Polygon`, and `Polyline`.
 
-### Basic usage
+### Basic Usage
 
 ```tsx
-import React, { useState } from 'react';
-import { Canvas, Circle } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Canvas, Circle } from '@antv/react-g';
+import { useState } from 'react';
 
 const renderer = new CanvasRenderer();
 
@@ -51,14 +51,12 @@ const App = () => {
 export default App;
 ```
 
-### Use ref to access shape instance
-
-Like react-dom, you can use `ref` to access the shape instance.
+### Using `ref` to get the G object instance
 
 ```tsx
-import React, { useState, useRef } from 'react';
-import { Canvas, Circle } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Canvas, Circle } from '@antv/react-g';
+import { useRef, useState } from 'react';
 
 const renderer = new CanvasRenderer();
 
@@ -86,16 +84,16 @@ const App = () => {
 export default App;
 ```
 
-### `render` react-g component to target g element
+### Using the `render` function to render `react-g` components into existing G object instances
 
-- 将 react-g 组件渲染到任意的 g 实例（Canvas/Group/Shape）中
-- 意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
+- Render `react-g` components into any G instance (Canvas/Group/Shape).
+- This means that `react-g` components can be rendered into other libraries such as G2, G6, etc.
 
 ```tsx
-import React, { useState } from 'react';
 import { Canvas as GCanvas } from '@antv/g';
-import { Circle, render } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Circle, render } from '@antv/react-g';
+import { useState } from 'react';
 
 const renderer = new CanvasRenderer();
 
@@ -120,12 +118,12 @@ const CircleComponent = () => {
 };
 
 const canvas = new GCanvas({
-    container: 'container', // DOM 节点id
+    container: 'container', // DOM node id
     width: 600,
     height: 500,
     renderer,
 });
 
-// canvas can also be group/shape
+// canvas can also be a group/shape
 render(<CircleComponent />, canvas);
 ```
