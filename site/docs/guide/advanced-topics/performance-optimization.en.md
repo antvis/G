@@ -1,114 +1,114 @@
 ---
-title: 性能优化
+title: Performance Optimization
 order: 1
 redirect_from:
     - /en/guide/advanced-topics
 ---
 
-任何一个渲染引擎都会在性能优化上下足功夫，任何优化手段都需要结合场景与具体 API 应用。在我们的可视化场景（2D 图表、大规模图场景）中，高效绘制大量简单图形是一个核心诉求。下面我们结合 Canvas2D / SVG / WebGL 和 WebGPU 这些渲染 API 介绍目前在 G 中使用的优化手段。
+Every rendering engine puts a lot of effort into performance optimization, and any optimization method needs to be applied in combination with the scene and specific APIs. In our visualization scenarios (2D charts, large-scale graph scenes), efficiently drawing a large number of simple graphics is a core requirement. Below, we introduce the optimization methods currently used in G in combination with rendering APIs such as Canvas2D / SVG / WebGL and WebGPU.
 
-首先我们需要引入一个核心概念 draw call，以下介绍的优化方法大多围绕它展开。
+First, we need to introduce a core concept, the draw call, which most of the following optimization methods are centered around.
 
-# 什么是 draw call
+# What is a draw call?
 
-为啥 draw call 多了就会影响性能呢？在 CPU 和 GPU 进行异步协作的过程中，会向 [command buffer](https://www.w3.org/TR/webgpu/#command-buffers) 中提交需要 GPU 执行的命令，例如设置状态、绘制或者拷贝资源。CPU 准备这些命令的速度与 GPU 执行的速度存在不小差异，这就造成了性能瓶颈。
+Why does a high number of draw calls affect performance? In the process of asynchronous collaboration between the CPU and GPU, commands that need to be executed by the GPU, such as setting state, drawing, or copying resources, are submitted to a [command buffer](https://www.w3.org/TR/webgpu/#command-buffers). There is a significant difference between the speed at which the CPU prepares these commands and the speed at which the GPU executes them, which creates a performance bottleneck.
 
-下图来自 <https://toncijukic.medium.com/draw-calls-in-a-nutshell-597330a85381，分别展示了每一帧中> CPU 和 GPU 的时间线，可以看出 GPU 总是在执行上一帧 CPU 提交的命令，与此同时 CPU 在准备下一帧的命令。当这些绘制命令数量不多时，两者协作没问题，但如果数量很多，GPU 在做完这一帧的渲染任务后就不得不等待，也就无法在 16ms 内完成了，这造成了卡顿的体感。
+The following figure from <https://toncijukic.medium.com/draw-calls-in-a-nutshell-597330a85381> shows the timeline of the CPU and GPU in each frame. It can be seen that the GPU is always executing the commands submitted by the CPU in the previous frame, while the CPU is preparing the commands for the next frame. When the number of these drawing commands is small, the two can cooperate without problems, but if the number is large, the GPU will have to wait after finishing the rendering task of the current frame, and will not be able to complete it within 16ms, which causes a stuttering experience.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OdI0SqKtWB0AAAAAAAAAAAAAARQnAQ)
 
-# 减少 draw call
+# Reducing draw calls
 
-因此我们需要想办法减少 CPU 提交的绘制命令数量，即能少画就少画，能不画就不画。下面我们会介绍不同渲染 API 下常用的优化手段，它们各有适合的场景。
+Therefore, we need to find ways to reduce the number of drawing commands submitted by the CPU, that is, to draw as little as possible, and not to draw if we can avoid it. Below we will introduce common optimization methods for different rendering APIs, each of which has its own suitable scenarios.
 
-## 剔除
+## Culling
 
-图场景中一种常见的交互是通过鼠标滚轮进行放大查看，此时场景中仅有一部分可见，大部分都在视口范围之外。如果我们能将视口之外的图形“剔除”掉，就能减少绘制命令的数量。
+A common interaction in graph scenes is to zoom in to view by scrolling the mouse wheel. At this time, only a part of the scene is visible, and most of it is outside the viewport. If we can "cull" the graphics outside the viewport, we can reduce the number of drawing commands.
 
-决定场景中一个图形是否需要绘制的标准是什么呢？在下图中，灰色区域代表画布视口，如果对象“处于”视口内，我们就画（绿色图形），反之则剔除（红色图形）。
+What is the standard for determining whether a graphic in the scene needs to be drawn? In the figure below, the gray area represents the canvas viewport. If an object is "inside" the viewport, we draw it (green graphic), otherwise we cull it (red graphic).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IrstQLn0kVoAAAAAAAAAAAAAARQnAQ)
 
-在判断一个图形是否在视口内时，我们通常会使用一种称作“包围盒”的结构。图形可以千变万化，但总可以找到一个包裹住它的最小基础几何结构，这个结构可以是“包围盒”，也可以是“包围球”，总之是为何后续与视口求交方便。在 G 中我们选择轴对齐包围盒。推广到 3D 场景中，视口也变成了视锥，下图来自 [Unreal - Visibility and Occlusion Culling](https://docs.unrealengine.com/Engine/Rendering/VisibilityCulling#viewfrustum)：
+When judging whether a graphic is inside the viewport, we usually use a structure called a "bounding box". Graphics can be varied, but we can always find a minimum basic geometric structure that encloses it. This structure can be a "bounding box" or a "bounding sphere". In short, it is for the convenience of subsequent intersection with the viewport. In G, we choose an axis-aligned bounding box. Extending to 3D scenes, the viewport also becomes a view frustum. The following figure is from [Unreal - Visibility and Occlusion Culling](https://docs.unrealengine.com/Engine/Rendering/VisibilityCulling#viewfrustum):
 
 ![](https://user-images.githubusercontent.com/3608471/78733815-18111d80-7979-11ea-940b-9886ec5cf5e4.png)
 
-在每一帧都在 CPU 端进行这样的求交运算开销不小，特别当场景中图形数量较多时。另外在 3D 场景中视锥与包围盒（立方体）各个面的求交开销更大，因此我们也采用了一系列优化方法：
+The cost of performing such intersection calculations on the CPU side in each frame is not small, especially when there are a large number of graphics in the scene. In addition, in 3D scenes, the intersection cost between the view frustum and the bounding box (cube) is even greater, so we have also adopted a series of optimization methods:
 
-在 3D 场景进行视锥剔除时，我们尽量使用了如下[加速检测方法](https://github.com/antvis/GWebGPUEngine/issues/3)：
+When performing view frustum culling in 3D scenes, we try to use the following [acceleration detection methods](https://github.com/antvis/GWebGPUEngine/issues/3):
 
-- 基础相交测试 the basic intersection test
-- 平面一致性测试 the plane-coherency test
-- 八分测试 the octant test
-- 标记 masking
-- 平移旋转一致性测试 TR coherency test
+- The basic intersection test
+- The plane-coherency test
+- The octant test
+- Masking
+- TR coherency test
 
-更多可以参考：
+For more information, you can refer to:
 
 - [Optimized View Frustum Culling Algorithms for Bounding Boxes](http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/pubs/vfcullbox.pdf.gz)
 - [Efficient View Frustum Culling](http://old.cescg.org/CESCG-2002/DSykoraJJelinek/)
-- [视锥体剔除 AABB 和 OBB 包围盒的优化方法](https://zhuanlan.zhihu.com/p/55915345)
+- [Optimization method for view frustum culling of AABB and OBB bounding boxes](https://zhuanlan.zhihu.com/p/55915345)
 
-在 2D 场景中我们使用了空间索引（R-tree）进行区域查询的加速。首次为场景对象构建索引需要消耗一定时间，后续当图形发生变换时，也需要随时更新。
+In 2D scenes, we use a spatial index (R-tree) to accelerate area queries. It takes a certain amount of time to build the index for the scene objects for the first time, and it needs to be updated at any time when the graphics are transformed.
 
-最后，由于剔除发生在 CPU 侧，与具体渲染 API 无关，因此这是一种相对通用的优化手段。
+Finally, since culling occurs on the CPU side and is independent of the specific rendering API, it is a relatively general optimization method.
 
-### 其他剔除手段
+### Other culling methods
 
-在 WebGL / WebGPU 这样的渲染 API 中，还提供了其他剔除手段：
+In rendering APIs such as WebGL / WebGPU, other culling methods are also provided:
 
-- 背面剔除，[gl.cullFace](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/cullFace)
-- 遮挡剔除，[gl.createQuery](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/createQuery)。至少需要 WebGL2，G 中暂未使用
+- Back-face culling, [gl.cullFace](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/cullFace)
+- Occlusion culling, [gl.createQuery](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/createQuery). At least WebGL2 is required, and it is not currently used in G.
 
-## “脏矩形”渲染
+## "Dirty Rectangle" Rendering
 
-另一种常见的交互是通过鼠标高亮某个图形。此时场景中仅有一小部分发生了改变，擦除画布中的全部图形再重绘就显得没有必要了。类比 React diff 算法能够找出真正变化的最小部分，“脏矩形”渲染能尽可能复用上一帧的渲染结果，仅绘制变更部分，特别适合 Canvas2D API。
+Another common interaction is to highlight a graphic with the mouse. At this time, only a small part of the scene has changed, and it is unnecessary to erase all the graphics on the canvas and redraw them. Similar to the React diff algorithm that can find the smallest part that has actually changed, "dirty rectangle" rendering can reuse the rendering results of the previous frame as much as possible, and only draw the changed parts, which is especially suitable for the Canvas2D API.
 
-下图展示了这个思路：
+The following figure illustrates this idea:
 
-- 当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
-- 找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
-- 使用 [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
-- 按照 z-index 依次绘制一个矩形和圆形
+- When the mouse hovers over the circle, we know the corresponding "dirty rectangle", which is the bounding box of the circle.
+- Find other graphics in the scene that intersect with this bounding box area, and here we find another rectangle.
+- Use [clearRect](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/clearRect) to clear this "dirty rectangle" instead of clearing the entire canvas.
+- Draw a rectangle and a circle in order of their z-index.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ)
 
-在以上求交与区域查询的过程中，我们可以复用剔除方案中的优化手段，例如加速结构。
+In the process of intersection and area query above, we can reuse the optimization methods in the culling scheme, such as acceleration structures.
 
-显然当动态变化的对象数目太多时，该优化手段就失去了意义，试想经过一番计算合并后的“脏矩形”几乎等于整个画布，那还不如直接清空重绘所有对象。因此例如 Pixi.js 这样的 2D 游戏渲染引擎就[不考虑内置](https://github.com/pixijs/pixi.js/issues/3503)。
+Obviously, when there are too many dynamically changing objects, this optimization method loses its meaning. Imagine that the "dirty rectangle" after some calculation and merging is almost equal to the entire canvas, then it is better to clear and redraw all objects directly. Therefore, 2D game rendering engines such as Pixi.js [do not consider built-in](https://github.com/pixijs/pixi.js/issues/3503).
 
-但在可视化这类相对静态的场景下就显得有意义了，例如在触发拾取后只更新图表的局部，其余部分保持不变。
+But in relatively static scenes such as visualization, it makes sense, for example, to update only a part of the chart after triggering a pick, and keep the rest unchanged.
 
-我们将该渲染器特性做成了开关，可以随时[根据具体情况关闭](/en/api/renderer/canvas#enabledirtyrectanglerendering)。
+We have made this renderer feature a switch that can be [turned off at any time according to the specific situation](/en/api/renderer/canvas#enabledirtyrectanglerendering).
 
-## batching
+## Batching
 
-以上两种方法当然有不适合的场景，例如希望总览一个大规模图场景的全貌时，无法应用剔除（所有节点/边都在视口内）。拖拽移动整个场景时，“脏矩形”渲染效果也不佳（整个场景都变“脏”了）。
+The above two methods are of course not suitable for some scenarios. For example, when you want to have a full view of a large-scale graph scene, you cannot apply culling (all nodes/edges are within the viewport). When you drag and move the entire scene, the effect of "dirty rectangle" rendering is not good either (the entire scene becomes "dirty").
 
-除了使用一些上层的 LOD 手段，例如缩放等级较高时，隐藏掉边和文本（因为也看不清），以此减少绘制命令数量之外，[draw call batching](https://docs.unity3d.com/Manual/DrawCallBatching.html) 是非常合适的。
+In addition to using some upper-level LOD methods, such as hiding edges and text when the zoom level is high (because they are not clear anyway), to reduce the number of drawing commands, [draw call batching](https://docs.unity3d.com/Manual/DrawCallBatching.html) is very suitable.
 
-不同于 Canvas2D / Skia 提供的抽象层次较高的绘制 API，WebGL / WebGPU 提供了更低层次的 API，可以让我们将一批“同类”图形合并成一次绘制命令。在渲染引擎中，常用于渲染类似森林中大量树木这种场景。图场景同样十分契合，场景中包含大量同类但简单的图形（节点、边）。
+Unlike the high-level drawing APIs provided by Canvas2D / Skia, WebGL / WebGPU provide lower-level APIs that allow us to merge a batch of "similar" graphics into a single drawing command. In rendering engines, it is often used to render scenes with a large number of trees in a forest. Graph scenes are also very suitable, as they contain a large number of similar but simple graphics (nodes, edges).
 
-结合我们的[这个教程](/en/guide/diving-deeper/camera)，配合 Chrome Spector.js 插件能看出，一次 draw call 完成了 8k 个节点的绘制，这是性能提升的关键：
+Combined with our [this tutorial](/en/guide/diving-deeper/camera), and with the Chrome Spector.js plugin, you can see that a single draw call completes the drawing of 8k nodes, which is the key to performance improvement:
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*-8GtQrpM-jsAAAAAAAAAAAAAARQnAQ)
 
-通常创建出的 instance 仅具有原图形的部分能力。例如 Babylon.js 只允许每个 instance 在部分变换属性上[有差异](https://doc.babylonjs.com/divingDeeper/mesh/copies/instances)。在 G 中并不需要用户显式声明 instance，按照常规图形创建即可，内部会进行自动合并。
+Usually, the created instance only has some of the capabilities of the original graphic. For example, Babylon.js only allows each instance to have [differences](https://doc.babylonjs.com/divingDeeper/mesh/copies/instances) in some transformation attributes. In G, users do not need to explicitly declare instances. They can be created as regular graphics, and they will be automatically merged internally.
 
-值得一提的是我们使用 SDF 绘制部分 2D 图形例如 Circle、Ellipse、Rect。一方面能减少顶点数目（通常三角化一个圆需要 30+ 三角形，SDF 固定 2 个），另一方面也增加了不同图形合并的可能性。
+It is worth mentioning that we use SDF to draw some 2D graphics such as Circle, Ellipse, and Rect. On the one hand, it can reduce the number of vertices (usually, triangulating a circle requires 30+ triangles, while SDF is fixed at 2), and on the other hand, it also increases the possibility of merging different graphics.
 
 # Offscreen Canvas
 
-⚠️ 仅 `g-webgl` 下生效。
+⚠️ Only effective under `g-webgl`.
 
-当主线程需要处理较重的交互时，我们可以将 Canvas 的渲染工作交给 Worker 完成，主线程仅负责同步结果。目前很多渲染引擎已经支持，例如 [Babylon.js](https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas)。
+When the main thread needs to handle heavy interactions, we can hand over the rendering work of the Canvas to a Worker, and the main thread is only responsible for synchronizing the results. At present, many rendering engines already support this, such as [Babylon.js](https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas).
 
-为了支持该特性，引擎本身并不需要做很多改造，只要能够保证 `g-webgl` 能在 Worker 中运行即可。
+To support this feature, the engine itself does not need to be modified much, as long as it can ensure that `g-webgl` can run in a Worker.
 
-## 局限性
+## Limitations
 
-由于运行在 Worker 环境，用户需要手动处理一些 DOM 相关的事件。
+Since it runs in a Worker environment, users need to manually handle some DOM-related events.
 
-# 参考资料
+# References
 
 - <https://unrealartoptimization.github.io/book/pipelines/>

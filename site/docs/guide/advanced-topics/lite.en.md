@@ -1,54 +1,54 @@
 ---
-title: Using lite version
+title: Using the Lite Version
 order: 6
 ---
 
-As browsers iterate over new features, they get bigger and bigger. Although we want to achieve a "small browser", in size sensitive scenarios, users still want to use a minimal feature set. This requires that we split the existing features in a reasonable way, trying to achieve a minimal core + incremental enhancements model.
+As browsers continue to iterate and add new features, their size will inevitably increase. Although we aim to create a "small browser," in size-sensitive scenarios, users still prefer to use a minimal feature set. This requires us to reasonably split the existing features and strive to achieve a model of a minimal core + progressive enhancement.
 
-The following figure shows the composition of the bundle `@antv/g`.
+The following figure shows the bundle composition of `@antv/g`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lBr-T54VZpcAAAAAAAAAAAAAARQnAQ" alt="bundle viz" width="100%">
 
-The full version `@antv/g` consists of the following parts.
+The full version of `@antv/g` consists of the following parts:
 
-- `@antv/g-lite` Includes [canvas](/en/api/canvas/intro), [basic graphics](/en/api/basic/concept), [event system](/en/api/event/intro), [plugins system](/en/plugins/intro) and other core functions
-- Provides DOM Mutation Observer API
-- `web-animations-api` Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)
-- `camera-api` Provides full camera motion and animation capabilities
+- `@antv/g-lite`: Contains core features such as the [Canvas](/en/api/canvas/intro), [basic shapes](/en/api/basic/concept), the [event system](/en/api/event/intro), and the [plugin system](/en/plugins/intro).
+- Provides the DOM Mutation Observer API.
+- `web-animations-api`: Provides an animation system compatible with the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
+- `camera-api`: Provides full camera actions and animation functions.
 
 ## Usage
 
-The Lite version is identical to the full version in the use of core functions, such as creating canvases, basic graphics, using the renderer, etc.
+The lite version is used in the same way as the full version for core functions, such as creating a canvas, basic shapes, and using a renderer:
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
 import { Renderer } from '@antv/g-canvas';
 ```
 
-Calling the element's animation method at this point will have no effect。
+At this point, calling the element's animation method will have no effect:
 
 ```js
 circle.animate([], {});
 ```
 
-Manual introduction of `web-animations-api` is required for this to take effect.
+You need to manually import `web-animations-api` for it to take effect:
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
 import '@antv/g';
 ```
 
-Other progressive features can be introduced on-demand using a similar approach.
+Other progressive features can be imported on demand in a similar way.
 
-## Function Introduction
+## Feature Introduction
 
-The following is a detailed description of the functions of each part after splitting.
+The following is a detailed introduction to the functions of each part after splitting.
 
 ### g-lite
 
-Contains core functions such as [canvas](/en/api/canvas/intro), [basic graphics](/en/api/basic/concept), [event system](/en/api/event/intro), [plugins system](/en/plugins/intro).
+Contains core features such as the [Canvas](/en/api/canvas/intro), [basic shapes](/en/api/basic/concept), the [event system](/en/api/event/intro), and the [plugin system](/en/plugins/intro).
 
-There is no change in the way the above functions are used, [example](/en/examples/ecosystem/lite/#lite).
+The usage of the above functions has not changed. [Example](/en/examples/ecosystem/lite/#lite):
 
 ```js
 import { Canvas, Circle } from '@antv/g-lite';
@@ -68,40 +68,42 @@ const circle = new Circle({
 
 ### camera-api
 
-`@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/en/api/camera/action) and [camera animation](/en/api/camera/animation).
+`@antv/g-lite` includes a simple camera implementation, but you cannot use [camera actions](/en/api/camera/action) and [camera animations](/en/api/camera/animation):
 
 ```js
 camera.pan(); // throw new Error('Method not implemented.');
 camera.createLandmark(); // throw new Error('Method not implemented.');
 ```
 
+It can be used normally after being imported.
+
 ### web-animations-api
 
-Provides [animation capabilities](/en/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
+Provides basic shapes with [animation capabilities](/en/api/animation/waapi) compatible with the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API). Without this feature, you can still call the `object.animate()` method, but it will have no effect.
 
 ### dom-mutation-observer-api
 
-In the DOM API, we can use [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) when we want to sense modifications in the DOM tree nodes, such as new nodes added, attribute values changed.
+In the DOM API, when we want to perceive changes to DOM tree nodes, such as new nodes being added or attribute values changing, we can use [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
 
-In G we also implement this [API](/en/api/builtin-objects/mutation-observer) to listen to changes in the scene graph.
+In G, we have also implemented this [API](/en/api/builtin-objects/mutation-observer) to listen for changes in the scene graph.
 
 ### g-compat
 
-Methods compatible with older versions are provided on the base graphics, most of which have DOM API-compatible implementations in newer versions. The use of these methods is therefore not recommended and may be removed at any time subsequently.
+Provides methods on basic shapes that are compatible with older versions. Most of them have implementations compatible with the DOM API in the new version. Therefore, it is not recommended to use these methods, as they may be removed at any time in the future:
 
-- `getCount` Get the number of child nodes, the new version uses [childElementCount](/en/api/builtin-objects/element#childelementcount)
-- `getParent` Get the parent, the new version uses [parentElement](/en/api/builtin-objects/node#parentelement)
-- `getChildren` Get the list of child nodes, the new version uses [children](/en/api/builtin-objects/element#children)
-- `getFirst` Get the first child node, the new version uses [firstElementChild](/en/api/builtin-objects/element#firstelementchild)
-- `getLast` Get the last child node, the new version uses [lastElementChild](/en/api/builtin-objects/element#lastelementchild)
-- `getChildByIndex` the new version uses `this.children[index]`
-- `add` the new version uses [appendChild](/en/api/builtin-objects/node#appendchild)
-- `setClip` the new version uses [clipPath](/en/api/basic/display-object#clippath)
-- `getClip` ld.
-- `set` Storing key-value pairs on initialized configurations
-- `get` Read values on initialized configuration
-- `show` the new version uses [visibility](/en/api/basic/display-object#visibility)
-- `hide` ld.
-- `moveTo` the new version uses [setPosition](/en/api/basic/display-object#平移)
-- `move` ld.
-- `setZIndex` the new version uses [zIndex](/en/api/basic/display-object#zindex)
+- `getCount`: Gets the number of child nodes. The new version uses [childElementCount](/en/api/builtin-objects/element#childelementcount).
+- `getParent`: Gets the parent node. The new version uses [parentElement](/en/api/builtin-objects/node#parentelement).
+- `getChildren`: Gets the list of child nodes. The new version uses [children](/en/api/builtin-objects/element#children).
+- `getFirst`: Gets the first child node. The new version uses [firstElementChild](/en/api/builtin-objects/element#firstelementchild).
+- `getLast`: Gets the last child node. The new version uses [lastElementChild](/en/api/builtin-objects/element#lastelementchild).
+- `getChildByIndex`: Gets a child node by index. The new version uses `this.children[index]`.
+- `add`: Adds a child node. The new version uses [appendChild](/en/api/builtin-objects/node#appendchild).
+- `setClip`: Sets the clipping shape. The new version uses [clipPath](/en/api/basic/display-object#clippath).
+- `getClip`: Gets the clipping shape. Same as above.
+- `set`: Stores a key-value pair on the initial configuration.
+- `get`: Reads a value from the initial configuration.
+- `show`: Shows the shape. The new version uses [visibility](/en/api/basic/display-object#visibility).
+- `hide`: Hides the shape. Same as above.
+- `moveTo`: Moves the shape in world coordinates. The new version uses [setPosition](/en/api/basic/display-object#translation).
+- `move`: Same as above.
+- `setZIndex`: Sets the rendering order. The new version uses [zIndex](/en/api/basic/display-object#zindex).

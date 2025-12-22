@@ -1,30 +1,30 @@
 ---
-title: 构建说明
+title: Build Instructions
 order: 1
 ---
 
-# 依赖关系
+# Dependencies
 
-在目前 monorep 中，各个包的依赖关系如下：
+In the current monorepo, the dependencies of each package are as follows:
 
-- `@antv/g` 核心包，依赖注入使用 mana-syringe
-- `@antv/g-canvas/svg/webgl` 渲染器包，依赖 `@antv/g`，内部注册了一系列插件：
-- `@antv/g-plugin-xxx` 插件包，依赖 `@antv/g`，部分插件也会依赖其他插件
+- `@antv/g`: The core package, using `mana-syringe` for dependency injection.
+- `@antv/g-canvas/svg/webgl`: Renderer packages, dependent on `@antv/g`, with a series of internally registered plugins.
+- `@antv/g-plugin-xxx`: Plugin packages, dependent on `@antv/g`; some plugins may also depend on other plugins.
 
-特别的，`g-webgl` 使用 wasm 转译 GLSL 到 WGSL。
+Notably, `g-webgl` uses wasm to transpile GLSL to WGSL.
 
-在构建时我们选择 [father](https://github.com/umijs/father) 构建 CJS 与 ESM，webpack4 构建 UMD。
+For the build process, we use [father](https://github.com/umijs/father) to build CJS and ESM, and webpack 4 to build UMD.
 
-# CJS 与 ESM
+# CJS and ESM
 
-构建时使用 father：
+We use `father` for the build:
 
 ```json
-// 根目录 package.json
+// Root package.json
 "build": "father build",
 ```
 
-在 `fatherrc` 中选择 `babel` 模式：
+In `fatherrc`, we select the `babel` mode:
 
 ```js
 {
@@ -36,16 +36,16 @@ order: 1
   },
   pkgs: [
     'g-math',
-    // 省略其他构建包
+    // Omit other build packages
   ]
 }
 ```
 
-运行后在每个子包下 `/es` 和 `/lib` 下就会生成对应源文件的 ESM 和 CJS 文件了。
+After running, the corresponding ESM and CJS files for the source files will be generated in the `/es` and `/lib` directories of each sub-package.
 
 # UMD
 
-使用 webpack4 构建 UMD，以 `g-canvas` 为例，在配置文件中排除掉：
+We use webpack 4 to build UMD. Taking `g-canvas` as an example, we exclude the following in the configuration file:
 
 ```js
 module.exports = {
@@ -55,17 +55,17 @@ module.exports = {
             commonjs: '@antv/g',
             commonjs2: '@antv/g',
             amd: '@antv/g',
-            root: 'G', // 运行时通过 window.G 获取
+            root: 'G', // Accessed via window.G at runtime
         },
         'mana-syringe': {
             commonjs: 'mana-syringe',
             commonjs2: 'mana-syringe',
             amd: 'mana-syringe',
-            root: ['G', 'ManaSyringe'], // 运行时通过 window.G.ManaSyringe 获取
+            root: ['G', 'ManaSyringe'], // Accessed via window.G.ManaSyringe at runtime
         },
     },
     output: {
-        library: ['G', 'Canvas2D'], // 暴露 window.G.Canvas2D
+        library: ['G', 'Canvas2D'], // Exposes window.G.Canvas2D
         libraryTarget: 'umd',
         filename: 'index.umd.min.js',
     },
@@ -74,12 +74,12 @@ module.exports = {
 
 # WASM
 
-特别的 `g-webgl` 需要使用 WASM，因此多加一个插件：
+Notably, `g-webgl` requires WASM, so we add an extra plugin:
 
 ```js
 plugins: [
     new WasmPackPlugin({
-        crateDirectory: path.join(__dirname, 'rust'), // crate 放在 /rust 下
+        crateDirectory: path.join(__dirname, 'rust'), // Crate is located in /rust
         forceMode: 'production',
     }),
 ],
