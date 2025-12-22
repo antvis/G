@@ -184,17 +184,6 @@ const canvas = new Canvas({
 });
 ```
 
-### supportsCSSTransform
-
-可选。是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
-
-在该 [示例](/examples/canvas/container/#supports-css-transform) 中，我们将容器放大了 1.1 倍，开启该配置项后，鼠标移动到圆上可以正确变化鼠标样式：
-
-```js
-const $wrapper = document.getElementById('container');
-$wrapper.style.transform = 'scale(1.1)';
-```
-
 ### supportsPointerEvents
 
 可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false`，事件监听插件将不会监听例如 `pointerdown` 等 PointerEvent。

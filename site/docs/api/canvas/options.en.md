@@ -177,19 +177,6 @@ const canvas = new Canvas({
 });
 ```
 
-### supportsCSSTransform
-
-Optional. 是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
-
-Whether or not CSS Transform is supported on the container to ensure that the interaction event coordinates are transformed correctly.
-
-In this [example](/en/examples/canvas/container/#supports-css-transform), we have enlarged the container by a factor of 1.1, and with this configuration enabled, mouse movement over the circle changes the mouse style correctly.
-
-```js
-const $wrapper = document.getElementById('container');
-$wrapper.style.transform = 'scale(1.1)';
-```
-
 ### supportsPointerEvents
 
 Optional. Whether PointerEvent is supported or not, the default will use `! !globalThis.PointerEvent`. If `false` is passed, the event listener plugin will not listen for PointerEvent such as `pointerdown`.
