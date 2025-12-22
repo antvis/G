@@ -50,7 +50,6 @@ if (typeof window !== 'undefined' && window) {
   (
     window as any
   ).gPluginZdogSvgRenderer = require('@antv/g-plugin-zdog-svg-renderer');
-  (window as any).gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
   (window as any).gPluginDragndrop = require('@antv/g-plugin-dragndrop');
   (window as any).gPluginGesture = require('@antv/g-plugin-gesture');
   (window as any).gPluginA11y = require('@antv/g-plugin-a11y');
@@ -58,11 +57,8 @@ if (typeof window !== 'undefined' && window) {
   // compiler for GPGPU
   (window as any).gDeviceApi = require('@antv/g-device-api');
   (window as any).webgpuGraph = require('@antv/webgpu-graph');
-  (window as any).gComponents = require('@antv/g-components');
   (window as any).gWebComponents = require('@antv/g-web-components');
-  (window as any).gImageExporter = require('@antv/g-image-exporter');
   (window as any).gLottiePlayer = require('@antv/g-lottie-player');
-  (window as any).gPattern = require('@antv/g-pattern');
 
   // (window as any).reactG = require('@antv/react-g');
   // (window as any).mainWorker = require('./examples/canvas/demo/main.worker.js');
