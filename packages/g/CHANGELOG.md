@@ -1,5 +1,13 @@
 # @antv/g
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies [00d08e9]
+- Updated dependencies [8df267d]
+    - @antv/g-lite@2.7.0
+
 ## 6.3.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 2.7.0
+
+### Minor Changes
+
+- 00d08e9: refactor: remove legacy code
+- 8df267d: feat: add experimental api `setAttributes`
+
 ## 2.6.0
 
 ### Minor Changes
