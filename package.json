@@ -155,6 +155,5 @@
       "limit": "150 Kb",
       "gzip": true
     }
-  ],
-  "version": "0.0.1-0"
+  ]
 }
