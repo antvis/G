@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "2.0.48",
+  "version": "2.1.0",
   "description": "A renderer implemented by Canvas 2D API",
   "keywords": [
     "antv",
@@ -36,22 +36,18 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-path-generator": "workspace:*",
-    "@antv/g-plugin-canvas-picker": "workspace:*",
-    "@antv/g-plugin-canvas-renderer": "workspace:*",
-    "@antv/g-plugin-dom-interaction": "workspace:*",
-    "@antv/g-plugin-html-renderer": "workspace:*",
-    "@antv/g-plugin-image-loader": "workspace:*",
+    "@antv/g-math": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

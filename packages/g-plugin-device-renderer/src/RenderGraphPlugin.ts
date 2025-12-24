@@ -1,9 +1,13 @@
+/// <reference types="webxr" />
+
 import type {
   CSSRGB,
   DataURLOptions,
   DisplayObject,
   FederatedEvent,
+  CustomEvent,
   MutationEvent,
+  MutationRecord,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -205,15 +209,21 @@ export class RenderGraphPlugin implements RenderingPlugin {
       }
     };
 
-    const handleBoundsChanged = (e: MutationEvent) => {
+    const handleBoundsChanged = (
+      e: CustomEvent<{ detail: MutationRecord[] }>,
+    ) => {
       if (this.swapChain) {
-        const object = e.target as DisplayObject;
-        const nodes =
-          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+        const records = e.detail;
+        for (let i = 0; i < records.length; i++) {
+          const record = records[i];
+          const object = record.target as DisplayObject;
+          const nodes =
+            object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
 
-        nodes.forEach((node: DisplayObject) => {
-          this.batchManager.updateAttribute(node, 'modelMatrix', null);
-        });
+          nodes.forEach((node: DisplayObject) => {
+            this.batchManager.updateAttribute(node, 'modelMatrix', null);
+          });
+        }
       }
     };
 
@@ -292,7 +302,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           // Assumed to be a XRWebGLLayer for now.
           let layer = session.renderState.baseLayer;
           if (!layer) {
-            layer = session.renderState.layers![0] as XRWebGLLayer;
+            layer = session.renderState.layers[0] as XRWebGLLayer;
           } else {
             // Bind the graphics framebuffer to the baseLayer's framebuffer.
             // Only baseLayer has framebuffer and we need to bind it, even if it is null (for inline sessions).
@@ -313,8 +323,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           if (pose) {
             // In mobile AR, we only have one view.
             pose.views.forEach((view, i) => {
-              const viewport =
-                session.renderState.baseLayer!.getViewport(view)!;
+              const viewport = session.renderState.baseLayer.getViewport(view);
 
               // @ts-ignore
               const cameraMatrix = mat4.fromValues(...view.transform.matrix);

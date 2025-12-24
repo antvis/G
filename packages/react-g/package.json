@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "2.0.44",
+  "version": "2.1.0",
   "description": "react render for @antv/g",
   "keywords": [
     "react",
@@ -34,9 +34,9 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },

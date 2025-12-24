@@ -1,5 +1,74 @@
 # @antv/g-canvas
 
+## 2.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-lite@2.6.0
+    - @antv/g-math@3.1.0
+
+## 2.0.52
+
+### Patch Changes
+
+- Updated dependencies [a0b1656]
+    - @antv/g-lite@2.5.1
+    - @antv/g-plugin-canvas-path-generator@2.1.26
+    - @antv/g-plugin-canvas-picker@2.3.1
+    - @antv/g-plugin-canvas-renderer@2.5.1
+    - @antv/g-plugin-dom-interaction@2.1.31
+    - @antv/g-plugin-html-renderer@2.3.1
+    - @antv/g-plugin-image-loader@2.3.1
+
+## 2.0.51
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+    - @antv/g-plugin-canvas-picker@2.3.0
+    - @antv/g-plugin-canvas-renderer@2.5.0
+    - @antv/g-plugin-html-renderer@2.3.0
+    - @antv/g-plugin-image-loader@2.3.0
+    - @antv/g-plugin-canvas-path-generator@2.1.25
+    - @antv/g-plugin-dom-interaction@2.1.30
+
+## 2.0.50
+
+### Patch Changes
+
+- Updated dependencies [3cc63ef]
+    - @antv/g-lite@2.4.1
+    - @antv/g-plugin-canvas-path-generator@2.1.24
+    - @antv/g-plugin-canvas-picker@2.2.1
+    - @antv/g-plugin-canvas-renderer@2.4.1
+    - @antv/g-plugin-dom-interaction@2.1.29
+    - @antv/g-plugin-html-renderer@2.2.1
+    - @antv/g-plugin-image-loader@2.2.1
+
+## 2.0.49
+
+### Patch Changes
+
+- Updated dependencies [7fbf52f]
+- Updated dependencies [f08291e]
+- Updated dependencies [6a7c5bc]
+- Updated dependencies [c14ba7b]
+    - @antv/g-plugin-canvas-picker@2.2.0
+    - @antv/g-lite@2.4.0
+    - @antv/g-plugin-canvas-renderer@2.4.0
+    - @antv/g-plugin-html-renderer@2.2.0
+    - @antv/g-plugin-image-loader@2.2.0
+    - @antv/g-plugin-canvas-path-generator@2.1.23
+    - @antv/g-plugin-dom-interaction@2.1.28
+
 ## 2.0.48
 
 ### Patch Changes

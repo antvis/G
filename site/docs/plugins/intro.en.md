@@ -19,19 +19,19 @@ To make the rendering engine also well extensible, we also have a built-in plugi
 Extensible plug-in mechanism and rich set of plug-ins：
 
 - Rendering Related
-  - [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-  - [g-plugin-svg-renderer](/en/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [canvas-renderer](/en/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [svg-renderer](/en/plugins/svg-renderer) Rendering 2D graphics based on SVG.
   - [g-plugin-device-renderer](/en/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-  - [g-plugin-html-renderer](/en/plugins/html-renderer) Rendering DOM with HTML.
+  - [html-renderer](/en/plugins/html-renderer) Rendering DOM with HTML.
   - [g-plugin-3d](/en/plugins/3d) Extended 3D capabilities.
   - [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
   - [g-plugin-rough-svg-renderer](/en/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-  - [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+  - [canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
 - Picking
-  - [g-plugin-canvas-picker](/en/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-  - [g-plugin-svg-picker](/en/plugins/svg-picker) Do picking with SVG and DOM API.
+  - [canvas-picker](/en/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [svg-picker](/en/plugins/svg-picker) Do picking with SVG and DOM API.
 - Interaction
-  - [g-plugin-dom-interaction](/en/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [dom-interaction](/en/plugins/dom-interaction) Binds event listeners with DOM API.
   - [g-plugin-control](/en/plugins/control) Provides camera interaction for 3D scenes.
   - [g-plugin-dragndrop](/en/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
   - [g-plugin-annotation](/en/plugins/annotation) Perform transformations on graphics in an interactive form like [Fabric.js](http://fabricjs.com/) and [Konva.js](https://konvajs.org/).

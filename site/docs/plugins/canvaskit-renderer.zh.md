@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvaskit-renderer
+title: canvaskit-renderer
 order: 3
 ---
 
@@ -39,7 +39,7 @@ const canvaskitRenderer = new CanvaskitRenderer();
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer]() 插件：
+首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [canvaskit-renderer]() 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -87,7 +87,7 @@ CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)]
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/api/renderer/intro#getplugin) 获取 [canvaskit-renderer](/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';

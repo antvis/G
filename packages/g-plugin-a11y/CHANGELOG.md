@@ -1,5 +1,57 @@
 # @antv/g-plugin-a11y
 
+## 1.4.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-lite@2.6.0
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [a0b1656]
+    - @antv/g-lite@2.5.1
+
+## 1.3.0
+
+### Minor Changes
+
+- 697a47f: fix: multiple canvas rendering errors
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [3cc63ef]
+    - @antv/g-lite@2.4.1
+
+## 1.2.0
+
+### Minor Changes
+
+- 6a7c5bc: perf: element event batch triggering
+
+### Patch Changes
+
+- Updated dependencies [7fbf52f]
+- Updated dependencies [f08291e]
+- Updated dependencies [6a7c5bc]
+- Updated dependencies [c14ba7b]
+    - @antv/g-lite@2.4.0
+
 ## 1.1.28
 
 ### Patch Changes

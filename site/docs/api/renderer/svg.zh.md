@@ -70,9 +70,9 @@ const renderer = new Renderer({
 
 该渲染器内置了以下插件：
 
-- [g-plugin-svg-renderer](/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
-- [g-plugin-svg-picker](/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API 拾取图形
-- [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [svg-renderer](/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
+- [svg-picker](/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/Web/API/Document/elementFromPoint) DOM API 拾取图形
+- [dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -82,7 +82,7 @@ const renderer = new Renderer({
 
 使用 [rough.js](https://roughjs.com/) 的 SVG 版本进行手绘风格的渲染。
 
-我们提供了 [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 插件，注册后会替换掉 [g-plugin-svg-renderer](/plugins/svg-renderer) 对于部分 2D 图形的渲染能力。
+我们提供了 [g-plugin-rough-svg-renderer](/plugins/rough-svg-renderer) 插件，注册后会替换掉 [svg-renderer](/plugins/svg-renderer) 对于部分 2D 图形的渲染能力。
 
 [示例](/examples/plugins/rough/#rough)效果如下：
 
@@ -94,7 +94,7 @@ const renderer = new Renderer({
 
 在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg)中，会在 Node 端配合 [JSDOM](https://github.com/jsdom/node-jsdom) 与 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
 
-1. 使用 [unregisterPlugin](/api/renderer/intro#unregisterplugin) 卸载掉 [g-svg](/api/renderer/svg) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/plugins/dom-interaction)
+1. 使用 [unregisterPlugin](/api/renderer/intro#unregisterplugin) 卸载掉 [g-svg](/api/renderer/svg) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [dom-interaction](/plugins/dom-interaction)
 2. 使用 JSDOM 创建一个画布容器
 3. 使用上一步的容器创建画布，同时传入 JSDOM 创建的 `document`，代替浏览器环境中的 `window.document`，`raf` 同理。
 4. 正常使用 [g-svg](/api/renderer/svg) 渲染器，通过 G 的 API 创建场景

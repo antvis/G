@@ -1,12 +1,11 @@
 import type { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
-import type { IElement, INode, IParentNode } from '../dom';
+import type { ICanvas, IElement, INode, IParentNode } from '../dom';
 import type { AABB, Rectangle } from '../shapes';
 import type { DisplayObject } from '../display-objects';
 
 export interface SceneGraphService {
-  triggerPendingEvents: () => void;
-  clearPendingEvents: () => void;
+  notifyMutationObservers: (canvas: ICanvas) => void;
   updateDisplayObjectDependency: (
     name: string,
     oldPath: DisplayObject,
@@ -122,6 +121,11 @@ export interface SceneGraphService {
   getBounds: (element: INode, render?: boolean) => AABB;
   getLocalBounds: (element: INode, render?: boolean) => AABB;
   getGeometryBounds: (element: INode, render?: boolean) => AABB;
+  getTransformedGeometryBounds: (
+    element: INode,
+    render?: boolean,
+    existedAABB?: AABB,
+  ) => AABB | null;
   getBoundingClientRect: (element: INode) => Rectangle;
   syncHierarchy: (element: INode) => void;
 }

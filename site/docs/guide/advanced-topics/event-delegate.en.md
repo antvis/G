@@ -1,18 +1,18 @@
 ---
-title: 理解事件传播路径
+title: Understanding the Event Propagation Path
 order: 4
 ---
 
-在之前的[入门教程](/en/guide/chapter3)中，我们已经掌握了如何为图形添加事件监听器。在本教程中我们将深入了解监听器被触发时，事件对象上一些有用的属性和方法，同时理解事件传播路径，最终实现一个简单的事件委托效果。
+In the previous [getting started tutorial](/en/guide/chapter3), we learned how to add event listeners to shapes. In this tutorial, we will take a deeper look at some useful properties and methods on the event object when a listener is triggered, understand the event propagation path, and finally implement a simple event delegation effect.
 
-最终示例：
+Final example:
 
-- [官网示例](/en/examples/event/picking/#delegate)
-- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
+- [Official website example](/en/examples/event/event-others/#delegate)
+- [CodeSandbox example](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
 
-## 事件传播机制
+## Event Propagation Mechanism
 
-这次我们的场景十分简单，类似 DOM 中的 ul/li：
+This time, our scene is very simple, similar to ul/li in the DOM:
 
 ```
 Group(ul)
@@ -20,22 +20,22 @@ Group(ul)
     - Rect(li)
 ```
 
-我们希望给 ul 下每个 li 增加点击事件监听，最直接的做法当然是：
+We want to add a click event listener to each li under the ul. The most direct way is of course:
 
 ```js
 li1.addEventListener('click', () => {});
 li2.addEventListener('click', () => {});
 ```
 
-这没有任何问题，但每次给 ul 添加新的 li 时，都需要添加这样的一个监听器，有没有“一劳永逸”的方法呢？
+There is nothing wrong with this, but every time a new li is added to the ul, such a listener needs to be added. Is there a "once and for all" method?
 
-在引入事件委托之前，我们先来看看事件传播机制。由于我们完全兼容 DOM Event API，不妨借用 MDN 上的教程来说明。在下图中，当我们点击 `<video>` 元素时，会依次触发捕获（capturing）和冒泡（bubbling）两个阶段，前者从根节点一路进行到目标节点，触发路径上每个节点的 onclick 事件监听器（如有），后者则相反。
+Before introducing event delegation, let's first look at the event propagation mechanism. Since we are fully compatible with the DOM Event API, we might as well use the tutorial on MDN to illustrate. In the figure below, when we click on the `<video>` element, two stages will be triggered in sequence: capturing and bubbling. The former proceeds from the root node all the way to the target node, triggering the onclick event listener of each node on the path (if any), while the latter is the opposite.
 
-<https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/Building_blocks/Events>
+<https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events>
 
 ![](https://mdn.mozillademos.org/files/14075/bubbling-capturing.png)
 
-在我们的示例场景中，点击每一个 li 时同样也会经历上述传播阶段，因此只需要在父节点 ul 上监听即可，事件自然会冒泡上来，这就是事件委托：
+In our example scene, clicking on each li will also go through the above propagation stages, so you only need to listen on the parent node ul, and the event will naturally bubble up. This is event delegation:
 
 ```js
 ul.addEventListener('click', (ev) => {
@@ -43,40 +43,40 @@ ul.addEventListener('click', (ev) => {
 });
 ```
 
-## 事件对象
+## Event Object
 
-事件对象上有很多有用的属性，我们先来看看上一节中提到的事件传播路径，通过[composedPath()](/en/api/event/event-object#composedpath)方法可以获取它。当我们点击 li1 时，此时路径会返回如下结果：
+There are many useful properties on the event object. Let's first look at the event propagation path mentioned in the previous section. You can get it through the [composedPath()](/en/api/event/event-object#composedpath) method. When we click on li1, the path will return the following result:
 
 ```js
 ev.composedPath(); // [Rect(li1), Group(ul), Group(root), Document, Canvas];
 ```
 
-该结果是一个数组，依次展示了从事件触发的目标节点到根节点的路径，我们从后往前看：
+The result is an array that shows the path from the target node that triggered the event to the root node in sequence. Let's look at it from back to front:
 
-- [Canvas](/en/api/canvas/intro) 即画布对象，可以对应 `window`
-- [Document](/en/api/builtin-objects/document) 文档，可以对应 `window.document`
-- [Group(root)](/en/api/builtin-objects/document#documentelement) 文档根节点，可以对应 `window.document.documentElement`
+- [Canvas](/en/api/canvas/intro) is the canvas object, which can correspond to `window`.
+- [Document](/en/api/builtin-objects/document) is the document, which can correspond to `window.document`.
+- [Group(root)](/en/api/builtin-objects/document#documentelement) is the root node of the document, which can correspond to `window.document.documentElement`.
 
-除了事件传播路径，事件对象上其他的常用属性有：
+In addition to the event propagation path, other commonly used properties on the event object are:
 
-- [target](/en/api/event/event-object#target) 返回当前触发事件的图形
-- [currentTarget](/en/api/event/event-object#currenttarget) 总是指向事件绑定的图形
-- 各个坐标系下的[事件坐标](/en/api/event/event-object#canvasxy)
+- [target](/en/api/event/event-object#target) returns the shape that currently triggered the event.
+- [currentTarget](/en/api/event/event-object#currenttarget) always points to the shape to which the event is bound.
+- [Event coordinates](/en/api/event/event-object#canvasxy) in various coordinate systems.
 
-## 添加事件监听器的高级用法
+## Advanced Usage of Adding Event Listeners
 
-还有一些常见的需求可以在绑定事件时做到，例如绑定一个“一次性”的监听器：
+There are some other common requirements that can be met when binding events, such as binding a "one-time" listener:
 
 ```js
 circle.addEventListener('click', () => {}, { once: true });
 ```
 
-再比如注册一个仅在事件捕获阶段执行的监听器：
+Another example is to register a listener that is only executed during the event capture phase:
 
 ```js
 circle.addEventListener('click', () => {}, { capture: true });
-// 或者
+// or
 circle.addEventListener('click', () => {}, true);
 ```
 
-更多用法可以参考 [addEventListener()](/en/api/event/intro#addeventlistener) 的文档。
+For more usage, you can refer to the documentation for [addEventListener()](/en/api/event/intro#addeventlistener).

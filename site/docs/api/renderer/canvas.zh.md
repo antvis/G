@@ -67,7 +67,7 @@ const renderer = new Renderer({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
-在以上求交与区域查询的过程中，我们可以复用剔除方案中的优化手段，例如加速结构。在实现中我们使用了 [RBush](https://github.com/mourner/rbush)。
+在以上求交与区域查询的过程中，我们可以复用剔除方案中的优化手段，例如加速结构。
 
 显然当动态变化的对象数目太多时，该优化手段就失去了意义，试想经过一番计算合并后的“脏矩形”几乎等于整个画布，那还不如直接清空重绘所有对象。因此例如 Pixi.js 这样的 2D 游戏渲染引擎就[不考虑内置](https://github.com/pixijs/pixi.js/issues/3503)。
 
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 该渲染器内置了以下插件：
 
-- [g-plugin-canvas-renderer](/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
-- [g-plugin-canvas-picker](/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
-- [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [canvas-renderer](/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
+- [canvas-picker](/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+- [dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -123,7 +123,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染。
 
-我们提供了 [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 插件，注册后会替换掉 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 对于部分 2D 图形的渲染能力。
+我们提供了 [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer) 插件，注册后会替换掉 [canvas-renderer](/plugins/canvas-renderer) 对于部分 2D 图形的渲染能力。
 
 [示例](/examples/plugins/rough/#rough)效果如下：
 
@@ -135,7 +135,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas)中，会在 Node 端配合 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
 
-1. 使用 [unregisterPlugin](/api/renderer/intro#unregisterplugin) 卸载掉 [g-canvas](/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/plugins/dom-interaction)
+1. 使用 [unregisterPlugin](/api/renderer/intro#unregisterplugin) 卸载掉 [g-canvas](/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [dom-interaction](/plugins/dom-interaction)
 2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/api/canvas/coordinates#canvas) 属性传入画布
 3. 正常使用 [g-canvas](/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
 4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片

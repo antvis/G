@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/extensions
-import RBush from 'rbush/rbush.js';
 import type { IRenderer } from './AbstractRenderer';
 import {
   CameraEvent,
@@ -7,7 +5,7 @@ import {
   CameraTrackingMode,
   CameraType,
 } from './camera';
-import type { RBushNodeAABB } from './components';
+
 import type { CustomElement } from './display-objects';
 import type { MutationEvent } from './dom/MutationEvent';
 import {
@@ -388,10 +386,6 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().destroy();
 
     // clear root after render service destroyed
-    if (this.context.rBushRoot) {
-      // clear rbush
-      this.context.rBushRoot.clear();
-    }
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(
@@ -496,7 +490,6 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render(frame?: XRFrame) {
-    // console.log('render ----------------------');
     if (frame) {
       beforeRenderEvent.detail = frame;
       afterRenderEvent.detail = frame;
@@ -512,7 +505,7 @@ export class Canvas extends EventTarget implements ICanvas {
     );
 
     const renderingService = this.getRenderingService();
-    renderingService.render(this.getConfig(), frame, () => {
+    renderingService.render(this, frame, () => {
       // trigger actual rerender event
       // @see https://github.com/antvis/G/issues/1268
       this.dispatchEvent(
@@ -545,9 +538,6 @@ export class Canvas extends EventTarget implements ICanvas {
     // reset
     this.inited = false;
     this.readyPromise = undefined;
-
-    // FIXME: should re-create here?
-    this.context.rBushRoot = new RBush<RBushNodeAABB>();
 
     // reset rendering plugins
     this.context.renderingPlugins = [];

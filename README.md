@@ -6,7 +6,7 @@ English | [简体中文](./README-zh_CN.md)
 
 ![TypeScript](https://img.shields.io/badge/language-typescript-blue.svg) ![License](https://img.shields.io/badge/license-MIT-000000.svg)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
+[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/antvis/g)
 
 As the underlying rendering engine of AntV, G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products, adapting all underlying rendering APIs (Canvas2D / SVG / WebGL / WebGPU / CanvasKit / Node.js) on the web side. In particular, it provides GPGPU support for algorithms suitable for parallel computing in graph scenarios.
 
@@ -34,19 +34,19 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 Extensible plug-in mechanism and rich set of plug-ins：
 
 - Rendering Related
-  - [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-  - [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
   - [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-  - [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
+  - [html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
   - [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
   - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
   - [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-  - [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+  - [canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
 - Picking
-  - [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-  - [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+  - [canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
 - Interaction
-  - [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
   - [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
   - [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
 - Physics Engine

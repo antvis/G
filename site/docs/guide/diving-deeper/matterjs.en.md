@@ -1,19 +1,19 @@
 ---
-title: 使用 matter.js 物理引擎
+title: Using the matter.js Physics Engine
 order: 12
 ---
 
-[matter.js](https://brm.io/matter-js/) 物理引擎提供了一系列针对刚体的仿真计算，例如重力和表面摩擦力。另外，在任意时刻也可以施加外力改变图形的位置和旋转角度，这为我们实现一些基于真实物理规则的布局提供了帮助。
+The [matter.js](https://brm.io/matter-js/) physics engine provides a series of simulation calculations for rigid bodies, such as gravity and surface friction. In addition, external forces can be applied at any time to change the position and rotation of a shape, which helps us to implement some layouts based on real physical rules.
 
-通过 [g-plugin-matterjs](/en/plugins/matterjs) 插件的支持，我们可以给已有的大部分 2D 图形增加物理属性。
+With the support of the [g-plugin-matterjs](/plugins/matterjs) plugin, we can add physical properties to most existing 2D shapes.
 
-在该[示例](/en/examples/plugins/physics-engine/#matterjs)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
+In this [example](/examples/plugins/physics-engine/#matterjs), we create a series of dynamic objects, let them free fall, and finally stop in a "U-shaped trough".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-## 注册插件
+## Registering the Plugin
 
-创建一个渲染器并注册插件：
+Create a renderer and register the plugin:
 
 ```js
 import { Canvas, CanvasEvent } from '@antv/g';
@@ -32,11 +32,11 @@ const canvas = new Canvas({
 });
 ```
 
-## 开启 debug
+## Enabling Debug Mode
 
-在开发时，我们常常希望能把物理引擎中的世界也渲染出来，便于和“现实世界”对照。
+During development, we often want to render the world of the physics engine to compare it with the "real world".
 
-matter.js  本身支持渲染。开启后配合 [debugContainer](/en/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
+matter.js itself supports rendering. When enabled, it can be used with [debugContainer](/plugins/matterjs#debugcontainer) to draw the wireframe of each object in the physics engine world, which is convenient for debugging:
 
 ```js
 const plugin = new PluginMatterjs({
@@ -47,32 +47,32 @@ const plugin = new PluginMatterjs({
 });
 ```
 
-例如下图展示了三堵静态墙壁和一些动态物体的 wireframe：
+For example, the following figure shows the wireframes of three static walls and some dynamic objects:
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5XLQ5zRKzkAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## 创建静态地面
+## Creating a Static Ground
 
-我们使用 [Line](/en/api/basic/line) 创建一个平地，需要特别注意 [rigid](/en/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
+We use a [Line](/api/basic/line) to create a flat ground. It is important to pay special attention to the [rigid](/plugins/box2d#rigid) property, and set it to `static` to indicate that it is not affected by forces such as gravity:
 
 ```js
 const ground = new Line({
     style: {
         x1: 50,
         y1: 400,
-        // 省略其他属性
+        // Omit other properties
         rigid: 'static',
     },
 });
 canvas.appendChild(ground);
 ```
 
-## 创建动态弹力球
+## Creating a Dynamic Bouncy Ball
 
-接下来我们创建一个受重力影响的“弹力球”，其中：
+Next, we create a "bouncy ball" that is affected by gravity, where:
 
-- [density](/en/plugins/matterjs#density) 表示物体密度，单位为千克/立方米
-- [restitution](/en/plugins/matterjs#restitution) 表示弹力系数
+- [density](/plugins/matterjs#density) represents the density of the object, in kilograms per cubic meter.
+- [restitution](/plugins/matterjs#restitution) represents the coefficient of restitution.
 
 ```js
 const circle = new Circle({
@@ -87,11 +87,11 @@ const circle = new Circle({
 canvas.appendChild(circle);
 ```
 
-## 施加外力
+## Applying External Forces
 
-插件会自动完成仿真过程，你可以看到小球自由落体至地面并弹起。
+The plugin will automatically complete the simulation process. You can see the ball free-fall to the ground and bounce.
 
-使用 [applyForce](/en/plugins/matterjs#applyforce) 可以向图形施加外力。在该 [示例](/en/examples/plugins/physics-engine/#matterjs) 中，点击按钮可以向 Circle 施加一个 `[0, 0]` 点处 `[0, -10]` 的外力，因此受力会向上弹起：
+You can use [applyForce](/plugins/matterjs#applyforce) to apply an external force to a shape. In this [example](/examples/plugins/physics-engine/#matterjs), clicking the button will apply an external force of `[0, -10]` at the `[0, 0]` point of the Circle, so it will bounce upwards:
 
 ```js
 plugin.applyForce(circle, [0, -10], [0, 0]);

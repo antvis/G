@@ -190,7 +190,7 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 - 脏矩形渲染中用于确定受影响区域
 - 矩形刷选批量选中图形
 
-此类基于包围盒的检测不需要太精确，配合内部 RBush 这样的空间索引，因此速度很快。
+此类基于包围盒的检测不需要太精确，因此速度很快。
 
 该方法为同步方法，接受包围盒描述 `minX, minY, maxX, maxY` 坐标（在 [Canvas 坐标系](/api/canvas/coordinates#canvas)下）：
 

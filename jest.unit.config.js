@@ -1,3 +1,5 @@
+// https://jestjs.io/docs/configuration
+
 const path = require('path');
 const { lstatSync, readdirSync } = require('fs');
 // get listing of packages in the mono repo
@@ -17,23 +19,27 @@ const moduleNameMapper = {
   ...packages.reduce(
     (acc, name) => ({
       ...acc,
-      [`@antv/${name}$`]: `<rootDir>/packages/./${name}/src/`,
+      [`@antv/${name}$`]: `<rootDir>/packages/${name}/src/`,
     }),
     {},
   ),
 };
 
+/** @type {import('jest').Config} */
 module.exports = {
   testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
-  collectCoverageFrom: ['<rootDir>/packages/g-lite/src/**/*.{ts,tsx}'],
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/__tests__/',
-    '/__node__tests__/',
+  collectCoverageFrom: [
+    '<rootDir>/packages/g/src/**/*.{ts,tsx}',
+    '<rootDir>/packages/g-lite/src/**/*.{ts,tsx}',
+    //
+    '<rootDir>/packages/g-canvas/src/**/*.{ts,tsx}',
+    //
+    '<rootDir>/packages/g-svg/src/**/*.{ts,tsx}',
   ],
+  coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'clover', 'lcov'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text'],
   // coverageThreshold: {
   //   global: {
   //     branches: 80,
@@ -47,15 +53,12 @@ module.exports = {
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
   ],
-  testPathIgnorePatterns: process.env.CI
-    ? ['<rootDir>/__tests__/unit/g-gesture', '<rootDir>/__tests__/main.ts']
-    : ['<rootDir>/__tests__/unit/g-gesture'],
+  testPathIgnorePatterns: process.env.CI ? ['<rootDir>/__tests__/main.ts'] : [],
   preset: 'ts-jest',
   transform: {
     '^.+\\.[tj]s$': [
       'ts-jest',
       {
-        isolatedModules: true,
         tsconfig: {
           allowJs: true,
           target: 'esnext',

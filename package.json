@@ -13,6 +13,7 @@
     "doc": "dumi dev",
     "start": "cd ./site && npm run start",
     "---build---": "",
+    "build:js": "pnpm --recursive --sequential --if-present run build:js",
     "build:types": "pnpm --recursive --sequential --if-present run build:types",
     "build": "pnpm --recursive --sequential --if-present run build",
     "bundle-viz": "cross-env BUNDLE_VIS=1 PACKAGE=g npm run build",
@@ -21,6 +22,7 @@
     "test:unit": "jest --config jest.unit.config.js",
     "test:visual": "jest --config jest.visual.config.js",
     "coverage": "jest --config jest.unit.config.js --coverage",
+    "benchmark": "cd benchmark && npm run dev",
     "---code-quality---": "",
     "eslint": "eslint ./packages --config=.eslintrc.cjs --ext=.ts,.js --quiet --cache --cache-location=node_modules/.cache/.eslintcache",
     "eslint-fix": "eslint ./packages --config=.eslintrc.cjs --fix --ext=.ts,.js",
@@ -49,7 +51,7 @@
       "markdownlint --fix"
     ],
     "*.{js,jsx,tsx,ts,vue}": [
-      "eslint --fix"
+      "eslint --cache --cache-location node_modules/.cache/.eslintcache --fix"
     ]
   },
   "devDependencies": {
@@ -59,6 +61,7 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
+    "@blazediff/core": "^1.0.0",
     "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-angular": "^9.1.2",
@@ -72,7 +75,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.10",
     "@types/node": "^16.18.64",
-    "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
@@ -104,7 +106,6 @@
     "lint-staged": "^10.5.4",
     "markdownlint-cli": "^0.45.0",
     "npm-run-all": "^4.1.5",
-    "pixelmatch": "^5.3.0",
     "playwright": "latest",
     "pngjs": "^6.0.0",
     "portfinder": "^1.0.32",

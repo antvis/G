@@ -1,19 +1,19 @@
 ---
-title: 使用 Yoga 布局引擎
+title: Using the Yoga Layout Engine
 order: 13
 ---
 
-[Yoga](https://yogalayout.com/) 是 Facebook 提供的跨平台布局引擎，基于 Flex，属性和 CSS Flex 完全一致，因此也可以阅读 [MDN flex 布局的基本概念](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) 获取更多概念知识。
+[Yoga](https://yogalayout.com/) is a cross-platform layout engine provided by Facebook. It is based on Flex, and its properties are fully consistent with CSS Flex. Therefore, you can also read [Basic concepts of Flexbox on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) to get more conceptual knowledge.
 
-通过 [g-plugin-yoga](/en/plugins/yoga) 插件的支持，我们可以给已有 2D 图形增加 Flex 属性。
+With the support of the [g-plugin-yoga](/plugins/yoga) plugin, we can add Flex properties to existing 2D shapes.
 
-在该[示例](/en/examples/plugins/yoga/#yoga-text)中，我们创建了一个常见的自适应布局效果：
+In this [example](/examples/plugins/yoga/#yoga-text), we create a common adaptive layout effect:
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## 注册插件
+## Registering the Plugin
 
-创建一个渲染器并注册插件：
+Create a renderer and register the plugin:
 
 ```js
 import { Canvas, CanvasEvent } from '@antv/g';
@@ -32,26 +32,26 @@ const canvas = new Canvas({
 });
 ```
 
-## 创建 Flex 容器
+## Creating a Flex Container
 
-我们使用 [Rect](/en/api/basic/rect) 创建一个淡蓝色背景容器。
+We use a [Rect](/api/basic/rect) to create a light blue background container.
 
-首先通过 `display: 'flex'` 将它声明为一个 Flex 容器。目前我们仅支持 [Rect](/en/api/basic/rect) 和 [Group](/en/api/basic/group) 作为 Flex 容器，详见[声明 Flex 容器](/en/plugins/yoga#声明-flex-容器)。
+First, we declare it as a Flex container through `display: 'flex'`. Currently, we only support [Rect](/api/basic/rect) and [Group](/api/basic/group) as Flex containers. See [Declaring a Flex Container](/plugins/yoga#declaring-a-flex-container) for details.
 
-然后使用 [flexDirection](/en/plugins/yoga#flexdirection) 属性让子元素竖向排列。
+Then, we use the [flexDirection](/plugins/yoga#flexdirection) property to arrange the child elements vertically.
 
-最后使用 [padding](/en/plugins/yoga#padding) 在四周留白：
+Finally, we use [padding](/plugins/yoga#padding) to leave a margin around the container:
 
 ```js
 const root = new Rect({
   id: 'root',
-  style: {n
+  style: {
     fill: '#C6E5FF',
     width: 500,
     height: 300,
     x: 50,
     y: 50,
-    display: 'flex', // 声明为 Flex 容器
+    display: 'flex', // Declare as a Flex container
     flexDirection: 'column',
     padding: [10, 10, 10, 10],
   },
@@ -59,11 +59,11 @@ const root = new Rect({
 canvas.appendChild(root);
 ```
 
-## 创建顶部 Header
+## Creating the Top Header
 
-接下来我们往容器中添加第一个元素，一个固定高度的 Header。
+Next, we add the first element to the container, a fixed-height Header.
 
-注意宽度我们使用了百分比 `width: '100%'`，即父元素（淡蓝色容器）的宽度。
+Note that we use a percentage for the width: `width: '100%'`, which is the width of the parent element (the light blue container).
 
 ```js
 const topPanel = new Rect({
@@ -79,13 +79,13 @@ const topPanel = new Rect({
 });
 ```
 
-## 创建下方自适应区域
+## Creating the Bottom Adaptive Area
 
-固定 Header 之后，我们希望下方区域占满容器的剩余空间。
+After the fixed Header, we want the bottom area to fill the remaining space of the container.
 
-这里我们创建了一个 [Group](/en/api/basic/group)，没有继续使用 [Rect](/en/api/basic/rect) 的原因是我们不希望它作为容器本身被渲染出来。
+Here, we create a [Group](/api/basic/group). The reason we don't continue to use a [Rect](/api/basic/rect) is that we don't want it to be rendered as a container itself.
 
-使用 [flexGrow](/en/plugins/yoga#flexgrow) 这样它的高度会根据父容器自适应，同时声明自身也是一个 Flex 容器，后续会添加更多子元素。
+Using [flexGrow](/plugins/yoga#flexgrow), its height will adapt to the parent container. We also declare that it is a Flex container itself, and more child elements will be added later.
 
 ```js
 const bottomPanel = new Group({
@@ -97,18 +97,18 @@ const bottomPanel = new Group({
 });
 ```
 
-## 继续划分区域
+## Continuing to Divide the Area
 
-接下来我们继续划分刚创建的下方区域，这次创建一个水平方向的两栏布局。
+Next, we continue to divide the newly created bottom area. This time, we create a horizontal two-column layout.
 
 ```js
 bottomPanel.appendChild(leftPanel);
 bottomPanel.appendChild(rightPanel);
 ```
 
-## 元素居中
+## Centering Elements
 
-居中也是一个常见的需求，例如顶部 Header 中使用 [justifyContent](/en/plugins/yoga#justifycontent) 和 [alignItems](/en/plugins/yoga#alignitems) 实现：
+Centering is also a common requirement. For example, we can use [justifyContent](/plugins/yoga#justifycontent) and [alignItems](/plugins/yoga#alignitems) in the top Header to achieve this:
 
 ```js
 const topPanel = new Rect({

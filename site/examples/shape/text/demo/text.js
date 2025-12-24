@@ -197,6 +197,7 @@ const fillStrokeConfig = {
   textDecorationLine: 'none',
   textDecorationColor: 'none',
   textDecorationStyle: 'solid',
+  textDecorationThickness: 1,
 };
 fillStrokeFolder.addColor(fillStrokeConfig, 'fill').onChange((color) => {
   text.attr('fill', color);
@@ -254,6 +255,11 @@ fillStrokeFolder
   ])
   .onChange((textDecorationStyle) => {
     text.attr('textDecorationStyle', textDecorationStyle);
+  });
+fillStrokeFolder
+  .add(fillStrokeConfig, 'textDecorationThickness', 1, 10)
+  .onChange((textDecorationThickness) => {
+    text.attr('textDecorationThickness', textDecorationThickness);
   });
 fillStrokeFolder
   .addColor(fillStrokeConfig, 'textDecorationColor')

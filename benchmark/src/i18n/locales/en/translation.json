@@ -1,0 +1,69 @@
+{
+  "header": {
+    "title": "Engine Benchmark",
+    "subtitle": "Performance testing and comparison for rendering engines"
+  },
+  "footer": {
+    "copyright": "© {{year}} Engine Benchmark Tool. All rights reserved."
+  },
+  "controlPanel": {
+    "title": "Performance Test",
+    "testGroup": "Test Group",
+    "selected": "selected",
+    "selectGroup": "Select test group",
+    "noneSelected": "None",
+    "elementCount": "Element Count:",
+    "iterations": "Iterations:",
+    "otherOptions": "Other Options:",
+    "continueOnError": "Continue on error",
+    "startTest": "Start Test",
+    "stopTest": "Stop",
+    "reset": "Reset"
+  },
+  "logs": {
+    "title": "Test Logs",
+    "totalResults": "Total {{count}} test results",
+    "exportResults": "Export Results",
+    "exportLogs": "Export Logs",
+    "noLogsMessage": "No logs available, click the \"Start Test\" button to run the benchmark",
+    "progress": {
+      "overall": "Overall Progress",
+      "elapsedRemaining": "Elapsed/Remaining",
+      "engineProgress": "Engine Progress",
+      "testSuite": "Test Suite",
+      "testCase": "Test Case",
+      "current": "Current"
+    }
+  },
+  "performanceChart": {
+    "title": "Engine Performance Comparison",
+    "selectSuite": "Select Test Suite:",
+    "uploadResults": "Upload Test Results File",
+    "insightsTitle": "Performance Analysis Insights",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "testCase": "Test Case",
+    "durationMs": "Duration (ms)",
+    "phase": "Phase",
+    "invalidJson": "Invalid JSON format, please ensure the file contains a test results array",
+    "parseError": "Error parsing JSON file: ",
+    "highestFailureRate": "{{engine}} has the highest failure rate of {{rate}}% ({{failed}}/{{total}})."
+  },
+  "performanceInsight": {
+    "testSummary": "In test suite \"{suiteName}\", a total of {totalTests} tests were run, {successCount} succeeded, success rate {successRate}%.",
+    "failureWarning": "tests failed, please check the implementation.",
+    "performanceAnalysis": "Performance gap analysis:",
+    "analyzedCount": "Analyzed {{count}} test cases:",
+    "fasterThan": "is faster than",
+    "timesFaster": "by {{ratio}}x",
+    "caseComparison": "  - \"{{caseName}}\": {{fastestEngine}} is faster than {{slowestEngine}} by {{ratio}}x",
+    "performanceGap": {
+      "high": "Significant differences (≥2x):",
+      "medium": "Moderate differences (1.5-2x):",
+      "low": "Minor differences (<1.5x): {{count}} cases"
+    }
+  },
+  "sceneViewer": {
+    "title": "Render Preview"
+  }
+}

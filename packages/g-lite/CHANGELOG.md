@@ -1,5 +1,51 @@
 # @antv/g-lite
 
+## 2.6.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+    - @antv/g-math@3.1.0
+
+## 2.5.1
+
+### Patch Changes
+
+- a0b1656: fix: child element update error
+
+## 2.5.0
+
+### Minor Changes
+
+- 697a47f: fix: multiple canvas rendering errors
+
+### Patch Changes
+
+- ca228f9: fix(g-lite): fix CustomEvent constructor compatibility
+
+## 2.4.1
+
+### Patch Changes
+
+- 3cc63ef: fix: type definition
+
+## 2.4.0
+
+### Minor Changes
+
+- 7fbf52f: perf: remove rBush logic from element picking mechanism
+- 6a7c5bc: perf: element event batch triggering
+- c14ba7b: feat(text): add text-decoration support for text elements
+
+### Patch Changes
+
+- f08291e: fix: fix loop index in SyncWaterfallHook and AsyncSeriesWaterfallHook
+
 ## 2.3.2
 
 ### Patch Changes

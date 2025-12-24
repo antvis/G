@@ -5,11 +5,11 @@ order: -99
 
 ## 命名规范
 
-在命名方式上，所有的插件名都以 `g-plugin-` 开头。下面我们通过对于 [g-plugin-canvas-renderer](/plugins/canvas-renderer) 这个使用 Canvas2D 渲染的插件分析，深入了解一下插件的结构，它也是 [g-canvas](/api/renderer/canvas) 的核心插件之一。
+在命名方式上，所有的插件名都以 `g-plugin-` 开头。下面我们通过对于 [canvas-renderer](/plugins/canvas-renderer) 这个使用 Canvas2D 渲染的插件分析，深入了解一下插件的结构，它也是 [g-canvas](/api/renderer/canvas) 的核心插件之一。
 
 ## 基本结构
 
-<https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer>
+<https://github.com/antvis/G/tree/next/packages/canvas-renderer>
 
 ### package.json
 
@@ -67,7 +67,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
 ```js
 apply(context: RenderingPluginContext) {
-    const { config, camera, renderingService, renderingContext, rBushRoot, pathGeneratorFactory } =
+    const { config, camera, renderingService, renderingContext, pathGeneratorFactory } =
       context;
 
     // 当渲染服务初始化时...

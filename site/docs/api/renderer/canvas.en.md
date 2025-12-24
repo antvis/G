@@ -67,7 +67,7 @@ The following diagram illustrates this idea.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
-In the above intersection and region query, we can reuse the optimizations in the culling scheme, such as the acceleration structure. In the implementation we use [RBush](https://github.com/mourner/rbush).
+In the above intersection and region query, we can reuse the optimizations in the culling scheme, such as the acceleration structure.
 
 Obviously, when the number of dynamically changing objects is too large, this optimization becomes meaningless, as the "dirty rectangle" is almost equal to the whole canvas after some calculations, so it is better to just empty and redraw all objects. So 2D game rendering engines like Pixi.js, for example, are [not considered built-in](https://github.com/pixijs/pixi.js/issues/3503).
 
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 The renderer has the following plug-ins built in.
 
-- [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
-- [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
-- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding.
+- [canvas-renderer](/en/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+- [canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+- [dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding.
 
 ## Optional plug-ins
 
@@ -123,7 +123,7 @@ In addition to the built-in plug-ins, the following optional plug-ins are availa
 
 Use the Canvas version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
-We provide [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) plugin, which will replace [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) for partial 2D graphics rendering capability after registration.
+We provide [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) plugin, which will replace [canvas-renderer](/en/plugins/canvas-renderer) for partial 2D graphics rendering capability after registration.
 
 [Example](/en/examples/plugins/rough/#rough).
 
@@ -135,7 +135,7 @@ This renderer relies on [CanvasRenderingContext2D](https://developer.mozilla.org
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas), it will be paired with [node-canvas](https://github.com/) on the Node side Automattic/node-canvas) to render the result image and compare it with the baseline image. Other server-side rendering scenarios can also follow the following steps.
 
-1. Use [unregisterPlugin](/en/api/renderer/intro#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/api/renderer/canvas). For example [g-plugin-dom-interaction](/en/plugins/dom-interaction) which is responsible for event binding
+1. Use [unregisterPlugin](/en/api/renderer/intro#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/api/renderer/canvas). For example [dom-interaction](/en/plugins/dom-interaction) which is responsible for event binding
 2. Use [node-canvas](https://github.com/Automattic/node-canvas) to create a class `Canvas` object to be passed into the canvas via the [canvas](/en/api/canvas/coordinates#canvas) property
 3. Normal use of [g-canvas](/en/api/renderer/canvas) renderer to create scenes via G's API
 4. Use the methods provided by [node-canvas](https://github.com/Automattic/node-canvas) (e.g. [createPNGStream](<https://github.com/Automattic/node-canvas># canvascreatepngstream)) to output the resulting image

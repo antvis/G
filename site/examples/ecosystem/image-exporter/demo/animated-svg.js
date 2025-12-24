@@ -1,5 +1,11 @@
-import { Canvas, CanvasEvent, Circle, Text, Group } from '@antv/g';
-import { ImageExporter } from '@antv/g-image-exporter';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Text,
+  Group,
+  ImageExporter,
+} from '@antv/g';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';

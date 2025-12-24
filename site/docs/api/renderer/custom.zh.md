@@ -15,19 +15,14 @@ order: 4
 
 ## 实现自定义渲染器
 
-继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/api/renderer/intro#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/plugins/canvas-picker)。
+继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/api/renderer/intro#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [canvas-path-generator](/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [canvas-picker](/plugins/canvas-picker)。
 
 <https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts>
 
 ```js
 import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer } from '@antv/g';
-import * as CanvasPathGenerator from '@antv/g-plugin-canvas-path-generator';
-import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
-import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
-import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
-import * as ImageLoader from '@antv/g-plugin-image-loader';
+import { AbstractRenderer, ImageLoader, HTMLRenderer, DomInteraction } from '@antv/g';
+import { CanvasRenderer, CanvasPathGenerator, CanvasPicker } from '@antv/g-canvas';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {

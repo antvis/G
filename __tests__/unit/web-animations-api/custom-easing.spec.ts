@@ -2,7 +2,7 @@ import {
   convertToDash,
   EasingFunctions,
   parseEasingFunction,
-} from '../../../packages/g-web-animations-api/src/utils';
+} from '../../../packages/g/src/plugins/web-animations-api/utils';
 
 describe('Custom easing utils', () => {
   it('should convertToDash correctly', () => {

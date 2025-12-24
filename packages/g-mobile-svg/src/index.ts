@@ -1,9 +1,7 @@
 import type { RendererConfig } from '@antv/g-lite';
-import { AbstractRenderer } from '@antv/g-lite';
+import { AbstractRenderer, MobileInteraction } from '@antv/g-lite';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
-import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
-import * as SVGPicker from '@antv/g-plugin-svg-picker';
-import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
+import { SVGPicker, SVGRenderer } from '@antv/g-svg';
 import * as GesturePlugin from '@antv/g-plugin-gesture';
 import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';

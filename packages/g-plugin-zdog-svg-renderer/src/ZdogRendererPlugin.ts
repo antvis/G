@@ -7,7 +7,7 @@ import {
   RenderingPluginContext,
   ParsedCircleStyleProps,
 } from '@antv/g-lite';
-import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
+import { G_SVG_PREFIX } from '@antv/g-svg';
 import { Anchor, Ellipse, Group } from 'zdog';
 
 export class ZdogRendererPlugin implements RenderingPlugin {

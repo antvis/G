@@ -831,7 +831,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
 
     if (needUpdateGeometry) {
-      object.geometry.dirty = true;
       object.dirty(true, true);
 
       if (!options.forceUpdateGeometry) {

@@ -1,5 +1,42 @@
 # @antv/react-g
 
+## 2.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g@6.3.0
+
+## 2.0.48
+
+### Patch Changes
+
+- @antv/g@6.2.1
+
+## 2.0.47
+
+### Patch Changes
+
+- Updated dependencies [697a47f]
+    - @antv/g@6.2.0
+
+## 2.0.46
+
+### Patch Changes
+
+- @antv/g@6.1.30
+
+## 2.0.45
+
+### Patch Changes
+
+- @antv/g@6.1.29
+
 ## 2.0.44
 
 ### Patch Changes

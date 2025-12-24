@@ -1,5 +1,5 @@
 ---
-title: g-plugin-svg-renderer
+title: svg-renderer
 order: 5
 ---
 
@@ -38,7 +38,7 @@ export interface ElementLifeCycleContribution {
 不同渲染器插件可以实现以上接口，使用自定义方式管理每个图形的生命周期。例如下面的代码展示了两个基于 SVG 的渲染器插件，前者为 [g-svg](/api/renderer/svg) 内置，提供默认 SVG 元素的渲染能力，后者在此基础上借助 rough.js 实现手绘风格渲染。
 
 ```js
-// g-plugin-svg-renderer
+// svg-renderer
 @singleton({ token: ElementLifeCycleContribution })
 export class DefaultElementLifeCycleContribution
     implements ElementLifeCycleContribution {}

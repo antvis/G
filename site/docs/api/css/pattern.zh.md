@@ -195,7 +195,7 @@ const rect = new Rect({
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8kA4QZ8xU88AAAAAAAAAAAAADmJ7AQ/original" alt="rect as pattern" width="300">
 
-最后下面提到的 [g-pattern](/api/css/pattern#g-pattern) 也是通过这种方式定义的。
+最后下面提到的 [pattern](/api/css/pattern#pattern) 也是通过这种方式定义的。
 
 ## repetition
 
@@ -224,7 +224,7 @@ rect.style.fill = {
 
 需要注意的是，SVG 中的 [patternTransform](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternTransform) 和 CSS Transform 的取值有些许不同，矢量图是没有单位的，仅支持 [transform_functions](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform#transform_functions)，因此例如 `rotate(20deg)` 需要去掉单位改写成 `rotate(20)`，`transform(20px, 30px)` 同理。但我们在内部进行了统一处理，因此可以完全使用 CSS Transform 的取值。
 
-## g-pattern
+## pattern
 
 参考 [nivo patterns](https://nivo.rocks/guides/patterns/) 我们提供了一些内置模式，还可以通过更加友好的参数调整外观。目前我们支持以下三种模式：
 
@@ -243,7 +243,7 @@ squares(cfg?: SquarePatternCfg): HTMLCanvasElement;
 在该[示例](/examples/style/pattern/#dots)中，我们使用了圆点模式，并通过 [transform](/api/css/css-properties-values-api#transform) 对其进行了一些变换：
 
 ```js
-import { dots } from '@antv/g-pattern';
+import { dots } from '@antv/g';
 
 rect.style.fill = {
     image: dots({

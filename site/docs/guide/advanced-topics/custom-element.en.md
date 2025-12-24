@@ -1,40 +1,40 @@
 ---
-title: 自定义图形
+title: Custom Shapes
 order: 3
 ---
 
-我们提供了一些[基础图形](/en/api/basic/display-object)，例如 [Circle](/en/api/basic/circle)、[Path](/en/api/basic/path) 等等。通过[场景图](/en/guide/diving-deeper/scenegraph)能力也能构建它们之间的层次关系。但当场景层次嵌套较深又需要复用时，我们便需要一种自定义组件机制，能把这些基础图形封装成高级图形。
+We provide some [basic shapes](/api/basic/display-object), such as [Circle](/api/basic/circle), [Path](/api/basic/path), and so on. Through the [Scene Graph](/guide/diving-deeper/scenegraph) capabilities, we can also build hierarchical relationships between them. But when the scene hierarchy is deeply nested and needs to be reused, we need a custom component mechanism that can encapsulate these basic shapes into advanced shapes.
 
-类似的问题在 Web Components 中是通过 [Custom Element](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements) 实现的。在[官方示例](https://github.com/mdn/web-components-examples/blob/main/life-cycle-callbacks/main.js)中我们能看到一个自定义图形的注册过程按照如下步骤进行：
+A similar problem is solved in Web Components through [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements). In the [official example](https://github.com/mdn/web-components-examples/blob/main/life-cycle-callbacks/main.js), we can see that the registration process of a custom element follows these steps:
 
-- 在构造函数中创建内部 DOM 结构
-- 在 [connectedCallback()](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements#%E4%BD%BF%E7%94%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0) 即元素首次插入文档后，设置样式
-- 在 [attributeChangedCallback()](https://developer.mozilla.org/zh-CN/docs/Web/Web_Components/Using_custom_elements#%E4%BD%BF%E7%94%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0) 中处理属性更新，重新设置样式
-- 使用 [customElements.define()](https://developer.mozilla.org/zh-CN/docs/Web/API/CustomElementRegistry/define) 完成自定义图形的注册
+- Create the internal DOM structure in the constructor.
+- Set styles in [connectedCallback()](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#using_the_lifecycle_callbacks), which is called when the element is first inserted into the document.
+- Handle attribute updates and reset styles in [attributeChangedCallback()](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#using_the_lifecycle_callbacks).
+- Use [customElements.define()](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) to complete the registration of the custom element.
 
-我们沿用了这样的设计。
+We have adopted this design.
 
-在本文中我们将介绍自定义图形的用法，实现一个简单的箭头，其中包含以下步骤：
+In this article, we will introduce the usage of custom shapes and implement a simple arrow, which includes the following steps:
 
-- 设计自定义属性
-- 定义场景图
-- 使用自定义图形
-- 处理属性更新
+- Designing custom properties
+- Defining the scene graph
+- Using the custom shape
+- Handling attribute updates
 
-![animation](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
+![arrow](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
-过程中会涉及[场景图](/en/guide/diving-deeper/scenegraph)、[动画系统](/en/api/animation/waapi)、[事件系统](/en/api/event/intro)等。在开始前我们推荐先阅读以上各个系统的文档。
+The process will involve the [Scene Graph](/guide/diving-deeper/scenegraph), the [Animation System](/api/animation/waapi), the [Event System](/api/event/intro), and so on. Before you begin, we recommend that you first read the documentation for each of these systems.
 
-- [完整 DEMO](/en/examples/shape/custom-element/#arrow)
-- [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
+- [Full DEMO](/examples/shape/custom-element/#arrow)
+- [Source Code](https://github.com/antvis/g/blob/next/packages/g/src/plugins/components/Arrow.ts)
 
-## 问题背景
+## Background
 
-一个箭头由躯干部分 + 一或两个端点组成。如下图所示，躯干部分可以是 Line / Polyline / Path，而端点可以是任意基础/高级图形，我们提供的默认端点是 Path。可见箭头就是一个由若干基础图形组合而成的“高级图形”。
+An arrow consists of a body part + one or two endpoints. As shown in the figure below, the body part can be a Line / Polyline / Path, while the endpoints can be any basic/advanced shape. The default endpoint we provide is a Path. It can be seen that an arrow is an "advanced shape" composed of several basic shapes.
 
-## 继承 CustomElement
+## Inheriting from CustomElement
 
-首先所有自定义图形都需要继承 CustomElement 基类：
+First, all custom shapes need to inherit from the `CustomElement` base class:
 
 ```js
 import { CustomElement } from '@antv/g';
@@ -42,57 +42,57 @@ import { CustomElement } from '@antv/g';
 export class Arrow extends CustomElement<ArrowStyleProps> {}
 ```
 
-然后可以定义自定义图形的属性，这里我们给箭头提供了以下自定义属性：
+Then you can define the properties of the custom shape. Here we provide the following custom properties for the arrow:
 
-- body 躯干部分只能接受 [Line](/en/api/basic/line) [Path](/en/api/basic/path) [Polyline](/en/api/basic/polyline)
-- start/endHead 端点部分可以是任何基础图形，传入布尔值时开启/关闭默认内置端点
-- stroke/lineWidth/opacity 等常规绘图属性
+- `body`: The body part can only accept [Line](/api/basic/line), [Path](/api/basic/path), or [Polyline](/api/basic/polyline).
+- `startHead`/`endHead`: The endpoint part can be any basic shape. Passing a boolean value will enable/disable the default built-in endpoint.
+- `stroke`/`lineWidth`/`opacity`, etc., are regular drawing properties.
 
 ```js
 type ArrowHead = boolean | DisplayObject;
 type ArrowBody = Line | Path | Polyline;
 
 export interface ArrowStyleProps extends BaseStyleProps {
-    body?: ArrowBody; // 躯干
-    startHead?: ArrowHead; // 起始端点
-    endHead?: ArrowHead; // 结束端点
-    stroke?: string; // 颜色
-    lineWidth?: number; // 线宽
-    opacity?: number; // 透明度
+    body?: ArrowBody; // body
+    startHead?: ArrowHead; // start head
+    endHead?: ArrowHead; // end head
+    stroke?: string; // color
+    lineWidth?: number; // line width
+    opacity?: number; // opacity
     strokeOpacity?: number;
 }
 ```
 
-有了自定义属性，下一步需要通过场景图组合基础图形。
+With the custom properties defined, the next step is to compose basic shapes through the scene graph.
 
-## 定义场景图
+## Defining the Scene Graph
 
-我们需要在构造函数中完成场景图的定义。这里会使用到基础图形的节点操作能力，例如使用 [appendChild](/en/api/basic/display-object#添加删除节点) 添加箭头的躯干和端点部分。
+We need to define the scene graph in the constructor. Here we will use the node manipulation capabilities of basic shapes, such as using [appendChild](/api/basic/display-object#add-and-remove-nodes) to add the body and endpoint parts of the arrow.
 
 ```js
 static tag = 'arrow';
 
 constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
-  // 调用基类构造函数
+  // Call the base class constructor
   super({
     ...config,
-    type: Arrow.tag, // 定义自定义图形类型
+    type: Arrow.tag, // Define the custom shape type
   });
 
-  // 获取用户传入的自定义属性
-  // @see /zh/api/builtin-objects/element#attributes
+  // Get the custom properties passed in by the user
+  // @see /en/api/builtin-objects/element#attributes
   const { body, startHead, endHead, ...rest } = this.attributes;
 
-  // 躯干部分必须指定
+  // The body part must be specified
   if (!body) {
     throw new Error("Arrow's body is required");
   }
 
-  // 添加躯干
+  // Add the body
   this.body = body;
   this.appendChild(this.body);
 
-  // 添加起始/结束端点
+  // Add start/end endpoints
   if (startHead) {
     this.appendArrowHead(this.getArrowHeadType(startHead), true);
   }
@@ -100,32 +100,32 @@ constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
     this.appendArrowHead(this.getArrowHeadType(endHead), false);
   }
 
-  // 给躯干、端点应用样式
+  // Apply styles to the body and endpoints
   this.applyArrowStyle(rest, [this.body, this.startHead, this.endHead]);
 }
 ```
 
-### 添加端点
+### Adding Endpoints
 
-我们支持内置端点和用户传入的端点，即使是由用户传入，它也只用于描述端点的形状，为了确保箭头和躯干部分朝向一致，我们还需要对端点进行变换。另外，我们使用了 [zIndex](/en/api/basic/display-object#zindex)，由于默认 zIndex 为 0，因此设置成 1 就可以保证端点的展示次序在躯干部分之上。
+We support both built-in endpoints and user-provided endpoints. Even if provided by the user, it is only used to describe the shape of the endpoint. To ensure that the arrow and the body part have the same orientation, we also need to transform the endpoint. In addition, we use [zIndex](/api/basic/display-object#zindex). Since the default zIndex is 0, setting it to 1 can ensure that the display order of the endpoint is above the body part.
 
 ```js
 private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
   let head: DisplayObject;
   if (type === 'default') {
-    // 创建一个默认端点
+    // Create a default endpoint
     head = this.createDefaultArrowHead();
   } else {
-    // 使用用户传入的端点
+    // Use the endpoint provided by the user
     head = isStart ? this.attributes.startHead : this.attributes.endHead;
   }
 
-  // 对端点进行变换
+  // Transform the endpoint
   this.transformArrowHead(head, isStart);
 
-  // 让端点展示在躯干上
+  // Make the endpoint display on the body
   head.setAttribute('zIndex', 1);
-  // 或者 head.style.zIndex = 1;
+  // or head.style.zIndex = 1;
 
   if (isStart) {
     this.startHead = head;
@@ -133,16 +133,16 @@ private appendArrowHead(type: ArrowHeadType, isStart: boolean) {
     this.endHead = head;
   }
 
-  // 场景图中添加端点
+  // Add the endpoint to the scene graph
   this.appendChild(head);
 }
 ```
 
-对于内置默认端点，我们使用一个形如 `<` 的 [Path](/en/api/basic/path)，这里将 anchor 设置为 `[0.5, 0.5]` 即 Path 的中心点，便于后续对端点进行变换：
+For the built-in default endpoint, we use a [Path](/api/basic/path) shaped like `<`, and here we set the `anchor` to `[0.5, 0.5]`, which is the center point of the Path, to facilitate subsequent transformations of the endpoint:
 
 ```js
 private createDefaultArrowHead() {
-  // 沿用箭头的自定义属性
+  // Inherit the custom properties of the arrow
   const { stroke, lineWidth } = this.attributes;
   const { sin, cos, PI } = Math;
   return new Path({
@@ -151,21 +151,21 @@ private createDefaultArrowHead() {
         }`,
       stroke,
       lineWidth,
-      anchor: [0.5, 0.5], // 锚点默认为 [0, 0]
+      anchor: [0.5, 0.5], // The anchor defaults to [0, 0]
     },
   });
 }
 ```
 
-下一步需要对端点进行变换，确保它出现在正确的位置（躯干的两端）以及拥有正确的朝向。
+The next step is to transform the endpoint to ensure that it appears in the correct position (at both ends of the body) and has the correct orientation.
 
-### 变换端点
+### Transforming the Endpoint
 
-对于端点的变换可以分成两步，设置位置（躯干的起始还是结束）以及朝向。
+The transformation of the endpoint can be divided into two steps: setting the position (start or end of the body) and the orientation.
 
-根据不同的躯干图形，可以通过不同的方法得到两个端点坐标。需要注意的是，设置端点位置时，一定要使用[局部坐标系下的操作方法]()，即 setLocalPosition 或者 translateLocal，原因是我们希望端点在整个箭头而非世界坐标系下定位，这样当整个箭头移动时，其内部的各个组成部分（躯干、端点）会跟着移动，但彼此的相对位置不会改变。
+Depending on the different body shapes, the coordinates of the two endpoints can be obtained through different methods. It should be noted that when setting the position of the endpoint, you must use [methods for operating in the local coordinate system](), i.e., `setLocalPosition` or `translateLocal`. The reason is that we want the endpoint to be positioned relative to the entire arrow, not the world coordinate system. This way, when the entire arrow moves, its internal components (body, endpoints) will move with it, but their relative positions will not change.
 
-同样的，在设置端点随躯干的旋转角度时，也需要在端点本身的旋转角度基础上，增加躯干切线的角度，因此需要使用 get/setLocalEulerAngles。
+Similarly, when setting the rotation angle of the endpoint along with the body, you also need to add the angle of the tangent of the body to the rotation angle of the endpoint itself, so you need to use `get/setLocalEulerAngles`.
 
 ```js
 private transformArrowHead(head: DisplayObject, isStart: boolean) {
@@ -175,33 +175,33 @@ private transformArrowHead(head: DisplayObject, isStart: boolean) {
   let y1 = 0;
   let y2 = 0;
 
-  // 躯干类型
+  // Body type
   const bodyType = this.body && this.body.nodeName;
   if (bodyType === Shape.LINE) {
-    // 省略计算切线
+    // Omit tangent calculation
   } else if (bodyType === Shape.POLYLINE) {
-    // 省略计算切线
+    // Omit tangent calculation
   } else if (bodyType === Shape.PATH) {
-    // 省略计算切线
+    // Omit tangent calculation
   }
 
-  // 计算弧度
+  // Calculate radians
   const x = x1 - x2;
   const y = y1 - y2;
   rad = Math.atan2(y, x);
 
-  // 设置局部坐标系下的位置
+  // Set the position in the local coordinate system
   head.setLocalPosition(x2, y2);
-  // 设置局部坐标系下的旋转角度，弧度转换成角度
+  // Set the rotation angle in the local coordinate system, converting radians to degrees
   head.setLocalEulerAngles((rad * 180) / Math.PI + head.getLocalEulerAngles());
 }
 ```
 
-下面我们来看不同类型的躯干如何计算切线，这部分纯粹是简单的数学运算，和本文的主题关系不大。
+Below we will see how to calculate the tangent for different types of bodies. This part is purely simple mathematical calculations and is not closely related to the theme of this article.
 
-### 计算切线
+### Calculating the Tangent
 
-对于 Line 和 Polyline 只需要找到两个端点坐标相减即可，对于 Path 我们提供了[计算切线的 API](/en/api/basic/path#getstarttangent-number)：
+For Line and Polyline, you just need to find the coordinates of the two endpoints and subtract them. For Path, we provide an [API for calculating the tangent](/api/basic/path#getstarttangent-number):
 
 ```js
 private getTangent(path: Path, isStart: boolean): number[][] {
@@ -209,15 +209,15 @@ private getTangent(path: Path, isStart: boolean): number[][] {
 }
 ```
 
-至此一个简单的箭头就组装完成了。
+At this point, a simple arrow is assembled.
 
-## 使用自定义图形
+## Using the Custom Shape
 
-自定义图形可以使用大部分基础图形的能力，例如节点操作、变换、动画、响应事件等。
+Custom shapes can use most of the capabilities of basic shapes, such as node manipulation, transformations, animations, and responding to events.
 
-### 节点操作
+### Node Manipulation
 
-使用箭头这样的高级图形和其他基础图形一样，例如我们可以创建一个躯干为 Line 的箭头。随后对它使用变换方法，例如平移。同样也可以使用场景图的节点查询能力，例如 getElementById：
+Using an advanced shape like an arrow is the same as using other basic shapes. For example, we can create an arrow with a Line as its body. Then we can apply transformation methods to it, such as translation. We can also use the node query capabilities of the scene graph, such as `getElementById`:
 
 ```js
 const lineArrow = new Arrow({
@@ -238,16 +238,16 @@ const lineArrow = new Arrow({
     },
 });
 
-// 平移
+// Translate
 lineArrow.translate(200, 100);
 
-// 按 id 查询
+// Query by id
 canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 ```
 
-### 应用动画
+### Applying Animations
 
-同样也可以对它[应用动画](/en/api/animation/waapi)，例如对 transform stroke 和 opacity 这三个属性：
+You can also [apply animations](/api/animation/waapi) to it, for example, to the `transform`, `stroke`, and `opacity` properties:
 
 ```js
 lineArrow.animate(
@@ -263,11 +263,11 @@ lineArrow.animate(
 );
 ```
 
-[完整 DEMO](/en/examples/shape/custom-element/#arrow)
+[Full DEMO](/examples/shape/custom-element/#arrow)
 
-### 响应事件
+### Responding to Events
 
-自定义图形也可以[响应事件](/en/api/event/intro)，例如当鼠标移入移出时更改颜色：
+Custom shapes can also [respond to events](/api/event/intro), for example, changing color on mouseenter and mouseleave:
 
 ```js
 lineArrow.addEventListener('mouseenter', () => {
@@ -278,24 +278,24 @@ lineArrow.addEventListener('mouseleave', () => {
 });
 ```
 
-## 处理属性更新
+## Handling Attribute Updates
 
-自定义属性有可能发生更新，例如在创建后改变箭头端点的样式，因此需要监听属性值的变化。参考 Web Components 标准，我们提供了以下生命周期方法供子类实现，这里我们着重关注 attributeChangedCallback。
+Custom properties may be updated, for example, changing the style of an arrow's endpoint after it has been created. Therefore, you need to listen for changes in attribute values. Referring to the Web Components standard, we provide the following lifecycle methods for subclasses to implement. Here we will focus on `attributeChangedCallback`.
 
 ```js
 export interface CustomElement<CustomElementStyleProps> {
   /**
-   * 加入画布时触发
+   * Triggered when added to the canvas
    */
   connectedCallback?(): void;
 
   /**
-   * 从画布移除时触发
+   * Triggered when removed from the canvas
    */
   disconnectedCallback?(): void;
 
   /**
-   * 属性发生修改时触发
+   * Triggered when an attribute is modified
    */
   attributeChangedCallback?<Key extends keyof CustomElementStyleProps>(
     name: Key,
@@ -305,7 +305,7 @@ export interface CustomElement<CustomElementStyleProps> {
 }
 ```
 
-在我们的 [DEMO](/en/examples/shape/custom-element/#arrow) 中，可以随时切换端点和躯干图形。例如切换起始端点为一个图片：
+In our [DEMO](/examples/shape/custom-element/#arrow), you can switch the endpoint and body shapes at any time. For example, switching the start endpoint to an image:
 
 ```js
 const image = new Image({
@@ -317,11 +317,11 @@ const image = new Image({
     },
 });
 image.rotateLocal(90);
-// 修改起始端点
+// Modify the start endpoint
 lineArrow.style.startHead = image;
 ```
 
-此时我们可以监听 startHead 属性的更新，当该属性发生修改时，首先需要移除已存在的起始端点，然后再重新添加：
+At this point, we can listen for updates to the `startHead` attribute. When this attribute is modified, we first need to remove the existing start endpoint and then re-add it:
 
 ```js
 attributeChangedCallback<Key extends keyof ArrowStyleProps>(
@@ -331,12 +331,12 @@ attributeChangedCallback<Key extends keyof ArrowStyleProps>(
 ) {
   if (name === 'startHead' || name === 'endHead') {
     const isStart = name === 'startHead';
-    // 移除已有的端点
+    // Remove the existing endpoint
     this.destroyArrowHead(isStart);
 
     if (newValue) {
       const { body, startHead, endHead, ...rest } = this.attributes;
-      // 重新添加端点
+      // Re-add the endpoint
       this.appendArrowHead(this.getArrowHeadType(newValue), isStart);
       this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
     }
@@ -344,7 +344,7 @@ attributeChangedCallback<Key extends keyof ArrowStyleProps>(
 }
 ```
 
-其中移除端点使用到了 removeChild，这同样是场景图提供的节点操作方法：
+Removing the endpoint uses `removeChild`, which is also a node manipulation method provided by the scene graph:
 
 ```js
 private destroyArrowHead(isStart: boolean) {
@@ -359,9 +359,9 @@ private destroyArrowHead(isStart: boolean) {
 }
 ```
 
-## 注意事项
+## Considerations
 
-一旦挂载到画布后，自定义组件就视作一个整体，内部的图形不能再通过场景图查询能力（例如 getElementById）获得。因此可以暴露方法给使用者，例如获取箭头的躯干、端点部分。
+Once mounted on the canvas, a custom component is treated as a whole, and its internal shapes can no longer be obtained through scene graph query capabilities (such as `getElementById`). Therefore, you can expose methods to the user, for example, to get the body and endpoint parts of the arrow.
 
 ```js
 getBody() {

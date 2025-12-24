@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "2.0.42",
+  "version": "2.1.0",
   "description": "A renderer implemented by SVG",
   "keywords": [
     "antv",
@@ -33,19 +33,17 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-dom-interaction": "workspace:*",
-    "@antv/g-plugin-svg-picker": "workspace:*",
-    "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

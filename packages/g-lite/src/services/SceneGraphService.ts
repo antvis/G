@@ -6,8 +6,16 @@ import {
   updateLocalTransform,
   updateWorldTransform,
 } from '../components';
-import type { CustomElement, DisplayObject } from '../display-objects';
-import type { Element, IChildNode, IElement, INode, IParentNode } from '../dom';
+import { CustomElement, DisplayObject } from '../display-objects';
+import type {
+  Element,
+  IChildNode,
+  IElement,
+  INode,
+  IParentNode,
+  Node,
+  MutationRecord,
+} from '../dom';
 import { CustomEvent } from '../dom/CustomEvent';
 import { ElementEvent } from '../dom/interfaces';
 import { MutationEvent } from '../dom/MutationEvent';
@@ -16,6 +24,7 @@ import { AABB, Rectangle } from '../shapes';
 import { Shape } from '../types';
 import { findClosestClipPathTarget, isInFragment } from '../utils';
 import type { SceneGraphService } from './interfaces';
+import type { Canvas } from '../Canvas';
 
 const reparentEvent = new MutationEvent(
   ElementEvent.REPARENT,
@@ -57,18 +66,12 @@ const $setEulerAngles_InvParentRot = quat.create();
 const $rotateLocal = quat.create();
 const $rotate_ParentInvertRotation = quat.create();
 
-const $triggerPendingEvents_detail = { affectChildren: true };
-
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  // target -> affectChildren
-  private pendingEvents = new Map<DisplayObject, boolean>();
-  private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
-
   constructor(private runtime: GlobalRuntime) {}
 
   matches<T extends IElement>(query: string, root: T) {
@@ -141,7 +144,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     if (isAttachToFragment) return;
 
     if (isChildFragment) {
-      this.dirtifyFragment(child);
+      this.dirtyFragment(child);
     } else {
       const transform = (child as unknown as Element).transformable;
       if (transform) {
@@ -638,22 +641,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   // #endregion transform
   // #region bbox ----------------------------------------------------------------
 
-  private getTransformedGeometryBounds(
-    element: INode,
-    render = false,
-    existedAABB?: AABB,
-  ): AABB | null {
-    const bounds = this.getGeometryBounds(element, render);
-    if (!AABB.isEmpty(bounds)) {
-      const aabb = existedAABB || new AABB();
-      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
-      return aabb;
-    }
-    return null;
-  }
-
   /**
-   * won't account for children
+   * Get the geometry bounds of the element itself, excluding children.
+   *
+   * @param element - The element to get geometry bounds for
+   * @param render - If true, returns render bounds (including strokes, etc.); otherwise returns content bounds
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const { geometry } = element as Element;
@@ -667,6 +659,27 @@ export class DefaultSceneGraphService implements SceneGraphService {
       : geometry.contentBounds || null;
     // return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
     return bounds || new AABB();
+  }
+
+  /**
+   * Get the geometry bounds of the element itself in world space, excluding children.
+   *
+   * @param element - The element to get transformed geometry bounds for
+   * @param render - If true, returns render bounds (including strokes, etc.); otherwise returns content bounds
+   * @param existedAABB - Optional existing AABB to reuse
+   */
+  getTransformedGeometryBounds(
+    element: INode,
+    render = false,
+    existedAABB?: AABB,
+  ): AABB | null {
+    const bounds = this.getGeometryBounds(element, render);
+    if (!AABB.isEmpty(bounds)) {
+      const aabb = existedAABB || new AABB();
+      aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
+      return aabb;
+    }
+    return null;
   }
 
   /**
@@ -853,7 +866,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   syncHierarchy(rootNode: INode) {
-    // console.log('syncHierarchy');
     const stack: INode[] = [rootNode];
     const ancestors: {
       node: INode;
@@ -909,11 +921,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   dirtyWorldTransform(element: INode, transform: Transform) {
-    this.dirtifyWorldInternal(element, transform);
+    this.dirtyWorldInternal(element, transform);
     this.dirtyToRoot(element, true);
   }
 
-  private dirtifyWorldInternal(element: INode, transform: Transform) {
+  private dirtyWorldInternal(element: INode, transform: Transform) {
     const enableAttributeUpdateOptimization =
       element.ownerDocument?.defaultView?.getConfig()?.future
         ?.experimentalAttributeUpdateOptimization === true;
@@ -926,7 +938,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         element.childNodes.forEach((child) => {
           const childTransform = (child as Element).transformable;
 
-          this.dirtifyWorldInternal(child as IElement, childTransform);
+          this.dirtyWorldInternal(child as IElement, childTransform);
         });
       }
     }
@@ -956,10 +968,33 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     this.informDependentDisplayObjects(element as DisplayObject);
 
-    this.pendingEvents.set(element as DisplayObject, affectChildren);
+    const mutations = (element as Node).mutations || [];
+    let boundChangeMutation = mutations.find(
+      (item) => item.type === 'attributes' && item._boundsChangeData,
+    );
+
+    if (!boundChangeMutation) {
+      boundChangeMutation = {
+        type: 'attributes' as const,
+        target: element as DisplayObject,
+        _boundsChangeData: {
+          affectChildren,
+        },
+      };
+
+      mutations.push(boundChangeMutation);
+    } else {
+      boundChangeMutation._boundsChangeData = {
+        affectChildren:
+          boundChangeMutation._boundsChangeData.affectChildren ||
+          affectChildren,
+      };
+    }
+
+    (element as Node).mutations = mutations;
   }
 
-  dirtifyFragment(element: INode) {
+  dirtyFragment(element: INode) {
     const transform = (element as Element).transformable;
     if (transform) {
       transform.dirtyFlag = true;
@@ -969,81 +1004,38 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     const length = element.childNodes.length;
     for (let i = 0; i < length; i++) {
-      this.dirtifyFragment(element.childNodes[i]);
-    }
-
-    if (element.nodeName === Shape.FRAGMENT) {
-      this.pendingEvents.set(element as DisplayObject, false);
+      this.dirtyFragment(element.childNodes[i]);
     }
   }
 
-  triggerPendingEvents() {
-    const triggered = new Set<DisplayObject>();
-    let enableCancelEventPropagation: boolean;
-    let enableAttributeUpdateOptimization: boolean;
+  notifyMutationObservers(canvas: Canvas) {
+    const mutations: Set<MutationRecord> = new Set();
 
-    const trigger = (element: DisplayObject, detail) => {
-      if (
-        !element.isConnected ||
-        triggered.has(element) ||
-        (element.nodeName as Shape) === Shape.FRAGMENT
-      ) {
-        return;
-      }
-
-      this.boundsChangedEvent.detail = detail;
-      this.boundsChangedEvent.target = element;
-      if (element.isMutationObserved) {
-        element.dispatchEvent(this.boundsChangedEvent);
-      } else {
-        if (enableCancelEventPropagation === undefined) {
-          enableCancelEventPropagation =
-            element.ownerDocument.defaultView?.getConfig()?.future
-              ?.experimentalCancelEventPropagation === true;
+    canvas.getRoot().forEach((item: Node) => {
+      (item.mutations || []).forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation._boundsChangeData) {
+          if (mutation._boundsChangeData.affectChildren) {
+            item.forEach((node: Node) => {
+              const newMutation = { ...mutation };
+              newMutation.target = node;
+              mutations.add(newMutation);
+            });
+          } else {
+            mutations.add(mutation);
+          }
         }
+      });
 
-        element.ownerDocument.defaultView.dispatchEvent(
-          this.boundsChangedEvent,
-          true,
-          enableCancelEventPropagation,
-        );
-      }
-
-      triggered.add(element);
-    };
-
-    this.pendingEvents.forEach((affectChildren, element) => {
-      if ((element.nodeName as Shape) === Shape.FRAGMENT) {
-        return;
-      }
-
-      if (enableAttributeUpdateOptimization === undefined) {
-        enableAttributeUpdateOptimization =
-          element.ownerDocument?.defaultView?.getConfig()?.future
-            ?.experimentalAttributeUpdateOptimization === true;
-      }
-
-      $triggerPendingEvents_detail.affectChildren = affectChildren;
-      if (enableAttributeUpdateOptimization) {
-        trigger(element, $triggerPendingEvents_detail);
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (affectChildren) {
-          element.forEach((e: DisplayObject) => {
-            trigger(e, $triggerPendingEvents_detail);
-          });
-        } else {
-          trigger(element, $triggerPendingEvents_detail);
-        }
-      }
+      item.mutations = undefined;
     });
 
-    triggered.clear();
-    this.clearPendingEvents();
-  }
+    if (mutations.size > 0) {
+      const event = new CustomEvent(ElementEvent.BOUNDS_CHANGED, {
+        detail: Array.from(mutations),
+      });
 
-  clearPendingEvents() {
-    this.pendingEvents.clear();
+      canvas.dispatchEvent(event, true, true);
+    }
   }
 
   private displayObjectDependencyMap: WeakMap<

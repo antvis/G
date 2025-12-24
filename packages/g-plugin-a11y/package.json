@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-a11y",
-  "version": "1.1.28",
+  "version": "1.4.0",
   "description": "A G plugin for accessibility",
   "keywords": [
     "antv",
@@ -33,9 +33,9 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },

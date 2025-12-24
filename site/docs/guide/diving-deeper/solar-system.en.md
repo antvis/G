@@ -1,75 +1,75 @@
 ---
-title: 创造一个“太阳系”
+title: Creating a "Solar System"
 order: 1
 ---
 
-有了[场景图](/en/guide/diving-deeper/scenegraph)的知识，在本教程中我们来创造一个“太阳系”，月球绕着地球转、地球绕着太阳转。
+With the knowledge of the [Scene Graph](/guide/diving-deeper/scenegraph), in this tutorial, we will create a "solar system" where the moon revolves around the earth, and the earth revolves around the sun.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ)
 
-其中会涉及以下 API：
+The following APIs will be involved:
 
-- 使用 [appendChild](/en/api/basic/display-object#添加删除节点) 创建场景中各个节点的父子关系
-- 使用 [translate](/en/api/basic/display-object#平移) 移动节点
-- 使用 [rotate](/en/api/basic/display-object#旋转) 让节点旋转
-- 使用 [getElementsByName](/en/api/basic/display-object#简单节点查询) 在场景图中查询节点
-- 使用 [addEventListener](/en/api/event/intro#addeventlistener) 监听画布事件
+- Using [appendChild](/api/basic/display-object#add-and-remove-nodes) to create parent-child relationships between nodes in the scene.
+- Using [translate](/api/basic/display-object#translation) to move nodes.
+- Using [rotate](/api/basic/display-object#rotation) to rotate nodes.
+- Using [getElementsByName](/api/basic/display-object#simple-node-query) to query nodes in the scene graph.
+- Using [addEventListener](/api/event/intro#addeventlistener) to listen for canvas events.
 
-最终示例：
+Final example:
 
-- [官网示例](/en/examples/scenegraph/basic/#hierarchy)
-- [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
+- [Official website example](/examples/scenegraph/basic/#hierarchy)
+- [CodeSandbox example](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
 
-## 创建场景图
+## Creating the Scene Graph
 
-它具有以下层次关系：
+It has the following hierarchical relationship:
 
 ```
-太阳系 solarSystem
+solarSystem
    |    |
-   |   太阳 sun
+   |   sun
    |
- 地球轨道 earthOrbit
+ earthOrbit
    |    |
-   |  地球 earth
+   |  earth
    |
- 月球轨道 moonOrbit
+ moonOrbit
       |
-     月球 moon
+     moon
 ```
 
-从 `@antv/g` 核心包中引入基础对象 [Group](/en/api/basic/group) 和 [Circle](/en/api/basic/circle)。前者无可渲染实体，仅表示逻辑上的“容器”概念，适合“太阳系”、“地球轨道”、“月球轨道”这样的抽象概念，而后者用来表现太阳、地球和月球。当我们想表示“从属”关系时，就可以使用 `appendChild`，例如“太阳属于太阳系”：
+Import the basic objects [Group](/api/basic/group) and [Circle](/api/basic/circle) from the `@antv/g` core package. The former has no renderable entity and only represents the logical concept of a "container," which is suitable for abstract concepts such as "solar system," "earth orbit," and "moon orbit." The latter is used to represent the sun, earth, and moon. When we want to express an "is-a-part-of" relationship, we can use `appendChild`, for example, "the sun is a part of the solar system":
 
 ```js
 import { Group, Circle } from '@antv/g';
 
-// 太阳系
+// solarSystem
 const solarSystem = new Group({
     name: 'solarSystem',
 });
-// 地球轨道
+// earthOrbit
 const earthOrbit = new Group({
     name: 'earthOrbit',
 });
-// 月球轨道
+// moonOrbit
 const moonOrbit = new Group({
     name: 'moonOrbit',
 });
-// 太阳
+// sun
 const sun = new Circle({
     name: 'sun',
     style: {
         r: 100,
     },
 });
-// 地球
+// earth
 const earth = new Circle({
     name: 'earth',
     style: {
         r: 50,
     },
 });
-// 月球
+// moon
 const moon = new Circle({
     name: 'moon',
     style: {
@@ -77,31 +77,31 @@ const moon = new Circle({
     },
 });
 
-// 太阳属于太阳系
+// The sun is a part of the solar system
 solarSystem.appendChild(sun);
-// 地球轨道也属于太阳系
+// The earth's orbit is also a part of the solar system
 solarSystem.appendChild(earthOrbit);
 earthOrbit.appendChild(earth);
 earthOrbit.appendChild(moonOrbit);
 moonOrbit.appendChild(moon);
 ```
 
-后续随时可以通过 [getElementsByName](/en/api/basic/display-object#简单节点查询) 在场景图中查询节点：
+You can query nodes in the scene graph at any time using [getElementsByName](/api/basic/display-object#simple-node-query):
 
 ```js
 canvas.getElementsByName('sun'); // [sun]
 ```
 
-## 确定位置
+## Determining the Position
 
-此时我们使用 [setPosition](/en/api/basic/display-object#平移) 将整个太阳系移动到画布中央，基于场景图内的父子关系，太阳、地球轨道、地球、月球轨道和月球都被移动到了 `(300, 250)`，如下图（左）所示：
+At this point, we use [setPosition](/api/basic/display-object#translation) to move the entire solar system to the center of the canvas. Based on the parent-child relationship in the scene graph, the sun, earth's orbit, earth, moon's orbit, and moon are all moved to `(300, 250)`, as shown in the figure (left) below:
 
 ```javascript
-// 设置太阳系的位置
+// Set the position of the solar system
 solarSystem.setPosition(300, 250);
 ```
 
-保持太阳位置不变，我们沿 X 轴移动地球轨道 100，同样地球、月球轨道和月球也都被移动到了世界坐标系下`(400, 250)`，如下图（中）所示：
+Keeping the sun's position unchanged, we move the earth's orbit 100 along the X-axis. The earth, moon's orbit, and moon are also moved to `(400, 250)` in the world coordinate system, as shown in the figure (middle) below:
 
 ```javascript
 earthOrbit.translate(100, 0);
@@ -109,7 +109,7 @@ earthOrbit.translate(100, 0);
 // earthOrbit.getPosition() --> (400, 250)
 ```
 
-然后我们移动月球轨道，如下图（右）所示：
+Then we move the moon's orbit, as shown in the figure (right) below:
 
 ```javascript
 moonOrbit.translate(100, 0);
@@ -117,18 +117,18 @@ moonOrbit.translate(100, 0);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XcUqQJowVKMAAAAAAAAAAAAAARQnAQ)
 
-## 旋转起来
+## Making it Rotate
 
-现在我们需要让地球和月球都旋转起来。首先使用 [addEventListener](/en/api/event/intro#addeventlistener) 给画布添加一个事件监听器，监听 [AFTER_RENDER](/en/api/canvas/event#画布特有事件) 事件，该事件会在每一帧渲染完毕后触发。然后我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
+Now we need to make both the earth and the moon rotate. First, use [addEventListener](/api/event/intro#addeventlistener) to add an event listener to the canvas to listen for the [AFTER_RENDER](/api/canvas/event#canvas-specific-events) event, which is triggered after each frame is rendered. Then we make the solar system and the earth's orbit rotate 1 degree along the Z-axis in their local coordinate systems (you can also make the earth's orbit rotate faster):
 
 ```javascript
 import { CanvasEvent } from '@antv/g';
 
-// 当画布每一帧渲染完毕时...
+// When each frame of the canvas is rendered...
 canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    // 太阳系自转
+    // The solar system rotates on its own axis
     solarSystem.rotateLocal(1);
-    // 地球轨道自转
+    // The earth's orbit rotates on its own axis
     earthOrbit.rotateLocal(1);
 });
 ```

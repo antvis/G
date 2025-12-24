@@ -184,17 +184,6 @@ const canvas = new Canvas({
 });
 ```
 
-### supportsCSSTransform
-
-可选。是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
-
-在该 [示例](/examples/canvas/container/#supports-css-transform) 中，我们将容器放大了 1.1 倍，开启该配置项后，鼠标移动到圆上可以正确变化鼠标样式：
-
-```js
-const $wrapper = document.getElementById('container');
-$wrapper.style.transform = 'scale(1.1)';
-```
-
 ### supportsPointerEvents
 
 可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false`，事件监听插件将不会监听例如 `pointerdown` 等 PointerEvent。
@@ -222,7 +211,7 @@ $wrapper.style.transform = 'scale(1.1)';
 可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
 
 - g 绘制并调用 `ctx.measureText` 度量文本
-- [g-plugin-canvas-picker](/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
+- [canvas-picker](/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
 - [g-plugin-device-renderer](/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
 
 默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "1.0.52",
+  "version": "1.1.0",
   "description": "A renderer implemented by WebGL1/2 in mobile environment",
   "keywords": [
     "antv",
@@ -33,9 +33,9 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
@@ -45,9 +45,6 @@
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-plugin-dragndrop": "workspace:*",
     "@antv/g-plugin-gesture": "workspace:*",
-    "@antv/g-plugin-html-renderer": "workspace:*",
-    "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/g-plugin-mobile-interaction": "workspace:*",
     "@antv/util": "^3.3.5",
     "@babel/runtime": "^7.25.6",
     "tslib": "^2.5.3"

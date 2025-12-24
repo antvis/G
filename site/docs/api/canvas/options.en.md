@@ -177,19 +177,6 @@ const canvas = new Canvas({
 });
 ```
 
-### supportsCSSTransform
-
-Optional. 是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
-
-Whether or not CSS Transform is supported on the container to ensure that the interaction event coordinates are transformed correctly.
-
-In this [example](/en/examples/canvas/container/#supports-css-transform), we have enlarged the container by a factor of 1.1, and with this configuration enabled, mouse movement over the circle changes the mouse style correctly.
-
-```js
-const $wrapper = document.getElementById('container');
-$wrapper.style.transform = 'scale(1.1)';
-```
-
 ### supportsPointerEvents
 
 Optional. Whether PointerEvent is supported or not, the default will use `! !globalThis.PointerEvent`. If `false` is passed, the event listener plugin will not listen for PointerEvent such as `pointerdown`.
@@ -217,7 +204,7 @@ Optional, default is 200ms. Numeric type, determines whether two consecutive cli
 Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.
 
 - The core service calls `ctx.measureText` to measure the text.
-- [g-plugin-canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
+- [canvas-picker](/en/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
 - [g-plugin-device-renderer](/en/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
 
 When not passed in by default, it will try to create an `OffscreenCanvas` and then use the DOM API to create an `HTMLCanvasElement` when it fails. However, in non-dom environments like applets, you need to manually pass in.

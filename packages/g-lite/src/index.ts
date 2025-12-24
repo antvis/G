@@ -1,7 +1,3 @@
-// @see https://github.com/antvis/G/issues/1239
-// eslint-disable-next-line import/extensions
-import RBush from 'rbush/rbush.js';
-
 export * from './AbstractRenderer';
 export * from './Canvas';
 export * from './camera';
@@ -66,4 +62,11 @@ export {
   translatePathToString,
   turn2deg,
 } from './utils';
-export { RBush };
+
+// plugins
+export * from './plugins/MutationObserver';
+export * as ImageLoader from './plugins/image-loader';
+export { ImagePool, type ImageCache } from './plugins/image-loader';
+export * as HTMLRenderer from './plugins/html-renderer';
+export * as DomInteraction from './plugins/dom-interaction';
+export * as MobileInteraction from './plugins/mobile-interaction';

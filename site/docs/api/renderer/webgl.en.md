@@ -97,7 +97,7 @@ The renderer has the following plug-ins built in.
 
 - [g-plugin-device-renderer](/en/plugins/device-renderer) GPUDevice based rendering capabilities
 - [g-plugin-webgl-device](/en/plugins/device-renderer) Implementing GPUDevice Capabilities based on [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) and [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext)
-- [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
+- [dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 

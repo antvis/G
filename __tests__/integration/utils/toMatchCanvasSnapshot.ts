@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import pixelmatch from 'pixelmatch';
+import blazediff from '@blazediff/core';
 import { PNG } from 'pngjs';
 
 export type ToMatchCanvasSnapshotOptions = {
@@ -33,8 +33,8 @@ function diff(
     output = diffPNG.data;
   }
 
-  // @see https://github.com/mapbox/pixelmatch#pixelmatchimg1-img2-output-width-height-options
-  const mismatch = pixelmatch(img1.data, img2.data, output, width, height, {
+  // @see https://github.com/teimurjan/blazediff?tab=readme-ov-file#configuration-options
+  const mismatch = blazediff(img1.data, img2.data, output, width, height, {
     threshold: 0.1,
   });
 

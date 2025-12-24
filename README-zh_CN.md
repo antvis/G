@@ -6,7 +6,7 @@
 
 ![TypeScript](https://img.shields.io/badge/language-typescript-blue.svg) ![License](https://img.shields.io/badge/license-MIT-000000.svg)
 
-[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
+[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/antvis/g)
 
 一款高效易用的可视化渲染引擎。
 
@@ -31,19 +31,19 @@
   - [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库
 - 可扩展的插件机制以及丰富的插件集：
   - 渲染相关
-    - [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    - [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    - [g-plugin-device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
-    - [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+    - [canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    - [svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    - [device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+    - [html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
     - [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
     - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvs2D 进行手绘风格渲染
     - [g-plugin-rough-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
-    - [g-plugin-canvaskit-renderer](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+    - [canvaskit-renderer](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
   - 拾取
-    - [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
-    - [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
+    - [canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+    - [svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
   - 交互
-    - [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    - [dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
     - [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
     - [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
   - 物理引擎

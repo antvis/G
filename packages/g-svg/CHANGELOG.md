@@ -1,5 +1,61 @@
 # @antv/g-svg
 
+## 2.1.0
+
+### Minor Changes
+
+- bff80a8: refactor: sub-package governance
+
+### Patch Changes
+
+- Updated dependencies [bff80a8]
+- Updated dependencies [bff80a8]
+    - @antv/g-lite@2.6.0
+
+## 2.0.46
+
+### Patch Changes
+
+- Updated dependencies [a0b1656]
+    - @antv/g-lite@2.5.1
+    - @antv/g-plugin-dom-interaction@2.1.31
+    - @antv/g-plugin-svg-picker@2.0.46
+    - @antv/g-plugin-svg-renderer@2.4.1
+
+## 2.0.45
+
+### Patch Changes
+
+- Updated dependencies [ca228f9]
+- Updated dependencies [697a47f]
+    - @antv/g-lite@2.5.0
+    - @antv/g-plugin-svg-renderer@2.4.0
+    - @antv/g-plugin-dom-interaction@2.1.30
+    - @antv/g-plugin-svg-picker@2.0.45
+
+## 2.0.44
+
+### Patch Changes
+
+- Updated dependencies [3cc63ef]
+    - @antv/g-lite@2.4.1
+    - @antv/g-plugin-dom-interaction@2.1.29
+    - @antv/g-plugin-svg-picker@2.0.44
+    - @antv/g-plugin-svg-renderer@2.3.1
+
+## 2.0.43
+
+### Patch Changes
+
+- Updated dependencies [7fbf52f]
+- Updated dependencies [f08291e]
+- Updated dependencies [6a7c5bc]
+- Updated dependencies [c14ba7b]
+    - @antv/g-lite@2.4.0
+    - @antv/g-plugin-svg-renderer@2.3.0
+    - @antv/g-plugin-dom-interaction@2.1.28
+    - @antv/g-plugin-svg-picker@2.0.43
+
 ## 2.0.42
 
 ### Patch Changes

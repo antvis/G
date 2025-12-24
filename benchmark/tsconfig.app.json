@@ -1,0 +1,86 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["vite/client", "node", "preact"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@antv/g-local": ["../packages/g/src"],
+      "@antv/g-mobile-webgl-local": ["../packages/g-mobile-webgl/src"],
+      "@antv/g-plugin-matterjs-local": ["../packages/g-plugin-matterjs/src"],
+      "@antv/g-canvas-local": ["../packages/g-canvas/src"],
+      "@antv/g-plugin-3d-local": ["../packages/g-plugin-3d/src"],
+      "@antv/g-plugin-physx-local": ["../packages/g-plugin-physx/src"],
+      "@antv/g-canvaskit-local": ["../packages/g-canvaskit/src"],
+      "@antv/g-plugin-a11y-local": ["../packages/g-plugin-a11y/src"],
+      "@antv/g-plugin-rough-canvas-renderer-local": [
+        "../packages/g-plugin-rough-canvas-renderer/src"
+      ],
+      "@antv/g-plugin-annotation-local": [
+        "../packages/g-plugin-annotation/src"
+      ],
+      "@antv/g-plugin-rough-svg-renderer-local": [
+        "../packages/g-plugin-rough-svg-renderer/src"
+      ],
+      "@antv/g-plugin-box2d-local": ["../packages/g-plugin-box2d/src"],
+      "@antv/g-devtool-local": ["../packages/g-devtool/src"],
+      "@antv/g-plugin-yoga-local": ["../packages/g-plugin-yoga/src"],
+      "@antv/g-plugin-zdog-canvas-renderer-local": [
+        "../packages/g-plugin-zdog-canvas-renderer/src"
+      ],
+      "@antv/g-plugin-zdog-svg-renderer-local": [
+        "../packages/g-plugin-zdog-svg-renderer/src"
+      ],
+      "@antv/g-plugin-control-local": ["../packages/g-plugin-control/src"],
+      "@antv/g-shader-components-local": [
+        "../packages/g-shader-components/src"
+      ],
+      "@antv/g-plugin-css-select-local": [
+        "../packages/g-plugin-css-select/src"
+      ],
+      "@antv/g-svg-local": ["../packages/g-svg/src"],
+      "@antv/g-lite-local": ["../packages/g-lite/src"],
+      "@antv/g-plugin-device-renderer-local": [
+        "../packages/g-plugin-device-renderer/src"
+      ],
+      "@antv/g-lottie-player-local": ["../packages/g-lottie-player/src"],
+      "@antv/g-web-components-local": ["../packages/g-web-components/src"],
+      "@antv/g-math-local": ["../packages/g-math/src"],
+      "@antv/g-plugin-dragndrop-local": ["../packages/g-plugin-dragndrop/src"],
+      "@antv/g-webgl-local": ["../packages/g-webgl/src"],
+      "@antv/g-mobile-canvas-local": ["../packages/g-mobile-canvas/src"],
+      "@antv/g-plugin-gesture-local": ["../packages/g-plugin-gesture/src"],
+      "@antv/g-webgpu-local": ["../packages/g-webgpu/src"],
+      "@antv/react-g-local": ["../packages/react-g/src"],
+      "@antv/g-mobile-svg-local": ["../packages/g-mobile-svg/src"]
+    }
+  },
+  "include": ["src", "../packages/*/src"]
+}

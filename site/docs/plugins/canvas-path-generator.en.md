@@ -1,5 +1,5 @@
 ---
-title: g-plugin-canvas-path-generator
+title: canvas-path-generator
 order: 4
 ---
 
@@ -18,7 +18,7 @@ export const PathGenerator = Syringe.defineToken('PathGenerator');
 
 ### PathGeneratorFactory
 
-For example, you can currently see the factory method injected into [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) and [g-plugin-canvas-picker](/en/plugins/canvas-picker) in both plugins. You can see that the factory method is injected via the token `PathGeneratorFactory`, and passing [nodeName](/en/api/builtin-objects/node#nodename) will give you the drawing method for the corresponding graphic path: `PathGeneratorFactory`.
+For example, you can currently see the factory method injected into [canvas-renderer](/en/plugins/canvas-renderer) and [canvas-picker](/en/plugins/canvas-picker) in both plugins. You can see that the factory method is injected via the token `PathGeneratorFactory`, and passing [nodeName](/en/api/builtin-objects/node#nodename) will give you the drawing method for the corresponding graphic path: `PathGeneratorFactory`.
 
 ```js
 @inject(PathGeneratorFactory)

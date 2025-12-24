@@ -8,8 +8,8 @@ import {
   parseTransform,
   Pattern,
   RadialGradient,
+  type ImagePool,
 } from '@antv/g-lite';
-import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from '@antv/g-device-api';
 import {
@@ -70,7 +70,7 @@ export class TexturePool {
       if (!isString(src)) {
         texture.setImageData([src]);
         texture.emit(TextureEvent.LOADED);
-        this.context.renderingService.dirtify();
+        this.context.renderingService.dirty();
       } else {
         // @see https://github.com/antvis/g/issues/938
         const image = this.context.config.createImage();
@@ -80,7 +80,7 @@ export class TexturePool {
             const onSuccess = (bitmap: ImageBitmap | HTMLImageElement) => {
               this.textureCache[id].setImageData([bitmap]);
               this.textureCache[id].emit(TextureEvent.LOADED);
-              this.context.renderingService.dirtify();
+              this.context.renderingService.dirty();
               if (successCallback) {
                 successCallback(this.textureCache[id], bitmap);
               }

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "6.1.28",
+  "version": "6.3.0",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -35,18 +35,18 @@
     "README.md"
   ],
   "scripts": {
-    "build:types": "tsc --emitDeclarationOnly --noCheck",
-    "build": "npm run clean && npm run build:types && rollup -c",
-    "clean": "rimraf dist",
+    "build:js": "rimraf dist && rollup -c",
+    "build:types": "rimraf types && tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run build:js && npm run build:types",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-camera-api": "workspace:*",
-    "@antv/g-dom-mutation-observer-api": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/g-web-animations-api": "workspace:*",
-    "@babel/runtime": "^7.25.6"
+    "@antv/util": "^3.3.5",
+    "@babel/runtime": "^7.25.6",
+    "html2canvas": "^1.4.1",
+    "gl-matrix": "^3.4.3"
   },
   "publishConfig": {
     "access": "public"

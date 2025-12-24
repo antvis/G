@@ -98,7 +98,7 @@ const webgpuRenderer = new WebGPURenderer({
 
 - [g-plugin-device-renderer](/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
 - [g-plugin-webgpu-device](/plugins/device-renderer) 基于 WebGPU 实现 GPUDevice 能力
-- [g-plugin-dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
+- [dom-interaction](/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 

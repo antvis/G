@@ -315,7 +315,7 @@ export class DisplayObject<
   /**
    * called when attributes get changed or initialized
    */
-  internalSetAttribute<Key extends keyof StyleProps>(
+  private internalSetAttribute<Key extends keyof StyleProps>(
     name: Key,
     value: StyleProps[Key],
     parseOptions: Partial<PropertyParseOptions> = {},
