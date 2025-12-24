@@ -1,6 +1,5 @@
 import type {
   DisplayObject,
-  FederatedEvent,
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
@@ -13,7 +12,6 @@ import {
   AABB,
   CanvasEvent,
   CustomEvent,
-  ElementEvent,
   Shape,
   Node,
 } from '@antv/g-lite';
@@ -98,7 +96,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
-
       // clear fullscreen
       const dpr = contextService.getDPR();
       const { width, height } = config;
