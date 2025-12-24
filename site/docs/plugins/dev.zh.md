@@ -67,7 +67,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
 ```js
 apply(context: RenderingPluginContext) {
-    const { config, camera, renderingService, renderingContext, rBushRoot, pathGeneratorFactory } =
+    const { config, camera, renderingService, renderingContext, pathGeneratorFactory } =
       context;
 
     // 当渲染服务初始化时...

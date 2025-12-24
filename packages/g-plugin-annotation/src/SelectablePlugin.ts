@@ -320,7 +320,6 @@ export class SelectablePlugin implements RenderingPlugin {
       };
     };
 
-    // 基于 RBush 空间索引进行快速区域查询
     const regionQuery = (region: {
       minX: number;
       minY: number;
@@ -330,7 +329,11 @@ export class SelectablePlugin implements RenderingPlugin {
       return document
         .elementsFromBBox(region.minX, region.minY, region.maxX, region.maxY)
         .filter((intersection) => {
-          const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
+          const { x, y, width, height } = intersection.getBBox();
+          const minX = x;
+          const minY = y;
+          const maxX = x + width;
+          const maxY = y + height;
           // @see https://github.com/antvis/G/issues/1242
           const isTotallyContains =
             minX < region.minX &&

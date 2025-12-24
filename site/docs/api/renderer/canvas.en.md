@@ -67,7 +67,7 @@ The following diagram illustrates this idea.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
-In the above intersection and region query, we can reuse the optimizations in the culling scheme, such as the acceleration structure. In the implementation we use [RBush](https://github.com/mourner/rbush).
+In the above intersection and region query, we can reuse the optimizations in the culling scheme, such as the acceleration structure.
 
 Obviously, when the number of dynamically changing objects is too large, this optimization becomes meaningless, as the "dirty rectangle" is almost equal to the whole canvas after some calculations, so it is better to just empty and redraw all objects. So 2D game rendering engines like Pixi.js, for example, are [not considered built-in](https://github.com/pixijs/pixi.js/issues/3503).
 
