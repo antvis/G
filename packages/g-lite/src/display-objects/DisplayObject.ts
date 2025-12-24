@@ -280,6 +280,7 @@ export class DisplayObject<
    * use with caution
    * @param attributes
    * @param parseOptions
+   * @experimental
    */
   setAttributes(
     attributes: Partial<StyleProps>,

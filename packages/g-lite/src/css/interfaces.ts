@@ -131,6 +131,9 @@ export interface PropertyParseOptions {
   forceUpdateGeometry: boolean;
   usedAttributes: string[];
   memoize: boolean;
+  /**
+   * @experimental
+   */
   skipDispatchAttrModifiedEvent?: boolean;
 }
 
