@@ -8,13 +8,7 @@ import type {
   ParsedBaseStyleProps,
   CSSRGB,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  CustomEvent,
-  Shape,
-  Node,
-} from '@antv/g-lite';
+import { AABB, CanvasEvent, CustomEvent, Shape, Node } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import { isNil } from '@antv/util';
 import type { CanvasRendererPluginOptions } from './interfaces';
