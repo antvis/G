@@ -1,5 +1,17 @@
 # @antv/g-canvas
 
+## 2.2.0
+
+### Minor Changes
+
+- 00d08e9: refactor: remove legacy code
+
+### Patch Changes
+
+- Updated dependencies [00d08e9]
+- Updated dependencies [8df267d]
+    - @antv/g-lite@2.7.0
+
 ## 2.1.0
 
 ### Minor Changes

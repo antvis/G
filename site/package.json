@@ -90,6 +90,7 @@
     "workerize-loader": "^2.0.2"
   },
   "resolutions": {
-    "@monaco-editor/loader": "1.5.0"
+    "@monaco-editor/loader": "1.5.0",
+    "@utoo/pack-win32-x64-msvc": "1.1.1"
   }
 }

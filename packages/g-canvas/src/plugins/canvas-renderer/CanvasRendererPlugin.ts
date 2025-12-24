@@ -1,9 +1,6 @@
 import type {
   DisplayObject,
-  FederatedEvent,
-  RBushNodeAABB,
   RenderingPlugin,
-  RBush,
   RenderingPluginContext,
   ContextService,
   CanvasContext,
@@ -11,14 +8,7 @@ import type {
   ParsedBaseStyleProps,
   CSSRGB,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  CustomEvent,
-  ElementEvent,
-  Shape,
-  Node,
-} from '@antv/g-lite';
+import { AABB, CanvasEvent, CustomEvent, Shape, Node } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import { isNil } from '@antv/util';
 import type { CanvasRendererPluginOptions } from './interfaces';
@@ -49,16 +39,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private pathGeneratorFactory: Plugin['context']['pathGeneratorFactory'];
 
-  /**
-   * RBush used in dirty rectangle rendering
-   */
-  private rBush: RBush<RBushNodeAABB>;
-
   constructor(
     private canvasRendererPluginOptions: CanvasRendererPluginOptions, // private styleRendererFactory: Record<Shape, StyleRenderer>,
   ) {}
-
-  private removedRBushNodeAABBs: RBushNodeAABB[] = [];
 
   private renderQueue: DisplayObject[] = [];
 
@@ -90,7 +73,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       camera,
       renderingService,
       renderingContext,
-      rBushRoot,
       // @ts-ignore
       pathGeneratorFactory,
     } = this.context;
@@ -100,7 +82,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     config.renderer.getConfig().enableDirtyCheck = false;
     config.renderer.getConfig().enableDirtyRectangleRendering = false;
 
-    this.rBush = rBushRoot;
     this.pathGeneratorFactory = pathGeneratorFactory;
 
     const contextService =
@@ -108,34 +89,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
-    const handleUnmounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-
-      // remove r-bush node
-      // @ts-ignore
-      const { rBushNode } = object;
-
-      if (rBushNode?.aabb) {
-        // save removed aabbs for dirty-rectangle rendering later
-        this.removedRBushNodeAABBs.push(rBushNode.aabb);
-      }
-    };
-
-    const handleCulled = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      // @ts-ignore
-      const { rBushNode } = object;
-
-      if (rBushNode.aabb) {
-        // save removed aabbs for dirty-rectangle rendering later
-        this.removedRBushNodeAABBs.push(rBushNode.aabb);
-      }
-    };
-
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
-      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.CULLED, handleCulled);
-
       // clear fullscreen
       const dpr = contextService.getDPR();
       const { width, height } = config;
@@ -151,10 +105,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
-      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
       this.renderQueue = [];
-      this.removedRBushNodeAABBs = [];
       this.#renderState = {
         restoreStack: [],
         prevObject: null,
@@ -286,25 +237,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           renderByZIndex(renderingContext.root, context);
         }
         // console.timeEnd('renderByZIndex');
-
-        this.removedRBushNodeAABBs = [];
       } else {
         // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),
-          ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
-            const aabb = new AABB();
-            aabb.setMinMax(
-              // vec3.fromValues(minX, minY, 0),
-              // vec3.fromValues(maxX, maxY, 0),
-              [minX, minY, 0],
-              [maxX, maxY, 0],
-            );
-            return aabb;
-          }),
         );
-        this.removedRBushNodeAABBs = [];
 
         if (AABB.isEmpty(dirtyRenderBounds)) {
           this.renderQueue = [];
@@ -374,7 +312,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         }
 
         // search objects intersect with dirty rectangle
-        const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
+        const [minX, minY] = dirtyRenderBounds.getMin();
+        const [maxX, maxY] = dirtyRenderBounds.getMax();
+        const dirtyObjects =
+          renderingContext.root.ownerDocument.elementsFromBBox(
+            minX,
+            minY,
+            maxX,
+            maxY,
+          );
 
         // do rendering
         dirtyObjects
@@ -710,20 +656,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     return aabb;
-  }
-
-  private searchDirtyObjects(dirtyRectangle: AABB): DisplayObject[] {
-    // search in r-tree, get all affected nodes
-    const [minX, minY] = dirtyRectangle.getMin();
-    const [maxX, maxY] = dirtyRectangle.getMax();
-    const rBushNodes = this.rBush.search({
-      minX,
-      minY,
-      maxX,
-      maxY,
-    });
-
-    return rBushNodes.map(({ displayObject }) => displayObject);
   }
 
   private saveDirtyAABB(object: DisplayObject) {

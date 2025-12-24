@@ -190,7 +190,7 @@ Area queries, especially boundingbox-based detection, are particularly useful in
 - Dirty rectangle rendering for determining the affected area
 - Rectangle swiping for batch selection of graphics
 
-This type of wraparound box-based detection does not need to be too precise, and is fast with spatial indexing like internal RBush.
+This type of wraparound box-based detection does not need to be too precise, and is fast.
 
 This method is synchronous and accepts the enclosing box description `minX, minY, maxX, maxY` coordinates (under [Canvas coordinate system](/en/api/canvas/coordinates#canvas)).
 

@@ -1,7 +1,6 @@
 import type {
   Cullable,
   Geometry,
-  RBushNode,
   Renderable,
   Sortable,
   Transform,
@@ -137,14 +136,6 @@ export class Element<
     renderOrder: 0,
     dirtyChildren: [],
     dirtyReason: undefined,
-  };
-
-  /**
-   * @deprecated Legacy property for RBush spatial indexing.
-   * Will be removed in future versions.
-   */
-  rBushNode: RBushNode = {
-    aabb: undefined,
   };
 
   /**
