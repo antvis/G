@@ -28,8 +28,8 @@ export function createVec3(
   }
 
   return clone
-    ? vec3.fromValues(x[0], x[1] || y, x[2] || z)
-    : vec3.set($vec3, x[0], x[1] || y, x[2] || z);
+    ? vec3.fromValues(x[0], x[1] ?? y, x[2] ?? z)
+    : vec3.set($vec3, x[0], x[1] ?? y, x[2] ?? z);
 }
 
 const DEG_RAD = Math.PI / 180;
@@ -155,9 +155,9 @@ function getEulerFromMat4(out: vec3, m: mat4) {
  */
 export function getEuler(out: vec3, quat: quat | mat4): vec3 {
   if (quat.length === 16) {
-    return getEulerFromMat4(out, quat as mat4);
+    return getEulerFromMat4(out, quat);
   }
-  return getEulerFromQuat(out, quat as quat);
+  return getEulerFromQuat(out, quat);
 }
 
 export function fromRotationTranslationScale(
