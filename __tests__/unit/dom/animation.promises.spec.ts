@@ -342,7 +342,8 @@ describe('Animation promises', () => {
   const animations = (n: number, options?: KeyframeAnimationOptions) =>
     Array.from({ length: n }, () => {
       const animation = animate(options);
-      animation.finished;
+      // Reading `finished` puts the animation on the timeline's promise list, as G6 does.
+      expect(animation.finished).toBeInstanceOf(Promise);
       return animation;
     });
 
