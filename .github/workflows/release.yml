@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   release:
@@ -25,7 +26,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v4
@@ -68,24 +69,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
           npm_config_legacy_peer_deps: true
-          npm_config_provenance: true
         run: pnpm release
         continue-on-error: true
 
       - name: Release (NPM_TOKEN fallback)
         env:
           GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_legacy_peer_deps: true
-        run: |
-          pnpm config delete npm_config_provenance 2>/dev/null || true
-          pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          pnpm release
+        run: pnpm release
 
       # 校验所有变更包是否都已发布到 npm registry
       - name: Verify all packages published
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -e
           FAILED=false
