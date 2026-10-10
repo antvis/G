@@ -156,9 +156,13 @@ export class AnimationTimeline implements IAnimationTimeline {
     if (t < Number(this.currentTime)) t = Number(this.currentTime);
     this.animations.sort(compareAnimations);
     this.animations = this.tick(t, true, this.animations)[0];
+    // Once per frame rather than around each callback: there is one callback per started
+    // animation, and each update goes over every animation with promises.
+    this.updateAnimationsPromises();
     processing.forEach((entry) => {
       entry[1](t);
     });
+    this.updateAnimationsPromises();
     this.applyPendingEffects();
   };
 
@@ -174,11 +178,7 @@ export class AnimationTimeline implements IAnimationTimeline {
   }
 
   private requestAnimationFrame(f: (ts: number) => void) {
-    return this.rAF((x: number) => {
-      this.updateAnimationsPromises();
-      f(x);
-      this.updateAnimationsPromises();
-    });
+    return this.rAF(f);
   }
 
   tick(t: number, isAnimationFrame: boolean, updatingAnimations: IAnimation[]) {
