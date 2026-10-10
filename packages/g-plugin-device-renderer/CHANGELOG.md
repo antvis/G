@@ -1,5 +1,12 @@
 # @antv/g-plugin-device-renderer
 
+## 2.6.2
+
+### Patch Changes
+
+- Updated dependencies [cbdb2bf]
+    - @antv/g-lite@2.7.1
+
 ## 2.6.1
 
 ### Patch Changes

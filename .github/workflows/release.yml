@@ -9,6 +9,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    permissions:
+      id-token: write
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
@@ -53,12 +56,14 @@ jobs:
 
       # 自动发布完成后 触发 github.release.published 事件
       # 如果是 action 自带的 机器人 token, 出于安全考虑, github 会禁止循环触发, 使用真实用户的 token 可解决这个问题
+      # NPM_TOKEN 作为未配置可信发布的包的兜底令牌
+      # 已配置 Trusted Publishing 的包（如 @antv/g-lite）通过 OIDC 自动获取短期令牌
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_legacy_peer_deps: true
-        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm release
+        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm release --provenance
 
       # 发布失败通知内部开发群
       - name: Release failed ding talk dev group notify
