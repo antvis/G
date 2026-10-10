@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.7.1
+
+### Patch Changes
+
+- cbdb2bf: Replace spread push with for-of loop in PrepareRendererPlugin to avoid potential call stack overflow when processing large mutation record arrays.
+
 ## 2.7.0
 
 ### Minor Changes

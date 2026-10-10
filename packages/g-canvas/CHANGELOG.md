@@ -1,5 +1,12 @@
 # @antv/g-canvas
 
+## 2.2.1
+
+### Patch Changes
+
+- Updated dependencies [cbdb2bf]
+    - @antv/g-lite@2.7.1
+
 ## 2.2.0
 
 ### Minor Changes
