@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v4
         with:
@@ -56,16 +57,61 @@ jobs:
 
       # 自动发布完成后 触发 github.release.published 事件
       # 如果是 action 自带的 机器人 token, 出于安全考虑, github 会禁止循环触发, 使用真实用户的 token 可解决这个问题
-      # NPM_TOKEN 作为未配置可信发布的包的兜底令牌
-      # 已配置 Trusted Publishing 的包（如 @antv/g-lite）通过 OIDC 自动获取短期令牌
-      # npm_config_provenance 让 changeset publish 底层的 npm publish 自动启用 provenance
-      - name: Release
+      #
+      # 双模式发布:
+      # Step 1: OIDC 可信发布 — 已配置 Trusted Publisher 的包（如 @antv/g-lite）通过 OIDC 获取短期令牌
+      #         失败的包（未配置 Trusted Publisher）会被跳过，不影响后续步骤
+      # Step 2: NPM_TOKEN 发布 — 未配置 Trusted Publisher 的包用长期令牌兜底发布
+      #         changeset publish 会自动跳过 Step 1 已发布的包
+
+      - name: Release (OIDC Trusted Publishing)
+        env:
+          GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
+          npm_config_legacy_peer_deps: true
+          npm_config_provenance: true
+        run: pnpm release
+        continue-on-error: true
+
+      - name: Release (NPM_TOKEN fallback)
         env:
           GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_legacy_peer_deps: true
-          npm_config_provenance: true
-        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm release
+        run: |
+          pnpm config delete npm_config_provenance 2>/dev/null || true
+          pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          pnpm release
+
+      # 校验所有变更包是否都已发布到 npm registry
+      - name: Verify all packages published
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -e
+          FAILED=false
+          for pkg_dir in packages/*/; do
+            pkg_name=$(node -p "require('./${pkg_dir}package.json').name" 2>/dev/null)
+            pkg_version=$(node -p "require('./${pkg_dir}package.json').version" 2>/dev/null)
+            if [ -z "$pkg_name" ] || [ -z "$pkg_version" ]; then
+              continue
+            fi
+            # 跳过 private 包
+            is_private=$(node -p "require('./${pkg_dir}package.json').private || false" 2>/dev/null)
+            if [ "$is_private" = "true" ]; then
+              continue
+            fi
+            # 检查 npm registry 上是否存在该版本
+            if ! npm view "${pkg_name}@${pkg_version}" version >/dev/null 2>&1; then
+              echo "::error::${pkg_name}@${pkg_version} not found on npm registry"
+              FAILED=true
+            else
+              echo "OK: ${pkg_name}@${pkg_version}"
+            fi
+          done
+          if [ "$FAILED" = "true" ]; then
+            echo "::error::Some packages failed to publish"
+            exit 1
+          fi
 
       # 发布失败通知内部开发群
       - name: Release failed ding talk dev group notify
