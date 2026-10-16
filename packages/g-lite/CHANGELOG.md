@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.7.2
+
+### Patch Changes
+
+- 12978b0: use nullish coalescing in createVec3
+
 ## 2.7.1
 
 ### Patch Changes

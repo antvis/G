@@ -1,5 +1,14 @@
 # @antv/g
 
+## 6.3.3
+
+### Patch Changes
+
+- de8f7d5: fix(web-animations-api): exact cubic-bezier easing (bezier-easing 3.2 solver), no backward jump on steep curves
+- e723838: perf: update animation promises once per frame instead of once per started animation, so starting N animations in one task no longer costs O(N²) on the next frame
+- Updated dependencies [12978b0]
+    - @antv/g-lite@2.7.2
+
 ## 6.3.2
 
 ### Patch Changes
