@@ -34,7 +34,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     ) => {
       const records = e.detail;
       // Store mutation records for potential future processing
-      this.mutationRecords.push(...records);
+      for (const record of records) {
+        this.mutationRecords.push(record);
+      }
       renderingService.dirty();
     };
 

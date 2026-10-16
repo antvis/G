@@ -124,6 +124,11 @@
     "vite": "^4.5.5",
     "webfontloader": "^1.6.28"
   },
+  "pnpm": {
+    "overrides": {
+      "terser": "5.43.1"
+    }
+  },
   "limit-size": [
     {
       "path": "packages/g-lite/dist/index.umd.min.js",
