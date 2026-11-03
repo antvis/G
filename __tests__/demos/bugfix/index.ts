@@ -13,6 +13,7 @@ export { issue_1882 } from './1882';
 export { issue_1906 } from './1906';
 export { issue_1910 } from './1910';
 export { issue_1911 } from './1911';
+export { issue_1915 } from './1915';
 export { textWordWrap } from './textWordWrap';
 export { group_with_stroke } from './group-with-stroke';
 export { bugfixSwitchRenderer } from './switch-renderer';

@@ -51,6 +51,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     currentContext: new Map(),
   };
 
+  /**
+   * Cached context state saved with each clip in `restoreStack` by the optimized path,
+   * `context.restore()` brings the context back to it.
+   */
+  #clipContextStack: RenderState['currentContext'][] = [];
+
   private clearFullScreenLastFrame = false;
   private clearFullScreen = false;
 
@@ -219,6 +225,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         currentContext: this.#renderState.currentContext,
       };
       this.#renderState.currentContext.clear();
+      this.#clipContextStack = [];
       this.clearFullScreenLastFrame = false;
 
       const context = contextService.getContext();
@@ -394,7 +401,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   ) {
     const nodeName = object.nodeName as Shape;
     let updateTransform = false;
-    let clipDraw = false;
+
+    // restore the clips of the subtrees this object does not belong to
+    while (renderState.restoreStack.length > 0) {
+      const parent =
+        renderState.restoreStack[renderState.restoreStack.length - 1];
+      if (
+        object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS
+      ) {
+        break;
+      }
+      context.restore();
+      renderState.restoreStack.pop();
+      // the restore also reverts the styles and transform set inside the clip
+      renderState.currentContext = this.#clipContextStack.pop();
+      renderState.prevObject = null;
+    }
 
     // @ts-ignore
     const styleRenderer = this.context.styleRendererFactory[nodeName];
@@ -420,7 +442,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.pathGeneratorFactory[clipPath.nodeName as Shape];
       if (generatePath) {
         context.save();
-        clipDraw = true;
+        // keep the clip for the descendants, restored when the walk leaves this subtree
+        renderState.restoreStack.push(object);
+        this.#clipContextStack.push(new Map(renderState.currentContext));
 
         context.beginPath();
         generatePath(context, clipPath.parsedStyle);
@@ -488,10 +512,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this,
         runtime,
       );
-    }
-
-    if (clipDraw) {
-      context.restore();
     }
 
     // finish rendering, clear dirty flag
