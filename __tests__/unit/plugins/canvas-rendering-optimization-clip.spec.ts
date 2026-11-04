@@ -39,18 +39,23 @@ function createContext() {
   return { context, fills };
 }
 
+function createPlugin() {
+  const plugin = new CanvasRendererPlugin({
+    dirtyObjectNumThreshold: 500,
+    dirtyObjectRatioThreshold: 0.8,
+  });
+  const defaultRenderer = new DefaultRenderer({} as any);
+  // the parts of the plugin context the optimized path reads
+  (plugin as any).context = {
+    styleRendererFactory: { rect: defaultRenderer },
+  };
+  (plugin as any).pathGeneratorFactory = { rect: RectPath };
+  return plugin;
+}
+
 describe('canvas renderer with enableRenderingOptimization', () => {
   it('keeps the clipPath of a group for its children', () => {
-    const plugin = new CanvasRendererPlugin({
-      dirtyObjectNumThreshold: 500,
-      dirtyObjectRatioThreshold: 0.8,
-    });
-    const defaultRenderer = new DefaultRenderer({} as any);
-    // the parts of the plugin context the optimized path reads
-    (plugin as any).context = {
-      styleRendererFactory: { rect: defaultRenderer },
-    };
-    (plugin as any).pathGeneratorFactory = { rect: RectPath };
+    const plugin = createPlugin();
 
     const root = new Group();
     const group = new Group();
@@ -89,6 +94,56 @@ describe('canvas renderer with enableRenderingOptimization', () => {
     expect(fills[0]).toEqual({ clips: 1, fillStyle: 'red' });
     // the sibling is drawn outside of it, and its fill is applied again after the restore
     expect(fills[1]).toEqual({ clips: 0, fillStyle: 'red' });
+    expect(renderState.restoreStack).toEqual([]);
+  });
+
+  it('restores the clip of each sibling group before the next one', () => {
+    const plugin = createPlugin();
+
+    const root = new Group();
+    const order: (Group | Rect)[] = [root];
+    for (let i = 0; i < 1000; i++) {
+      const group = new Group();
+      group.style.clipPath = new Rect({
+        style: { x: 0, y: 0, width: 10, height: 10 },
+      });
+      const child = new Rect({
+        style: { x: 0, y: 0, width: 20, height: 20, fill: 'red' },
+      });
+      group.appendChild(child);
+      root.appendChild(group);
+      order.push(group, child);
+    }
+    const last = new Rect({
+      style: { x: 0, y: 0, width: 20, height: 20, fill: 'red' },
+    });
+    root.appendChild(last);
+    order.push(last);
+
+    const { context, fills } = createContext();
+    const renderState = {
+      restoreStack: [],
+      prevObject: null,
+      currentContext: new Map(),
+    };
+
+    let maxDepth = 0;
+    order.forEach((object) => {
+      plugin.renderDisplayObjectOptimized(
+        object,
+        context,
+        {} as any,
+        renderState,
+        {} as any,
+      );
+      maxDepth = Math.max(maxDepth, renderState.restoreStack.length);
+    });
+
+    // every child is drawn inside the clip of its own group only
+    expect(fills).toHaveLength(1001);
+    expect(fills.slice(0, 1000).every((fill) => fill.clips === 1)).toBe(true);
+    expect(fills[1000]).toEqual({ clips: 0, fillStyle: 'red' });
+    expect(maxDepth).toBe(1);
     expect(renderState.restoreStack).toEqual([]);
   });
 });

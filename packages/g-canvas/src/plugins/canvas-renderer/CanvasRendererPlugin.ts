@@ -406,9 +406,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     while (renderState.restoreStack.length > 0) {
       const parent =
         renderState.restoreStack[renderState.restoreStack.length - 1];
-      if (
-        object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS
-      ) {
+      // `contains` walks up from the object to the clip owner only,
+      // the object itself is never on the stack
+      if (parent.contains(object)) {
         break;
       }
       context.restore();
