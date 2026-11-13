@@ -532,5 +532,8 @@ export class TextRenderer extends DefaultRenderer {
       plugin,
       runtime,
     );
+
+    // Text rendering sets lineWidth directly, bypassing the optimized context cache.
+    renderState.currentContext.delete('lineWidth');
   }
 }

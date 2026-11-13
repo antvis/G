@@ -399,6 +399,9 @@ export class Canvas extends EventTarget implements ICanvas {
       event.currentTarget = null;
       event.manager = null;
       event.target = null;
+      if (event.path) {
+        event.path.length = 0;
+      }
       (event as MutationEvent).relatedNode = null;
     };
 
