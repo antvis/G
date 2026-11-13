@@ -6,6 +6,7 @@ import {
   DefaultRenderer,
   TextRenderer,
   ImageRenderer,
+  NativeHTMLRenderer,
 } from './shapes/styles';
 import type { CanvasRendererPluginOptions } from './interfaces';
 
@@ -26,6 +27,7 @@ export class Plugin extends AbstractRendererPlugin<{
     const canvasRendererPluginOptions: CanvasRendererPluginOptions = {
       dirtyObjectNumThreshold: 500,
       dirtyObjectRatioThreshold: 0.8,
+      useNativeHTML: false,
       ...this.options,
     };
 
@@ -45,7 +47,9 @@ export class Plugin extends AbstractRendererPlugin<{
       [Shape.POLYGON]: defaultRenderer,
       [Shape.PATH]: defaultRenderer,
       [Shape.GROUP]: undefined,
-      [Shape.HTML]: undefined,
+      [Shape.HTML]: this.options.useNativeHTML
+        ? new NativeHTMLRenderer()
+        : undefined,
       [Shape.MESH]: undefined,
       [Shape.FRAGMENT]: undefined,
     };

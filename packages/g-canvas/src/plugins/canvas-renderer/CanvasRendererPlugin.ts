@@ -45,7 +45,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
-  #renderState: RenderState = {
+  private renderState: RenderState = {
     restoreStack: [],
     prevObject: null,
     currentContext: new Map(),
@@ -88,6 +88,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.contextService as ContextService<CanvasRenderingContext2D>;
 
     const canvas = renderingContext.root.ownerDocument.defaultView;
+    const nativeCanvas = contextService.getDomElement() as HTMLCanvasElement & {
+      requestPaint?: () => void;
+    };
 
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
       // clear fullscreen
@@ -102,11 +105,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         height * dpr,
         config.background,
       );
+      if (this.canvasRendererPluginOptions.useNativeHTML) {
+        nativeCanvas.addEventListener('paint', drawNativeFrame);
+      }
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
+      if (this.canvasRendererPluginOptions.useNativeHTML) {
+        nativeCanvas.removeEventListener('paint', drawNativeFrame);
+      }
       this.renderQueue = [];
-      this.#renderState = {
+      this.renderState = {
         restoreStack: [],
         prevObject: null,
         currentContext: null,
@@ -174,7 +183,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
               currentObject,
               context,
               this.context,
-              this.#renderState,
+              this.renderState,
               runtime,
             );
           } else {
@@ -182,7 +191,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
               currentObject,
               context,
               this.context,
-              this.#renderState,
+              this.renderState,
               runtime,
             );
           }
@@ -199,8 +208,41 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     };
 
+    const drawNativeFrame = () => {
+      const context = contextService.getContext();
+      if (!context) return;
+      const dpr = contextService.getDPR();
+      const { width, height } = config;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      this.clearRect(
+        context,
+        0,
+        0,
+        width * dpr,
+        height * dpr,
+        config.background,
+      );
+      mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
+      mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
+      this.renderState = {
+        restoreStack: [],
+        prevObject: null,
+        currentContext: this.renderState.currentContext,
+      };
+      this.renderState.currentContext.clear();
+      enableRenderingOptimization = false;
+      renderByZIndex(renderingContext.root, context);
+      this.renderState.restoreStack.forEach(() => context.restore());
+      this.renderState.restoreStack = [];
+    };
+
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+      if (this.canvasRendererPluginOptions.useNativeHTML) {
+        this.renderQueue = [];
+        nativeCanvas.requestPaint?.();
+        return;
+      }
       beforeDraw();
 
       // Skip rendering.
@@ -213,12 +255,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         config.renderer.getConfig().enableRenderingOptimization;
 
       // init
-      this.#renderState = {
+      this.renderState = {
         restoreStack: [],
         prevObject: null,
-        currentContext: this.#renderState.currentContext,
+        currentContext: this.renderState.currentContext,
       };
-      this.#renderState.currentContext.clear();
+      this.renderState.currentContext.clear();
       this.clearFullScreenLastFrame = false;
 
       const context = contextService.getContext();
@@ -333,7 +375,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
                 object,
                 context,
                 this.context,
-                this.#renderState,
+                this.renderState,
                 runtime,
               );
             }
@@ -351,16 +393,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.#renderState.restoreStack.forEach(() => {
+      this.renderState.restoreStack.forEach(() => {
         context.restore();
       });
       // clear restore stack
-      this.#renderState.restoreStack = [];
+      this.renderState.restoreStack = [];
     });
 
     renderingService.hooks.render.tap(
       CanvasRendererPlugin.tag,
       (object: DisplayObject) => {
+        if (this.canvasRendererPluginOptions.useNativeHTML) return;
         if (!this.clearFullScreen) {
           // render at the end of frame
           this.renderQueue.push(object);
@@ -484,7 +527,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       styleRenderer.drawToContext(
         context,
         object,
-        this.#renderState,
+        this.renderState,
         this,
         runtime,
       );

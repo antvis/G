@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasContext, GlobalRuntime, InteractivePointerEvent } from '..';
-import type { HTML } from '../display-objects';
+import type { DisplayObject, HTML } from '../display-objects';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
@@ -776,6 +776,20 @@ export class EventService {
       for (const eventTarget of event.nativeEvent.composedPath() as HTMLElement[]) {
         const existed = this.nativeHTMLMap.get(eventTarget);
         if (existed) {
+          const useNativeHTML =
+            (
+              this.context.config.renderer.getConfig() as {
+                htmlRendering?: string;
+              }
+            ).htmlRendering === 'native';
+          if (useNativeHTML) {
+            const picked = this.pickTarget(
+              event as FederatedPointerEvent,
+            ) as DisplayObject;
+            if (picked?.sortable?.renderOrder > existed.sortable.renderOrder) {
+              return null;
+            }
+          }
           return existed;
         }
       }

@@ -2,6 +2,7 @@ import { isNil, isNumber, isString } from '@antv/util';
 import type { mat4, vec3 } from 'gl-matrix';
 import {
   DisplayObject,
+  type Document,
   FederatedEvent,
   CustomEvent,
   GlobalRuntime,
@@ -20,9 +21,20 @@ import {
 } from '../..';
 
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
+const COVERED_NATIVE_EVENT_TYPES = [
+  'pointerdown',
+  'pointerup',
+  'click',
+  'dblclick',
+  'auxclick',
+  'contextmenu',
+  'wheel',
+] as const;
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRendering';
+
+  constructor(private useNativeHTML = false) {}
 
   private context: RenderingPluginContext;
 
@@ -35,6 +47,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     DisplayObject,
     HTMLElement
   >();
+  private nativeElements = new Set<HTMLElement>();
 
   /**
    * ! The reason for adding `offset` is that the `transform-origin` coordinate system of DOM is the local coordinate system of the element, while the `transform-origin` coordinate system of canvas drawing is the local coordinate system of the element's parent element. At the same time, the `transform` attribute value of the DOM element does not include `transform-origin`.
@@ -54,9 +67,43 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const { camera, renderingContext, renderingService } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
+    const $canvas =
+      context.contextService.getDomElement() as HTMLCanvasElement & {
+        requestPaint?: () => void;
+      };
+    const requestPaint = () => {
+      if (this.useNativeHTML) $canvas.requestPaint?.();
+    };
     const { nativeHTMLMap } = canvas.context.eventService;
 
+    const blockCoveredNativeEvent = (nativeEvent: Event) => {
+      if (!this.useNativeHTML) return;
+      const event = nativeEvent as MouseEvent;
+      let htmlObject: HTML | undefined;
+      for (const target of event.composedPath()) {
+        htmlObject = nativeHTMLMap.get(target as HTMLElement);
+        if (htmlObject) break;
+      }
+      if (!htmlObject) return;
+      const viewport = canvas.client2Viewport({
+        x: event.clientX,
+        y: event.clientY,
+      });
+      const canvasPoint = canvas.viewport2Canvas(viewport);
+      const picked = (
+        renderingContext.root.ownerDocument as Document
+      ).elementFromPointSync(canvasPoint.x, canvasPoint.y);
+      if (picked?.sortable?.renderOrder > htmlObject.sortable.renderOrder) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+
     const setTransform = (object: HTML, $el: HTMLElement) => {
+      if (this.useNativeHTML) {
+        requestPaint();
+        return;
+      }
       $el.style.transform = this.joinTransformMatrix(
         object.getWorldTransform(),
         object.getOrigin(),
@@ -66,13 +113,19 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as HTML;
       if (object.nodeName === Shape.HTML) {
-        if (!this.$camera) {
+        if (!this.useNativeHTML && !this.$camera) {
           this.$camera = this.createCamera(camera);
         }
 
         // create DOM element
         const $el = this.getOrCreateEl(object);
-        this.$camera.appendChild($el);
+        if (this.useNativeHTML) {
+          $el.setAttribute('drawable', '');
+          $canvas.appendChild($el);
+          this.nativeElements.add($el);
+        } else {
+          this.$camera.appendChild($el);
+        }
 
         Object.keys(object.attributes).forEach((name) => {
           this.updateAttribute(name, object);
@@ -81,16 +134,22 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         setTransform(object, $el);
 
         nativeHTMLMap.set($el, object);
+        requestPaint();
       }
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as HTML;
-      if (object.nodeName === Shape.HTML && this.$camera) {
+      if (
+        object.nodeName === Shape.HTML &&
+        (this.useNativeHTML || this.$camera)
+      ) {
         const $el = this.getOrCreateEl(object);
         if ($el) {
           $el.remove();
           nativeHTMLMap.delete($el);
+          this.nativeElements.delete($el);
+          requestPaint();
         }
       }
     };
@@ -100,6 +159,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       if (object.nodeName === Shape.HTML) {
         const { attrName } = e;
         this.updateAttribute(attrName, object);
+        requestPaint();
       }
     };
 
@@ -131,6 +191,14 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tap(HTMLRenderingPlugin.tag, () => {
+      if (this.useNativeHTML) {
+        COVERED_NATIVE_EVENT_TYPES.forEach((eventType) => {
+          $canvas.addEventListener(eventType, blockCoveredNativeEvent, {
+            capture: true,
+            passive: false,
+          });
+        });
+      }
       canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -156,6 +224,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       // remove camera
       if (this.$camera) {
         this.$camera.remove();
+      }
+      this.nativeElements.forEach(($el) => $el.remove());
+      this.nativeElements.clear();
+      if (this.useNativeHTML) {
+        COVERED_NATIVE_EVENT_TYPES.forEach((eventType) => {
+          $canvas.removeEventListener(eventType, blockCoveredNativeEvent, true);
+        });
       }
 
       canvas.removeEventListener(CanvasEvent.RESIZE, handleCanvasResize);
@@ -241,11 +316,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       // use absolute position
       $existedElement.style.position = 'absolute';
       // @see https://github.com/antvis/G/issues/1150
-      $existedElement.style['will-change'] = 'transform';
-      $existedElement.style.transform = this.joinTransformMatrix(
-        object.getWorldTransform(),
-        object.getOrigin(),
-      );
+      if (this.useNativeHTML) {
+        $existedElement.style.left = '0px';
+        $existedElement.style.top = '0px';
+      } else {
+        $existedElement.style['will-change'] = 'transform';
+        $existedElement.style.transform = this.joinTransformMatrix(
+          object.getWorldTransform(),
+          object.getOrigin(),
+        );
+      }
     }
 
     return $existedElement;
@@ -264,12 +344,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         }
         break;
       case 'x':
-        $el.style.left = `${object.parsedStyle.x}px`;
+        if (!this.useNativeHTML) $el.style.left = `${object.parsedStyle.x}px`;
         break;
       case 'y':
-        $el.style.top = `${object.parsedStyle.y}px`;
+        if (!this.useNativeHTML) $el.style.top = `${object.parsedStyle.y}px`;
         break;
       case 'transformOrigin':
+        if (this.useNativeHTML) break;
         const { transformOrigin } = object.parsedStyle;
         $el.style['transform-origin'] = `${transformOrigin[0].buildCSSText(
           null,
@@ -290,6 +371,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           : (height as string).toString();
         break;
       case 'zIndex':
+        if (this.useNativeHTML) break;
         const { zIndex } = object.parsedStyle;
         $el.style['z-index'] = `${zIndex}`;
         break;
@@ -302,6 +384,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style.pointerEvents = pointerEvents;
         break;
       case 'opacity':
+        if (this.useNativeHTML) break;
         const { opacity } = object.parsedStyle;
         $el.style.opacity = `${opacity}`;
         break;
@@ -351,6 +434,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style.filter = filter;
         break;
       default:
+        if (this.useNativeHTML && name === 'transform') break;
         if (!isNil(object.style[name]) && object.style[name] !== '') {
           $el.style[name] = object.style[name];
         }

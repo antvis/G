@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>G · 原生 HTML 图元验证</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 32px;
+        background: #141b2a;
+        color: #f0f4fc;
+        font:
+          15px -apple-system,
+          BlinkMacSystemFont,
+          'PingFang SC',
+          sans-serif;
+      }
+      main {
+        max-width: 640px;
+        margin: auto;
+      }
+      p {
+        color: #aebbd0;
+        line-height: 1.65;
+      }
+      #scene {
+        width: 520px;
+        height: 320px;
+        max-width: 100%;
+        border: 1px solid #52647f;
+      }
+      button {
+        cursor: pointer;
+      }
+      #export {
+        display: block;
+        margin: 20px 0;
+        padding: 9px 16px;
+      }
+      #preview {
+        display: block;
+        width: 520px;
+        max-width: 100%;
+        border: 1px solid #52647f;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>G 场景树中的 HTML</h1>
+      <p id="mode">正在初始化…</p>
+      <div id="scene"></div>
+      <p id="status">等待交互</p>
+      <button id="export" type="button">导出当前画布</button>
+      <img id="preview" alt="G 画布导出预览" hidden />
+    </main>
+    <script type="module" src="./native-html-canvas.ts"></script>
+  </body>
+</html>
