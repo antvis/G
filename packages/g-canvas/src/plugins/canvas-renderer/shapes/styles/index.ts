@@ -10,4 +10,5 @@ export { DefaultRenderer as PolygonRenderer };
 export { DefaultRenderer as PathRenderer };
 export { DefaultRenderer as EllipseRenderer };
 export { ImageRenderer } from './Image';
+export { NativeHTMLRenderer } from './HTML';
 export { TextRenderer } from './Text';

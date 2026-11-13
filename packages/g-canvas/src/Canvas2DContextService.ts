@@ -60,6 +60,20 @@ export class Canvas2DContextService
       }
     }
 
+    const htmlRendering = (
+      this.canvasConfig.renderer?.getConfig() as
+        | { htmlRendering?: 'overlay' | 'native' }
+        | undefined
+    )?.htmlRendering;
+    if (htmlRendering === 'native') {
+      if (
+        typeof HTMLCanvasElement === 'undefined' ||
+        !(this.$canvas instanceof HTMLCanvasElement)
+      ) {
+        throw new Error('Native HTML rendering requires an HTMLCanvasElement.');
+      }
+      this.$canvas.setAttribute('content', 'drawable');
+    }
     this.context = this.$canvas.getContext('2d');
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
   }
