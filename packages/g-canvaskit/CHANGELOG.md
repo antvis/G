@@ -1,5 +1,14 @@
 # @antv/g-canvaskit
 
+## 1.1.4
+
+### Patch Changes
+
+- Updated dependencies [8fcee05]
+- Updated dependencies [bd0c890]
+    - @antv/g-canvas@2.2.3
+    - @antv/g-lite@2.7.3
+
 ## 1.1.3
 
 ### Patch Changes

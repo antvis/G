@@ -1,5 +1,14 @@
 # @antv/g-canvas
 
+## 2.2.3
+
+### Patch Changes
+
+- 8fcee05: Restore the requested path stroke width after text rendering in the optimized Canvas renderer, and release reused event paths when a canvas is destroyed.
+- bd0c890: Keep the clipPath of a Group for its children when `enableRenderingOptimization` is enabled.
+- Updated dependencies [8fcee05]
+    - @antv/g-lite@2.7.3
+
 ## 2.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.7.3
+
+### Patch Changes
+
+- 8fcee05: Restore the requested path stroke width after text rendering in the optimized Canvas renderer, and release reused event paths when a canvas is destroyed.
+
 ## 2.7.2
 
 ### Patch Changes

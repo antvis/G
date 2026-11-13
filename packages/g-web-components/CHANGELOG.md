@@ -1,5 +1,15 @@
 # @antv/g-web-components
 
+## 2.1.4
+
+### Patch Changes
+
+- Updated dependencies [8fcee05]
+- Updated dependencies [bd0c890]
+    - @antv/g-canvas@2.2.3
+    - @antv/g-lite@2.7.3
+    - @antv/g-webgl@2.1.4
+
 ## 2.1.3
 
 ### Patch Changes
